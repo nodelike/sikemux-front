@@ -76,7 +76,7 @@ const features = [
                             <h3>{feature.title}</h3>
                             <p>{feature.body}</p>
                         </div>
-                        <div class="shot">
+                        <div class="shot frame">
                             <Image src={feature.image} alt={feature.alt} format="avif" quality={80} widths={[960, 1440, 2048]} sizes="(min-width: 1240px) 760px, 100vw" />
                         </div>
                     </article>
@@ -97,8 +97,8 @@ const features = [
     .feature {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-        align-items: center;
-        gap: clamp(24px, 4vw, 56px);
+        align-items: start;
+        gap: clamp(24px, 4vw, 64px);
     }
 
     .feature.flip {
@@ -110,8 +110,32 @@ const features = [
     }
 
     .text {
+        position: sticky;
+        top: 96px;
         display: grid;
-        gap: 14px;
+        gap: 16px;
+        padding-top: 8px;
+    }
+
+    .text p {
+        font-size: 15.5px;
+        line-height: 1.65;
+    }
+
+    .frame {
+        position: relative;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background:
+            radial-gradient(90% 60% at 50% 0%, color-mix(in oklab, var(--acc) 10%, transparent), transparent 70%),
+            var(--surface);
+        overflow: visible;
+    }
+
+    .frame :global(img) {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
     }
 
     .tag {
@@ -142,8 +166,9 @@ const features = [
     }
 
     h3 {
-        font-size: 21px;
-        letter-spacing: -0.02em;
+        font-size: 24px;
+        line-height: 1.2;
+        letter-spacing: -0.025em;
     }
 
 
@@ -155,6 +180,10 @@ const features = [
 
         .feature.flip .text {
             order: 0;
+        }
+
+        .text {
+            position: static;
         }
     }
 </style>

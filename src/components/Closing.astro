@@ -11,9 +11,11 @@ const { release } = Astro.props;
 ---
 
 <section class="section closing">
-    <div class="page grid">
+    <div class="page">
+      <div class="panel grid">
         <div class="cta">
-            <h2>Open a project. Keep it open.</h2>
+            <span class="mark"><Logo size={40} /></span>
+            <h2>Open a project.<br />Keep it open.</h2>
             <div class="actions">
                 <DownloadButton href={release.dmgUrl} />
                 <a class="btn notes" href={RELEASES_URL}>What's new in v{release.version}</a>
@@ -26,6 +28,7 @@ const { release } = Astro.props;
 <span class="prompt">$</span> make dev</code></pre>
             <p class="small">Needs Rust, Node 22 and pnpm. <a href={`${REPO_URL}/blob/main/CONTRIBUTING.md`}>Contributing guide</a></p>
         </div>
+      </div>
     </div>
 </section>
 
@@ -44,11 +47,47 @@ const { release } = Astro.props;
 </footer>
 
 <style>
+    .closing {
+        padding-top: 0;
+        border-top: 0;
+    }
+
+    .panel {
+        position: relative;
+        overflow: hidden;
+        padding: clamp(32px, 5vw, 64px);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background:
+            radial-gradient(70% 90% at 15% 0%, color-mix(in oklab, var(--acc) 22%, transparent), transparent 65%),
+            radial-gradient(60% 80% at 100% 100%, color-mix(in oklab, var(--live) 8%, transparent), transparent 70%),
+            var(--surface);
+        isolation: isolate;
+    }
+
+    .panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background-image: radial-gradient(color-mix(in oklab, var(--ink) 14%, transparent) 1px, transparent 1.2px);
+        background-size: 6px 6px;
+        mask-image: radial-gradient(ellipse 60% 80% at 15% 0%, #000, transparent 70%);
+        -webkit-mask-image: radial-gradient(ellipse 60% 80% at 15% 0%, #000, transparent 70%);
+        opacity: 0.5;
+    }
+
     .grid {
         display: grid;
         grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
         align-items: end;
         gap: clamp(32px, 5vw, 72px);
+    }
+
+    .mark {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--acc);
     }
 
     .cta {

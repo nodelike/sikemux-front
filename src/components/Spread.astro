@@ -11,10 +11,17 @@ const rows = [
     { before: "The AWS console, signed out again", keys: "⌥A", icon: "aws", after: "AWS" },
     { before: "Bruno, somewhere in the dock", keys: "⌥B", icon: "bruno", after: "Bruno" },
 ] as const;
+
+const facts = [
+    { icon: "shield", title: "No API key", body: "Sikemux bundles no model. It starts the CLI you installed, with your login." },
+    { icon: "command", title: "Native shells", body: "Every terminal is a Rust PTY. No Electron, no bundled Chromium." },
+    { icon: "globe", title: "A browser per agent", body: "Each agent gets its own tab that keeps its sign-ins, and you can take over." },
+    { icon: "plug", title: "Tools over MCP", body: "Agents start your tasks, read their output and open files in your editor." },
+] as const;
 ---
 
 <section class="section">
-    <div class="page">
+    <div class="page layout">
         <div class="section-head">
             <p class="label">Why it exists</p>
             <h2>You already run this setup. It's just spread over seven apps.</h2>
@@ -34,6 +41,7 @@ const rows = [
                         <span role="cell" class="before">
                             {row.before}
                         </span>
+                        <span class="arrow" aria-hidden="true">→</span>
                         <span role="cell" class="after">
                             <Kbd keys={row.keys} />
                             <span class="view">
@@ -46,41 +54,83 @@ const rows = [
             }
         </div>
     </div>
+    <div class="page">
+        <ul class="facts">
+            {
+                facts.map((fact) => (
+                    <li>
+                        <span class="fact-icon">
+                            <Icon name={fact.icon} size={16} />
+                        </span>
+                        <strong>{fact.title}</strong>
+                        <p>{fact.body}</p>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
 </section>
 
 <style>
+    .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        align-items: start;
+        gap: clamp(32px, 5vw, 72px);
+    }
+
+    .layout .section-head {
+        position: sticky;
+        top: 96px;
+        margin-bottom: 0;
+    }
+
     .table {
         border: 1px solid var(--border);
-        border-radius: var(--radius-3);
+        border-radius: var(--radius-4);
         overflow: hidden;
+        background: var(--surface);
     }
 
     .head,
     .line {
         display: grid;
-        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) 28px minmax(0, 0.8fr);
+        align-items: center;
     }
 
     .head {
-        padding: 12px 20px;
+        padding: 14px 22px;
         border-bottom: 1px solid var(--border);
-        background: var(--surface);
+    }
+
+    .head span:last-child {
+        grid-column: 3;
     }
 
     .line {
-        align-items: center;
-        min-height: 52px;
-        padding-inline: 20px;
+        min-height: 56px;
+        padding-inline: 22px;
+        transition: background var(--dur-1) var(--ease-out);
     }
 
     .line + .line {
         border-top: 1px solid var(--gray-200);
     }
 
+    .line:hover {
+        background: var(--surface-hover);
+    }
+
     .before {
         font-family: var(--mono);
         font-size: 13px;
         color: var(--text-tertiary);
+    }
+
+    .arrow {
+        color: var(--gray-500);
+        font-size: 14px;
     }
 
     .after {
@@ -105,5 +155,70 @@ const rows = [
 
     .after :global(kbd) {
         min-width: 34px;
+    }
+
+    .facts {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin: clamp(48px, 7vw, 88px) 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .facts li {
+        display: grid;
+        gap: 8px;
+        align-content: start;
+        padding: 20px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: linear-gradient(to bottom, var(--surface), transparent);
+    }
+
+    .fact-icon {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        margin-bottom: 6px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2);
+        color: var(--text-primary);
+    }
+
+    .facts strong {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .facts p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    @media (max-width: 960px) {
+        .layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .layout .section-head {
+            position: static;
+        }
+
+        .facts {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 560px) {
+        .facts {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .before {
+            font-size: 12px;
+        }
     }
 </style>

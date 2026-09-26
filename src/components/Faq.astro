@@ -57,15 +57,33 @@ const QUARANTINE = "xattr -dr com.apple.quarantine /Applications/Sikemux.app";
     .grid {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+        align-items: start;
         gap: clamp(24px, 5vw, 72px);
     }
 
+    .grid .section-head {
+        position: sticky;
+        top: 96px;
+        align-content: start;
+        margin-bottom: 0;
+    }
+
     .list {
-        border-top: 1px solid var(--border);
+        display: grid;
+        gap: 10px;
     }
 
     details {
-        border-bottom: 1px solid var(--border);
+        padding-inline: 22px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+        transition: border-color var(--dur-2) var(--ease-out);
+    }
+
+    details:hover,
+    details[open] {
+        border-color: var(--border-strong);
     }
 
     summary {
@@ -130,6 +148,10 @@ const QUARANTINE = "xattr -dr com.apple.quarantine /Applications/Sikemux.app";
     @media (max-width: 860px) {
         .grid {
             grid-template-columns: minmax(0, 1fr);
+        }
+
+        .grid .section-head {
+            position: static;
         }
     }
 </style>

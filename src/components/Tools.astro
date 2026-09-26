@@ -9,12 +9,12 @@ const tools = [
 ];
 
 const session = [
-    "# the same calls an agent makes over MCP",
-    `sikemux tool task.start '{"taskId":"dev","idempotencyKey":"first-run"}'`,
-    `sikemux tool task.read '{"executionId":"RETURNED_ID","cursor":0}'`,
-    `sikemux tool ui.open '{"kind":"file","path":"src/App.tsx","line":42,"focus":true}'`,
+    "# the calls an agent makes over MCP",
+    `sikemux tool task.start '{"taskId":"dev"}'`,
+    `sikemux tool task.read '{"executionId":"e1"}'`,
+    `sikemux tool ui.open '{"path":"src/App.tsx"}'`,
     "",
-    "# and as your editor",
+    "# and Sikemux as your editor",
     "sikemux .",
     "sikemux src/App.tsx:42:5",
     "EDITOR=sikemux-editor git commit",
@@ -22,7 +22,7 @@ const session = [
 ---
 
 <section class="section">
-    <div class="page grid">
+    <div class="page">
         <div class="section-head">
             <p class="label">For the agents</p>
             <h2>Agents can drive the project too.</h2>
@@ -30,6 +30,19 @@ const session = [
                 Sikemux ships an MCP server and a matching CLI. An agent can start your dev server, read its logs, and open the file it just
                 changed in your editor, without guessing at a shell.
             </p>
+        </div>
+        <div class="grid">
+            <figure class="terminal">
+                <div class="bar" aria-hidden="true">
+                    <span class="lights"></span>
+                    <span class="title mono">zsh · ~/code/sikemux</span>
+                </div>
+                <pre aria-label="Example CLI session"><code>{
+                    session.map((line) =>
+                        line.startsWith("#") ? <span class="dim">{line}</span> : line ? <><span class="prompt">$</span> {line}</> : ""
+                    ).map((node, index) => <>{index > 0 && "\n"}{node}</>)
+                }</code></pre>
+            </figure>
             <ul class="tools">
                 {
                     tools.map((tool) => (
@@ -41,61 +54,68 @@ const session = [
                 }
             </ul>
         </div>
-        <pre class="code" aria-label="Example CLI session"><code>{
-            session.map((line) =>
-                line.startsWith("#") ? <span class="dim">{line}</span> : line ? <><span class="prompt">$</span> {line}</> : ""
-            ).map((node, index) => <>{index > 0 && "\n"}{node}</>)
-        }</code></pre>
     </div>
 </section>
 
 <style>
     .grid {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-        align-items: start;
-        gap: clamp(32px, 5vw, 72px);
-    }
-
-    .grid .section-head {
-        margin-bottom: 0;
-    }
-
-    .tools {
-        display: grid;
-        margin: 12px 0 0;
-        padding: 0;
-        list-style: none;
-        border-top: 1px solid var(--border);
-    }
-
-    .tools li {
-        display: grid;
-        grid-template-columns: 150px minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        align-items: stretch;
         gap: 16px;
-        padding-block: 10px;
-        border-bottom: 1px solid var(--gray-200);
-        font-size: 14px;
     }
 
-    .tools code {
-        font-size: 12.5px;
-        color: var(--text-primary);
-    }
-
-    .code {
+    .terminal {
+        display: grid;
+        grid-template-rows: auto 1fr;
         margin: 0;
-        padding: 24px;
+        overflow: hidden;
         border: 1px solid var(--border);
-        border-radius: var(--radius-3);
-        background: var(--surface);
-        overflow-x: auto;
-        font-size: 13px;
-        line-height: 1.8;
-        color: var(--text-primary);
+        border-radius: var(--radius-4);
+        background:
+            radial-gradient(80% 60% at 0% 100%, color-mix(in oklab, var(--live) 7%, transparent), transparent 70%),
+            var(--surface-sunken);
     }
 
-    .code code {
+    .bar {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 38px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+    }
+
+    .lights {
+        position: absolute;
+        left: 16px;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #ff5f57;
+        box-shadow:
+            18px 0 0 #febc2e,
+            36px 0 0 #28c840;
+    }
+
+    .title {
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    pre {
+        margin: 0;
+        padding: 22px 24px;
+        overflow-x: auto;
+        font-size: 13.5px;
+        line-height: 1.85;
+        color: var(--text-primary);
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    pre code {
         font-size: inherit;
     }
 
@@ -108,6 +128,40 @@ const session = [
         user-select: none;
     }
 
+    .tools {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .tools li {
+        display: grid;
+        gap: 8px;
+        align-content: start;
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+        transition: border-color var(--dur-2) var(--ease-out);
+    }
+
+    .tools li:hover {
+        border-color: var(--border-strong);
+    }
+
+    .tools code {
+        font-size: 13px;
+        color: var(--text-primary);
+    }
+
+    .tools span {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
     @media (max-width: 960px) {
         .grid {
             grid-template-columns: minmax(0, 1fr);
@@ -115,9 +169,8 @@ const session = [
     }
 
     @media (max-width: 520px) {
-        .tools li {
+        .tools {
             grid-template-columns: minmax(0, 1fr);
-            gap: 2px;
         }
     }
 </style>

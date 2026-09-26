@@ -1,5 +1,6 @@
 ---
 import Stage from "./Stage.astro";
+import AgentIcon from "./AgentIcon.astro";
 import GithubStars from "./GithubStars.astro";
 import DownloadButton from "./DownloadButton.astro";
 import type { Release } from "../lib/release";
@@ -10,12 +11,35 @@ interface Props {
 }
 
 const { release, stars } = Astro.props;
+
+const agents = [
+    { id: "claude", name: "Claude Code", color: "var(--brand-claude)" },
+    { id: "codex", name: "Codex", color: "var(--brand-codex)" },
+    { id: "hermes", name: "Hermes", color: "var(--brand-hermes)" },
+    { id: "pi", name: "Pi", color: "var(--brand-pi)" },
+    { id: "opencode", name: "OpenCode", color: "var(--brand-opencode)" },
+] as const;
 ---
 
 <section class="hero">
     <div class="page">
         <div class="copy">
-            <h1>A playground<br />for your agents.</h1>
+            <div class="title">
+                <h1>A playground<br />for your agents.</h1>
+                <div class="works" id="agents">
+                    <span class="label">Works with the agents on your PATH</span>
+                    <ul>
+                        {
+                            agents.map((agent) => (
+                                <li style={`--brand: ${agent.color}`}>
+                                    <AgentIcon agent={agent.id} size={18} />
+                                    <span>{agent.name}</span>
+                                </li>
+                            ))
+                        }
+                    </ul>
+                </div>
+            </div>
             <div class="side">
                 <p class="lede">
                     Sikemux is a tiling workspace for macOS. Files, terminals, Git, your coding agents, a real browser, AWS, Rundeck and Bruno all
@@ -34,7 +58,9 @@ const { release, stars } = Astro.props;
                 </p>
             </div>
         </div>
-        <Stage />
+        <div class="stage-wrap">
+            <Stage />
+        </div>
     </div>
 </section>
 
@@ -63,6 +89,62 @@ const { release, stars } = Astro.props;
         align-items: end;
         gap: clamp(24px, 5vw, 72px);
         margin-bottom: clamp(40px, 6vw, 64px);
+    }
+
+    .title {
+        display: grid;
+        gap: 32px;
+    }
+
+    .works {
+        display: grid;
+        gap: 12px;
+    }
+
+    .works ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .works li {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 34px;
+        padding: 0 12px 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--brand) 7%, var(--surface));
+        color: var(--brand);
+        font-size: 13.5px;
+        transition: border-color var(--dur-2) var(--ease-out);
+    }
+
+    .works li:hover {
+        border-color: color-mix(in oklab, var(--brand) 45%, var(--border));
+    }
+
+    .works li span {
+        color: var(--text-primary);
+    }
+
+    .stage-wrap {
+        position: relative;
+        isolation: isolate;
+    }
+
+    .stage-wrap::before {
+        content: "";
+        position: absolute;
+        inset: 8% 6% -6%;
+        z-index: -1;
+        background: radial-gradient(60% 55% at 50% 40%, color-mix(in oklab, var(--acc) 38%, transparent), transparent 70%);
+        filter: blur(40px);
+        opacity: 0.55;
     }
 
     h1 {

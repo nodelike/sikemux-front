@@ -2,7 +2,6 @@
 import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
-import AgentStrip from "../components/AgentStrip.astro";
 import Spread from "../components/Spread.astro";
 import Features from "../components/Features.astro";
 import Tools from "../components/Tools.astro";
@@ -21,7 +20,6 @@ const [release, stars] = await Promise.all([latestRelease(), starCount()]);
     <Nav release={release} stars={stars} />
     <main>
         <Hero release={release} stars={stars} />
-        <AgentStrip />
         <Spread />
         <Features />
         <Tools />
