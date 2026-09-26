@@ -14,9 +14,8 @@ const { release, stars } = Astro.props;
 <header class="nav">
     <div class="page bar">
         <a class="brand" href="/" aria-label="Sikemux home">
-            <span class="mark"><Logo size={18} /></span>
+            <span class="mark"><Logo size={22} /></span>
             <span class="word">SIKE<span>MUX</span></span>
-            <span class="chip mono">v{release.version}</span>
         </a>
         <nav class="links" aria-label="Sections">
             <a href="#features">Features</a>
@@ -72,13 +71,6 @@ const { release, stars } = Astro.props;
         color: var(--text-tertiary);
     }
 
-    .chip {
-        padding: 2px 6px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-1);
-        font-size: 11px;
-        color: var(--text-tertiary);
-    }
 
     .links {
         display: flex;
@@ -125,8 +117,7 @@ const { release, stars } = Astro.props;
     }
 
     @media (max-width: 520px) {
-        .end > :global(.stars),
-        .chip {
+        .end > :global(.stars) {
             display: none;
         }
     }
