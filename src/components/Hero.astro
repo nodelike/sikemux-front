@@ -18,6 +18,8 @@ const agents = [
     { id: "hermes", name: "Hermes", color: "var(--brand-hermes)" },
     { id: "pi", name: "Pi", color: "var(--brand-pi)" },
     { id: "opencode", name: "OpenCode", color: "var(--brand-opencode)" },
+    { id: "omp", name: "OMP", color: "var(--brand-omp)" },
+    { id: "grok", name: "Grok", color: "var(--brand-grok)" },
 ] as const;
 ---
 
@@ -32,7 +34,7 @@ const agents = [
                         {
                             agents.map((agent) => (
                                 <li style={`--brand: ${agent.color}`}>
-                                    <AgentIcon agent={agent.id} size={18} />
+                                    <AgentIcon agent={agent.id} size={16} />
                                     <span>{agent.name}</span>
                                 </li>
                             ))
@@ -85,7 +87,7 @@ const agents = [
 
     .copy {
         display: grid;
-        grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
         align-items: end;
         gap: clamp(24px, 5vw, 72px);
         margin-bottom: clamp(40px, 6vw, 64px);
@@ -104,7 +106,7 @@ const agents = [
     .works ul {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 6px;
         margin: 0;
         padding: 0;
         list-style: none;
@@ -113,14 +115,14 @@ const agents = [
     .works li {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        height: 34px;
-        padding: 0 12px 0 10px;
+        gap: 7px;
+        height: 32px;
+        padding: 0 11px 0 9px;
         border: 1px solid var(--border);
         border-radius: 999px;
         background: color-mix(in oklab, var(--brand) 7%, var(--surface));
         color: var(--brand);
-        font-size: 13.5px;
+        font-size: 13px;
         transition: border-color var(--dur-2) var(--ease-out);
     }
 
