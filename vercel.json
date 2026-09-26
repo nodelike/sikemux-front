@@ -2,9 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.sikemux.com" }],
-      "destination": "https://sikemux.com/:path*",
+      "destination": "https://sikemux.com/$1",
       "permanent": true
     }
   ]
