@@ -1,189 +1,24 @@
 ---
 import { Image } from "astro:assets";
-import Kbd from "./Kbd.astro";
-import Icon from "./Icon.astro";
 import hero from "../assets/shots/hero.png";
-import files from "../assets/shots/files.png";
-import terminals from "../assets/shots/terminals.png";
-import git from "../assets/shots/git.png";
-import rundeck from "../assets/shots/rundeck-deploy.png";
-import signoz from "../assets/shots/signoz-dashboard.png";
-
-const screens = [
-    { id: "agents", label: "Agents", icon: "agent", keys: "⌥4", code: "Digit4", image: hero, alt: "A Claude Code agent in YOLO mode with its merged pull request open on GitHub in its own browser tab" },
-    { id: "files", label: "Files", icon: "editor", keys: "⌥1", code: "Digit1", image: files, alt: "The Files view: the project tree beside a TypeScript file in the editor" },
-    { id: "term", label: "Term", icon: "command", keys: "⌥2", code: "Digit2", image: terminals, alt: "Three terminal splits running a dev server, tests, and git" },
-    { id: "git", label: "Git", icon: "git", keys: "⌥3", code: "Digit3", image: git, alt: "The Git view with staged and unstaged files, a drafted commit message, and the commit graph" },
-    { id: "rundeck", label: "Rundeck", icon: "rundeck", keys: null, code: null, image: rundeck, alt: "A Rundeck deploy running, with its steps and live output" },
-    { id: "signoz", label: "SigNoz", icon: "signoz", keys: null, code: null, image: signoz, alt: "A SigNoz dashboard with throughput, latency, and slowest endpoints" },
-] as const;
 ---
 
-<figure class="stage" data-stage>
-    <div class="tabs" role="tablist" aria-label="Sikemux views">
-        {
-            screens.map((screen, index) => (
-                <button
-                    class="tab"
-                    role="tab"
-                    id={`tab-${screen.id}`}
-                    aria-controls={`screen-${screen.id}`}
-                    aria-selected={index === 0 ? "true" : "false"}
-                    tabindex={index === 0 ? 0 : -1}
-                    data-code={screen.code ?? undefined}>
-                    <Icon name={screen.icon} size={14} />
-                    <span>{screen.label}</span>
-                    {screen.keys && <Kbd keys={screen.keys} />}
-                </button>
-            ))
-        }
-        <span class="hint mono" aria-hidden="true">try the keys</span>
-    </div>
-    <div class="frame">
-        {
-            screens.map((screen, index) => (
-                <div class="screen" role="tabpanel" id={`screen-${screen.id}`} aria-labelledby={`tab-${screen.id}`} hidden={index !== 0}>
-                    <Image
-                        src={screen.image}
-                        alt={screen.alt}
-                        format="avif"
-                        quality={80}
-                        widths={[1280, 1920, 2560]}
-                        sizes="(min-width: 1240px) 1200px, 100vw"
-                        loading={index === 0 ? "eager" : "lazy"}
-                        fetchpriority={index === 0 ? "high" : "auto"}
-                    />
-                </div>
-            ))
-        }
-    </div>
+<figure class="stage">
+    <Image
+        src={hero}
+        alt="A Claude Code agent in YOLO mode with its merged pull request open on GitHub in its own browser tab"
+        format="avif"
+        quality={80}
+        widths={[1280, 1920, 2560]}
+        sizes="(min-width: 1240px) 1200px, 100vw"
+        loading="eager"
+        fetchpriority="high"
+    />
 </figure>
-
-<script>
-    const AUTOPLAY_MS = 5200;
-
-    for (const stage of document.querySelectorAll<HTMLElement>("[data-stage]")) {
-        const tabs = [...stage.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
-        const panels = [...stage.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
-        let current = 0;
-        let autoplay: number | undefined;
-
-        const show = (index: number, focus = false) => {
-            current = (index + tabs.length) % tabs.length;
-            tabs.forEach((tab, i) => {
-                const selected = i === current;
-                tab.setAttribute("aria-selected", String(selected));
-                tab.tabIndex = selected ? 0 : -1;
-                panels[i].hidden = !selected;
-            });
-            if (focus) tabs[current].focus();
-        };
-
-        const stopAutoplay = () => {
-            window.clearInterval(autoplay);
-            autoplay = undefined;
-            stage.dataset.touched = "";
-        };
-
-        window.addEventListener("load", () => panels.forEach((panel) => panel.querySelector("img")?.setAttribute("loading", "eager")), {
-            once: true,
-        });
-
-        tabs.forEach((tab, index) => {
-            tab.addEventListener("click", () => {
-                stopAutoplay();
-                show(index);
-            });
-            tab.addEventListener("keydown", (event) => {
-                if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
-                event.preventDefault();
-                stopAutoplay();
-                show(current + (event.key === "ArrowRight" ? 1 : -1), true);
-            });
-        });
-
-        window.addEventListener("keydown", (event) => {
-            if (!event.altKey || event.metaKey || event.ctrlKey) return;
-            const index = tabs.findIndex((tab) => tab.dataset.code === event.code);
-            if (index < 0) return;
-            event.preventDefault();
-            stopAutoplay();
-            show(index);
-        });
-
-        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if (!reducedMotion) {
-            const visibility = new IntersectionObserver(([entry]) => {
-                if ("touched" in stage.dataset) return;
-                if (entry.isIntersecting && autoplay === undefined) {
-                    autoplay = window.setInterval(() => show(current + 1), AUTOPLAY_MS);
-                } else if (!entry.isIntersecting) {
-                    window.clearInterval(autoplay);
-                    autoplay = undefined;
-                }
-            });
-            visibility.observe(stage);
-            stage.addEventListener("pointerenter", () => {
-                window.clearInterval(autoplay);
-                autoplay = undefined;
-            });
-        }
-    }
-</script>
 
 <style>
     .stage {
         margin: 0;
-    }
-
-    .tabs {
-        display: flex;
-        align-items: center;
-        gap: 2px;
-        margin-bottom: 10px;
-        overflow-x: auto;
-        scrollbar-width: none;
-    }
-
-    .tab {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        height: 32px;
-        padding: 0 6px 0 10px;
-        border: 1px solid transparent;
-        border-radius: var(--radius-2);
-        background: none;
-        font: inherit;
-        font-size: 13px;
-        color: var(--text-tertiary);
-        cursor: pointer;
-        transition:
-            background var(--dur-1) var(--ease-out),
-            color var(--dur-1) var(--ease-out);
-    }
-
-    .tab:hover {
-        background: var(--surface-hover);
-        color: var(--text-primary);
-    }
-
-    .tab[aria-selected="true"] {
-        background: var(--surface-selected);
-        border-color: var(--border-selected);
-        color: var(--text-primary);
-    }
-
-    .hint {
-        margin-left: auto;
-        padding-left: 16px;
-        font-size: 11px;
-        color: var(--text-tertiary);
-        white-space: nowrap;
-    }
-
-    .frame {
-        position: relative;
         aspect-ratio: 16 / 10;
         border: 1px solid var(--border);
         border-radius: var(--radius-3);
@@ -191,19 +26,9 @@ const screens = [
         background: var(--surface-sunken);
     }
 
-    .screen img {
+    .stage img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-    }
-
-    @media (max-width: 720px) {
-        .hint {
-            display: none;
-        }
-
-        .tab :global(kbd) {
-            display: none;
-        }
     }
 </style>
