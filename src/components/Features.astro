@@ -84,7 +84,7 @@ const ops = [
                             <p>{feature.body}</p>
                         </div>
                         <div class="shot">
-                            <Image src={feature.image} alt={feature.alt} widths={[960, 1440, 2048]} sizes="(min-width: 1240px) 760px, 100vw" />
+                            <Image src={feature.image} alt={feature.alt} format="avif" quality={80} widths={[960, 1440, 2048]} sizes="(min-width: 1240px) 760px, 100vw" />
                         </div>
                     </article>
                 ))
@@ -105,7 +105,7 @@ const ops = [
                     ops.map((op) => (
                         <article>
                             <div class="shot">
-                                <Image src={op.image} alt={op.alt} widths={[640, 960, 1280]} sizes="(min-width: 1240px) 390px, 100vw" />
+                                <Image src={op.image} alt={op.alt} format="avif" quality={80} widths={[640, 960, 1280]} sizes="(min-width: 1240px) 390px, 100vw" />
                             </div>
                             <h3 class="op-title">
                                 <Icon name={op.icon} size={16} />

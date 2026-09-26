@@ -46,6 +46,8 @@ const screens = [
                     <Image
                         src={screen.image}
                         alt={screen.alt}
+                        format="avif"
+                        quality={80}
                         widths={[1280, 1920, 2560]}
                         sizes="(min-width: 1240px) 1200px, 100vw"
                         loading={index === 0 ? "eager" : "lazy"}
@@ -182,7 +184,7 @@ const screens = [
 
     .frame {
         position: relative;
-        aspect-ratio: 16 / 9;
+        aspect-ratio: 16 / 10;
         border: 1px solid var(--border);
         border-radius: var(--radius-3);
         overflow: hidden;
