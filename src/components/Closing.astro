@@ -1,0 +1,162 @@
+---
+import Logo from "./Logo.astro";
+import { REPO_URL, RELEASES_URL, type Release } from "../lib/release";
+
+interface Props {
+    release: Release;
+}
+
+const { release } = Astro.props;
+---
+
+<section class="section closing">
+    <div class="page grid">
+        <div class="cta">
+            <h2>Open a project. Keep it open.</h2>
+            <div class="actions">
+                <a class="btn btn-primary" href={release.dmgUrl}>
+                    Download for Mac
+                    <span class="btn-meta">v{release.version}</span>
+                </a>
+                <a class="btn" href={RELEASES_URL}>Release notes</a>
+            </div>
+        </div>
+        <div class="source">
+            <p class="label">Or build it yourself</p>
+            <pre><code><span class="prompt">$</span> git clone https://github.com/nodelike/sikemux
+<span class="prompt">$</span> cd sikemux && pnpm install
+<span class="prompt">$</span> make dev</code></pre>
+            <p class="small">Needs Rust, Node 22 and pnpm. <a href={`${REPO_URL}/blob/main/CONTRIBUTING.md`}>Contributing guide</a></p>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="page row">
+        <span class="brand">
+            <Logo size={14} />
+            <span class="mono"><code>sike</code> + <code>mux</code>, built by <a href="https://github.com/nodelike">@nodelike</a></span>
+        </span>
+        <nav aria-label="Footer">
+            <a href={REPO_URL}>GitHub</a>
+            <a href={RELEASES_URL}>Releases</a>
+            <a href={`${REPO_URL}/blob/main/LICENSE`}>MIT license</a>
+        </nav>
+    </div>
+</footer>
+
+<style>
+    .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        align-items: end;
+        gap: clamp(32px, 5vw, 72px);
+    }
+
+    .cta {
+        display: grid;
+        gap: 28px;
+    }
+
+    .cta h2 {
+        font-size: clamp(34px, 5vw, 56px);
+        line-height: 1.02;
+        letter-spacing: -0.04em;
+    }
+
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .actions .btn {
+        height: 44px;
+        padding-inline: 18px;
+    }
+
+    .source {
+        display: grid;
+        gap: 12px;
+    }
+
+    pre {
+        margin: 0;
+        padding: 18px 20px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+        overflow-x: auto;
+        font-size: 13px;
+        line-height: 1.8;
+        color: var(--text-primary);
+    }
+
+    pre code {
+        font-size: inherit;
+    }
+
+    .prompt {
+        color: var(--live);
+        user-select: none;
+    }
+
+    .small {
+        font-size: 13px;
+        color: var(--text-tertiary);
+    }
+
+    .small a,
+    .footer a {
+        color: var(--text-secondary);
+        text-decoration: underline;
+        text-decoration-color: var(--border-strong);
+        text-underline-offset: 3px;
+    }
+
+    .small a:hover,
+    .footer a:hover {
+        color: var(--text-primary);
+    }
+
+    .footer {
+        border-top: 1px solid var(--border);
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-block: 28px;
+        font-size: 13px;
+        color: var(--text-tertiary);
+    }
+
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .brand .mono {
+        font-size: 12px;
+    }
+
+    .brand code {
+        font-size: inherit;
+        color: var(--text-secondary);
+    }
+
+    nav {
+        display: flex;
+        gap: 20px;
+    }
+
+    @media (max-width: 860px) {
+        .grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>

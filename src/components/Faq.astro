@@ -1,0 +1,135 @@
+---
+import { REPO_URL } from "../lib/release";
+
+const QUARANTINE = "xattr -dr com.apple.quarantine /Applications/Sikemux.app";
+---
+
+<section class="section" id="faq">
+    <div class="page grid">
+        <div class="section-head">
+            <p class="label">Questions</p>
+            <h2>Before you download.</h2>
+        </div>
+        <div class="list">
+            <details>
+                <summary>Is this Electron?</summary>
+                <p>
+                    No. It's Tauri 2 with a Rust backend. Shells are native PTYs owned by Rust, and the interface is React running in the
+                    system WebView, so there's no bundled Chromium.
+                </p>
+            </details>
+            <details>
+                <summary>Which agents does it work with?</summary>
+                <p>
+                    Claude Code, Codex, Hermes, Pi and OpenCode. Sikemux finds them on your <code>PATH</code> and launches them through your
+                    own shell, so they get your environment and your login.
+                </p>
+            </details>
+            <details>
+                <summary>Does Sikemux send my code to a model?</summary>
+                <p>
+                    No. It has no model and needs no API key. When it writes a commit message, it asks the CLI you pick, which uses its own
+                    login.
+                </p>
+            </details>
+            <details>
+                <summary>macOS says it can't check the app for malware.</summary>
+                <p>Builds aren't notarized by Apple yet. Drag Sikemux into Applications, then run this once:</p>
+                <pre><code>{QUARANTINE}</code></pre>
+                <p>After that, updates install from inside the app.</p>
+            </details>
+            <details>
+                <summary>Intel Macs, Windows, Linux?</summary>
+                <p>
+                    Published builds are Apple Silicon only, on macOS 11 or later. A Windows installer builds from source today, but there's no
+                    Windows download yet. There's no Linux build.
+                </p>
+            </details>
+            <details>
+                <summary>What does it cost?</summary>
+                <p>Nothing. It's MIT licensed, and the <a href={REPO_URL}>source is on GitHub</a>.</p>
+            </details>
+        </div>
+    </div>
+</section>
+
+<style>
+    .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+        gap: clamp(24px, 5vw, 72px);
+    }
+
+    .list {
+        border-top: 1px solid var(--border);
+    }
+
+    details {
+        border-bottom: 1px solid var(--border);
+    }
+
+    summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-block: 18px;
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--text-primary);
+        cursor: pointer;
+        list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+        display: none;
+    }
+
+    summary::after {
+        content: "+";
+        font-family: var(--mono);
+        font-weight: 400;
+        color: var(--text-tertiary);
+        transition: transform var(--dur-2) var(--ease-out);
+    }
+
+    details[open] summary::after {
+        transform: rotate(45deg);
+    }
+
+    details p {
+        max-width: 62ch;
+        padding-bottom: 14px;
+    }
+
+    details p:last-child {
+        padding-bottom: 20px;
+    }
+
+    details a {
+        color: var(--acc);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    pre {
+        margin: 0 0 14px;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2);
+        background: var(--surface);
+        overflow-x: auto;
+        font-size: 13px;
+        color: var(--text-primary);
+    }
+
+    pre code {
+        font-size: inherit;
+    }
+
+    @media (max-width: 860px) {
+        .grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>

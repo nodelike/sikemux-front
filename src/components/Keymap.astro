@@ -1,0 +1,96 @@
+---
+import Kbd from "./Kbd.astro";
+
+const keys = [
+    { keys: ["⌥P"], action: "Open a project" },
+    { keys: ["⌥1", "⌥5"], range: true, action: "Files, Term, Git, Agents, Search" },
+    { keys: ["⌥N"], action: "New terminal or agent" },
+    { keys: ["⌥Y"], action: "Toggle an agent's YOLO mode" },
+    { keys: ["⌥\\", "⌥-"], action: "Split by row or column" },
+    { keys: ["⌥H", "⌥J", "⌥K", "⌥L"], action: "Move between panes" },
+    { keys: ["⌥Z"], action: "Zoom a pane" },
+    { keys: ["⌘P"], action: "Open a file or request" },
+    { keys: ["⌘⇧P"], action: "Command deck" },
+    { keys: ["⌘⇧F"], action: "Search the project" },
+    { keys: ["⌘T"], action: "Browser tab" },
+    { keys: ["⌥⇧S"], action: "SSH to a host" },
+];
+---
+
+<section class="section" id="keys">
+    <div class="page">
+        <div class="section-head">
+            <p class="label">Keyboard first</p>
+            <h2>Your hands stay where they are.</h2>
+            <p>These are the defaults. Every command can be rebound or cleared in Settings, and a project can add its own shortcuts.</p>
+        </div>
+        <dl class="keys">
+            {
+                keys.map((entry) => (
+                    <div class="key">
+                        <dt>
+                            {entry.range ? (
+                                <>
+                                    <Kbd keys={entry.keys[0]} />
+                                    <span class="to">to</span>
+                                    <Kbd keys={entry.keys[1]} />
+                                </>
+                            ) : (
+                                entry.keys.map((keys) => <Kbd keys={keys} />)
+                            )}
+                        </dt>
+                        <dd>{entry.action}</dd>
+                    </div>
+                ))
+            }
+        </dl>
+    </div>
+</section>
+
+<style>
+    .keys {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin: 0;
+        border-top: 1px solid var(--border);
+        border-left: 1px solid var(--border);
+    }
+
+    .key {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+        padding: 20px;
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+    }
+
+    dt {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    dd {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .to {
+        padding-inline: 4px;
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    @media (max-width: 860px) {
+        .keys {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 520px) {
+        .keys {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>

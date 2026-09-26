@@ -1,0 +1,82 @@
+---
+import AgentIcon from "./AgentIcon.astro";
+
+const agents = [
+    { id: "claude", name: "Claude Code", color: "var(--brand-claude)" },
+    { id: "codex", name: "Codex", color: "var(--brand-codex)" },
+    { id: "hermes", name: "Hermes", color: "var(--brand-hermes)" },
+    { id: "pi", name: "Pi", color: "var(--brand-pi)" },
+    { id: "opencode", name: "OpenCode", color: "var(--brand-opencode)" },
+] as const;
+---
+
+<section class="strip" id="agents">
+    <div class="page row">
+        <p class="label">Runs the agents already on your PATH</p>
+        <ul>
+            {
+                agents.map((agent) => (
+                    <li style={`color: ${agent.color}`}>
+                        <AgentIcon agent={agent.id} size={22} />
+                        <span>{agent.name}</span>
+                    </li>
+                ))
+            }
+        </ul>
+        <p class="note">No API key and no bundled model. Sikemux starts the CLI you installed, in your shell, with your login.</p>
+    </div>
+</section>
+
+<style>
+    .strip {
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+    }
+
+    .row {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 12px 40px;
+        padding-block: 28px;
+    }
+
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px 28px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    li span {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .note {
+        grid-column: 1 / -1;
+        font-size: 14px;
+        color: var(--text-tertiary);
+    }
+
+    @media (max-width: 860px) {
+        .row {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        ul {
+            justify-content: flex-start;
+        }
+    }
+</style>

@@ -1,0 +1,256 @@
+@font-face {
+    font-family: "Figtree";
+    src: url("/fonts/Figtree-latin-wght-normal.woff2") format("woff2");
+    font-weight: 300 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    src: url("/fonts/JetBrainsMonoNerdFontMono-Regular-Base.woff2") format("woff2");
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    src: url("/fonts/JetBrainsMonoNerdFontMono-Bold-Base.woff2") format("woff2");
+    font-weight: 700;
+    font-display: swap;
+}
+
+:root {
+    color-scheme: dark;
+
+    --bg: #17141e;
+    --bg-dim: #100e16;
+    --ink: #e7e5ef;
+    --acc: #a277ff;
+
+    --gray-100: color-mix(in oklab, var(--ink) 4%, var(--bg));
+    --gray-200: color-mix(in oklab, var(--ink) 7%, var(--bg));
+    --gray-300: color-mix(in oklab, var(--ink) 11%, var(--bg));
+    --gray-400: color-mix(in oklab, var(--ink) 15%, var(--bg));
+    --gray-500: color-mix(in oklab, var(--ink) 22%, var(--bg));
+    --gray-700: color-mix(in oklab, var(--ink) 42%, var(--bg));
+    --gray-800: color-mix(in oklab, var(--ink) 58%, var(--bg));
+    --gray-900: color-mix(in oklab, var(--ink) 76%, var(--bg));
+
+    --surface-sunken: var(--bg-dim);
+    --surface: var(--bg);
+    --surface-raised: var(--gray-100);
+    --surface-hover: color-mix(in oklab, var(--ink) 6%, transparent);
+    --surface-selected: color-mix(in oklab, var(--acc) 14%, transparent);
+
+    --text-primary: var(--ink);
+    --text-secondary: var(--gray-900);
+    --text-tertiary: var(--gray-800);
+
+    --border: var(--gray-300);
+    --border-strong: var(--gray-500);
+    --border-selected: color-mix(in oklab, var(--acc) 42%, transparent);
+    --on-accent: var(--bg-dim);
+
+    --focus-ring: 0 0 0 1px var(--bg-dim), 0 0 0 3px color-mix(in oklab, var(--acc) 55%, transparent);
+
+    --brand-claude: #d97757;
+    --brand-codex: #7a9dff;
+    --brand-hermes: #e0a050;
+    --brand-pi: #7dd3fc;
+    --brand-opencode: #a78bfa;
+    --live: #61ffca;
+
+    --ui: "Figtree", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --kbd: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+
+    --radius-1: 4px;
+    --radius-2: 6px;
+    --radius-3: 10px;
+    --radius-4: 14px;
+
+    --dur-1: 90ms;
+    --dur-2: 140ms;
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    --page: 1200px;
+    --gutter: clamp(16px, 4vw, 40px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --dur-1: 0ms;
+        --dur-2: 0ms;
+    }
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    overscroll-behavior: none;
+}
+
+html {
+    background: var(--surface-sunken);
+    scroll-behavior: smooth;
+    scroll-padding-top: 72px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+body {
+    font-family: var(--ui);
+    font-size: 15px;
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    color: var(--text-secondary);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-weight: 600;
+    text-wrap: balance;
+}
+
+h2 {
+    font-size: clamp(26px, 3.2vw, 36px);
+    line-height: 1.12;
+    letter-spacing: -0.028em;
+}
+
+h3 {
+    font-size: 17px;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+}
+
+p {
+    margin: 0;
+    text-wrap: pretty;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+code,
+pre,
+.mono {
+    font-family: var(--mono);
+    font-size: 0.86em;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.page {
+    width: min(100% - 2 * var(--gutter), var(--page));
+    margin-inline: auto;
+}
+
+.label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+}
+
+.section {
+    padding-block: clamp(72px, 10vw, 128px);
+    border-top: 1px solid var(--border);
+}
+
+.section-head {
+    display: grid;
+    gap: 14px;
+    max-width: 640px;
+    margin-bottom: 48px;
+}
+
+.section-head p {
+    font-size: 16px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    padding-inline: 16px;
+    border-radius: var(--radius-2);
+    border: 1px solid var(--border);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition:
+        background var(--dur-2) var(--ease-out),
+        border-color var(--dur-2) var(--ease-out);
+}
+
+.btn:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
+}
+
+.btn-primary {
+    background: var(--acc);
+    border-color: var(--acc);
+    color: var(--on-accent);
+}
+
+.btn-primary:hover {
+    background: color-mix(in oklab, var(--acc) 88%, var(--ink));
+    border-color: transparent;
+}
+
+.btn-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 400;
+    opacity: 0.72;
+}
+
+.shot {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-3);
+    overflow: hidden;
+    background: var(--surface-sunken);
+}
+
+.shot img {
+    width: 100%;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}

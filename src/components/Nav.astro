@@ -1,0 +1,115 @@
+---
+import Logo from "./Logo.astro";
+import { REPO_URL, type Release } from "../lib/release";
+
+interface Props {
+    release: Release;
+}
+
+const { release } = Astro.props;
+---
+
+<header class="nav">
+    <div class="page bar">
+        <a class="brand" href="/" aria-label="Sikemux home">
+            <span class="mark"><Logo size={18} /></span>
+            <span class="word">SIKE<span>MUX</span></span>
+            <span class="chip mono">v{release.version}</span>
+        </a>
+        <nav class="links" aria-label="Sections">
+            <a href="#features">Features</a>
+            <a href="#agents">Agents</a>
+            <a href="#keys">Keys</a>
+            <a href="#faq">FAQ</a>
+            <a href={REPO_URL}>GitHub</a>
+        </nav>
+        <a class="btn download" href={release.dmgUrl}>Download</a>
+    </div>
+</header>
+
+<style>
+    .nav {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 1px solid var(--border);
+        background: color-mix(in oklab, var(--surface-sunken) 82%, transparent);
+        backdrop-filter: blur(14px) saturate(1.2);
+        -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    }
+
+    .bar {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        height: 56px;
+    }
+
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mark {
+        display: grid;
+        place-items: center;
+        color: var(--acc);
+    }
+
+    .word {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        color: var(--text-primary);
+    }
+
+    .word span {
+        color: var(--text-tertiary);
+    }
+
+    .chip {
+        padding: 2px 6px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-1);
+        font-size: 11px;
+        color: var(--text-tertiary);
+    }
+
+    .links {
+        display: flex;
+        gap: 4px;
+        margin-left: auto;
+    }
+
+    .links a {
+        padding: 6px 10px;
+        border-radius: var(--radius-2);
+        font-size: 14px;
+        color: var(--text-secondary);
+        transition:
+            background var(--dur-1) var(--ease-out),
+            color var(--dur-1) var(--ease-out);
+    }
+
+    .links a:hover {
+        background: var(--surface-hover);
+        color: var(--text-primary);
+    }
+
+    .download {
+        height: 34px;
+        padding-inline: 14px;
+        font-size: 13px;
+    }
+
+    @media (max-width: 760px) {
+        .links {
+            display: none;
+        }
+
+        .download {
+            margin-left: auto;
+        }
+    }
+</style>

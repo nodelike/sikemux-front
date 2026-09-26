@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "scope": "personal",
+  "organization": null,
+  "git": {
+    "provider": "github"
+  },
+  "tracker": "github",
+  "memoryRoot": "/Users/nodelike/nodemem",
+  "vpn": {
+    "provider": "tailscale",
+    "profile": "personal",
+    "mode": "on-demand"
+  }
+}

@@ -1,0 +1,115 @@
+---
+import Stage from "./Stage.astro";
+import { REPO_URL, type Release } from "../lib/release";
+
+interface Props {
+    release: Release;
+}
+
+const { release } = Astro.props;
+---
+
+<section class="hero">
+    <div class="page">
+        <div class="copy">
+            <h1>One project.<br />One window.</h1>
+            <div class="side">
+                <p class="lede">
+                    Sikemux is a tiling workspace for macOS. Files, terminals, Git, your coding agents, a real browser, AWS, Rundeck and Bruno all
+                    open on the same folder, and every one of them is a keystroke away.
+                </p>
+                <div class="actions">
+                    <a class="btn btn-primary" href={release.dmgUrl}>
+                        Download for Mac
+                        <span class="btn-meta">Apple Silicon</span>
+                    </a>
+                    <a class="btn" href={REPO_URL}>View source</a>
+                </div>
+                <p class="meta mono">
+                    <span>v{release.version}</span>
+                    <span>macOS 11+</span>
+                    <span>MIT</span>
+                    <span>free</span>
+                </p>
+            </div>
+        </div>
+        <Stage />
+    </div>
+</section>
+
+<style>
+    .hero {
+        position: relative;
+        padding-block: clamp(56px, 9vw, 112px) clamp(64px, 8vw, 96px);
+        isolation: isolate;
+    }
+
+    .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 30%;
+        z-index: -1;
+        background-image: radial-gradient(color-mix(in oklab, var(--ink) 16%, transparent) 1px, transparent 1.2px);
+        background-size: 6px 6px;
+        mask-image: radial-gradient(ellipse 70% 90% at 20% 0%, #000 10%, transparent 70%);
+        -webkit-mask-image: radial-gradient(ellipse 70% 90% at 20% 0%, #000 10%, transparent 70%);
+        opacity: 0.55;
+    }
+
+    .copy {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        align-items: end;
+        gap: clamp(24px, 5vw, 72px);
+        margin-bottom: clamp(40px, 6vw, 64px);
+    }
+
+    h1 {
+        font-size: clamp(44px, 7.4vw, 92px);
+        line-height: 0.98;
+        letter-spacing: -0.045em;
+    }
+
+    .side {
+        display: grid;
+        gap: 22px;
+        padding-bottom: 6px;
+    }
+
+    .lede {
+        font-size: 17px;
+        line-height: 1.55;
+        max-width: 46ch;
+    }
+
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .actions .btn {
+        height: 44px;
+        padding-inline: 18px;
+    }
+
+    .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 16px;
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    .meta span + span::before {
+        content: "·";
+        margin-right: 16px;
+        color: var(--gray-500);
+    }
+
+    @media (max-width: 860px) {
+        .copy {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>

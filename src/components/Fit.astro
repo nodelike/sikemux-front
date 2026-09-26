@@ -1,0 +1,92 @@
+---
+const use = [
+    "You run more than one coding agent on the same repo.",
+    "You keep a terminal, an editor and a Git client open side by side all day.",
+    "Your deploys live in AWS, Rundeck, or a Bruno collection.",
+    "You'd rather press a key than find a window.",
+];
+
+const skip = [
+    "You want an editor with its own hosted agent. Cursor does that well.",
+    "You want a terminal and nothing else. Use Ghostty.",
+    "You're on an Intel Mac or Linux. There's no build for those yet.",
+];
+---
+
+<section class="section">
+    <div class="page">
+        <div class="section-head">
+            <p class="label">Is it for you</p>
+            <h2>Honest about who it's for.</h2>
+        </div>
+        <div class="cols">
+            <div class="col">
+                <h3>Use Sikemux if</h3>
+                <ul>{use.map((line) => <li>{line}</li>)}</ul>
+            </div>
+            <div class="col">
+                <h3>Skip it if</h3>
+                <ul class="skip">{skip.map((line) => <li>{line}</li>)}</ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .cols {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        overflow: hidden;
+    }
+
+    .col {
+        display: grid;
+        gap: 18px;
+        align-content: start;
+        padding: clamp(20px, 3vw, 32px);
+    }
+
+    .col + .col {
+        border-left: 1px solid var(--border);
+        background: var(--surface);
+    }
+
+    ul {
+        display: grid;
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        position: relative;
+        padding-left: 22px;
+    }
+
+    li::before {
+        content: "+";
+        position: absolute;
+        left: 0;
+        font-family: var(--mono);
+        color: var(--live);
+    }
+
+    .skip li::before {
+        content: "−";
+        color: var(--text-tertiary);
+    }
+
+    @media (max-width: 760px) {
+        .cols {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .col + .col {
+            border-left: 0;
+            border-top: 1px solid var(--border);
+        }
+    }
+</style>

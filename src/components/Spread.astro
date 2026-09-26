@@ -1,0 +1,94 @@
+---
+import Kbd from "./Kbd.astro";
+
+const rows = [
+    { before: "VS Code, for reading the code", keys: "⌥1", after: "Files" },
+    { before: "iTerm, three tabs deep", keys: "⌥2", after: "Term" },
+    { before: "lazygit in another split", keys: "⌥3", after: "Git" },
+    { before: "claude, in a tab you forgot about", keys: "⌥4", after: "Agents" },
+    { before: "Chrome, for localhost and the docs", keys: "⌘T", after: "Browser" },
+    { before: "The AWS console, signed out again", keys: "⌥A", after: "AWS" },
+    { before: "Bruno, somewhere in the dock", keys: "⌥B", after: "Bruno" },
+];
+---
+
+<section class="section">
+    <div class="page">
+        <div class="section-head">
+            <p class="label">Why it exists</p>
+            <h2>You already run this setup. It's just spread over seven apps.</h2>
+            <p>
+                Every one of those windows is pointed at the same repo, and none of them know it. In Sikemux they are views of one project, so
+                they open where you are and close when you are done.
+            </p>
+        </div>
+        <div class="table" role="table" aria-label="The apps Sikemux replaces, and the key that opens each view">
+            <div class="head" role="row">
+                <span role="columnheader" class="label">Before</span>
+                <span role="columnheader" class="label">In Sikemux</span>
+            </div>
+            {
+                rows.map((row) => (
+                    <div class="line" role="row">
+                        <span role="cell" class="before">
+                            {row.before}
+                        </span>
+                        <span role="cell" class="after">
+                            <Kbd keys={row.keys} />
+                            <span>{row.after}</span>
+                        </span>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .table {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        overflow: hidden;
+    }
+
+    .head,
+    .line {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    }
+
+    .head {
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+    }
+
+    .line {
+        align-items: center;
+        min-height: 52px;
+        padding-inline: 20px;
+    }
+
+    .line + .line {
+        border-top: 1px solid var(--gray-200);
+    }
+
+    .before {
+        font-family: var(--mono);
+        font-size: 13px;
+        color: var(--text-tertiary);
+    }
+
+    .after {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .after :global(kbd) {
+        min-width: 34px;
+    }
+</style>

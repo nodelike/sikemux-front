@@ -1,0 +1,199 @@
+---
+import { Image } from "astro:assets";
+import Kbd from "./Kbd.astro";
+import editor from "../assets/shots/project-editor-view.png";
+import term from "../assets/shots/project-term-view.png";
+import git from "../assets/shots/project-git-view.png";
+import agents from "../assets/shots/project-agents-view.png";
+import billing from "../assets/shots/cloud-aws-billing-view.png";
+import rundeck from "../assets/shots/cicd-rundeck-projects-view.png";
+import bruno from "../assets/shots/api-bruno-pane-view.png";
+
+const features = [
+    {
+        label: "Files",
+        keys: ["⌥1", "⌘P"],
+        title: "An editor that knows which project it's in.",
+        body: "CodeMirror 6 with LSP hover, go to definition and peek. Problems and Outline cover the whole project, not just the open file. Side-by-side diffs, a three-way merge view, and a file tree that watches the disk.",
+        image: editor,
+        alt: "The Sikemux editor with a file tree and a TypeScript file open",
+    },
+    {
+        label: "Term",
+        keys: ["⌥2", "⌥\\"],
+        title: "Native shells, split as far as you like.",
+        body: "Every terminal is a real PTY owned by Rust. Split, tab, and drag a path in from the tree. Tasks from sikemux.json run in their own terminals and keep running when you close the view.",
+        image: term,
+        alt: "Split terminal panes in the Term view",
+    },
+    {
+        label: "Git",
+        keys: ["⌥3"],
+        title: "Stage, commit, push. Let your CLI write the message.",
+        body: "Branches, worktrees, merges, pull and push. Commit messages stream in from the Claude, Codex or Hermes CLI you already have, using its login. Sikemux never calls a model itself.",
+        image: git,
+        alt: "The Git view with staged files and a diff",
+    },
+    {
+        label: "Agents",
+        keys: ["⌥4", "⌥N", "⌥Y"],
+        title: "Several agents on one repo, each in its own pane.",
+        body: "Pick an agent with ⌥N and it starts in a real terminal. Resume its saved sessions, and flip Normal or YOLO with ⌥Y. ⌘T opens a browser tab that belongs to the session and keeps its sign-ins. The agent can drive it, and you can take over at any time.",
+        image: agents,
+        alt: "A Claude Code session running in the Agents view",
+    },
+];
+
+const ops = [
+    { image: billing, title: "AWS", body: "Cost, ECS tasks with live CloudWatch logs, EC2, Lambda, S3 and SQS.", alt: "The AWS billing panel" },
+    { image: rundeck, title: "Rundeck", body: "Start a job from the palette and follow every deploy step as it runs.", alt: "Rundeck projects and jobs" },
+    { image: bruno, title: "Bruno", body: "Open a collection as a session. ⌘P for requests, ⌘↵ to send.", alt: "A Bruno request open in Sikemux" },
+];
+---
+
+<section class="section" id="features">
+    <div class="page">
+        <div class="section-head">
+            <p class="label">Inside a project</p>
+            <h2>Five views, one working directory.</h2>
+            <p>Files, Term, Git, Agents and Search all start in the project folder. Switching between them is a key, not a window hunt.</p>
+        </div>
+
+        <div class="features">
+            {
+                features.map((feature, index) => (
+                    <article class:list={["feature", { flip: index % 2 === 1 }]}>
+                        <div class="text">
+                            <p class="tag">
+                                <span class="label">{feature.label}</span>
+                                <span class="keys">
+                                    {feature.keys.map((keys) => (
+                                        <Kbd keys={keys} />
+                                    ))}
+                                </span>
+                            </p>
+                            <h3>{feature.title}</h3>
+                            <p>{feature.body}</p>
+                        </div>
+                        <div class="shot">
+                            <Image src={feature.image} alt={feature.alt} widths={[960, 1440, 2048]} sizes="(min-width: 1240px) 760px, 100vw" />
+                        </div>
+                    </article>
+                ))
+            }
+        </div>
+
+        <div class="ops">
+            <div class="section-head">
+                <p class="label">On the rail</p>
+                <h2>Deploys and APIs sit next to the code.</h2>
+                <p>
+                    AWS, Rundeck and Bruno are built-in plugins. Turn on the ones you use, and they open beside the project like any other
+                    view.
+                </p>
+            </div>
+            <div class="ops-grid">
+                {
+                    ops.map((op) => (
+                        <article>
+                            <div class="shot">
+                                <Image src={op.image} alt={op.alt} widths={[640, 960, 1280]} sizes="(min-width: 1240px) 390px, 100vw" />
+                            </div>
+                            <h3>{op.title}</h3>
+                            <p>{op.body}</p>
+                        </article>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .features {
+        display: grid;
+        gap: clamp(56px, 8vw, 96px);
+    }
+
+    .feature {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+        align-items: center;
+        gap: clamp(24px, 4vw, 56px);
+    }
+
+    .feature.flip {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    }
+
+    .feature.flip .text {
+        order: 2;
+    }
+
+    .text {
+        display: grid;
+        gap: 14px;
+    }
+
+    .tag {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .keys {
+        display: inline-flex;
+        gap: 4px;
+    }
+
+    h3 {
+        font-size: 21px;
+        letter-spacing: -0.02em;
+    }
+
+    .ops {
+        margin-top: clamp(88px, 12vw, 144px);
+    }
+
+    .ops-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+    }
+
+    .ops-grid article {
+        display: grid;
+        gap: 10px;
+        align-content: start;
+    }
+
+    .ops-grid .shot {
+        margin-bottom: 8px;
+    }
+
+    .ops-grid h3 {
+        font-size: 16px;
+    }
+
+    .ops-grid p {
+        font-size: 14px;
+    }
+
+    @media (max-width: 860px) {
+        .feature,
+        .feature.flip {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .feature.flip .text {
+            order: 0;
+        }
+
+        .ops-grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>
