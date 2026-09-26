@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import Kbd from "./Kbd.astro";
+import Icon from "./Icon.astro";
 import editor from "../assets/shots/project-editor-view.png";
 import term from "../assets/shots/project-term-view.png";
 import git from "../assets/shots/project-git-view.png";
@@ -9,13 +10,13 @@ import aws from "../assets/shots/cloud-aws-ecs-tasks-logs-view.png";
 import bruno from "../assets/shots/api-bruno-pane-view.png";
 
 const screens = [
-    { id: "files", label: "Files", keys: "⌥1", code: "Digit1", image: editor, alt: "The Files view: a file tree beside a TypeScript file open in the editor" },
-    { id: "term", label: "Term", keys: "⌥2", code: "Digit2", image: term, alt: "The Term view: split terminal panes in the same project" },
-    { id: "git", label: "Git", keys: "⌥3", code: "Digit3", image: git, alt: "The Git view: staged changes, a diff, and the commit box" },
-    { id: "agents", label: "Agents", keys: "⌥4", code: "Digit4", image: agents, alt: "The Agents view: a Claude Code session running in its own pane" },
-    { id: "aws", label: "AWS", keys: "⌥A", code: "KeyA", image: aws, alt: "The AWS panel: ECS tasks with CloudWatch logs streaming" },
-    { id: "bruno", label: "Bruno", keys: "⌥B", code: "KeyB", image: bruno, alt: "A Bruno collection open as its own session" },
-];
+    { id: "files", label: "Files", icon: "editor", keys: "⌥1", code: "Digit1", image: editor, alt: "The Files view: a file tree beside a TypeScript file open in the editor" },
+    { id: "term", label: "Term", icon: "command", keys: "⌥2", code: "Digit2", image: term, alt: "The Term view: split terminal panes in the same project" },
+    { id: "git", label: "Git", icon: "git", keys: "⌥3", code: "Digit3", image: git, alt: "The Git view: staged changes, a diff, and the commit box" },
+    { id: "agents", label: "Agents", icon: "agent", keys: "⌥4", code: "Digit4", image: agents, alt: "The Agents view: a Claude Code session running in its own pane" },
+    { id: "aws", label: "AWS", icon: "aws", keys: "⌥A", code: "KeyA", image: aws, alt: "The AWS panel: ECS tasks with CloudWatch logs streaming" },
+    { id: "bruno", label: "Bruno", icon: "bruno", keys: "⌥B", code: "KeyB", image: bruno, alt: "A Bruno collection open as its own session" },
+] as const;
 ---
 
 <figure class="stage" data-stage>
@@ -30,6 +31,7 @@ const screens = [
                     aria-selected={index === 0 ? "true" : "false"}
                     tabindex={index === 0 ? 0 : -1}
                     data-code={screen.code}>
+                    <Icon name={screen.icon} size={14} />
                     <span>{screen.label}</span>
                     <Kbd keys={screen.keys} />
                 </button>
@@ -146,7 +148,7 @@ const screens = [
         align-items: center;
         gap: 8px;
         height: 32px;
-        padding: 0 6px 0 12px;
+        padding: 0 6px 0 10px;
         border: 1px solid transparent;
         border-radius: var(--radius-2);
         background: none;

@@ -1,12 +1,14 @@
 ---
 import Stage from "./Stage.astro";
-import { REPO_URL, type Release } from "../lib/release";
+import GithubStars from "./GithubStars.astro";
+import type { Release } from "../lib/release";
 
 interface Props {
     release: Release;
+    stars: number | null;
 }
 
-const { release } = Astro.props;
+const { release, stars } = Astro.props;
 ---
 
 <section class="hero">
@@ -23,7 +25,7 @@ const { release } = Astro.props;
                         Download for Mac
                         <span class="btn-meta">Apple Silicon</span>
                     </a>
-                    <a class="btn" href={REPO_URL}>View source</a>
+                    <GithubStars stars={stars} label="Star on GitHub" size="large" />
                 </div>
                 <p class="meta mono">
                     <span>v{release.version}</span>

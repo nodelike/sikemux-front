@@ -10,17 +10,17 @@ import Keymap from "../components/Keymap.astro";
 import Fit from "../components/Fit.astro";
 import Faq from "../components/Faq.astro";
 import Closing from "../components/Closing.astro";
-import { latestRelease } from "../lib/release";
+import { latestRelease, starCount } from "../lib/release";
 
-const release = await latestRelease();
+const [release, stars] = await Promise.all([latestRelease(), starCount()]);
 ---
 
 <Base
     title="Sikemux: one window for the whole project"
     description="A tiling macOS workspace that keeps your editor, terminals, Git, coding agents, browser, AWS, Rundeck and Bruno on the same folder. Free and open source.">
-    <Nav release={release} />
+    <Nav release={release} stars={stars} />
     <main>
-        <Hero release={release} />
+        <Hero release={release} stars={stars} />
         <AgentStrip />
         <Spread />
         <Features />

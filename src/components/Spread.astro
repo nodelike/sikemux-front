@@ -1,15 +1,16 @@
 ---
 import Kbd from "./Kbd.astro";
+import Icon from "./Icon.astro";
 
 const rows = [
-    { before: "VS Code, for reading the code", keys: "⌥1", after: "Files" },
-    { before: "iTerm, three tabs deep", keys: "⌥2", after: "Term" },
-    { before: "lazygit in another split", keys: "⌥3", after: "Git" },
-    { before: "claude, in a tab you forgot about", keys: "⌥4", after: "Agents" },
-    { before: "Chrome, for localhost and the docs", keys: "⌘T", after: "Browser" },
-    { before: "The AWS console, signed out again", keys: "⌥A", after: "AWS" },
-    { before: "Bruno, somewhere in the dock", keys: "⌥B", after: "Bruno" },
-];
+    { before: "VS Code, for reading the code", keys: "⌥1", icon: "editor", after: "Files" },
+    { before: "iTerm, three tabs deep", keys: "⌥2", icon: "command", after: "Term" },
+    { before: "lazygit in another split", keys: "⌥3", icon: "git", after: "Git" },
+    { before: "claude, in a tab you forgot about", keys: "⌥4", icon: "agent", after: "Agents" },
+    { before: "Chrome, for localhost and the docs", keys: "⌘T", icon: "globe", after: "Browser" },
+    { before: "The AWS console, signed out again", keys: "⌥A", icon: "aws", after: "AWS" },
+    { before: "Bruno, somewhere in the dock", keys: "⌥B", icon: "bruno", after: "Bruno" },
+] as const;
 ---
 
 <section class="section">
@@ -35,7 +36,10 @@ const rows = [
                         </span>
                         <span role="cell" class="after">
                             <Kbd keys={row.keys} />
-                            <span>{row.after}</span>
+                            <span class="view">
+                                <Icon name={row.icon} size={15} />
+                                {row.after}
+                            </span>
                         </span>
                     </div>
                 ))
@@ -86,6 +90,17 @@ const rows = [
         font-size: 15px;
         font-weight: 500;
         color: var(--text-primary);
+    }
+
+    .view {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .view :global(svg),
+    .view :global(img) {
+        color: var(--text-tertiary);
     }
 
     .after :global(kbd) {

@@ -1,20 +1,21 @@
 ---
 import Kbd from "./Kbd.astro";
+import Icon from "./Icon.astro";
 
 const keys = [
-    { keys: ["⌥P"], action: "Open a project" },
-    { keys: ["⌥1", "⌥5"], range: true, action: "Files, Term, Git, Agents, Search" },
-    { keys: ["⌥N"], action: "New terminal or agent" },
-    { keys: ["⌥Y"], action: "Toggle an agent's YOLO mode" },
-    { keys: ["⌥\\", "⌥-"], action: "Split by row or column" },
-    { keys: ["⌥H", "⌥J", "⌥K", "⌥L"], action: "Move between panes" },
-    { keys: ["⌥Z"], action: "Zoom a pane" },
-    { keys: ["⌘P"], action: "Open a file or request" },
-    { keys: ["⌘⇧P"], action: "Command deck" },
-    { keys: ["⌘⇧F"], action: "Search the project" },
-    { keys: ["⌘T"], action: "Browser tab" },
-    { keys: ["⌥⇧S"], action: "SSH to a host" },
-];
+    { icon: "folder", keys: ["⌥P"], action: "Open a project" },
+    { icon: "window", keys: ["⌥1", "⌥2", "⌥3", "⌥4", "⌥5"], action: "Files, Term, Git, Agents, Search" },
+    { icon: "agent", keys: ["⌥N"], action: "New terminal or agent" },
+    { icon: "run", keys: ["⌥Y"], action: "Toggle an agent's YOLO mode" },
+    { icon: "panel", keys: ["⌥\\", "⌥-"], action: "Split by row or column" },
+    { icon: "focus", keys: ["⌥H", "⌥J", "⌥K", "⌥L"], action: "Move between panes" },
+    { icon: "zoom", keys: ["⌥Z"], action: "Zoom a pane" },
+    { icon: "file", keys: ["⌘P"], action: "Open a file or request" },
+    { icon: "command", keys: ["⌘⇧P"], action: "Command deck" },
+    { icon: "search", keys: ["⌘⇧F"], action: "Search the project" },
+    { icon: "globe", keys: ["⌘T"], action: "Browser tab" },
+    { icon: "activity", keys: ["⌥⇧S"], action: "SSH to a host" },
+] as const;
 ---
 
 <section class="section" id="keys">
@@ -29,17 +30,12 @@ const keys = [
                 keys.map((entry) => (
                     <div class="key">
                         <dt>
-                            {entry.range ? (
-                                <>
-                                    <Kbd keys={entry.keys[0]} />
-                                    <span class="to">to</span>
-                                    <Kbd keys={entry.keys[1]} />
-                                </>
-                            ) : (
-                                entry.keys.map((keys) => <Kbd keys={keys} />)
-                            )}
+                            {entry.keys.map((keys) => <Kbd keys={keys} />)}
                         </dt>
-                        <dd>{entry.action}</dd>
+                        <dd>
+                            <Icon name={entry.icon} size={14} />
+                            {entry.action}
+                        </dd>
                     </div>
                 ))
             }
@@ -72,13 +68,15 @@ const keys = [
     }
 
     dd {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         margin: 0;
         font-size: 14px;
     }
 
-    .to {
-        padding-inline: 4px;
-        font-size: 12px;
+    dd :global(svg) {
+        flex: none;
         color: var(--text-tertiary);
     }
 

@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import Kbd from "./Kbd.astro";
+import Icon from "./Icon.astro";
 import editor from "../assets/shots/project-editor-view.png";
 import term from "../assets/shots/project-term-view.png";
 import git from "../assets/shots/project-git-view.png";
@@ -12,6 +13,7 @@ import bruno from "../assets/shots/api-bruno-pane-view.png";
 const features = [
     {
         label: "Files",
+        icon: "editor",
         keys: ["⌥1", "⌘P"],
         title: "An editor that knows which project it's in.",
         body: "CodeMirror 6 with LSP hover, go to definition and peek. Problems and Outline cover the whole project, not just the open file. Side-by-side diffs, a three-way merge view, and a file tree that watches the disk.",
@@ -20,6 +22,7 @@ const features = [
     },
     {
         label: "Term",
+        icon: "command",
         keys: ["⌥2", "⌥\\"],
         title: "Native shells, split as far as you like.",
         body: "Every terminal is a real PTY owned by Rust. Split, tab, and drag a path in from the tree. Tasks from sikemux.json run in their own terminals and keep running when you close the view.",
@@ -28,6 +31,7 @@ const features = [
     },
     {
         label: "Git",
+        icon: "git",
         keys: ["⌥3"],
         title: "Stage, commit, push. Let your CLI write the message.",
         body: "Branches, worktrees, merges, pull and push. Commit messages stream in from the Claude, Codex or Hermes CLI you already have, using its login. Sikemux never calls a model itself.",
@@ -36,19 +40,20 @@ const features = [
     },
     {
         label: "Agents",
+        icon: "agent",
         keys: ["⌥4", "⌥N", "⌥Y"],
         title: "Several agents on one repo, each in its own pane.",
         body: "Pick an agent with ⌥N and it starts in a real terminal. Resume its saved sessions, and flip Normal or YOLO with ⌥Y. ⌘T opens a browser tab that belongs to the session and keeps its sign-ins. The agent can drive it, and you can take over at any time.",
         image: agents,
         alt: "A Claude Code session running in the Agents view",
     },
-];
+] as const;
 
 const ops = [
-    { image: billing, title: "AWS", body: "Cost, ECS tasks with live CloudWatch logs, EC2, Lambda, S3 and SQS.", alt: "The AWS billing panel" },
-    { image: rundeck, title: "Rundeck", body: "Start a job from the palette and follow every deploy step as it runs.", alt: "Rundeck projects and jobs" },
-    { image: bruno, title: "Bruno", body: "Open a collection as a session. ⌘P for requests, ⌘↵ to send.", alt: "A Bruno request open in Sikemux" },
-];
+    { image: billing, icon: "aws", title: "AWS", body: "Cost, ECS tasks with live CloudWatch logs, EC2, Lambda, S3 and SQS.", alt: "The AWS billing panel" },
+    { image: rundeck, icon: "rundeck", title: "Rundeck", body: "Start a job from the palette and follow every deploy step as it runs.", alt: "Rundeck projects and jobs" },
+    { image: bruno, icon: "bruno", title: "Bruno", body: "Open a collection as a session. ⌘P for requests, ⌘↵ to send.", alt: "A Bruno request open in Sikemux" },
+] as const;
 ---
 
 <section class="section" id="features">
@@ -65,7 +70,10 @@ const ops = [
                     <article class:list={["feature", { flip: index % 2 === 1 }]}>
                         <div class="text">
                             <p class="tag">
-                                <span class="label">{feature.label}</span>
+                                <span class="label name">
+                                    <Icon name={feature.icon} size={14} />
+                                    {feature.label}
+                                </span>
                                 <span class="keys">
                                     {feature.keys.map((keys) => (
                                         <Kbd keys={keys} />
@@ -99,7 +107,10 @@ const ops = [
                             <div class="shot">
                                 <Image src={op.image} alt={op.alt} widths={[640, 960, 1280]} sizes="(min-width: 1240px) 390px, 100vw" />
                             </div>
-                            <h3>{op.title}</h3>
+                            <h3 class="op-title">
+                                <Icon name={op.icon} size={16} />
+                                {op.title}
+                            </h3>
                             <p>{op.body}</p>
                         </article>
                     ))
@@ -142,6 +153,19 @@ const ops = [
         gap: 12px;
         padding-bottom: 12px;
         border-bottom: 1px solid var(--border);
+    }
+
+    .name {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-secondary);
+    }
+
+    .op-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
     .keys {

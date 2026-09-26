@@ -1,5 +1,6 @@
 ---
 import AgentIcon from "./AgentIcon.astro";
+import Icon from "./Icon.astro";
 
 const agents = [
     { id: "claude", name: "Claude Code", color: "var(--brand-claude)" },
@@ -8,22 +9,40 @@ const agents = [
     { id: "pi", name: "Pi", color: "var(--brand-pi)" },
     { id: "opencode", name: "OpenCode", color: "var(--brand-opencode)" },
 ] as const;
+
+const facts = [
+    { icon: "shield", text: "No API key, no bundled model" },
+    { icon: "command", text: "Native Rust PTYs, not Electron" },
+    { icon: "contrast", text: "Nine themes and a theme editor" },
+    { icon: "download", text: "Updates itself" },
+] as const;
 ---
 
 <section class="strip" id="agents">
     <div class="page row">
-        <p class="label">Runs the agents already on your PATH</p>
-        <ul>
+        <div class="top">
+            <p class="label">Runs the agents already on your PATH</p>
+            <ul>
+                {
+                    agents.map((agent) => (
+                        <li style={`color: ${agent.color}`}>
+                            <AgentIcon agent={agent.id} size={22} />
+                            <span>{agent.name}</span>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+        <ul class="facts">
             {
-                agents.map((agent) => (
-                    <li style={`color: ${agent.color}`}>
-                        <AgentIcon agent={agent.id} size={22} />
-                        <span>{agent.name}</span>
+                facts.map((fact) => (
+                    <li>
+                        <Icon name={fact.icon} size={15} />
+                        <span>{fact.text}</span>
                     </li>
                 ))
             }
         </ul>
-        <p class="note">No API key and no bundled model. Sikemux starts the CLI you installed, in your shell, with your login.</p>
     </div>
 </section>
 
@@ -36,13 +55,19 @@ const agents = [
 
     .row {
         display: grid;
-        grid-template-columns: auto 1fr;
-        align-items: center;
-        gap: 12px 40px;
+        gap: 20px;
         padding-block: 28px;
     }
 
-    ul {
+    .top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px 40px;
+    }
+
+    ul:not(.facts) {
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-end;
@@ -58,25 +83,37 @@ const agents = [
         gap: 10px;
     }
 
-    li span {
+    ul:not(.facts) li span {
         font-size: 15px;
         font-weight: 500;
         color: var(--text-primary);
     }
 
-    .note {
-        grid-column: 1 / -1;
+    .facts {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px 24px;
+        margin: 0;
+        padding: 20px 0 0;
+        border-top: 1px solid var(--gray-200);
+        list-style: none;
         font-size: 14px;
         color: var(--text-tertiary);
     }
 
-    @media (max-width: 860px) {
-        .row {
-            grid-template-columns: minmax(0, 1fr);
-        }
+    .facts li {
+        gap: 10px;
+    }
 
-        ul {
-            justify-content: flex-start;
+    @media (max-width: 960px) {
+        .facts {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 520px) {
+        .facts {
+            grid-template-columns: minmax(0, 1fr);
         }
     }
 </style>

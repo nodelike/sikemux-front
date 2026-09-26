@@ -18,14 +18,28 @@ interface GithubRelease {
     assets: GithubAsset[];
 }
 
+function githubHeaders(): Record<string, string> {
+    const headers: Record<string, string> = { Accept: "application/vnd.github+json" };
+    if (import.meta.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${import.meta.env.GITHUB_TOKEN}`;
+    return headers;
+}
+
+export async function starCount(): Promise<number | null> {
+    try {
+        const response = await fetch("https://api.github.com/repos/nodelike/sikemux", { headers: githubHeaders() });
+        if (!response.ok) return null;
+        const repo = (await response.json()) as { stargazers_count: number };
+        return repo.stargazers_count;
+    } catch {
+        return null;
+    }
+}
+
 const FALLBACK: Release = { version: "0.4.1", dmgUrl: RELEASES_URL, publishedAt: null };
 
 export async function latestRelease(): Promise<Release> {
-    const headers: Record<string, string> = { Accept: "application/vnd.github+json" };
-    if (import.meta.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${import.meta.env.GITHUB_TOKEN}`;
-
     try {
-        const response = await fetch("https://api.github.com/repos/nodelike/sikemux/releases/latest", { headers });
+        const response = await fetch("https://api.github.com/repos/nodelike/sikemux/releases/latest", { headers: githubHeaders() });
         if (!response.ok) return FALLBACK;
         const release = (await response.json()) as GithubRelease;
         const dmg = release.assets.find((asset) => asset.name.endsWith("_aarch64.dmg"));

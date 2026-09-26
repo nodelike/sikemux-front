@@ -1,12 +1,14 @@
 ---
 import Logo from "./Logo.astro";
-import { REPO_URL, type Release } from "../lib/release";
+import GithubStars from "./GithubStars.astro";
+import type { Release } from "../lib/release";
 
 interface Props {
     release: Release;
+    stars: number | null;
 }
 
-const { release } = Astro.props;
+const { release, stars } = Astro.props;
 ---
 
 <header class="nav">
@@ -21,9 +23,11 @@ const { release } = Astro.props;
             <a href="#agents">Agents</a>
             <a href="#keys">Keys</a>
             <a href="#faq">FAQ</a>
-            <a href={REPO_URL}>GitHub</a>
         </nav>
-        <a class="btn download" href={release.dmgUrl}>Download</a>
+        <div class="end">
+            <GithubStars stars={stars} label="GitHub" />
+            <a class="btn download" href={release.dmgUrl}>Download</a>
+        </div>
     </div>
 </header>
 
@@ -103,12 +107,19 @@ const { release } = Astro.props;
         font-size: 13px;
     }
 
+    .end {
+        display: flex;
+        flex: none;
+        align-items: center;
+        gap: 8px;
+    }
+
     @media (max-width: 760px) {
         .links {
             display: none;
         }
 
-        .download {
+        .end {
             margin-left: auto;
         }
     }
