@@ -2,13 +2,13 @@
 import { Image } from "astro:assets";
 import Kbd from "./Kbd.astro";
 import Icon from "./Icon.astro";
-import editor from "../assets/shots/project-editor-view.png";
-import term from "../assets/shots/project-term-view.png";
-import git from "../assets/shots/project-git-view.png";
-import agents from "../assets/shots/project-agents-view.png";
-import billing from "../assets/shots/cloud-aws-billing-view.png";
-import rundeck from "../assets/shots/cicd-rundeck-projects-view.png";
-import bruno from "../assets/shots/api-bruno-pane-view.png";
+import editor from "../assets/shots/files-editor.png";
+import term from "../assets/shots/terminals-stage.png";
+import git from "../assets/shots/git-stage.png";
+import agents from "../assets/shots/agents-chat.png";
+import awsLogs from "../assets/shots/aws-ecs-logs-stage.png";
+import rundeck from "../assets/shots/rundeck-deploy-stage.png";
+import bruno from "../assets/shots/bruno-stage.png";
 
 const features = [
     {
@@ -18,7 +18,7 @@ const features = [
         title: "An editor that knows which project it's in.",
         body: "CodeMirror 6 with LSP hover, go to definition and peek. Problems and Outline cover the whole project, not just the open file. Side-by-side diffs, a three-way merge view, and a file tree that watches the disk.",
         image: editor,
-        alt: "The Sikemux editor with a file tree and a TypeScript file open",
+        alt: "The editor with a TypeScript file open",
     },
     {
         label: "Term",
@@ -27,7 +27,7 @@ const features = [
         title: "Native shells, split as far as you like.",
         body: "Every terminal is a real PTY owned by Rust. Split, tab, and drag a path in from the tree. Tasks from sikemux.json run in their own terminals and keep running when you close the view.",
         image: term,
-        alt: "Split terminal panes in the Term view",
+        alt: "Three terminal splits running a dev server, tests, and git",
     },
     {
         label: "Git",
@@ -36,7 +36,7 @@ const features = [
         title: "Stage, commit, push. Let your CLI write the message.",
         body: "Branches, worktrees, merges, pull and push. Commit messages stream in from the Claude, Codex or Hermes CLI you already have, using its login. Sikemux never calls a model itself.",
         image: git,
-        alt: "The Git view with staged files and a diff",
+        alt: "Staged and unstaged files, a drafted commit message, and the commit graph",
     },
     {
         label: "Agents",
@@ -45,14 +45,14 @@ const features = [
         title: "Several agents on one repo, each in its own pane.",
         body: "Pick an agent with ⌥N and it starts in a real terminal. Resume its saved sessions, and flip Normal or YOLO with ⌥Y. ⌘T opens a browser tab that belongs to the session and keeps its sign-ins. The agent can drive it, and you can take over at any time.",
         image: agents,
-        alt: "A Claude Code session running in the Agents view",
+        alt: "A Claude Code turn with folded tool calls and a test run in progress",
     },
 ] as const;
 
 const ops = [
-    { image: billing, icon: "aws", title: "AWS", body: "Cost, ECS tasks with live CloudWatch logs, EC2, Lambda, S3 and SQS.", alt: "The AWS billing panel" },
-    { image: rundeck, icon: "rundeck", title: "Rundeck", body: "Start a job from the palette and follow every deploy step as it runs.", alt: "Rundeck projects and jobs" },
-    { image: bruno, icon: "bruno", title: "Bruno", body: "Open a collection as a session. ⌘P for requests, ⌘↵ to send.", alt: "A Bruno request open in Sikemux" },
+    { image: awsLogs, icon: "aws", title: "AWS", body: "Cost, ECS tasks with live CloudWatch logs, EC2, Lambda, S3 and SQS.", alt: "CloudWatch logs tailing for an ECS service" },
+    { image: rundeck, icon: "rundeck", title: "Rundeck", body: "Start a job from the palette and follow every deploy step as it runs.", alt: "A Rundeck deploy with its steps and live output" },
+    { image: bruno, icon: "bruno", title: "Bruno", body: "Open a collection as a session. ⌘P for requests, ⌘↵ to send.", alt: "A Bruno request and its response" },
 ] as const;
 ---
 

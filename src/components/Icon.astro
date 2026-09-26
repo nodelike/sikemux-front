@@ -27,7 +27,7 @@ const LINE_ICONS = {
     push: { viewBox: "0 0 24 24", strokeWidth: 1.8, fill: "none", body: `<path d="M5 4h14" /><path d="M12 20V9" /><path d="M7 13l5-5 5 5" />` },
 } as const;
 
-export type IconName = keyof typeof LINE_ICONS | "aws" | "rundeck" | "bruno";
+export type IconName = keyof typeof LINE_ICONS | "aws" | "rundeck" | "bruno" | "signoz";
 
 interface Props {
     name: IconName;
@@ -69,3 +69,4 @@ const line = name in LINE_ICONS ? LINE_ICONS[name as keyof typeof LINE_ICONS] : 
     )
 }
 {name === "bruno" && <img src="/bruno.svg" width={size} height={size} alt="" aria-hidden="true" />}
+{name === "signoz" && <img src="/signoz.svg" width={size} height={size} alt="" aria-hidden="true" />}

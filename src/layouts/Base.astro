@@ -1,7 +1,7 @@
 ---
 import { getImage } from "astro:assets";
 import "../styles/global.css";
-import agents from "../assets/shots/project-agents-view.png";
+import hero from "../assets/shots/hero-framed.png";
 
 interface Props {
     title: string;
@@ -10,7 +10,7 @@ interface Props {
 
 const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const og = await getImage({ src: agents, width: 1200, height: 630, fit: "cover", position: "left top", format: "png" });
+const og = await getImage({ src: hero, width: 1200, height: 630, fit: "cover", position: "center", format: "png" });
 const ogUrl = new URL(og.src, Astro.site);
 ---
 
