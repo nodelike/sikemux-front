@@ -2,13 +2,11 @@
 import { Image } from "astro:assets";
 import Kbd from "./Kbd.astro";
 import Icon from "./Icon.astro";
+import Plugins from "./Plugins.astro";
 import editor from "../assets/shots/files-editor.png";
 import term from "../assets/shots/terminals-stage.png";
 import git from "../assets/shots/git-stage.png";
 import agents from "../assets/shots/agents-chat.png";
-import awsLogs from "../assets/shots/aws-ecs-logs-stage.png";
-import rundeck from "../assets/shots/rundeck-deploy-stage.png";
-import bruno from "../assets/shots/bruno-stage.png";
 
 const features = [
     {
@@ -49,11 +47,6 @@ const features = [
     },
 ] as const;
 
-const ops = [
-    { image: awsLogs, icon: "aws", title: "AWS", body: "Cost, ECS tasks with live CloudWatch logs, EC2, Lambda, S3 and SQS.", alt: "CloudWatch logs tailing for an ECS service" },
-    { image: rundeck, icon: "rundeck", title: "Rundeck", body: "Start a job from the palette and follow every deploy step as it runs.", alt: "A Rundeck deploy with its steps and live output" },
-    { image: bruno, icon: "bruno", title: "Bruno", body: "Open a collection as a session. ⌘P for requests, ⌘↵ to send.", alt: "A Bruno request and its response" },
-] as const;
 ---
 
 <section class="section" id="features">
@@ -91,32 +84,7 @@ const ops = [
             }
         </div>
 
-        <div class="ops">
-            <div class="section-head">
-                <p class="label">On the rail</p>
-                <h2>Deploys and APIs sit next to the code.</h2>
-                <p>
-                    AWS, Rundeck and Bruno are built-in plugins. Turn on the ones you use, and they open beside the project like any other
-                    view.
-                </p>
-            </div>
-            <div class="ops-grid">
-                {
-                    ops.map((op) => (
-                        <article>
-                            <div class="shot">
-                                <Image src={op.image} alt={op.alt} format="avif" quality={80} widths={[640, 960, 1280]} sizes="(min-width: 1240px) 390px, 100vw" />
-                            </div>
-                            <h3 class="op-title">
-                                <Icon name={op.icon} size={16} />
-                                {op.title}
-                            </h3>
-                            <p>{op.body}</p>
-                        </article>
-                    ))
-                }
-            </div>
-        </div>
+        <Plugins />
     </div>
 </section>
 
@@ -178,33 +146,6 @@ const ops = [
         letter-spacing: -0.02em;
     }
 
-    .ops {
-        margin-top: clamp(88px, 12vw, 144px);
-    }
-
-    .ops-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 24px;
-    }
-
-    .ops-grid article {
-        display: grid;
-        gap: 10px;
-        align-content: start;
-    }
-
-    .ops-grid .shot {
-        margin-bottom: 8px;
-    }
-
-    .ops-grid h3 {
-        font-size: 16px;
-    }
-
-    .ops-grid p {
-        font-size: 14px;
-    }
 
     @media (max-width: 860px) {
         .feature,
@@ -214,10 +155,6 @@ const ops = [
 
         .feature.flip .text {
             order: 0;
-        }
-
-        .ops-grid {
-            grid-template-columns: minmax(0, 1fr);
         }
     }
 </style>

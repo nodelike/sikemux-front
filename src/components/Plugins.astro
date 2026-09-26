@@ -1,0 +1,170 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import aws from "../assets/shots/aws-ecs-logs-card.png";
+import rundeck from "../assets/shots/rundeck-deploy-card.png";
+import signoz from "../assets/shots/signoz-dashboard-card.png";
+import bruno from "../assets/shots/bruno-card.png";
+
+const plugins = [
+    {
+        icon: "rundeck",
+        name: "Rundeck",
+        claim: "Deploy a branch and watch every step land.",
+        points: ["Which branch is live on each service", "Step-by-step output as it streams", "Run again or abort in place"],
+        image: rundeck,
+        alt: "A Rundeck deploy of billing-service at step 5 of 6, with live output",
+    },
+    {
+        icon: "signoz",
+        name: "SigNoz",
+        claim: "See what production is doing right now.",
+        points: ["Service health, error rate and p99", "Logs, traces and your dashboards", "Agents can search it over MCP"],
+        image: signoz,
+        alt: "A SigNoz dashboard with request rate, error rate, throughput and p99 latency",
+    },
+    {
+        icon: "aws",
+        name: "AWS",
+        claim: "Tail a service without opening the console.",
+        points: ["ECS tasks with live CloudWatch logs", "Cost by month and by service", "Signs in with your SSO profile"],
+        image: aws,
+        alt: "CloudWatch logs streaming for an ECS service, with a warning and an error highlighted",
+    },
+    {
+        icon: "bruno",
+        name: "Bruno",
+        claim: "Send requests from the collection in your repo.",
+        points: ["Reads the .bru files on disk", "Environments and variables", "Pre- and post-request scripts"],
+        image: bruno,
+        alt: "A Bruno POST request and its 201 Created JSON response",
+    },
+] as const;
+---
+
+<div class="plugins">
+    <div class="section-head">
+        <p class="label">Built-in plugins</p>
+        <h2>Deploys, logs and APIs, beside the code.</h2>
+        <p>Turn on the tools you ship with. Each one opens as a view in the same window, next to the project it belongs to.</p>
+    </div>
+    <div class="grid">
+        {
+            plugins.map((plugin) => (
+                <article class="card">
+                    <header>
+                        <span class="name">
+                            <Icon name={plugin.icon} size={18} />
+                            {plugin.name}
+                        </span>
+                        <h3>{plugin.claim}</h3>
+                        <ul>
+                            {plugin.points.map((point) => (
+                                <li>{point}</li>
+                            ))}
+                        </ul>
+                    </header>
+                    <div class="shot">
+                        <Image src={plugin.image} alt={plugin.alt} format="avif" quality={80} widths={[720, 1080, 1440]} sizes="(min-width: 1240px) 600px, 100vw" />
+                    </div>
+                </article>
+            ))
+        }
+    </div>
+</div>
+
+<style>
+    .plugins {
+        margin-top: clamp(88px, 12vw, 144px);
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .card {
+        position: relative;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background:
+            radial-gradient(120% 70% at 0% 0%, color-mix(in oklab, var(--acc) 7%, transparent), transparent 60%),
+            var(--surface);
+        transition: border-color var(--dur-2) var(--ease-out);
+    }
+
+    .card:hover {
+        border-color: var(--border-strong);
+    }
+
+    header {
+        display: grid;
+        gap: 12px;
+        padding: 26px 28px 22px;
+    }
+
+    .name {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+    }
+
+    h3 {
+        font-size: 22px;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+    }
+
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 4px 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        padding: 4px 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full, 999px);
+        background: color-mix(in oklab, var(--bg-dim) 60%, transparent);
+        font-size: 12.5px;
+        color: var(--text-secondary);
+    }
+
+    .shot {
+        position: relative;
+        margin: 0 0 0 28px;
+        border: 1px solid var(--border);
+        border-right: 0;
+        border-bottom: 0;
+        border-radius: var(--radius-3) 0 0 0;
+        background: var(--surface-sunken);
+        overflow: hidden;
+        align-self: end;
+    }
+
+    .shot img {
+        width: 100%;
+        height: auto;
+        mask-image: linear-gradient(to bottom, #000 72%, transparent), linear-gradient(to right, #000 88%, transparent);
+        mask-composite: intersect;
+        -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent);
+    }
+
+    @media (max-width: 900px) {
+        .grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>
