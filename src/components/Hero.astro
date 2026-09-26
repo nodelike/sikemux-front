@@ -1,6 +1,7 @@
 ---
 import Stage from "./Stage.astro";
 import GithubStars from "./GithubStars.astro";
+import DownloadButton from "./DownloadButton.astro";
 import type { Release } from "../lib/release";
 
 interface Props {
@@ -21,14 +22,12 @@ const { release, stars } = Astro.props;
                     open on the same folder, and every one of them is a keystroke away.
                 </p>
                 <div class="actions">
-                    <a class="btn btn-primary" href={release.dmgUrl}>
-                        Download for Mac
-                        <span class="btn-meta">Apple Silicon</span>
-                    </a>
+                    <DownloadButton href={release.dmgUrl} />
                     <GithubStars stars={stars} label="Star on GitHub" size="large" />
                 </div>
                 <p class="meta mono">
                     <span>v{release.version}</span>
+                    <span>Apple Silicon</span>
                     <span>macOS 11+</span>
                     <span>MIT</span>
                     <span>free</span>
@@ -88,11 +87,6 @@ const { release, stars } = Astro.props;
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-    }
-
-    .actions .btn {
-        height: 44px;
-        padding-inline: 18px;
     }
 
     .meta {

@@ -1,5 +1,6 @@
 ---
 import Logo from "./Logo.astro";
+import DownloadButton from "./DownloadButton.astro";
 import { REPO_URL, RELEASES_URL, type Release } from "../lib/release";
 
 interface Props {
@@ -14,11 +15,8 @@ const { release } = Astro.props;
         <div class="cta">
             <h2>Open a project. Keep it open.</h2>
             <div class="actions">
-                <a class="btn btn-primary" href={release.dmgUrl}>
-                    Download for Mac
-                    <span class="btn-meta">v{release.version}</span>
-                </a>
-                <a class="btn" href={RELEASES_URL}>Release notes</a>
+                <DownloadButton href={release.dmgUrl} />
+                <a class="btn notes" href={RELEASES_URL}>What's new in v{release.version}</a>
             </div>
         </div>
         <div class="source">
@@ -70,7 +68,7 @@ const { release } = Astro.props;
         gap: 10px;
     }
 
-    .actions .btn {
+    .notes {
         height: 44px;
         padding-inline: 18px;
     }
