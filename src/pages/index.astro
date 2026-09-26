@@ -9,14 +9,45 @@ import Keymap from "../components/Keymap.astro";
 import Fit from "../components/Fit.astro";
 import Faq from "../components/Faq.astro";
 import Closing from "../components/Closing.astro";
-import { latestRelease, starCount } from "../lib/release";
+import { latestRelease, REPO_URL, starCount } from "../lib/release";
 
 const [release, stars] = await Promise.all([latestRelease(), starCount()]);
+
+const description =
+    "Run Claude Code, Codex and other coding agents beside your editor, terminals, Git and a real browser, all on one project folder. Free and open source for macOS.";
+
+const structuredData = [
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "Sikemux",
+        url: "https://sikemux.com/",
+    },
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "Sikemux",
+        description,
+        url: "https://sikemux.com/",
+        image: "https://sikemux.com/og.png",
+        screenshot: "https://sikemux.com/og.png",
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "macOS 11 or later",
+        softwareVersion: release.version,
+        downloadUrl: release.dmgUrl,
+        license: "https://opensource.org/licenses/MIT",
+        isAccessibleForFree: true,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        author: { "@type": "Person", name: "nodelike", url: "https://github.com/nodelike" },
+        sameAs: [REPO_URL],
+    },
+];
 ---
 
 <Base
-    title="Sikemux: one window for the whole project"
-    description="A tiling macOS workspace that keeps your editor, terminals, Git, coding agents, browser, AWS, Rundeck and Bruno on the same folder. Free and open source.">
+    title="Sikemux · macOS workspace for coding agents and terminals"
+    description={description}
+    structuredData={structuredData}>
     <Nav release={release} stars={stars} />
     <main>
         <Hero release={release} stars={stars} />

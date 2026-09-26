@@ -1,0 +1,46 @@
+---
+import Base from "../layouts/Base.astro";
+import Logo from "../components/Logo.astro";
+---
+
+<Base title="Page not found · Sikemux" description="This page does not exist." noindex>
+    <main class="missing">
+        <span class="mark"><Logo size={44} /></span>
+        <p class="label">404</p>
+        <h1>Nothing lives here.</h1>
+        <p class="lede">The page you asked for doesn't exist. The rest of Sikemux does.</p>
+        <a class="btn" href="/">Back to sikemux.com</a>
+    </main>
+</Base>
+
+<style>
+    .missing {
+        display: grid;
+        justify-items: center;
+        align-content: center;
+        gap: 18px;
+        min-height: 100vh;
+        padding: 24px;
+        text-align: center;
+    }
+
+    .mark {
+        color: var(--acc);
+    }
+
+    h1 {
+        font-size: clamp(36px, 6vw, 64px);
+        line-height: 1;
+        letter-spacing: -0.04em;
+    }
+
+    .lede {
+        font-size: 17px;
+    }
+
+    .btn {
+        margin-top: 8px;
+        height: 44px;
+        padding-inline: 18px;
+    }
+</style>

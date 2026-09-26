@@ -1,0 +1,164 @@
+---
+import { Image } from "astro:assets";
+import "../styles/global.css";
+import Logo from "../components/Logo.astro";
+import AgentIcon from "../components/AgentIcon.astro";
+import hero from "../assets/shots/hero.png";
+
+const agents = [
+    { id: "claude", color: "var(--brand-claude)" },
+    { id: "codex", color: "var(--brand-codex)" },
+    { id: "hermes", color: "var(--brand-hermes)" },
+    { id: "pi", color: "var(--brand-pi)" },
+    { id: "opencode", color: "var(--brand-opencode)" },
+    { id: "omp", color: "var(--brand-omp)" },
+    { id: "grok", color: "var(--brand-grok)" },
+] as const;
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="robots" content="noindex" />
+        <title>Sikemux share card</title>
+    </head>
+    <body>
+        <main class="card">
+            <div class="copy">
+                <div class="brand">
+                    <span class="mark"><Logo size={34} /></span>
+                    <span class="word">SIKE<span>MUX</span></span>
+                </div>
+                <h1>A playground<br />for your agents.</h1>
+                <p>Coding agents, terminals, Git and a real browser in one macOS window. Free and open source.</p>
+                <ul>
+                    {
+                        agents.map((agent) => (
+                            <li style={`color: ${agent.color}`}>
+                                <AgentIcon agent={agent.id} size={22} />
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
+            <div class="shot">
+                <Image src={hero} alt="" width={1400} format="png" loading="eager" />
+            </div>
+        </main>
+    </body>
+</html>
+
+<style>
+    html,
+    body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+    }
+
+    .card {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background:
+            radial-gradient(60% 80% at 0% 0%, color-mix(in oklab, var(--acc) 30%, transparent), transparent 65%),
+            radial-gradient(50% 70% at 100% 100%, color-mix(in oklab, var(--acc) 16%, transparent), transparent 70%),
+            var(--bg-dim);
+        isolation: isolate;
+    }
+
+    .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background-image: radial-gradient(color-mix(in oklab, var(--ink) 16%, transparent) 1px, transparent 1.3px);
+        background-size: 8px 8px;
+        mask-image: radial-gradient(ellipse 55% 75% at 10% 0%, #000, transparent 75%);
+        opacity: 0.6;
+    }
+
+    .copy {
+        position: absolute;
+        top: 64px;
+        left: 72px;
+        width: 520px;
+        display: grid;
+        gap: 26px;
+    }
+
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .mark {
+        display: grid;
+        color: var(--acc);
+    }
+
+    .word {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        color: var(--text-primary);
+    }
+
+    .word span {
+        color: var(--text-tertiary);
+    }
+
+    h1 {
+        margin-top: 18px;
+        font-size: 76px;
+        line-height: 0.98;
+        letter-spacing: -0.045em;
+    }
+
+    p {
+        max-width: 470px;
+        font-size: 23px;
+        line-height: 1.4;
+        color: var(--text-secondary);
+    }
+
+    ul {
+        display: flex;
+        gap: 10px;
+        margin: 6px 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: color-mix(in oklab, var(--surface) 80%, transparent);
+    }
+
+    .shot {
+        position: absolute;
+        top: 92px;
+        left: 640px;
+        width: 900px;
+        overflow: hidden;
+        border: 1px solid var(--border-strong);
+        border-radius: 16px;
+        box-shadow:
+            0 30px 80px rgb(0 0 0 / 0.55),
+            0 0 0 1px rgb(255 255 255 / 0.04) inset;
+    }
+
+    .shot img {
+        display: block;
+        width: 900px;
+        height: auto;
+    }
+</style>

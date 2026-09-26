@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "og": "astro build && node scripts/og.mjs"
   },
   "dependencies": {
     "astro": "^7.3.5",
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "playwright-core": "^1.63.0",
     "typescript": "^6.0.3"
   }
 }
