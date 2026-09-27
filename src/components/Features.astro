@@ -7,6 +7,7 @@ import editor from "../assets/shots/files-focus.png";
 import term from "../assets/shots/terminals-focus.png";
 import git from "../assets/shots/git-focus.png";
 import agents from "../assets/shots/agents-focus.png";
+import activity from "../assets/shots/activity-page.png";
 
 const features = [
     {
@@ -44,6 +45,15 @@ const features = [
         body: "Pick an agent with ⌥N and it starts in a real terminal. Resume its saved sessions, and flip Normal or YOLO with ⌥Y. ⌘T opens a browser tab that belongs to the session and keeps its sign-ins. The agent can drive it, and you can take over at any time.",
         image: agents,
         alt: "Codex running the terminal test suite and committing its fix",
+    },
+    {
+        label: "Activity",
+        icon: "activity",
+        keys: [],
+        title: "See what your agents got done.",
+        body: "Agent time, sessions, tokens and commits, day by day, split by agent and by project. It counts only what runs inside Sikemux, and it stays on your Mac.",
+        image: activity,
+        alt: "The Activity page: totals, a year of daily activity, and breakdowns by agent and by project",
     },
 ] as const;
 

@@ -12,8 +12,7 @@ const skip = [
 ];
 ---
 
-<section class="section">
-    <div class="page">
+<div class="page fit">
         <div class="section-head">
             <p class="label">Is it for you</p>
             <h2>Opinionated, on purpose.</h2>
@@ -29,10 +28,13 @@ const skip = [
                 <ul class="skip">{skip.map((line) => <li>{line}</li>)}</ul>
             </div>
         </div>
-    </div>
-</section>
+</div>
 
 <style>
+    .fit {
+        margin-bottom: clamp(56px, 8vw, 96px);
+    }
+
     .cols {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
