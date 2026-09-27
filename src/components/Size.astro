@@ -1,0 +1,165 @@
+---
+import { Image } from "astro:assets";
+import { formatSize, type Release } from "../lib/release";
+import sikemuxIcon from "../assets/apps/sikemux.png";
+import ghosttyIcon from "../assets/apps/ghostty.png";
+import zedIcon from "../assets/apps/zed.png";
+import cursorIcon from "../assets/apps/cursor.png";
+import warpIcon from "../assets/apps/warp.png";
+import supersetIcon from "../assets/apps/superset.png";
+
+interface Props {
+    release: Release;
+}
+
+const { release } = Astro.props;
+
+const others = [
+    { name: "Ghostty", icon: ghosttyIcon, bytes: 33_808_867 },
+    { name: "Zed", icon: zedIcon, bytes: 122_610_677 },
+    { name: "Cursor", icon: cursorIcon, bytes: 291_841_306 },
+    { name: "Warp", icon: warpIcon, bytes: 334_774_677 },
+    { name: "Superset", icon: supersetIcon, bytes: 453_107_779 },
+];
+
+const largest = Math.max(...others.map((app) => app.bytes));
+const bar = (bytes: number) => `--share: ${Math.max(bytes / largest, 0.004)}`;
+---
+
+<section class="section" id="size">
+    <div class="page layout">
+        <div class="section-head">
+            <p class="label">Size</p>
+            <h2><span class="figure" data-release-size>{release.dmgBytes === null ? "10 MB" : formatSize(release.dmgBytes)}</span> to download.</h2>
+            <p>
+                There's no browser engine inside. Sikemux draws with the WebView macOS already ships, so the whole workspace downloads smaller than
+                Ghostty, a terminal on its own.
+            </p>
+            <p class="note">Apple Silicon installers from each project's own download link, checked 27 September 2026. Sikemux's row follows the latest release.</p>
+        </div>
+        <ol class="card" data-largest={largest}>
+            <li class="own">
+                <Image class="icon" src={sikemuxIcon} alt="" width={32} densities={[2, 3]} format="webp" />
+                <span class="name">Sikemux</span>
+                <span class="value mono" data-release-size>{release.dmgBytes === null ? "" : formatSize(release.dmgBytes)}</span>
+                <span class="track"><span class="fill" data-release-bar style={release.dmgBytes === null ? undefined : bar(release.dmgBytes)}></span></span>
+            </li>
+            {
+                others.map((app) => (
+                    <li>
+                        <Image class="icon" src={app.icon} alt="" width={32} densities={[2, 3]} format="webp" />
+                        <span class="name">{app.name}</span>
+                        <span class="value mono">{formatSize(app.bytes)}</span>
+                        <span class="track">
+                            <span class="fill" style={bar(app.bytes)} />
+                        </span>
+                    </li>
+                ))
+            }
+        </ol>
+    </div>
+</section>
+
+<style>
+    .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+        align-items: center;
+        gap: clamp(32px, 6vw, 96px);
+    }
+
+    .layout .section-head {
+        margin-bottom: 0;
+    }
+
+    .section-head .note {
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--text-tertiary);
+    }
+
+    .card {
+        display: grid;
+        gap: 2px;
+        margin: 0;
+        padding: 10px;
+        list-style: none;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background: var(--surface);
+    }
+
+    li {
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr) auto;
+        grid-template-areas:
+            "icon name value"
+            "icon track track";
+        align-items: center;
+        column-gap: 14px;
+        row-gap: 7px;
+        padding: 10px 14px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-3);
+        font-size: 15px;
+        color: var(--text-secondary);
+    }
+
+    li :global(.icon) {
+        grid-area: icon;
+        width: 32px;
+        height: 32px;
+    }
+
+    .name {
+        grid-area: name;
+    }
+
+    .value {
+        grid-area: value;
+        color: var(--text-tertiary);
+    }
+
+    .figure {
+        display: block;
+        font-size: clamp(64px, 8vw, 112px);
+        line-height: 0.95;
+        letter-spacing: -0.05em;
+    }
+
+    .track {
+        grid-area: track;
+        height: 8px;
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--ink) 6%, transparent);
+    }
+
+    .fill {
+        display: block;
+        width: calc(var(--share) * 100%);
+        min-width: 8px;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--gray-500);
+    }
+
+    .own {
+        border-color: color-mix(in oklab, var(--acc) 35%, var(--border));
+        background: color-mix(in oklab, var(--acc) 8%, transparent);
+        color: var(--text-primary);
+    }
+
+    .own .value {
+        color: var(--text-primary);
+    }
+
+    .own .fill {
+        background: var(--acc);
+    }
+
+    @media (max-width: 860px) {
+        .layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>

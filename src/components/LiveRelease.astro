@@ -24,5 +24,9 @@
         for (const link of document.querySelectorAll<HTMLAnchorElement>("a[data-release-dmg]")) link.href = release.dmgUrl;
         if (release.dmgBytes === null) return;
         for (const node of document.querySelectorAll("[data-release-size]")) node.textContent = formatSize(release.dmgBytes);
+        for (const fill of document.querySelectorAll<HTMLElement>("[data-release-bar]")) {
+            const largest = Number(fill.closest<HTMLElement>("[data-largest]")?.dataset.largest);
+            if (largest > 0) fill.style.setProperty("--share", String(Math.min(release.dmgBytes / largest, 1)));
+        }
     });
 </script>

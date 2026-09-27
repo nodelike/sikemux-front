@@ -1,7 +1,7 @@
 ---
 import Logo from "./Logo.astro";
 import DownloadButton from "./DownloadButton.astro";
-import { REPO_URL, RELEASES_URL, type Release } from "../lib/release";
+import { formatSize, REPO_URL, RELEASES_URL, type Release } from "../lib/release";
 
 interface Props {
     release: Release;
@@ -18,8 +18,11 @@ const { release } = Astro.props;
             <h2>Open a project.<br />Keep it open.</h2>
             <div class="actions">
                 <DownloadButton href={release.dmgUrl} />
-                <a class="btn notes" href={RELEASES_URL}>What's new in v<span data-release-version>{release.version}</span></a>
+                <a class="btn notes" href={RELEASES_URL}><span>What's new in v<span data-release-version>{release.version}</span></span></a>
             </div>
+            <p class="facts mono">
+                {release.dmgBytes !== null && <><span data-release-size>{formatSize(release.dmgBytes)}</span> · </>}Apple Silicon, macOS 11+ · MIT · <a href="#size">How it stays small</a>
+            </p>
         </div>
         <div class="source">
             <p class="label">Or build it yourself</p>
@@ -106,6 +109,18 @@ const { release } = Astro.props;
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
+    }
+
+    .facts {
+        margin-top: -12px;
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    .facts a {
+        color: inherit;
+        text-decoration: underline;
+        text-underline-offset: 3px;
     }
 
     .notes {
