@@ -1,0 +1,128 @@
+---
+import AgentIcon from "./AgentIcon.astro";
+
+const agents = [
+    { id: "claude", name: "Claude Code", login: "claude auth login", color: "var(--brand-claude)" },
+    { id: "codex", name: "Codex", login: "codex login", color: "var(--brand-codex)" },
+    { id: "hermes", name: "Hermes", login: "hermes login", color: "var(--brand-hermes)" },
+    { id: "opencode", name: "OpenCode", login: "opencode auth login", color: "var(--brand-opencode)" },
+    { id: "grok", name: "Grok", login: "grok login", color: "var(--brand-grok)" },
+    { id: "pi", name: "Pi", login: "/login inside pi", color: "var(--brand-pi)" },
+    { id: "omp", name: "OMP", login: "/login inside omp", color: "var(--brand-omp)" },
+] as const;
+
+const points = ["No API key to paste", "No tokens resold", "Different agents side by side on one repo"];
+---
+
+<section class="section" id="agents">
+    <div class="page layout">
+        <div class="section-head">
+            <p class="label">Bring your own agents</p>
+            <h2>Your plan. Your login.</h2>
+            <p>
+                Sikemux bundles no model and sells no tokens. It starts the agent CLIs already on your PATH, signed in the way you signed them in,
+                so the subscription you pay for is the one that runs.
+            </p>
+            <ul class="points">{points.map((point) => <li>{point}</li>)}</ul>
+        </div>
+        <ul class="agents">
+            {
+                agents.map((agent) => (
+                    <li style={`--brand: ${agent.color}`}>
+                        <span class="mark">
+                            <AgentIcon agent={agent.id} size={20} />
+                        </span>
+                        <span class="name">{agent.name}</span>
+                        <code class="login mono">{agent.login}</code>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+</section>
+
+<style>
+    .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+        align-items: center;
+        gap: clamp(32px, 6vw, 96px);
+    }
+
+    .layout .section-head {
+        margin-bottom: 0;
+    }
+
+    .points {
+        display: grid;
+        gap: 10px;
+        margin: 8px 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .points li {
+        position: relative;
+        padding-left: 26px;
+        font-size: 15px;
+        color: var(--text-secondary);
+    }
+
+    .points li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--live);
+    }
+
+    .agents {
+        display: grid;
+        gap: 6px;
+        margin: 0;
+        padding: 10px;
+        list-style: none;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background: var(--surface);
+    }
+
+    .agents li {
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 12px;
+        border-radius: var(--radius-3);
+    }
+
+    .mark {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2);
+        background: color-mix(in oklab, var(--brand) 9%, transparent);
+        color: var(--brand);
+    }
+
+    .name {
+        font-size: 15px;
+        color: var(--text-primary);
+    }
+
+    .login {
+        padding: 4px 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2);
+        background: var(--surface-sunken);
+        font-size: 13px;
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 860px) {
+        .layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>

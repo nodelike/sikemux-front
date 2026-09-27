@@ -12,12 +12,6 @@ const rows = [
     { before: "Bruno, somewhere in the dock", keys: "⌥B", icon: "bruno", after: "Bruno" },
 ] as const;
 
-const facts = [
-    { icon: "shield", title: "Your CLI. Your login.", body: "Sikemux bundles no model and needs no API key. It starts the agent CLI you already installed." },
-    { icon: "command", title: "Native shells", body: "Every terminal is a Rust PTY. No Electron, no bundled Chromium." },
-    { icon: "globe", title: "A browser per agent", body: "Each agent gets its own tab that keeps its sign-ins, and you can take over." },
-    { icon: "plug", title: "Tools over MCP", body: "Agents start your tasks, read their output and open files in your editor." },
-] as const;
 ---
 
 <section class="section">
@@ -53,21 +47,6 @@ const facts = [
                 ))
             }
         </div>
-    </div>
-    <div class="page">
-        <ul class="facts">
-            {
-                facts.map((fact) => (
-                    <li>
-                        <span class="fact-icon">
-                            <Icon name={fact.icon} size={16} />
-                        </span>
-                        <strong>{fact.title}</strong>
-                        <p>{fact.body}</p>
-                    </li>
-                ))
-            }
-        </ul>
     </div>
 </section>
 
@@ -157,47 +136,6 @@ const facts = [
         min-width: 34px;
     }
 
-    .facts {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 16px;
-        margin: clamp(48px, 7vw, 88px) 0 0;
-        padding: 0;
-        list-style: none;
-    }
-
-    .facts li {
-        display: grid;
-        gap: 8px;
-        align-content: start;
-        padding: 20px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-3);
-        background: linear-gradient(to bottom, var(--surface), transparent);
-    }
-
-    .fact-icon {
-        display: grid;
-        place-items: center;
-        width: 32px;
-        height: 32px;
-        margin-bottom: 6px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-2);
-        color: var(--text-primary);
-    }
-
-    .facts strong {
-        font-size: 15px;
-        font-weight: 600;
-        color: var(--text-primary);
-    }
-
-    .facts p {
-        font-size: 14px;
-        line-height: 1.5;
-    }
-
     @media (max-width: 960px) {
         .layout {
             grid-template-columns: minmax(0, 1fr);
@@ -206,17 +144,9 @@ const facts = [
         .layout .section-head {
             position: static;
         }
-
-        .facts {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
     }
 
     @media (max-width: 560px) {
-        .facts {
-            grid-template-columns: minmax(0, 1fr);
-        }
-
         .before {
             font-size: 12px;
         }

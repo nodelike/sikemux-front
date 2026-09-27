@@ -188,7 +188,7 @@ main {
 
 .section {
     position: relative;
-    padding-block: clamp(80px, 10vw, 136px);
+    padding-block: clamp(64px, 8vw, 104px);
     border-top: 1px solid var(--border);
 }
 
