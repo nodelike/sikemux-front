@@ -3,10 +3,10 @@ import { Image } from "astro:assets";
 import Kbd from "./Kbd.astro";
 import Icon from "./Icon.astro";
 import Plugins from "./Plugins.astro";
-import editor from "../assets/shots/files-editor.png";
-import term from "../assets/shots/terminals-stage.png";
-import git from "../assets/shots/git-stage.png";
-import agents from "../assets/shots/agents-chat.png";
+import editor from "../assets/shots/files-focus.png";
+import term from "../assets/shots/terminals-focus.png";
+import git from "../assets/shots/git-focus.png";
+import agents from "../assets/shots/agents-focus.png";
 
 const features = [
     {
@@ -16,7 +16,7 @@ const features = [
         title: "An editor that knows which project it's in.",
         body: "CodeMirror 6 with LSP hover, go to definition and peek. Problems and Outline cover the whole project, not just the open file. Side-by-side diffs, a three-way merge view, and a file tree that watches the disk.",
         image: editor,
-        alt: "The editor with a TypeScript file open",
+        alt: "The file tree beside a TypeScript file in the editor",
     },
     {
         label: "Term",
@@ -25,7 +25,7 @@ const features = [
         title: "Native shells, split as far as you like.",
         body: "Every terminal is a real PTY owned by Rust. Split, tab, and drag a path in from the tree. Tasks from sikemux.json run in their own terminals and keep running when you close the view.",
         image: term,
-        alt: "Three terminal splits running a dev server, tests, and git",
+        alt: "A terminal split showing 50 passing tests",
     },
     {
         label: "Git",
@@ -34,7 +34,7 @@ const features = [
         title: "Stage, commit, push. Let your CLI write the message.",
         body: "Branches, worktrees, merges, pull and push. Commit messages stream in from the Claude, Codex or Hermes CLI you already have, using its login. Sikemux never calls a model itself.",
         image: git,
-        alt: "Staged and unstaged files, a drafted commit message, and the commit graph",
+        alt: "A commit message drafted by Hermes above the staged and unstaged files",
     },
     {
         label: "Agents",
@@ -43,7 +43,7 @@ const features = [
         title: "Several agents on one repo, each in its own pane.",
         body: "Pick an agent with ⌥N and it starts in a real terminal. Resume its saved sessions, and flip Normal or YOLO with ⌥Y. ⌘T opens a browser tab that belongs to the session and keeps its sign-ins. The agent can drive it, and you can take over at any time.",
         image: agents,
-        alt: "Codex in YOLO mode running the test suite and committing its fix",
+        alt: "Codex running the terminal test suite and committing its fix",
     },
 ] as const;
 
@@ -76,8 +76,8 @@ const features = [
                             <h3>{feature.title}</h3>
                             <p>{feature.body}</p>
                         </div>
-                        <div class="shot frame">
-                            <Image src={feature.image} alt={feature.alt} format="avif" quality={80} widths={[960, 1440, 2048]} sizes="(min-width: 1240px) 760px, 100vw" />
+                        <div class="shot frame" style={`--natural: ${feature.image.width / 2}px`}>
+                            <Image src={feature.image} alt={feature.alt} format="avif" quality={80} widths={[760, 1140, 1520]} sizes="(min-width: 1240px) 760px, 100vw" />
                         </div>
                     </article>
                 ))
@@ -109,6 +109,10 @@ const features = [
         order: 2;
     }
 
+    .feature.flip .frame {
+        justify-self: end;
+    }
+
     .text {
         position: sticky;
         top: 96px;
@@ -124,6 +128,9 @@ const features = [
 
     .frame {
         position: relative;
+        justify-self: start;
+        width: fit-content;
+        max-width: 100%;
         padding: 10px;
         border: 1px solid var(--border);
         border-radius: var(--radius-4);
@@ -134,6 +141,8 @@ const features = [
     }
 
     .frame :global(img) {
+        width: var(--natural);
+        max-width: 100%;
         border: 1px solid var(--border);
         border-radius: var(--radius-3);
     }
