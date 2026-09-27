@@ -11,17 +11,6 @@ const DATE = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", 
 ---
 
 <div class="shipping">
-    <figure class="note">
-        <p class="label">From the maker</p>
-        <blockquote>
-            <p>
-                I built Sikemux because my day was seven windows pointed at one repo, and none of them knew about the others. Agents made it worse:
-                each one wanted its own terminal, its own browser and its own login.
-            </p>
-            <p>So everything a project needs opens in one window. It's also the window I build Sikemux in.</p>
-        </blockquote>
-        <figcaption><a href="https://github.com/nodelike">@nodelike</a></figcaption>
-    </figure>
     {
         releases.length > 0 && (
             <div class="releases">
@@ -50,34 +39,8 @@ const DATE = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", 
 <style>
     .shipping {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-        gap: clamp(32px, 5vw, 72px);
-        align-items: start;
+        max-width: 760px;
         margin-bottom: clamp(48px, 7vw, 88px);
-    }
-
-    .note {
-        display: grid;
-        gap: 18px;
-        margin: 0;
-    }
-
-    blockquote {
-        display: grid;
-        gap: 14px;
-        margin: 0;
-        font-size: 19px;
-        line-height: 1.55;
-        color: var(--text-primary);
-    }
-
-    figcaption {
-        font-size: 14px;
-        color: var(--text-tertiary);
-    }
-
-    figcaption a {
-        color: inherit;
     }
 
     .releases {
@@ -140,11 +103,5 @@ const DATE = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", 
         justify-self: start;
         font-size: 13px;
         color: var(--text-tertiary);
-    }
-
-    @media (max-width: 860px) {
-        .shipping {
-            grid-template-columns: minmax(0, 1fr);
-        }
     }
 </style>
