@@ -1,6 +1,7 @@
 ---
 import Logo from "./Logo.astro";
 import GithubStars from "./GithubStars.astro";
+import DiscordLink from "./DiscordLink.astro";
 import type { Release } from "../lib/release";
 
 interface Props {
@@ -24,6 +25,7 @@ const { release, stars } = Astro.props;
             <a href="#faq">FAQ</a>
         </nav>
         <div class="end">
+            <DiscordLink />
             <GithubStars stars={stars} label="GitHub" />
             <a class="btn download" href={release.dmgUrl} data-release-dmg>Download</a>
         </div>
@@ -117,7 +119,8 @@ const { release, stars } = Astro.props;
     }
 
     @media (max-width: 520px) {
-        .end > :global(.stars) {
+        .end > :global(.stars),
+        .end > :global(.discord) {
             display: none;
         }
     }
