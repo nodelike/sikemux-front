@@ -1,0 +1,25 @@
+<script>
+    async function startAnalytics() {
+        const { default: posthog } = await import("posthog-js");
+        posthog.init("phc_yGaffnPw38wHvQKgusATcKtYmkyDCbNNGpTo3sK9pQoD", {
+            api_host: "/ingest",
+            ui_host: "https://eu.posthog.com",
+            defaults: "2026-05-30",
+            cookieless_mode: "always",
+            autocapture: false,
+            disable_session_recording: true,
+            capture_performance: false,
+            advanced_disable_flags: true,
+        });
+
+        document.addEventListener("click", (event) => {
+            const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[data-release-dmg]") : null;
+            if (link) posthog.capture("download_clicked", { url: link.href }, { transport: "sendBeacon" });
+        });
+    }
+
+    if (import.meta.env.PROD && location.hostname === "sikemux.com") {
+        if (document.readyState === "complete") void startAnalytics();
+        else addEventListener("load", () => void startAnalytics(), { once: true });
+    }
+</script>
