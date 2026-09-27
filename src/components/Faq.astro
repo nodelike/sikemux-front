@@ -20,6 +20,21 @@ const QUARANTINE = "xattr -dr com.apple.quarantine /Applications/Sikemux.app";
                 </p>
             </details>
             <details>
+                <summary>How is this different from Superset, Conductor or cmux?</summary>
+                <p>
+                    Those are built around the agents. Superset and Conductor run a crowd of agents in parallel, on your Mac or in the cloud, and
+                    cmux is a terminal made for juggling many sessions. Sikemux is built around the project: agents share one window with the
+                    editor, Git, a real browser and your AWS, Rundeck, SigNoz and Bruno views, all on the same folder. It's also a 10 MB download.
+                </p>
+            </details>
+            <details>
+                <summary>Why not Zed and a terminal?</summary>
+                <p>
+                    If you mostly write code by hand, Zed is the better editor. Sikemux assumes the agents do most of the typing: it runs several
+                    of them on one repo, each with its own browser tab, and keeps the editor, Git and your deploy tools a key away.
+                </p>
+            </details>
+            <details>
                 <summary>Which agents does it work with?</summary>
                 <p>
                     Claude Code, Codex, Hermes, Pi, OpenCode, OMP and Grok. Sikemux finds them on your <code>PATH</code> and launches them through your
