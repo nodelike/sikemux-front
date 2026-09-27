@@ -1,17 +1,20 @@
 ---
 import Logo from "./Logo.astro";
 import DownloadButton from "./DownloadButton.astro";
-import { formatSize, REPO_URL, RELEASES_URL, type Release } from "../lib/release";
+import Shipping from "./Shipping.astro";
+import { formatSize, REPO_URL, RELEASES_URL, type Release, type ReleaseNote } from "../lib/release";
 
 interface Props {
     release: Release;
+    releases: ReleaseNote[];
 }
 
-const { release } = Astro.props;
+const { release, releases } = Astro.props;
 ---
 
 <section class="section closing">
     <div class="page">
+      <Shipping releases={releases} />
       <div class="panel grid">
         <div class="cta">
             <span class="mark"><Logo size={40} /></span>

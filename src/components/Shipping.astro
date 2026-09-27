@@ -1,0 +1,150 @@
+---
+import { RELEASES_URL, type ReleaseNote } from "../lib/release";
+
+interface Props {
+    releases: ReleaseNote[];
+}
+
+const { releases } = Astro.props;
+
+const DATE = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+---
+
+<div class="shipping">
+    <figure class="note">
+        <p class="label">From the maker</p>
+        <blockquote>
+            <p>
+                I built Sikemux because my day was seven windows pointed at one repo, and none of them knew about the others. Agents made it worse:
+                each one wanted its own terminal, its own browser and its own login.
+            </p>
+            <p>So everything a project needs opens in one window. It's also the window I build Sikemux in.</p>
+        </blockquote>
+        <figcaption><a href="https://github.com/nodelike">@nodelike</a></figcaption>
+    </figure>
+    {
+        releases.length > 0 && (
+            <div class="releases">
+                <p class="label">Recently shipped</p>
+                <ol>
+                    {releases.map((release) => (
+                        <li>
+                            <a href={release.url}>
+                                <span class="version mono">v{release.version}</span>
+                                <time class="mono" datetime={release.publishedAt}>
+                                    {DATE.format(new Date(release.publishedAt))}
+                                </time>
+                                <span class="summary">{release.summary}</span>
+                            </a>
+                        </li>
+                    ))}
+                </ol>
+                <a class="all" href={RELEASES_URL.replace(/\/latest$/, "")}>
+                    Every release
+                </a>
+            </div>
+        )
+    }
+</div>
+
+<style>
+    .shipping {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+        gap: clamp(32px, 5vw, 72px);
+        align-items: start;
+        margin-bottom: clamp(48px, 7vw, 88px);
+    }
+
+    .note {
+        display: grid;
+        gap: 18px;
+        margin: 0;
+    }
+
+    blockquote {
+        display: grid;
+        gap: 14px;
+        margin: 0;
+        font-size: 19px;
+        line-height: 1.55;
+        color: var(--text-primary);
+    }
+
+    figcaption {
+        font-size: 14px;
+        color: var(--text-tertiary);
+    }
+
+    figcaption a {
+        color: inherit;
+    }
+
+    .releases {
+        display: grid;
+        gap: 14px;
+    }
+
+    ol {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    ol a {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-areas:
+            "version date"
+            "summary summary";
+        gap: 6px 12px;
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+        color: inherit;
+        text-decoration: none;
+        transition: border-color var(--dur-2) var(--ease-out);
+    }
+
+    ol a:hover {
+        border-color: color-mix(in oklab, var(--acc) 45%, var(--border));
+    }
+
+    .version {
+        grid-area: version;
+        font-size: 13px;
+        color: var(--text-primary);
+    }
+
+    time {
+        grid-area: date;
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    .summary {
+        grid-area: summary;
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--text-secondary);
+    }
+
+    .all {
+        justify-self: start;
+        font-size: 13px;
+        color: var(--text-tertiary);
+    }
+
+    @media (max-width: 860px) {
+        .shipping {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>

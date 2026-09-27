@@ -9,9 +9,9 @@ import Size from "../components/Size.astro";
 import Faq from "../components/Faq.astro";
 import Closing from "../components/Closing.astro";
 import LiveRelease from "../components/LiveRelease.astro";
-import { formatSize, latestRelease, REPO_URL, starCount } from "../lib/release";
+import { formatSize, latestRelease, recentReleases, REPO_URL, starCount } from "../lib/release";
 
-const [release, stars] = await Promise.all([latestRelease(), starCount()]);
+const [release, stars, releases] = await Promise.all([latestRelease(), starCount(), recentReleases()]);
 
 const description =
     "Run Claude Code, Codex and other coding agents beside your editor, terminals, Git and a real browser, all on one project folder. Free and open source for macOS.";
@@ -58,6 +58,6 @@ const structuredData = [
         <Size release={release} />
         <Faq />
     </main>
-    <Closing release={release} />
+    <Closing release={release} releases={releases} />
     <LiveRelease />
 </Base>

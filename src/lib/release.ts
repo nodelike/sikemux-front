@@ -18,6 +18,41 @@ export interface GithubRelease {
     tag_name: string;
     published_at: string;
     assets: GithubAsset[];
+    html_url?: string;
+    body?: string | null;
+    prerelease?: boolean;
+    draft?: boolean;
+}
+
+export interface ReleaseNote {
+    version: string;
+    url: string;
+    publishedAt: string;
+    summary: string;
+}
+
+function firstParagraph(body: string | null | undefined): string {
+    const line = (body ?? "").split("\n").find((text) => text.trim() && !text.startsWith("#"));
+    return line?.trim() ?? "";
+}
+
+export async function recentReleases(count = 3): Promise<ReleaseNote[]> {
+    try {
+        const response = await fetch("https://api.github.com/repos/nodelike/sikemux/releases?per_page=60", { headers: githubHeaders() });
+        if (!response.ok) return [];
+        const releases = (await response.json()) as GithubRelease[];
+        return releases
+            .filter((release) => !release.prerelease && !release.draft)
+            .slice(0, count)
+            .map((release) => ({
+                version: release.tag_name.replace(/^v/, ""),
+                url: release.html_url ?? RELEASES_URL,
+                publishedAt: release.published_at,
+                summary: firstParagraph(release.body),
+            }));
+    } catch {
+        return [];
+    }
 }
 
 function githubHeaders(): Record<string, string> {
