@@ -11,7 +11,7 @@ interface Props {
 const { title, description, structuredData = [], noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogUrl = new URL("/og.png", Astro.site);
-const ogAlt = "Sikemux: a playground for your agents. A macOS window with a coding agent, its browser tab and the project beside it.";
+const ogAlt = "Sikemux: one project, one window. A macOS window with a coding agent, its browser tab and the project beside it.";
 ---
 
 <!doctype html>
