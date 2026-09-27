@@ -1,0 +1,75 @@
+---
+import { Image } from "astro:assets";
+import activity from "../assets/shots/activity-page.png";
+---
+
+<section class="section" id="activity">
+    <div class="page layout">
+        <div class="section-head">
+            <p class="label">Activity</p>
+            <h2>See what your agents got done.</h2>
+            <p>
+                Settings has an Activity page: agent time, sessions, tokens and commits, day by day, split by agent and by project. It counts only
+                what runs inside Sikemux, and it stays on your Mac.
+            </p>
+        </div>
+        <div class="frame" style={`--natural: ${activity.width / 2}px`}>
+            <Image
+                src={activity}
+                alt="The Activity page: agent time, sessions, tokens and commits, a year of daily activity, and totals by agent and by project"
+                format="avif"
+                quality={82}
+                widths={[880, 1320, 1760]}
+                sizes="(min-width: 960px) 820px, 100vw"
+            />
+        </div>
+    </div>
+</section>
+
+<style>
+    .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
+        align-items: start;
+        gap: clamp(24px, 4vw, 56px);
+    }
+
+    .layout .section-head {
+        position: sticky;
+        top: 96px;
+        margin-bottom: 0;
+    }
+
+    .frame {
+        justify-self: end;
+        width: fit-content;
+        max-width: 100%;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background:
+            radial-gradient(90% 60% at 50% 0%, color-mix(in oklab, var(--acc) 10%, transparent), transparent 70%),
+            var(--surface);
+    }
+
+    .frame :global(img) {
+        width: var(--natural);
+        max-width: 100%;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+    }
+
+    @media (max-width: 960px) {
+        .layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .layout .section-head {
+            position: static;
+        }
+
+        .frame {
+            justify-self: start;
+        }
+    }
+</style>
