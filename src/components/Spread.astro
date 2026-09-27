@@ -14,44 +14,43 @@ const rows = [
 
 ---
 
-<section class="section">
-    <div class="page layout">
-        <div class="section-head">
-            <p class="label">Why it exists</p>
-            <h2>You already run this setup. It's just spread over seven apps.</h2>
-            <p>
-                Every one of those windows is pointed at the same repo, and none of them know it. In Sikemux they are views of one project, so
-                they open where you are and close when you are done.
-            </p>
-        </div>
-        <div class="table" role="table" aria-label="The apps Sikemux replaces, and the key that opens each view">
-            <div class="head" role="row">
-                <span role="columnheader" class="label">Before</span>
-                <span role="columnheader" class="label">In Sikemux</span>
-            </div>
-            {
-                rows.map((row) => (
-                    <div class="line" role="row">
-                        <span role="cell" class="before">
-                            {row.before}
-                        </span>
-                        <span class="arrow" aria-hidden="true">→</span>
-                        <span role="cell" class="after">
-                            <Kbd keys={row.keys} />
-                            <span class="view">
-                                <Icon name={row.icon} size={15} />
-                                {row.after}
-                            </span>
-                        </span>
-                    </div>
-                ))
-            }
-        </div>
+<div class="page layout">
+    <div class="section-head">
+        <p class="label">Inside a project</p>
+        <h2>You already run this setup. It's just spread over seven apps.</h2>
+        <p>
+            Every one of those windows is pointed at the same repo, and none of them know it. In Sikemux they are views of one project, so
+            they open where you are and close when you are done.
+        </p>
     </div>
-</section>
+    <div class="table" role="table" aria-label="The apps Sikemux replaces, and the key that opens each view">
+        <div class="head" role="row">
+            <span role="columnheader" class="label">Before</span>
+            <span role="columnheader" class="label">In Sikemux</span>
+        </div>
+        {
+            rows.map((row) => (
+                <div class="line" role="row">
+                    <span role="cell" class="before">
+                        {row.before}
+                    </span>
+                    <span class="arrow" aria-hidden="true">→</span>
+                    <span role="cell" class="after">
+                        <Kbd keys={row.keys} />
+                        <span class="view">
+                            <Icon name={row.icon} size={15} />
+                            {row.after}
+                        </span>
+                    </span>
+                </div>
+            ))
+        }
+    </div>
+</div>
 
 <style>
     .layout {
+        margin-bottom: clamp(64px, 9vw, 112px);
         display: grid;
         grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
         align-items: start;

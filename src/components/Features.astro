@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import Kbd from "./Kbd.astro";
 import Icon from "./Icon.astro";
 import Plugins from "./Plugins.astro";
+import Spread from "./Spread.astro";
 import editor from "../assets/shots/files-focus.png";
 import term from "../assets/shots/terminals-focus.png";
 import git from "../assets/shots/git-focus.png";
@@ -60,12 +61,8 @@ const features = [
 ---
 
 <section class="section" id="features">
+    <Spread />
     <div class="page">
-        <div class="section-head">
-            <p class="label">Inside a project</p>
-            <h2>Five views, one working directory.</h2>
-            <p>Files, Term, Git, Agents and Search all start in the project folder. Switching between them is a key, not a window hunt.</p>
-        </div>
 
         <div class="features">
             {
