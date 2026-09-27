@@ -3,7 +3,7 @@ import Stage from "./Stage.astro";
 import AgentIcon from "./AgentIcon.astro";
 import GithubStars from "./GithubStars.astro";
 import DownloadButton from "./DownloadButton.astro";
-import type { Release } from "../lib/release";
+import { formatSize, type Release } from "../lib/release";
 
 interface Props {
     release: Release;
@@ -52,7 +52,8 @@ const agents = [
                     <GithubStars stars={stars} label="Star on GitHub" size="large" />
                 </div>
                 <p class="meta mono">
-                    <span>v{release.version}</span>
+                    <span>v<span data-release-version>{release.version}</span></span>
+                    {release.dmgBytes !== null && <span><span data-release-size>{formatSize(release.dmgBytes)}</span></span>}
                     <span>Apple Silicon</span>
                     <span>macOS 11+</span>
                     <span>MIT</span>
@@ -174,16 +175,28 @@ const agents = [
     }
 
     .meta {
+        --sep: 32px;
         display: flex;
         flex-wrap: wrap;
-        gap: 6px 16px;
+        row-gap: 6px;
+        margin-left: calc(-1 * var(--sep));
+        clip-path: inset(0 0 0 var(--sep));
         font-size: 12px;
         color: var(--text-tertiary);
     }
 
-    .meta span + span::before {
+    .meta > span {
+        position: relative;
+        margin-left: var(--sep);
+    }
+
+    /* The dot before the first item on each line falls in the clipped strip, so a wrapped line never starts with one. */
+    .meta > span::before {
         content: "·";
-        margin-right: 16px;
+        position: absolute;
+        left: calc(-1 * var(--sep));
+        width: var(--sep);
+        text-align: center;
         color: var(--gray-500);
     }
 

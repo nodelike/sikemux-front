@@ -9,7 +9,8 @@ import Keymap from "../components/Keymap.astro";
 import Fit from "../components/Fit.astro";
 import Faq from "../components/Faq.astro";
 import Closing from "../components/Closing.astro";
-import { latestRelease, REPO_URL, starCount } from "../lib/release";
+import LiveRelease from "../components/LiveRelease.astro";
+import { formatSize, latestRelease, REPO_URL, starCount } from "../lib/release";
 
 const [release, stars] = await Promise.all([latestRelease(), starCount()]);
 
@@ -35,6 +36,7 @@ const structuredData = [
         operatingSystem: "macOS 11 or later",
         softwareVersion: release.version,
         downloadUrl: release.dmgUrl,
+        ...(release.dmgBytes !== null && { fileSize: formatSize(release.dmgBytes) }),
         license: "https://opensource.org/licenses/MIT",
         isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
@@ -59,4 +61,5 @@ const structuredData = [
         <Faq />
     </main>
     <Closing release={release} />
+    <LiveRelease />
 </Base>

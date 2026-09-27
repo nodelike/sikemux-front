@@ -1,0 +1,28 @@
+<script>
+    import { LATEST_RELEASE_API, formatSize, toRelease, type GithubRelease } from "../lib/release";
+
+    const CACHE_KEY = "sikemux-release";
+
+    async function freshRelease(): Promise<GithubRelease | null> {
+        const cached = sessionStorage.getItem(CACHE_KEY);
+        if (cached !== null) return JSON.parse(cached) as GithubRelease;
+        try {
+            const response = await fetch(LATEST_RELEASE_API);
+            if (!response.ok) return null;
+            const release = (await response.json()) as GithubRelease;
+            sessionStorage.setItem(CACHE_KEY, JSON.stringify({ tag_name: release.tag_name, published_at: release.published_at, assets: release.assets }));
+            return release;
+        } catch {
+            return null;
+        }
+    }
+
+    freshRelease().then((github) => {
+        if (github === null) return;
+        const release = toRelease(github);
+        for (const node of document.querySelectorAll("[data-release-version]")) node.textContent = release.version;
+        for (const link of document.querySelectorAll<HTMLAnchorElement>("a[data-release-dmg]")) link.href = release.dmgUrl;
+        if (release.dmgBytes === null) return;
+        for (const node of document.querySelectorAll("[data-release-size]")) node.textContent = formatSize(release.dmgBytes);
+    });
+</script>

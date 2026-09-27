@@ -25,7 +25,7 @@ const { release, stars } = Astro.props;
         </nav>
         <div class="end">
             <GithubStars stars={stars} label="GitHub" />
-            <a class="btn download" href={release.dmgUrl}>Download</a>
+            <a class="btn download" href={release.dmgUrl} data-release-dmg>Download</a>
         </div>
     </div>
 </header>

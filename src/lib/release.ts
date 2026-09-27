@@ -4,15 +4,17 @@ export const RELEASES_URL = `${REPO_URL}/releases/latest`;
 export interface Release {
     version: string;
     dmgUrl: string;
+    dmgBytes: number | null;
     publishedAt: string | null;
 }
 
 interface GithubAsset {
     name: string;
+    size: number;
     browser_download_url: string;
 }
 
-interface GithubRelease {
+export interface GithubRelease {
     tag_name: string;
     published_at: string;
     assets: GithubAsset[];
@@ -35,19 +37,29 @@ export async function starCount(): Promise<number | null> {
     }
 }
 
-const FALLBACK: Release = { version: "0.4.1", dmgUrl: RELEASES_URL, publishedAt: null };
+const FALLBACK: Release = { version: "0.4.1", dmgUrl: RELEASES_URL, dmgBytes: 10_119_241, publishedAt: null };
+
+export const LATEST_RELEASE_API = "https://api.github.com/repos/nodelike/sikemux/releases/latest";
+
+export function formatSize(bytes: number): string {
+    return `${(bytes / 1_000_000).toFixed(1)} MB`;
+}
+
+export function toRelease(release: GithubRelease): Release {
+    const dmg = release.assets.find((asset) => asset.name.endsWith("_aarch64.dmg"));
+    return {
+        version: release.tag_name.replace(/^v/, ""),
+        dmgUrl: dmg?.browser_download_url ?? RELEASES_URL,
+        dmgBytes: dmg?.size ?? null,
+        publishedAt: release.published_at,
+    };
+}
 
 export async function latestRelease(): Promise<Release> {
     try {
-        const response = await fetch("https://api.github.com/repos/nodelike/sikemux/releases/latest", { headers: githubHeaders() });
+        const response = await fetch(LATEST_RELEASE_API, { headers: githubHeaders() });
         if (!response.ok) return FALLBACK;
-        const release = (await response.json()) as GithubRelease;
-        const dmg = release.assets.find((asset) => asset.name.endsWith("_aarch64.dmg"));
-        return {
-            version: release.tag_name.replace(/^v/, ""),
-            dmgUrl: dmg?.browser_download_url ?? RELEASES_URL,
-            publishedAt: release.published_at,
-        };
+        return toRelease((await response.json()) as GithubRelease);
     } catch {
         return FALLBACK;
     }

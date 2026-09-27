@@ -18,7 +18,7 @@ const { release } = Astro.props;
             <h2>Open a project.<br />Keep it open.</h2>
             <div class="actions">
                 <DownloadButton href={release.dmgUrl} />
-                <a class="btn notes" href={RELEASES_URL}>What's new in v{release.version}</a>
+                <a class="btn notes" href={RELEASES_URL}>What's new in v<span data-release-version>{release.version}</span></a>
             </div>
         </div>
         <div class="source">
