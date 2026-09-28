@@ -14,7 +14,7 @@ import { formatSize, latestRelease, recentReleases, REPO_URL, starCount } from "
 const [release, stars, releases] = await Promise.all([latestRelease(), starCount(), recentReleases()]);
 
 const description =
-    "Run Claude Code, Codex and other coding agents beside your editor, terminals, Git and a real browser, all on one project folder. Free and open source for macOS.";
+    "A terminal workspace for you and your coding agents. Bring Claude Code, Codex or OpenCode, and Sikemux gives them your shell, a real browser, logs and deploys. Free and open source for macOS.";
 
 const structuredData = [
     {
@@ -46,7 +46,7 @@ const structuredData = [
 ---
 
 <Base
-    title="Sikemux · macOS workspace for coding agents and terminals"
+    title="Sikemux · a terminal workspace for you and your coding agents"
     description={description}
     structuredData={structuredData}>
     <Nav release={release} stars={stars} />
