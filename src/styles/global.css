@@ -22,10 +22,11 @@
 :root {
     color-scheme: dark;
 
-    --bg: #17141e;
-    --bg-dim: #100e16;
+    --bg: #0f0f13;
+    --bg-dim: #09090b;
     --ink: #e7e5ef;
     --acc: #a277ff;
+    --dither-dot: #19191e;
 
     --gray-100: color-mix(in oklab, var(--ink) 4%, var(--bg));
     --gray-200: color-mix(in oklab, var(--ink) 7%, var(--bg));
