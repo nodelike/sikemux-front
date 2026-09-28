@@ -13,6 +13,7 @@
     "og": "astro build && node scripts/og.mjs"
   },
   "dependencies": {
+    "@paper-design/shaders": "0.0.81",
     "astro": "^7.3.5",
     "posthog-js": "^1.434.15",
     "sharp": "^0.35.4"

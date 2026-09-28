@@ -1,5 +1,6 @@
 ---
 import Stage from "./Stage.astro";
+import Dither from "./Dither.astro";
 import AgentIcon from "./AgentIcon.astro";
 import GithubStars from "./GithubStars.astro";
 import DownloadButton from "./DownloadButton.astro";
@@ -24,6 +25,7 @@ const agents = [
 ---
 
 <section class="hero">
+    <Dither class="grain" />
     <div class="page">
         <div class="copy">
             <div class="title">
@@ -72,16 +74,10 @@ const agents = [
         isolation: isolate;
     }
 
-    .hero::before {
-        content: "";
-        position: absolute;
+    .hero :global(.grain) {
         inset: 0 0 30%;
-        z-index: -1;
-        background-image: radial-gradient(color-mix(in oklab, var(--ink) 16%, transparent) 1px, transparent 1.2px);
-        background-size: 6px 6px;
         mask-image: radial-gradient(ellipse 70% 90% at 20% 0%, #000 10%, transparent 70%);
         -webkit-mask-image: radial-gradient(ellipse 70% 90% at 20% 0%, #000 10%, transparent 70%);
-        opacity: 0.55;
     }
 
     .copy {

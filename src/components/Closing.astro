@@ -1,5 +1,6 @@
 ---
 import Logo from "./Logo.astro";
+import Dither from "./Dither.astro";
 import DownloadButton from "./DownloadButton.astro";
 import Shipping from "./Shipping.astro";
 import { formatSize, REPO_URL, RELEASES_URL, type Release, type ReleaseNote } from "../lib/release";
@@ -16,6 +17,7 @@ const { release, releases } = Astro.props;
     <div class="page">
       <Shipping releases={releases} />
       <div class="panel grid">
+        <Dither class="grain" />
         <div class="cta">
             <span class="mark"><Logo size={40} /></span>
             <h2>Open a project.<br />Keep it open.</h2>
@@ -72,16 +74,10 @@ const { release, releases } = Astro.props;
         isolation: isolate;
     }
 
-    .panel::before {
-        content: "";
-        position: absolute;
+    .panel :global(.grain) {
         inset: 0;
-        z-index: -1;
-        background-image: radial-gradient(color-mix(in oklab, var(--ink) 14%, transparent) 1px, transparent 1.2px);
-        background-size: 6px 6px;
         mask-image: radial-gradient(ellipse 60% 80% at 15% 0%, #000, transparent 70%);
         -webkit-mask-image: radial-gradient(ellipse 60% 80% at 15% 0%, #000, transparent 70%);
-        opacity: 0.5;
     }
 
     .grid {
