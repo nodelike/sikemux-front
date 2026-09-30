@@ -14,7 +14,7 @@ import { formatSize, latestRelease, recentReleases, REPO_URL, starCount } from "
 const [release, stars, releases] = await Promise.all([latestRelease(), starCount(), recentReleases()]);
 
 const description =
-    "A terminal workspace for you and your coding agents. Bring Claude Code, Codex or OpenCode, and Sikemux gives them your shell, a real browser, logs and deploys. Free and open source for macOS.";
+    "A terminal workspace for you and your coding agents. Bring Claude Code, Codex or OpenCode, and Sikemux gives them your shell, a real browser, logs and deploys. Free for macOS, with the source on GitHub.";
 
 const structuredData = [
     {
@@ -36,7 +36,7 @@ const structuredData = [
         softwareVersion: release.version,
         downloadUrl: release.dmgUrl,
         ...(release.dmgBytes !== null && { fileSize: formatSize(release.dmgBytes) }),
-        license: "https://opensource.org/licenses/MIT",
+        license: `${REPO_URL}/blob/main/LICENSE`,
         isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         author: { "@type": "Person", name: "nodelike", url: "https://github.com/nodelike" },

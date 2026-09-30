@@ -26,7 +26,7 @@ const { release, releases } = Astro.props;
                 <a class="btn notes" href={RELEASES_URL}><span>What's new in v<span data-release-version>{release.version}</span></span></a>
             </div>
             <p class="facts mono">
-                {release.dmgBytes !== null && <><span data-release-size>{formatSize(release.dmgBytes)}</span> · </>}Apple Silicon, macOS 11+ · MIT · <a href="#size">How it stays small</a>
+                {release.dmgBytes !== null && <><span data-release-size>{formatSize(release.dmgBytes)}</span> · </>}Apple Silicon, macOS 11+ · FSL · <a href="#size">How it stays small</a>
             </p>
         </div>
         <div class="source">
@@ -50,7 +50,7 @@ const { release, releases } = Astro.props;
             <a href={REPO_URL}>GitHub</a>
             <a href="https://discord.gg/UKfmHpF9kX">Discord</a>
             <a href={RELEASES_URL}>Releases</a>
-            <a href={`${REPO_URL}/blob/main/LICENSE`}>MIT license</a>
+            <a href={`${REPO_URL}/blob/main/LICENSE`}>License</a>
         </nav>
     </div>
 </footer>
