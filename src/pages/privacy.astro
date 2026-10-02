@@ -43,8 +43,8 @@ import Legal from "../layouts/Legal.astro";
             with, and when it was added and last updated.
         </li>
         <li>
-            <strong>A record of account changes:</strong> when a device was added or removed, and by which device, so you
-            and we can see what happened to your account.
+            <strong>A record of account changes:</strong> when a device was added to or removed from your account, so you
+            and we can see what happened to it.
         </li>
         <li>
             <strong>Sign-in sessions:</strong> which browsers and devices are signed in, with the IP address and browser
@@ -68,7 +68,7 @@ import Legal from "../layouts/Legal.astro";
         Official releases of the Sikemux app for your computer send one message a day while you use them. It contains a
         random ID made for your install, the app version, its update channel, and your operating system, its version and
         your processor type. It contains nothing about you or your work, and we use it to count how many people use
-        each version. You can turn it off with Share anonymous usage, under Privacy in Settings, About. Builds you make
+        each version. PostHog, which receives it, sees the IP address it comes from, as any server does. You can turn it off with Share anonymous usage, under Privacy in Settings, About. Builds you make
         yourself never send it.
     </p>
     <p>
@@ -77,7 +77,9 @@ import Legal from "../layouts/Legal.astro";
 
     <h2>What the apps download</h2>
     <p>
-        The app checks GitHub for updates and downloads them from there. If you use dictation, it downloads the speech
+        The app checks GitHub for updates and downloads them from there, along with the profile pictures of the
+        people credited in its release notes. When you open a file in a language it has not shown before, it downloads that language's
+        highlighting rules from jsDelivr or unpkg. If you use dictation, it downloads the speech
         model from Hugging Face once, and then turns speech into text on your computer. Those sites see your IP address
         when they serve the download, as any website does.
     </p>
@@ -97,8 +99,10 @@ import Legal from "../layouts/Legal.astro";
         <li><strong>PostHog</strong>, in the EU, counts the usage statistics and website visits described above.</li>
         <li><strong>Vercel</strong> hosts this website, and <strong>GitHub</strong> hosts the downloads.</li>
         <li>
-            <strong>Relay servers</strong> pass encrypted connections between your devices when they cannot reach each
-            other directly.
+            <strong>n0</strong>, the makers of the networking library Sikemux uses, run the relay servers that pass
+            encrypted connections between your devices when they cannot reach each other directly. When remote access is
+            on, your computer also lists its public key and its relay with n0's lookup service, so your devices can find
+            it.
         </li>
     </ul>
 
