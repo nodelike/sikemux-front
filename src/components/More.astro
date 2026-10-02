@@ -1,0 +1,133 @@
+---
+import Icon from "./Icon.astro";
+
+const cards = [
+    {
+        icon: "browser",
+        title: "A browser for each agent",
+        body: "Your agent can open your app, click through it and take screenshots, like a tester would. Take over the tab at any time.",
+    },
+    {
+        icon: "git",
+        title: "One agent per branch",
+        body: "Give a chat its own copy of the repo so agents don't trip over each other. It cleans up once its pull request is merged.",
+    },
+    {
+        icon: "send",
+        title: "Send anything to an agent",
+        body: "Pass it an error from the terminal, a line from the logs, a code problem or a pull request comment in one click.",
+    },
+    {
+        icon: "plug",
+        title: "Agents can use the app too",
+        body: "An agent can start your dev server, read its output and open the file it changed for you to look at.",
+    },
+    {
+        icon: "timer",
+        title: "Usage at a glance",
+        body: "See how much of your Claude or Codex limit is left, and switch accounts in a click.",
+    },
+    {
+        icon: "folder",
+        title: "Spaces for your projects",
+        body: "Group projects by team or client, and switch between them without the clutter.",
+    },
+    {
+        icon: "globe",
+        title: "Ports you can see",
+        body: "A chip shows which ports your app is listening on, so you always know where it's running.",
+    },
+    {
+        icon: "command",
+        title: "Fast from the keyboard",
+        body: "⌘N starts an agent, ⌘T opens a terminal, and every view and action has its own shortcut.",
+    },
+    {
+        icon: "shield",
+        title: "No account needed",
+        body: "Download it and start. Your code only goes to the agent you chose, never to us.",
+    },
+] as const;
+---
+
+<section class="section" id="more">
+    <div class="page">
+        <div class="section-head intro">
+            <p class="label">And more</p>
+            <h2>The small things add up.</h2>
+        </div>
+        <ul class="cards">
+            {
+                cards.map((card) => (
+                    <li>
+                        <span class="icon">
+                            <Icon name={card.icon} size={16} />
+                        </span>
+                        <h3>{card.title}</h3>
+                        <p>{card.body}</p>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+</section>
+
+<style>
+    .intro {
+        margin-inline: auto;
+        text-align: center;
+        justify-items: center;
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        display: grid;
+        align-content: start;
+        gap: 10px;
+        padding: 22px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+    }
+
+    .icon {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2);
+        color: var(--acc);
+    }
+
+    h3 {
+        font-size: 16px;
+    }
+
+    p {
+        margin: 0;
+        font-size: 14.5px;
+        line-height: 1.55;
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 960px) {
+        .cards {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 600px) {
+        .cards {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>

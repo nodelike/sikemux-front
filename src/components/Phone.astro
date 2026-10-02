@@ -1,0 +1,122 @@
+---
+import { Image } from "astro:assets";
+import agents from "../assets/phone/agents.png";
+import chat from "../assets/phone/chat.png";
+import { DISCORD_URL } from "../lib/release";
+
+const points = [
+    "Pair your phone by scanning a code on your Mac",
+    "See what every agent is doing, and answer the one that needs you",
+    "Start a new chat in any project, from anywhere",
+];
+---
+
+<section class="section" id="phone">
+    <div class="page layout">
+        <div class="section-head">
+            <p class="label">Phone app · in development</p>
+            <h2>Close the laptop. Your agents keep going.</h2>
+            <p>
+                Agents and terminals already keep running in the background when the Sikemux window is closed. We're building a phone app so
+                you can check on them from wherever you are.
+            </p>
+            <ul class="points">{points.map((point) => <li>{point}</li>)}</ul>
+            <p class="soon">
+                It isn't on the App Store or Google Play yet. <a href={DISCORD_URL}>Join the Discord</a> to hear when it's ready.
+            </p>
+        </div>
+        <div class="phones">
+            <figure class="phone">
+                <Image src={agents} alt="A preview of the phone app in development, listing a Mac's agents" widths={[300, 600]} sizes="300px" />
+            </figure>
+            <figure class="phone back">
+                <Image src={chat} alt="A preview of the phone app in development, with an agent asking permission to run the tests" widths={[300, 600]} sizes="300px" />
+            </figure>
+        </div>
+    </div>
+</section>
+
+<style>
+    .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: center;
+        gap: clamp(32px, 6vw, 96px);
+    }
+
+    .layout .section-head {
+        margin-bottom: 0;
+    }
+
+    .points {
+        display: grid;
+        gap: 10px;
+        margin: 8px 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .points li {
+        position: relative;
+        padding-left: 26px;
+        font-size: 15px;
+        color: var(--text-secondary);
+    }
+
+    .points li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--live);
+    }
+
+    .soon {
+        margin-top: 6px;
+        font-size: 14px;
+        color: var(--text-tertiary);
+    }
+
+    .soon a {
+        color: var(--text-secondary);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .phones {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: clamp(16px, 2.5vw, 28px);
+    }
+
+    /* A titanium edge, then a thin black bezel, around a screen with iOS's own corners. */
+    .phone {
+        flex: none;
+        width: min(44%, 250px);
+        margin: 0;
+        padding: 4px;
+        border-radius: 15.6% / 7.2%;
+        background: #050507;
+        box-shadow:
+            0 0 0 1px #3b3b42,
+            0 40px 80px -30px rgba(0, 0, 0, 0.8);
+    }
+
+    .phone :global(img) {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 402 / 874;
+        border-radius: 14.7% / 6.8%;
+    }
+
+    .back {
+        transform: translateY(56px);
+    }
+
+    @media (max-width: 860px) {
+        .layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>
