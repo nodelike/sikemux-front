@@ -13,10 +13,24 @@ const QUARANTINE = "xattr -dr com.apple.quarantine /Applications/Sikemux.app";
         </div>
         <div class="list">
             <details>
+                <summary>What is Sikemux, in one sentence?</summary>
+                <p>
+                    A Mac app where you work on a project together with AI coding agents: they write and test the code, and you watch, review
+                    and ship, without juggling an editor, terminals, Git and a browser in separate apps.
+                </p>
+            </details>
+            <details>
+                <summary>What is a coding agent?</summary>
+                <p>
+                    An AI tool, like Claude Code or Codex, that reads your project, edits files and runs commands to finish a task you describe in
+                    plain words. Sikemux doesn't include one; it runs the ones you already use.
+                </p>
+            </details>
+            <details>
                 <summary>Is this Electron?</summary>
                 <p>
-                    No. It's Tauri 2 with a Rust backend. Shells are native PTYs owned by Rust, and the interface is React running in the
-                    system WebView, so there's no bundled Chromium.
+                    No. Sikemux is built with Tauri and Rust and uses the web engine macOS already has, which is why it's small and quick
+                    to start.
                 </p>
             </details>
             <details>
@@ -37,15 +51,15 @@ const QUARANTINE = "xattr -dr com.apple.quarantine /Applications/Sikemux.app";
             <details>
                 <summary>Which agents does it work with?</summary>
                 <p>
-                    Claude Code, Codex, Hermes, Pi, OpenCode, OMP and Grok. Sikemux finds them on your <code>PATH</code> and launches them through your
-                    own shell, so they get your environment and your login.
+                    Claude Code, Codex, Hermes, Pi, OpenCode, OMP and Grok. Install one the usual way and sign in, and Sikemux finds it and
+                    starts it with your own login.
                 </p>
             </details>
             <details>
                 <summary>Does Sikemux send my code to a model?</summary>
                 <p>
-                    No. It has no model and needs no API key. When it writes a commit message, it asks the CLI you pick, which uses its own
-                    login.
+                    No. Sikemux has no AI of its own. Your code only goes to the agent you choose, through that agent's own account. Some
+                    agents can also use an API key you add in Settings, but you never need one.
                 </p>
             </details>
             <details>
@@ -57,8 +71,8 @@ const QUARANTINE = "xattr -dr com.apple.quarantine /Applications/Sikemux.app";
             <details>
                 <summary>Intel Macs, Windows, Linux?</summary>
                 <p>
-                    Published builds are Apple Silicon only, on macOS 11 or later. A Windows installer builds from source today, but there's no
-                    Windows download yet. There's no Linux build.
+                    Downloads are for Apple Silicon Macs on macOS 11 or later. Linux builds are coming soon. Windows and Intel Macs can build
+                    it from source, but there's no download for them yet.
                 </p>
             </details>
             <details>

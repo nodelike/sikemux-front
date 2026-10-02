@@ -11,17 +11,17 @@ const agents = [
     { id: "omp", name: "OMP", login: "/login inside omp", color: "var(--brand-omp)" },
 ] as const;
 
-const points = ["No API key to paste", "No tokens resold", "Different agents side by side on one repo"];
+const points = ["No extra AI subscription", "Your own account and limits", "Use different agents on the same project"];
 ---
 
 <section class="section" id="agents">
     <div class="page layout">
         <div class="section-head">
             <p class="label">Bring your own agents</p>
-            <h2>Your plan. Your login.</h2>
+            <h2>Use the AI plan you already pay for.</h2>
             <p>
-                Sikemux bundles no model and sells no tokens. It starts the agent CLIs already on your PATH, signed in the way you signed them in,
-                so the subscription you pay for is the one that runs.
+                Sikemux doesn't sell AI. It runs the coding agents you already have installed, signed in with your own account, so your Claude
+                or ChatGPT plan is the one doing the work.
             </p>
             <ul class="points">{points.map((point) => <li>{point}</li>)}</ul>
         </div>

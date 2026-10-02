@@ -28,37 +28,33 @@ const agents = [
     <Dither class="grain" />
     <div class="page">
         <div class="copy">
-            <div class="title">
-                <h1>A terminal workspace for you and your coding agents.</h1>
-                <div class="works">
-                    <span class="label">Works with the agents on your PATH</span>
-                    <ul>
-                        {
-                            agents.map((agent) => (
-                                <li style={`--brand: ${agent.color}`}>
-                                    <AgentIcon agent={agent.id} size={16} />
-                                    <span>{agent.name}</span>
-                                </li>
-                            ))
-                        }
-                    </ul>
-                </div>
+            <h1>The IDE for you and your coding agents.</h1>
+            <p class="lede">
+                Ask Claude Code or Codex to fix a bug, then watch it edit your code, run your tests and try your app in a real browser. Review
+                what it changed and ship, all in one window.
+            </p>
+            <div class="actions">
+                <DownloadButton href={release.dmgUrl} />
+                <GithubStars stars={stars} label="Star on GitHub" size="large" count={false} />
             </div>
-            <div class="side">
-                <p class="lede">
-                    Bring Claude Code, Codex or OpenCode, and Sikemux gives them your shell, a real browser, logs and deploys. Files, Git, AWS, Rundeck and
-                    Bruno open on the same folder, a keystroke away.
-                </p>
-                <div class="actions">
-                    <DownloadButton href={release.dmgUrl} />
-                    <GithubStars stars={stars} label="Star on GitHub" size="large" count={false} />
-                </div>
-                <p class="meta mono">
-                    <span>v<span data-release-version>{release.version}</span></span>
-                    {release.dmgBytes !== null && <span><span data-release-size>{formatSize(release.dmgBytes)}</span></span>}
-                    <span>Apple Silicon</span>
-                    <span>free</span>
-                </p>
+            <p class="meta mono">
+                <span>v<span data-release-version>{release.version}</span></span>
+                {release.dmgBytes !== null && <span><span data-release-size>{formatSize(release.dmgBytes)}</span></span>}
+                <span>Mac, Apple Silicon</span>
+                <span>free</span>
+            </p>
+            <div class="works">
+                <span class="label">Works with the agents you already use</span>
+                <ul>
+                    {
+                        agents.map((agent) => (
+                            <li style={`--brand: ${agent.color}`}>
+                                <AgentIcon agent={agent.id} size={16} />
+                                <span>{agent.name}</span>
+                            </li>
+                        ))
+                    }
+                </ul>
             </div>
         </div>
         <div class="stage-wrap">
@@ -76,30 +72,29 @@ const agents = [
 
     .hero :global(.grain) {
         inset: 0 0 30%;
-        mask-image: radial-gradient(ellipse 70% 90% at 20% 0%, #000 10%, transparent 70%);
-        -webkit-mask-image: radial-gradient(ellipse 70% 90% at 20% 0%, #000 10%, transparent 70%);
+        mask-image: radial-gradient(ellipse 70% 90% at 50% 0%, #000 10%, transparent 70%);
+        -webkit-mask-image: radial-gradient(ellipse 70% 90% at 50% 0%, #000 10%, transparent 70%);
     }
 
     .copy {
         display: grid;
-        grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-        align-items: end;
-        gap: clamp(24px, 5vw, 72px);
-        margin-bottom: clamp(40px, 6vw, 64px);
-    }
-
-    .title {
-        display: grid;
-        gap: 32px;
+        justify-items: center;
+        gap: 22px;
+        max-width: 860px;
+        margin: 0 auto clamp(48px, 7vw, 72px);
+        text-align: center;
     }
 
     .works {
         display: grid;
+        justify-items: center;
         gap: 12px;
+        margin-top: 18px;
     }
 
     .works ul {
         display: flex;
+        justify-content: center;
         flex-wrap: wrap;
         gap: 6px;
         margin: 0;
@@ -145,25 +140,21 @@ const agents = [
     }
 
     h1 {
-        font-size: clamp(36px, 4.6vw, 64px);
+        max-width: 16ch;
+        font-size: clamp(38px, 5.4vw, 72px);
         line-height: 1.02;
         letter-spacing: -0.045em;
     }
 
-    .side {
-        display: grid;
-        gap: 22px;
-        padding-bottom: 6px;
-    }
-
     .lede {
-        font-size: 17px;
+        font-size: 18px;
         line-height: 1.55;
-        max-width: 46ch;
+        max-width: 58ch;
     }
 
     .actions {
         display: flex;
+        justify-content: center;
         flex-wrap: wrap;
         gap: 10px;
     }
@@ -172,6 +163,7 @@ const agents = [
         --sep: 32px;
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
         row-gap: 6px;
         margin-left: calc(-1 * var(--sep));
         clip-path: inset(0 0 0 var(--sep));
@@ -194,9 +186,4 @@ const agents = [
         color: var(--gray-500);
     }
 
-    @media (max-width: 860px) {
-        .copy {
-            grid-template-columns: minmax(0, 1fr);
-        }
-    }
 </style>

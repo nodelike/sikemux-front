@@ -32,8 +32,8 @@ const bar = (bytes: number) => `--share: ${Math.max(bytes / largest, 0.004)}`;
             <p class="label">Size</p>
             <h2><span class="figure" data-release-size>{release.dmgBytes === null ? "10 MB" : formatSize(release.dmgBytes)}</span> to download.</h2>
             <p>
-                There's no browser engine inside. Sikemux draws with the WebView macOS already ships, so the whole workspace downloads smaller than
-                Ghostty, a terminal on its own.
+                Sikemux uses the web engine already built into macOS instead of shipping its own, so the whole IDE downloads smaller than
+                Ghostty, which is only a terminal.
             </p>
             <p class="note">Apple Silicon installers from each project's own download link, checked 27 September 2026. Sikemux's row follows the latest release.</p>
         </div>

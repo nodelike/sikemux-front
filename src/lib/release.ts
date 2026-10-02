@@ -1,4 +1,5 @@
 export const REPO_URL = "https://github.com/nodelike/sikemux";
+export const DISCORD_URL = "https://discord.gg/UKfmHpF9kX";
 export const RELEASES_URL = `${REPO_URL}/releases/latest`;
 
 export interface Release {

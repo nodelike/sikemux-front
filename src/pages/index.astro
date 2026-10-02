@@ -4,7 +4,8 @@ import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
 import Agents from "../components/Agents.astro";
 import Features from "../components/Features.astro";
-import Tools from "../components/Tools.astro";
+import Phone from "../components/Phone.astro";
+import More from "../components/More.astro";
 import Size from "../components/Size.astro";
 import Faq from "../components/Faq.astro";
 import Closing from "../components/Closing.astro";
@@ -14,7 +15,7 @@ import { formatSize, latestRelease, recentReleases, REPO_URL, starCount } from "
 const [release, stars, releases] = await Promise.all([latestRelease(), starCount(), recentReleases()]);
 
 const description =
-    "A terminal workspace for you and your coding agents. Bring Claude Code, Codex or OpenCode, and Sikemux gives them your shell, a real browser, logs and deploys. Free for macOS, with the source on GitHub.";
+    "The IDE for you and your coding agents. Ask Claude Code or Codex to fix a bug, watch it edit, test and try your app in a real browser, then review and ship in one window. Free for Mac.";
 
 const structuredData = [
     {
@@ -46,7 +47,7 @@ const structuredData = [
 ---
 
 <Base
-    title="Sikemux · a terminal workspace for you and your coding agents"
+    title="Sikemux · the IDE for you and your coding agents"
     description={description}
     structuredData={structuredData}>
     <Nav release={release} stars={stars} />
@@ -54,7 +55,8 @@ const structuredData = [
         <Hero release={release} stars={stars} />
         <Features />
         <Agents />
-        <Tools />
+        <Phone />
+        <More />
         <Size release={release} />
         <Faq />
     </main>

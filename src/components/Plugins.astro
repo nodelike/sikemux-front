@@ -19,15 +19,15 @@ const plugins = [
         icon: "signoz",
         name: "SigNoz",
         claim: "See what production is doing right now.",
-        points: ["Service health, error rate and p99", "Logs, traces and your dashboards", "Agents can search it over MCP"],
+        points: ["Service health and error rates", "Logs, traces and your dashboards", "Agents can search it for you"],
         image: signoz,
         alt: "A SigNoz dashboard with request rate, error rate, throughput and p99 latency",
     },
     {
         icon: "aws",
         name: "AWS",
-        claim: "Tail a service without opening the console.",
-        points: ["ECS tasks with live CloudWatch logs", "Cost by month and by service", "Signs in with your SSO profile"],
+        claim: "Follow a service's logs without the AWS console.",
+        points: ["Live logs for your services", "What you spend, by month and by service", "Signs in with your company login"],
         image: aws,
         alt: "CloudWatch logs streaming for an ECS service, with a warning and an error highlighted",
     },
@@ -35,7 +35,7 @@ const plugins = [
         icon: "bruno",
         name: "Bruno",
         claim: "Send requests from the collection in your repo.",
-        points: ["Reads the .bru files on disk", "Environments and variables", "Pre- and post-request scripts"],
+        points: ["Uses the collection saved in your repo", "Switch between environments", "Scripts that run before and after a request"],
         image: bruno,
         alt: "A Bruno POST request and its 201 Created JSON response",
     },
@@ -45,8 +45,8 @@ const plugins = [
 <div class="plugins">
     <div class="section-head">
         <p class="label">Built-in plugins</p>
-        <h2>Deploys, logs and APIs, beside the code.</h2>
-        <p>Turn on the tools you ship with. Each one opens as a view in the same window, next to the project it belongs to.</p>
+        <h2>Check production without leaving.</h2>
+        <p>Turn on the tools your team already uses. Watch a deploy, read the logs or send an API request right next to the code, and hand anything you find to an agent.</p>
     </div>
     <div class="grid">
         {

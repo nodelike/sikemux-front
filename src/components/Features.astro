@@ -1,9 +1,7 @@
 ---
 import { Image } from "astro:assets";
-import Kbd from "./Kbd.astro";
 import Icon from "./Icon.astro";
 import Plugins from "./Plugins.astro";
-import Spread from "./Spread.astro";
 import editor from "../assets/shots/files-focus.png";
 import term from "../assets/shots/terminals-focus.png";
 import git from "../assets/shots/git-focus.png";
@@ -12,47 +10,42 @@ import activity from "../assets/shots/activity-page.png";
 
 const features = [
     {
-        label: "Files",
-        icon: "editor",
-        keys: ["⌥1", "⌘P"],
-        title: "An editor that knows which project it's in.",
-        body: "CodeMirror 6 with LSP hover, go to definition and peek. Problems and Outline cover the whole project, not just the open file. Side-by-side diffs, a three-way merge view, and a file tree that watches the disk.",
-        image: editor,
-        alt: "The file tree beside a TypeScript file in the editor",
-    },
-    {
-        label: "Term",
-        icon: "command",
-        keys: ["⌥2", "⌥\\"],
-        title: "Native shells, split as far as you like.",
-        body: "Every terminal is a real PTY owned by Rust. Split, tab, and drag a path in from the tree. Tasks from sikemux.json run in their own terminals and keep running when you close the view.",
-        image: term,
-        alt: "A terminal split showing 50 passing tests",
-    },
-    {
-        label: "Git",
-        icon: "git",
-        keys: ["⌥3"],
-        title: "Stage, commit, push. Let your CLI write the message.",
-        body: "Branches, worktrees, merges, pull and push. Commit messages stream in from the Claude, Codex or Hermes CLI you already have, using its login. Sikemux never calls a model itself.",
-        image: git,
-        alt: "A commit message drafted by Hermes above the staged and unstaged files",
-    },
-    {
         label: "Agents",
         icon: "agent",
-        keys: ["⌥4", "⌥N", "⌥Y"],
-        title: "Several agents on one repo, each in its own pane.",
-        body: "Pick an agent with ⌥N and it starts in a real terminal. Resume its saved sessions, and flip Normal or YOLO with ⌥Y. ⌘T opens a browser tab that belongs to the session and keeps its sign-ins. The agent can drive it, and you can take over at any time.",
+        title: "Ask an agent to fix it, and watch it work.",
+        body: "Start Claude Code, Codex or another agent right next to your code. It reads the project, edits files and runs commands while you watch, and you can step in at any time. Hand it a failing test, an error from the terminal, log lines or a GitHub issue in one click.",
         image: agents,
-        alt: "Codex running the terminal test suite and committing its fix",
+        alt: "Codex running the test suite, then committing its fix",
+    },
+    {
+        label: "Review",
+        icon: "git",
+        title: "Check what it changed, then ship.",
+        body: "See every file the agent touched before you commit, and let it write the commit message. Pull requests, issues and CI checks from GitHub and Bitbucket open right next to your code, so you can review and merge without a browser tab.",
+        image: git,
+        alt: "A commit message written by the agent above the files it changed",
+    },
+    {
+        label: "Code",
+        icon: "editor",
+        title: "A real code editor when you want to dive in.",
+        body: "Jump to any file, go to definitions, search the whole project and compare changes side by side. It also previews images, PDFs, video and Office files.",
+        image: editor,
+        alt: "The project's files beside a TypeScript file in the editor",
+    },
+    {
+        label: "Terminals",
+        icon: "command",
+        title: "Terminals that keep running.",
+        body: "Split as many terminals as you need for your dev server, tests and scripts. Close the window and your terminals and agents keep running in the background, right where you left them.",
+        image: term,
+        alt: "A terminal showing 50 passing tests",
     },
     {
         label: "Activity",
         icon: "activity",
-        keys: [],
         title: "See what your agents got done.",
-        body: "Agent time, sessions, tokens and commits, day by day, split by agent and by project. It counts only what runs inside Sikemux, and it stays on your Mac.",
+        body: "Time spent, chats, tokens and commits, day by day, for each agent and each project. It only counts work done in Sikemux, and it never leaves your Mac.",
         image: activity,
         alt: "The Activity page: totals, a year of daily activity, and breakdowns by agent and by project",
     },
@@ -61,7 +54,13 @@ const features = [
 ---
 
 <section class="section" id="features">
-    <Spread />
+    <div class="page">
+        <div class="section-head intro">
+            <p class="label">How it works</p>
+            <h2>Everything for one project, in one window.</h2>
+            <p>Your agents, code, terminals, Git and a browser all open on the same project folder, so nothing gets lost between apps.</p>
+        </div>
+    </div>
     <div class="page">
 
         <div class="features">
@@ -73,11 +72,6 @@ const features = [
                                 <span class="label name">
                                     <Icon name={feature.icon} size={14} />
                                     {feature.label}
-                                </span>
-                                <span class="keys">
-                                    {feature.keys.map((keys) => (
-                                        <Kbd keys={keys} />
-                                    ))}
                                 </span>
                             </p>
                             <h3>{feature.title}</h3>
@@ -96,6 +90,12 @@ const features = [
 </section>
 
 <style>
+    .intro {
+        margin-inline: auto;
+        text-align: center;
+        justify-items: center;
+    }
+
     .features {
         display: grid;
         gap: clamp(56px, 8vw, 96px);
@@ -176,10 +176,6 @@ const features = [
         gap: 10px;
     }
 
-    .keys {
-        display: inline-flex;
-        gap: 4px;
-    }
 
     h3 {
         font-size: 24px;
