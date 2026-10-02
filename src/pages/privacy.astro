@@ -1,0 +1,120 @@
+---
+import Legal from "../layouts/Legal.astro";
+---
+
+<Legal
+    title="Privacy policy"
+    description="What Sikemux collects, why, who handles it, and how to have it deleted."
+    updated="3 October 2026">
+    <p>
+        Sikemux is made by nodelike. This page covers the Sikemux app for your computer, the Sikemux phone app, your
+        Sikemux account at <a href="https://app.sikemux.com">app.sikemux.com</a>, and this website. Questions go to <a href="mailto:contact@nodelike.com">contact@nodelike.com</a>.
+    </p>
+
+    <h2>The short version</h2>
+    <ul>
+        <li>
+            Your code, files, terminals, agent chats, prompts and dictation stay on your devices. We never receive them.
+        </li>
+        <li>
+            Connections between your devices are encrypted end to end. A relay server that passes them along cannot read
+            them.
+        </li>
+        <li>
+            A Sikemux account holds your email address and the list of devices signed in to it. It exists so your
+            devices can find each other.
+        </li>
+        <li>We do not sell data, show ads, or share data with anyone except the services listed below.</li>
+    </ul>
+
+    <h2>Your Sikemux account</h2>
+    <p>
+        The phone app needs an account. The app on your computer works without one and asks you to sign in only to be
+        found by your phone. When you have an account, we keep:
+    </p>
+    <ul>
+        <li>
+            <strong>Who you are:</strong> your email address, and the name and profile picture Google or GitHub share if
+            you sign in with them. If you choose a password, only a hash of it is kept, never the password itself.
+        </li>
+        <li>
+            <strong>Your devices:</strong> for each device signed in to your account, its name (such as your computer's
+            name or your phone's model), its platform, which Sikemux release it runs, the public key it identifies itself
+            with, and when it was added and last updated.
+        </li>
+        <li>
+            <strong>A record of account changes:</strong> when a device was added or removed, and by which device, so you
+            and we can see what happened to your account.
+        </li>
+        <li>
+            <strong>Sign-in sessions:</strong> which browsers and devices are signed in, with the IP address and browser
+            details they signed in from, to keep your account secure.
+        </li>
+    </ul>
+    <p>
+        Signing out of the phone app removes that phone from your account. Signing out on your computer stops new
+        devices finding it through the account.
+    </p>
+
+    <h2>Server logs</h2>
+    <p>
+        Our servers log each request they handle: the address asked for, the answer, how long it took, and which account
+        made it. The web server also logs the IP address and browser of each visit. We use these logs to keep the service
+        running and to investigate abuse, and they are deleted automatically as newer logs replace them.
+    </p>
+
+    <h2>Usage statistics</h2>
+    <p>
+        Official releases of the Sikemux app for your computer send one message a day while you use them. It contains a
+        random ID made for your install, the app version, its update channel, and your operating system, its version and
+        your processor type. It contains nothing about you or your work, and we use it to count how many people use
+        each version. You can turn it off with Share anonymous usage, under Privacy in Settings, About. Builds you make
+        yourself never send it.
+    </p>
+    <p>
+        This website counts page views and clicks on the Download button without cookies and without identifying you.
+    </p>
+
+    <h2>What the apps download</h2>
+    <p>
+        The app checks GitHub for updates and downloads them from there. If you use dictation, it downloads the speech
+        model from Hugging Face once, and then turns speech into text on your computer. Those sites see your IP address
+        when they serve the download, as any website does.
+    </p>
+
+    <h2>Coding agents</h2>
+    <p>
+        Sikemux runs agents such as Claude Code and Codex on your computer. Each agent talks to its own company under its
+        own terms and privacy policy, and Sikemux does not send what you or your agents write to us.
+    </p>
+
+    <h2>Who handles data for us</h2>
+    <ul>
+        <li><strong>Clerk</strong> runs sign-in and stores your account details.</li>
+        <li><strong>Google and GitHub</strong> confirm who you are when you choose to sign in with them.</li>
+        <li><strong>Cloudflare</strong> checks that a new account is being made by a person, not a bot.</li>
+        <li><strong>Hostinger</strong> hosts the server that keeps your device list.</li>
+        <li><strong>PostHog</strong>, in the EU, counts the usage statistics and website visits described above.</li>
+        <li><strong>Vercel</strong> hosts this website, and <strong>GitHub</strong> hosts the downloads.</li>
+        <li>
+            <strong>Relay servers</strong> pass encrypted connections between your devices when they cannot reach each
+            other directly.
+        </li>
+    </ul>
+
+    <h2>Keeping and deleting your data</h2>
+    <p>
+        We keep your account and device list for as long as you have an account. To delete your account, email <a href="mailto:contact@nodelike.com">contact@nodelike.com</a> from the address on it. We delete the account
+        and its devices within 30 days and confirm when it is done. You can also ask for a copy of what we hold about
+        you, or for anything wrong to be corrected.
+    </p>
+
+    <h2>Children</h2>
+    <p>Sikemux is not meant for children under 13, and we do not knowingly keep accounts for them.</p>
+
+    <h2>Changes</h2>
+    <p>
+        If this policy changes, the date at the top changes with it. If a change affects what we collect, we will say so
+        in the app or on this website before it takes effect.
+    </p>
+</Legal>

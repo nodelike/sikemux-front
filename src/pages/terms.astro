@@ -1,0 +1,73 @@
+---
+import Legal from "../layouts/Legal.astro";
+import { REPO_URL } from "../lib/release";
+---
+
+<Legal
+    title="Terms of use"
+    description="The terms for using Sikemux, its phone app and Sikemux accounts."
+    updated="3 October 2026">
+    <p>
+        These terms cover the Sikemux app for your computer, the Sikemux phone app, and Sikemux accounts at <a href="https://app.sikemux.com">app.sikemux.com</a>. Sikemux is made by nodelike. By using them you agree to
+        these terms. Questions go to <a href="mailto:contact@nodelike.com">contact@nodelike.com</a>.
+    </p>
+
+    <h2>The software</h2>
+    <p>
+        Sikemux's source code is published under the <a href={`${REPO_URL}/blob/main/LICENSE`}>Functional Source License</a>, which governs how you may use, copy and
+        change the code. These terms add only what that license does not cover: the apps we publish and the account
+        service we run.
+    </p>
+
+    <h2>Your account</h2>
+    <ul>
+        <li>Give a real email address you can receive mail at, and keep your password and sign-ins to yourself.</li>
+        <li>
+            You are responsible for the devices you approve. A device you allow on your computer can reach what you
+            allow it to, such as its terminals and agents, so approve only devices you own or trust.
+        </li>
+        <li>One person per account. Do not share an account or sign in to someone else's.</li>
+    </ul>
+
+    <h2>Coding agents</h2>
+    <p>
+        Sikemux starts coding agents such as Claude Code and Codex on your computer, and they can read files, change
+        code and run commands with the permissions you give them. You choose those permissions, and you are responsible
+        for what your agents do and for following each agent's own terms.
+    </p>
+
+    <h2>Fair use</h2>
+    <p>Do not use Sikemux or Sikemux accounts to:</p>
+    <ul>
+        <li>break the law or anyone's rights;</li>
+        <li>reach devices or accounts that are not yours;</li>
+        <li>attack, overload or probe our servers, or get around their limits;</li>
+        <li>make accounts automatically or in bulk.</li>
+    </ul>
+    <p>We may suspend or close an account that does, and will tell you why when we can.</p>
+
+    <h2>The service</h2>
+    <p>
+        Sikemux accounts are free. We work to keep them running but cannot promise they will always be available, and
+        we may change or stop parts of the service. If we stop the account service altogether, we will say so in
+        advance.
+    </p>
+
+    <h2>No warranty</h2>
+    <p>
+        Sikemux is provided as it is, without warranties of any kind, as far as the law allows. To the extent the law
+        allows, nodelike is not liable for any indirect or consequential loss, or for lost data, code or profits,
+        arising from your use of Sikemux.
+    </p>
+
+    <h2>Ending</h2>
+    <p>
+        You can stop using Sikemux at any time, and delete your account by emailing <a href="mailto:contact@nodelike.com">contact@nodelike.com</a>. How we handle your data is in the <a href="/privacy">privacy policy</a>.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+        If these terms change, the date at the top changes with it. For a change that matters, we will say so in the app
+        or on this website before it takes effect.
+    </p>
+</Legal>
