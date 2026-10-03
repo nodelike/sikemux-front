@@ -21,6 +21,7 @@ const { title, description, updated } = Astro.props;
             <nav aria-label="Legal">
                 <a href="/privacy" aria-current={Astro.url.pathname.startsWith("/privacy") ? "page" : undefined}>Privacy</a>
                 <a href="/terms" aria-current={Astro.url.pathname.startsWith("/terms") ? "page" : undefined}>Terms</a>
+                <a href="/delete-account" aria-current={Astro.url.pathname.startsWith("/delete-account") ? "page" : undefined}>Delete account</a>
             </nav>
         </div>
     </header>
