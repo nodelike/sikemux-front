@@ -18,7 +18,8 @@ import Legal from "../layouts/Legal.astro";
         </li>
         <li>
             Connections between your devices are encrypted end to end. A relay server that passes them along cannot read
-            them.
+            them. Notifications from your computer to your phone are encrypted on your computer, with a key only your
+            phone has.
         </li>
         <li>
             A Sikemux account holds your email address and the list of devices signed in to it. It exists so your
@@ -50,10 +51,20 @@ import Legal from "../layouts/Legal.astro";
             <strong>Sign-in sessions:</strong> which browsers and devices are signed in, with the IP address and browser
             details they signed in from, to keep your account secure.
         </li>
+        <li>
+            <strong>Notifications:</strong> if you turn them on, the address Apple or Google gives your phone for
+            notifications, and which kind of phone it is. We delete it when you sign out, remove the phone, or turn
+            notifications off.
+        </li>
     </ul>
     <p>
-        Signing out of the phone app removes that phone from your account. Signing out on your computer stops new
-        devices finding it through the account.
+        Notifications from your computer to your phone are encrypted on your computer, with a key only your phone has. We
+        pass them to Apple or Google to deliver without being able to read them; we and they see only that a notification
+        went from one of your devices to another, when, and roughly how large it was.
+    </p>
+    <p>
+        Signing out of the phone app removes that phone from your account. Signing out on your computer removes it from
+        your account too; phones already paired with it keep working.
     </p>
 
     <h2>Server logs</h2>
@@ -100,16 +111,21 @@ import Legal from "../layouts/Legal.astro";
     <ul>
         <li><strong>Clerk</strong> runs sign-in and stores your account details.</li>
         <li><strong>Google and GitHub</strong> confirm who you are when you choose to sign in with them.</li>
-        <li><strong>Cloudflare</strong> checks that a new account is being made by a person, not a bot.</li>
-        <li><strong>Hostinger</strong> hosts the server that keeps your device list and serves phone app updates.</li>
+        <li>
+            <strong>Cloudflare</strong> checks that a new account is being made by a person, not a bot, and stores our
+            encrypted backups of the account database.
+        </li>
+        <li>
+            <strong>Hostinger</strong> hosts the server that keeps your device list, serves phone app updates, and runs
+            our relay, which passes encrypted connections between your devices when they cannot reach each other
+            directly.
+        </li>
+        <li>
+            <strong>Apple Push Notification service and Google Firebase Cloud Messaging</strong> deliver notifications
+            to your phone.
+        </li>
         <li><strong>PostHog</strong>, in the EU, counts the usage statistics and website visits described above.</li>
         <li><strong>Vercel</strong> hosts this website, and <strong>GitHub</strong> hosts the downloads.</li>
-        <li>
-            <strong>n0</strong>, the makers of the networking library Sikemux uses, run the relay servers that pass
-            encrypted connections between your devices when they cannot reach each other directly. When remote access is
-            on, your computer also lists its public key and its relay with n0's lookup service, so your devices can find
-            it.
-        </li>
     </ul>
 
     <h2>Keeping and deleting your data</h2>
