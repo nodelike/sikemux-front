@@ -35,7 +35,7 @@ import Legal from "../layouts/Legal.astro";
     <ul>
         <li>
             <strong>Who you are:</strong> your email address, and the name and profile picture Google or GitHub share if
-            you sign in with them. If you choose a password, only a hash of it is kept, never the password itself.
+            you sign in with them. The Sikemux apps show them so you can see which account you are signed in to. If you choose a password, only a hash of it is kept, never the password itself.
         </li>
         <li>
             <strong>Your devices:</strong> for each device signed in to your account, its name (such as your computer's
@@ -83,6 +83,12 @@ import Legal from "../layouts/Legal.astro";
         model from Hugging Face once, and then turns speech into text on your computer. Those sites see your IP address
         when they serve the download, as any website does.
     </p>
+    <p>
+        Each time it opens, the phone app asks our server at updates.sikemux.com whether a newer version of its own code
+        is available, and downloads it from there. Every update is signed, and the phone checks the signature before
+        using it. With each check the app sends its platform, an ID for the app build it is, and its update channel, so
+        the server can pick the right update. Our server logs these requests like any other, as described above.
+    </p>
 
     <h2>Coding agents</h2>
     <p>
@@ -95,7 +101,7 @@ import Legal from "../layouts/Legal.astro";
         <li><strong>Clerk</strong> runs sign-in and stores your account details.</li>
         <li><strong>Google and GitHub</strong> confirm who you are when you choose to sign in with them.</li>
         <li><strong>Cloudflare</strong> checks that a new account is being made by a person, not a bot.</li>
-        <li><strong>Hostinger</strong> hosts the server that keeps your device list.</li>
+        <li><strong>Hostinger</strong> hosts the server that keeps your device list and serves phone app updates.</li>
         <li><strong>PostHog</strong>, in the EU, counts the usage statistics and website visits described above.</li>
         <li><strong>Vercel</strong> hosts this website, and <strong>GitHub</strong> hosts the downloads.</li>
         <li>
@@ -109,8 +115,14 @@ import Legal from "../layouts/Legal.astro";
     <h2>Keeping and deleting your data</h2>
     <p>
         We keep your account and device list for as long as you have an account. To delete your account, email <a href="mailto:contact@nodelike.com">contact@nodelike.com</a> from the address on it. We delete the account
-        and its devices within 30 days and confirm when it is done. You can also ask for a copy of what we hold about
-        you, or for anything wrong to be corrected.
+        and its devices within 30 days and confirm when it is done. The steps are on <a href="/delete-account">Delete your account</a>.
+    </p>
+    <p>
+        We back up the account database so it can be restored if something goes wrong. Backups are kept for 30 days and
+        then deleted, so a deleted account is gone from them within 30 days too.
+    </p>
+    <p>
+        You can also ask for a copy of what we hold about you, or for anything wrong to be corrected.
     </p>
 
     <h2>Children</h2>
