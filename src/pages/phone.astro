@@ -1,0 +1,197 @@
+---
+import Base from "../layouts/Base.astro";
+import Logo from "../components/Logo.astro";
+
+const testers = "https://groups.google.com/g/sikemux-android-testers";
+const optIn = "https://play.google.com/apps/testing/com.nodelike.sikemux.mobile";
+const play = "https://play.google.com/store/apps/details?id=com.nodelike.sikemux.mobile";
+---
+
+<Base
+    title="Sikemux on your phone"
+    description="Watch your coding agents work, answer what they ask and start new chats from your phone.">
+    <header class="top">
+        <div class="page bar">
+            <a class="brand" href="/" aria-label="Sikemux home">
+                <span class="mark"><Logo size={20} /></span>
+                <span class="word">SIKE<span>MUX</span></span>
+            </a>
+        </div>
+    </header>
+    <main class="page phone">
+        <h1>Sikemux on your phone</h1>
+        <p class="lede">
+            Watch your agents work, answer what they ask and start new chats from anywhere. Sign in with the same
+            account as Sikemux on your computer, then click <strong>Allow</strong> on the computer when it asks.
+        </p>
+
+        <section class="card">
+            <h2>Android</h2>
+            <p>Sikemux is in testing on Google Play. Join the testers first, then install it.</p>
+            <ol>
+                <li><span>Join the testers group</span><a class="button" href={testers}>Join</a></li>
+                <li><span>Become a tester on Google Play</span><a class="button" href={optIn}>Become a tester</a></li>
+                <li><span>Install Sikemux</span><a class="button primary" href={play}>Get it on Google Play</a></li>
+            </ol>
+        </section>
+
+        <section class="card quiet">
+            <h2>iPhone</h2>
+            <p>Coming soon.</p>
+        </section>
+    </main>
+</Base>
+
+<style>
+    .top {
+        border-bottom: 1px solid var(--border);
+    }
+
+    .bar {
+        display: flex;
+        align-items: center;
+        height: 64px;
+    }
+
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-primary);
+    }
+
+    .mark {
+        display: grid;
+        place-items: center;
+        color: var(--acc);
+    }
+
+    .word {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+    }
+
+    .word span {
+        color: var(--text-tertiary);
+    }
+
+    .phone {
+        max-width: 640px;
+        padding-block: clamp(48px, 8vw, 96px);
+    }
+
+    h1 {
+        margin: 0 0 16px;
+        font-size: clamp(36px, 5vw, 52px);
+        line-height: 1.04;
+        letter-spacing: -0.04em;
+    }
+
+    .lede {
+        margin: 0 0 40px;
+        font-size: 17px;
+        line-height: 1.6;
+    }
+
+    .lede strong {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .card {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 16px;
+        padding: 24px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface-raised);
+    }
+
+    .card h2 {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: -0.025em;
+        color: var(--text-primary);
+    }
+
+    .card p {
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .card.quiet {
+        background: none;
+    }
+
+    ol {
+        display: grid;
+        gap: 10px;
+        margin: 8px 0 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: step;
+    }
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        counter-increment: step;
+    }
+
+    li::before {
+        content: counter(step);
+        display: grid;
+        place-items: center;
+        flex: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--ink) 10%, transparent);
+        color: var(--text-primary);
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    li span {
+        flex: 1;
+    }
+
+    .button {
+        display: inline-flex;
+        align-items: center;
+        height: 36px;
+        padding-inline: 14px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-2);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        white-space: nowrap;
+    }
+
+    .button:hover {
+        background: var(--surface-hover);
+    }
+
+    .button.primary {
+        border-color: var(--ink);
+        background: var(--ink);
+        color: var(--bg);
+    }
+
+    @media (max-width: 520px) {
+        li {
+            display: grid;
+            grid-template-columns: 24px minmax(0, 1fr);
+            row-gap: 8px;
+        }
+
+        li .button {
+            grid-column: 2;
+            justify-self: start;
+        }
+    }
+</style>
