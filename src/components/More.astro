@@ -1,68 +1,118 @@
 ---
-import Icon from "./Icon.astro";
+import { Image } from "astro:assets";
+import allAgents from "../assets/shots/agents-all-projects-rail.png";
+import spaces from "../assets/cards/spaces.png";
+import deck from "../assets/cards/deck.png";
+import splits from "../assets/cards/splits.png";
+import ssh from "../assets/cards/ssh.png";
+import limits from "../assets/cards/limits.png";
+import tools from "../assets/cards/tools.png";
 
 const cards = [
     {
-        icon: "browser",
-        title: "A browser for each agent",
-        body: "Your agent can open your app, click through it and take screenshots, like a tester would. Take over the tab at any time.",
+        title: "All Agents, One List",
+        body: "Every running agent and recent chat across your open projects, sorted into needs you, working and done. Click one to jump to it.",
+        image: allAgents,
+        alt: "The agent rail listing chats from several projects",
+        fit: "rail",
     },
     {
-        icon: "git",
-        title: "One agent per branch",
-        body: "Give a chat its own copy of the repo so agents don't trip over each other. It cleans up once its pull request is merged.",
+        title: "Terminal Splits",
+        body: "WebGL rendering, drag a tab to split beside, above or below. Terminals keep running after you quit and come back after updates.",
+        image: splits,
+        alt: "Three terminals side by side running a dev server, tests and git",
+        fit: "contain",
+        keys: "⌘ D",
     },
     {
-        icon: "send",
-        title: "Send anything to an agent",
-        body: "Pass it an error from the terminal, a line from the logs, a code problem or a pull request comment in one click.",
+        title: "Command Deck",
+        body: "Every action and shortcut in one search. Check in a sikemux.json and your dev server, checks and scripts show up here, for you and your agents.",
+        image: deck,
+        alt: "The command deck listing a project's actions and tasks",
+        keys: "⌘ ⇧ P",
     },
     {
-        icon: "plug",
-        title: "Agents can use the app too",
-        body: "An agent can start your dev server, read its output and open the file it changed for you to look at.",
+        title: "Sikemux Tools for Agents",
+        body: "Agents drive Sikemux and its plugins: open, click and screenshot your app, start and read tasks, search SigNoz logs, comment on and move Jira issues.",
+        image: tools,
+        alt: "Nine tool calls: reading a Jira issue and SigNoz logs, starting the dev task, opening, clicking and screenshotting checkout, then commenting on and moving the issue",
     },
     {
-        icon: "timer",
-        title: "Usage at a glance",
-        body: "See how much of your Claude or Codex limit is left, and switch accounts in a click.",
+        title: "Multiple Accounts",
+        body: "Add several Claude or Codex accounts and see each one's five-hour and weekly limits. Switch in a click, or let a chat move to the next account when one runs out.",
+        image: limits,
+        alt: "The account picker open on Work, Personal at 82% used and Client at 9% used, above Work's five-hour and weekly limits",
+        fit: "contain",
     },
     {
-        icon: "folder",
-        title: "Spaces for your projects",
-        body: "Group projects by team or client, and switch between them without the clutter.",
+        title: "Project Spaces",
+        body: "Group projects by team or client. Pick a space and the rail shows only its projects, with the agents running in each.",
+        image: spaces,
+        alt: "The project rail with All, Acme and Personal spaces, and the sikemux project open on its files, terminals, Git, agents and search",
+        fit: "contain",
     },
     {
-        icon: "globe",
-        title: "Ports you can see",
-        body: "A chip shows which ports your app is listening on, so you always know where it's running.",
+        title: "SSH Hosts",
+        body: "Every host in your ~/.ssh/config, one click from a terminal on it.",
+        image: ssh,
+        alt: "Two SSH hosts in the rail above the plugins",
+        fit: "contain",
     },
     {
-        icon: "command",
-        title: "Fast from the keyboard",
-        body: "⌘N starts an agent, ⌘T opens a terminal, and every view and action has its own shortcut.",
+        title: "sikemux CLI",
+        body: "Open a folder, jump to a file and line, or use Sikemux as Git's editor, straight from your shell.",
+        terminal: ["sikemux .", "sikemux src/App.tsx:42", "EDITOR=sikemux-editor git commit"],
     },
     {
-        icon: "shield",
-        title: "No account needed",
-        body: "Download it and start. Your code only goes to the agent you chose, never to us.",
+        title: "Keyboard First",
+        body: "A shortcut for every view and action. Rebind any of them in Settings.",
+        shortcuts: [
+            ["⌘ N", "New agent"],
+            ["⌘ T", "New terminal"],
+            ["⌘ P", "Open file"],
+            ["⌘ J", "Agent's desk"],
+        ],
     },
 ] as const;
 ---
 
 <section class="section" id="more">
     <div class="page">
-        <div class="section-head intro">
+        <div class="section-head">
             <p class="label">And more</p>
-            <h2>The small things add up.</h2>
+            <h2>Everything else, built in.</h2>
         </div>
         <ul class="cards">
             {
                 cards.map((card) => (
                     <li>
-                        <span class="icon">
-                            <Icon name={card.icon} size={16} />
-                        </span>
+                        <figure class:list={["visual", "fit" in card && card.fit]}>
+                            {"image" in card && (
+                                <button type="button" class="zoom" data-zoom={card.image.src} data-alt={card.alt} aria-label={`Show larger: ${card.alt}`}>
+                                    <Image src={card.image} alt={card.alt} width={Math.round(card.image.width / 2)} densities={[1, 2]} format="webp" quality={95} />
+                                </button>
+                            )}
+                            {"terminal" in card && (
+                                <div class="term mono">
+                                    {card.terminal.map((line) => (
+                                        <span>
+                                            <b>❯</b> {line}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                            {"shortcuts" in card && (
+                                <dl class="keys">
+                                    {card.shortcuts.map(([keys, action]) => (
+                                        <div>
+                                            <dt>{keys}</dt>
+                                            <dd>{action}</dd>
+                                        </div>
+                                    ))}
+                                </dl>
+                            )}
+                            {"keys" in card && <span class="badge">{card.keys}</span>}
+                        </figure>
                         <h3>{card.title}</h3>
                         <p>{card.body}</p>
                     </li>
@@ -70,19 +120,35 @@ const cards = [
             }
         </ul>
     </div>
+    <dialog class="lightbox" data-lightbox>
+        <form method="dialog">
+            <button class="close" aria-label="Close">✕</button>
+        </form>
+        <img alt="" />
+    </dialog>
 </section>
 
-<style>
-    .intro {
-        margin-inline: auto;
-        text-align: center;
-        justify-items: center;
+<script>
+    const lightbox = document.querySelector<HTMLDialogElement>("[data-lightbox]");
+    const picture = lightbox?.querySelector("img");
+    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-zoom]")) {
+        button.addEventListener("click", () => {
+            if (!lightbox || !picture) return;
+            picture.src = button.dataset.zoom ?? "";
+            picture.alt = button.dataset.alt ?? "";
+            lightbox.showModal();
+        });
     }
+    lightbox?.addEventListener("click", (event) => {
+        if (event.target === lightbox) lightbox.close();
+    });
+</script>
 
+<style>
     .cards {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
+        gap: 16px;
         margin: 0;
         padding: 0;
         list-style: none;
@@ -90,33 +156,196 @@ const cards = [
 
     li {
         display: grid;
-        align-content: start;
+        grid-template-rows: auto auto 1fr;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background: var(--surface);
+        transition: border-color var(--dur-2) var(--ease-out);
+    }
+
+    li:hover {
+        border-color: var(--border-strong);
+    }
+
+    .visual {
+        position: relative;
+        margin: 0;
+        aspect-ratio: 16 / 10;
+        overflow: hidden;
+        border-bottom: 1px solid var(--border);
+        background:
+            radial-gradient(80% 70% at 50% 0%, color-mix(in oklab, var(--acc) 10%, transparent), transparent 70%),
+            var(--surface-sunken);
+    }
+
+    .zoom {
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border: 0;
+        background: none;
+        cursor: zoom-in;
+    }
+
+    .zoom :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top left;
+        transition: transform 0.4s var(--ease-out);
+    }
+
+    li:hover .zoom :global(img) {
+        transform: scale(1.02);
+    }
+
+    .contain .zoom,
+    .rail .zoom {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+    }
+
+    .rail .zoom {
+        align-items: flex-start;
+        padding-bottom: 0;
+    }
+
+    .contain .zoom :global(img),
+    .rail .zoom :global(img) {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .rail .zoom :global(img) {
+        max-height: none;
+        mask-image: linear-gradient(to bottom, #000 80%, transparent);
+        -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent);
+        border: 1px solid var(--border);
+        border-bottom: 0;
+        border-radius: var(--radius-3) var(--radius-3) 0 0;
+    }
+
+    .badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 4px 10px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-2);
+        background: color-mix(in oklab, var(--bg-dim) 85%, transparent);
+        backdrop-filter: blur(6px);
+        font-family: var(--kbd);
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        color: var(--text-primary);
+        pointer-events: none;
+    }
+
+    .term {
+        display: grid;
+        align-content: center;
+        gap: 12px;
+        height: 100%;
+        margin: 0;
+        padding: 24px;
+        font-size: 13px;
+        color: var(--text-primary);
+    }
+
+    .term b {
+        color: var(--acc);
+        font-weight: 400;
+    }
+
+    .keys {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-content: center;
         gap: 10px;
+        height: 100%;
+        margin: 0;
         padding: 22px;
+    }
+
+    .keys div {
+        display: grid;
+        justify-items: center;
+        gap: 6px;
+        padding: 10px 8px;
         border: 1px solid var(--border);
         border-radius: var(--radius-3);
         background: var(--surface);
     }
 
-    .icon {
-        display: grid;
-        place-items: center;
-        width: 32px;
-        height: 32px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-2);
-        color: var(--acc);
+    .keys dt {
+        padding: 2px 8px;
+        border: 1px solid var(--border-strong);
+        border-bottom-width: 2px;
+        border-radius: var(--radius-1);
+        font-family: var(--kbd);
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        color: var(--text-primary);
+    }
+
+    .keys dd {
+        margin: 0;
+        font-size: 12px;
+        color: var(--text-tertiary);
     }
 
     h3 {
+        padding: 20px 22px 0;
         font-size: 16px;
     }
 
-    p {
-        margin: 0;
+    li > p {
+        padding: 8px 22px 22px;
         font-size: 14.5px;
         line-height: 1.55;
         color: var(--text-secondary);
+    }
+
+    .lightbox {
+        max-width: min(92vw, 1400px);
+        max-height: 90vh;
+        padding: 0;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-4);
+        background: var(--surface-sunken);
+        overflow: hidden;
+    }
+
+    .lightbox::backdrop {
+        background: rgba(0, 0, 0, 0.72);
+        backdrop-filter: blur(4px);
+    }
+
+    .lightbox img {
+        display: block;
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-2);
+        background: var(--surface);
+        color: var(--text-primary);
+        cursor: pointer;
     }
 
     @media (max-width: 960px) {
