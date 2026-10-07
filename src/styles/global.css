@@ -130,10 +130,15 @@ h3 {
     text-wrap: balance;
 }
 
+h1,
 h2 {
-    font-size: clamp(30px, 4vw, 48px);
-    line-height: 1.06;
-    letter-spacing: -0.035em;
+    font-weight: 500;
+}
+
+h2 {
+    font-size: clamp(32px, 4.4vw, 54px);
+    line-height: 1.04;
+    letter-spacing: -0.04em;
 }
 
 h3 {
@@ -189,7 +194,7 @@ main {
 
 .section {
     position: relative;
-    padding-block: clamp(64px, 8vw, 104px);
+    padding-block: clamp(80px, 10vw, 136px);
     border-top: 1px solid var(--border);
 }
 

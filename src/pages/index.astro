@@ -5,6 +5,10 @@ import Hero from "../components/Hero.astro";
 import Agents from "../components/Agents.astro";
 import Features from "../components/Features.astro";
 import Phone from "../components/Phone.astro";
+import Notch from "../components/Notch.astro";
+import Marquee from "../components/Marquee.astro";
+import Compare from "../components/Compare.astro";
+import Plugins from "../components/Plugins.astro";
 import More from "../components/More.astro";
 import Size from "../components/Size.astro";
 import Faq from "../components/Faq.astro";
@@ -15,7 +19,7 @@ import { formatSize, latestRelease, recentReleases, REPO_URL, starCount } from "
 const [release, stars, releases] = await Promise.all([latestRelease(), starCount(), recentReleases()]);
 
 const description =
-    "The IDE for you and your coding agents. Ask Claude Code or Codex to fix a bug, watch it edit, test and try your app in a real browser, then review and ship in one window. Free for Mac.";
+    "The IDE for you and your coding agents. Ask Claude Code or Codex to fix a bug, watch it edit, test and try your app in a real browser, then review and ship in one window. Check on them from your phone or the notch. Free for Mac.";
 
 const structuredData = [
     {
@@ -53,10 +57,14 @@ const structuredData = [
     <Nav release={release} stars={stars} />
     <main>
         <Hero release={release} stars={stars} />
+        <Marquee />
         <Features />
-        <Agents />
+        <Notch />
         <Phone />
+        <Agents />
+        <Plugins />
         <More />
+        <Compare />
         <Size release={release} />
         <Faq />
     </main>

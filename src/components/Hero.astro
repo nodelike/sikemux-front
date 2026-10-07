@@ -1,7 +1,7 @@
 ---
-import Stage from "./Stage.astro";
+import { Image } from "astro:assets";
+import hero from "../assets/hero/hero.png";
 import Dither from "./Dither.astro";
-import AgentIcon from "./AgentIcon.astro";
 import GithubStars from "./GithubStars.astro";
 import DownloadButton from "./DownloadButton.astro";
 import { formatSize, type Release } from "../lib/release";
@@ -12,22 +12,17 @@ interface Props {
 }
 
 const { release, stars } = Astro.props;
-
-const agents = [
-    { id: "claude", name: "Claude Code", color: "var(--brand-claude)" },
-    { id: "codex", name: "Codex", color: "var(--brand-codex)" },
-    { id: "hermes", name: "Hermes", color: "var(--brand-hermes)" },
-    { id: "pi", name: "Pi", color: "var(--brand-pi)" },
-    { id: "opencode", name: "OpenCode", color: "var(--brand-opencode)" },
-    { id: "omp", name: "OMP", color: "var(--brand-omp)" },
-    { id: "grok", name: "Grok", color: "var(--brand-grok)" },
-] as const;
 ---
 
 <section class="hero">
     <Dither class="grain" />
     <div class="page">
         <div class="copy">
+            <a class="news" href="#new">
+                <span class="tag mono">New in 0.5</span>
+                <span>Your agents on your phone and in the notch</span>
+                <span class="arrow" aria-hidden="true">→</span>
+            </a>
             <h1>The IDE for you and your coding agents.</h1>
             <p class="lede">
                 Ask Claude Code or Codex to fix a bug, then watch it edit your code, run your tests and try your app in a real browser. Review
@@ -43,30 +38,29 @@ const agents = [
                 <span>Mac, Apple Silicon</span>
                 <span>free</span>
             </p>
-            <div class="works">
-                <span class="label">Works with the agents you already use</span>
-                <ul>
-                    {
-                        agents.map((agent) => (
-                            <li style={`--brand: ${agent.color}`}>
-                                <AgentIcon agent={agent.id} size={16} />
-                                <span>{agent.name}</span>
-                            </li>
-                        ))
-                    }
-                </ul>
-            </div>
+            <p class="also">Also on your phone: <a href="/phone">Android, in testing</a> · iPhone soon</p>
         </div>
-        <div class="stage-wrap">
-            <Stage />
-        </div>
+    </div>
+    <div class="stage-wrap">
+        <figure class="shot-frame">
+            <Image
+                src={hero}
+                alt="A Claude Code agent fixing a bug on the Sikemux site, with the page open in its own browser tab"
+                widths={[1440, 2160, 2880]}
+                sizes="(min-width: 1520px) 1440px, 100vw"
+                format="avif"
+                quality={72}
+                loading="eager"
+                fetchpriority="high"
+            />
+        </figure>
     </div>
 </section>
 
 <style>
     .hero {
         position: relative;
-        padding-block: clamp(56px, 9vw, 112px) clamp(64px, 8vw, 96px);
+        padding-block: clamp(48px, 7vw, 88px) clamp(64px, 8vw, 96px);
         isolation: isolate;
     }
 
@@ -81,52 +75,76 @@ const agents = [
         justify-items: center;
         gap: 22px;
         max-width: 860px;
-        margin: 0 auto clamp(48px, 7vw, 72px);
+        margin: 0 auto clamp(40px, 5vw, 56px);
         text-align: center;
     }
 
-    .works {
-        display: grid;
-        justify-items: center;
-        gap: 12px;
-        margin-top: 18px;
-    }
-
-    .works ul {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
-
-    .works li {
+    .news {
         display: inline-flex;
         align-items: center;
-        gap: 7px;
+        gap: 10px;
         height: 32px;
-        padding: 0 11px 0 9px;
+        padding: 0 12px 0 4px;
         border: 1px solid var(--border);
         border-radius: 999px;
-        background: color-mix(in oklab, var(--brand) 7%, var(--surface));
-        color: var(--brand);
-        font-size: 13px;
+        background: color-mix(in oklab, var(--surface) 70%, transparent);
+        font-size: 13.5px;
+        color: var(--text-secondary);
         transition: border-color var(--dur-2) var(--ease-out);
     }
 
-    .works li:hover {
-        border-color: color-mix(in oklab, var(--brand) 45%, var(--border));
+    .news:hover {
+        border-color: var(--border-strong);
+        color: var(--text-primary);
     }
 
-    .works li span {
+    .news .tag {
+        padding: 3px 9px;
+        border: 1px solid var(--border-selected);
+        border-radius: 999px;
+        background: var(--surface-selected);
+        font-size: 11px;
+        letter-spacing: 0.04em;
         color: var(--text-primary);
+    }
+
+    .news .arrow {
+        color: var(--text-tertiary);
+    }
+
+    .also {
+        margin-top: -10px;
+        font-size: 13px;
+        color: var(--text-tertiary);
+    }
+
+    .also a {
+        color: var(--text-secondary);
+        text-decoration: underline;
+        text-decoration-color: var(--border-strong);
+        text-underline-offset: 3px;
+    }
+
+    .shot-frame {
+        margin: 0;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        overflow: hidden;
+        background: var(--surface-sunken);
+        aspect-ratio: 1440 / 900;
+    }
+
+    .shot-frame :global(img) {
+        display: block;
+        width: 100%;
+        height: auto;
     }
 
     .stage-wrap {
         position: relative;
         isolation: isolate;
+        width: min(100% - 2 * var(--gutter), 1440px);
+        margin-inline: auto;
     }
 
     .stage-wrap::before {
@@ -141,9 +159,9 @@ const agents = [
 
     h1 {
         max-width: 16ch;
-        font-size: clamp(38px, 5.4vw, 72px);
-        line-height: 1.02;
-        letter-spacing: -0.045em;
+        font-size: clamp(40px, 5.8vw, 78px);
+        line-height: 1;
+        letter-spacing: -0.05em;
     }
 
     .lede {
