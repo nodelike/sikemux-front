@@ -1,0 +1,127 @@
+---
+import AgentIcon from "./AgentIcon.astro";
+import Icon from "./Icon.astro";
+
+const agents = [
+    { id: "claude", name: "Claude Code", color: "var(--brand-claude)" },
+    { id: "codex", name: "Codex", color: "var(--brand-codex)" },
+    { id: "hermes", name: "Hermes", color: "var(--brand-hermes)" },
+    { id: "pi", name: "Pi", color: "var(--brand-pi)" },
+    { id: "opencode", name: "OpenCode", color: "var(--brand-opencode)" },
+    { id: "omp", name: "OMP", color: "var(--brand-omp)" },
+    { id: "grok", name: "Grok", color: "var(--brand-grok)" },
+] as const;
+
+const tools = [
+    { icon: "github", name: "GitHub" },
+    { icon: "jira", name: "Jira" },
+    { icon: "aws", name: "AWS" },
+    { icon: "rundeck", name: "Rundeck" },
+    { icon: "signoz", name: "SigNoz" },
+    { icon: "bruno", name: "Bruno" },
+] as const;
+---
+
+<section class="marquee" aria-label="Works with">
+    <p class="label">Works with the agents and tools you already use</p>
+    <div class="track">
+        <div class="belt">
+        {
+            [0, 1, 2, 3].map((copy) => (
+                <ul aria-hidden={copy > 0 ? "true" : undefined}>
+                    {agents.map((agent) => (
+                        <li style={`--brand: ${agent.color}`}>
+                            <AgentIcon agent={agent.id} size={20} />
+                            <span>{agent.name}</span>
+                        </li>
+                    ))}
+                    {tools.map((tool) => (
+                        <li class="tool">
+                            <Icon name={tool.icon} size={18} />
+                            <span>{tool.name}</span>
+                        </li>
+                    ))}
+                </ul>
+            ))
+        }
+        </div>
+    </div>
+</section>
+
+<style>
+    .marquee {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
+        gap: 22px;
+        padding-block: 8px clamp(56px, 7vw, 88px);
+        overflow: hidden;
+    }
+
+    .track {
+        display: flex;
+        width: 100%;
+        mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+    }
+
+    .belt {
+        display: flex;
+        width: max-content;
+        animation: slide 60s linear infinite;
+    }
+
+    .track:hover .belt {
+        animation-play-state: paused;
+    }
+
+    ul {
+        display: flex;
+        flex: none;
+        gap: 44px;
+        margin: 0;
+        padding: 0 22px;
+        list-style: none;
+    }
+
+    li {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 17px;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        color: var(--brand);
+        white-space: nowrap;
+    }
+
+    li span {
+        color: var(--text-secondary);
+    }
+
+    .tool {
+        color: var(--text-secondary);
+    }
+
+    @keyframes slide {
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .belt {
+            width: auto;
+            animation: none;
+        }
+
+        ul {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        ul[aria-hidden] {
+            display: none;
+        }
+    }
+</style>

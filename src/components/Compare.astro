@@ -1,0 +1,90 @@
+---
+const rows = [
+    { capability: "Agents, code, Git and a browser on the same project", sikemux: true, usual: "Switch between apps" },
+    { capability: "Agents test your app in their own browser tab", sikemux: true, usual: "Extra setup" },
+    { capability: "Agents keep running after you quit", sikemux: true, usual: "Only inside tmux" },
+    { capability: "Answer agents from your phone or the notch", sikemux: true, usual: "—" },
+    { capability: "CI, issues, logs and deploys next to the code", sikemux: true, usual: "Browser tabs" },
+    { capability: "Runs on the AI plan you already pay for", sikemux: true, usual: true },
+] as const;
+---
+
+<section class="section" id="compare">
+    <div class="page">
+        <div class="section-head">
+            <p class="label">Compared</p>
+            <h2>One window instead of five.</h2>
+            <p>What changes when your agents, code and tools share a project, rather than living in a terminal, an editor and a pile of browser tabs.</p>
+        </div>
+        <div class="table" role="table" aria-label="Sikemux compared with separate apps">
+            <div class="row head" role="row">
+                <span role="columnheader">What you get</span>
+                <span role="columnheader" class="own">Sikemux</span>
+                <span role="columnheader">Separate apps</span>
+            </div>
+            {
+                rows.map((row) => (
+                    <div class="row" role="row">
+                        <span role="cell">{row.capability}</span>
+                        <span role="cell" class="own">
+                            <span class="check" aria-label="Yes">✓</span>
+                        </span>
+                        <span role="cell" class="usual">
+                            {row.usual === true ? <span class="check dim" aria-label="Yes">✓</span> : row.usual}
+                        </span>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .table {
+        border-top: 1px solid var(--border);
+    }
+
+    .row {
+        display: grid;
+        grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr) minmax(0, 1fr);
+        align-items: center;
+        gap: 16px;
+        padding: 16px 4px;
+        border-bottom: 1px solid var(--border);
+        font-size: 15px;
+        color: var(--text-primary);
+    }
+
+    .head {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-tertiary);
+    }
+
+    .head .own {
+        color: var(--acc);
+    }
+
+    .usual {
+        font-size: 14px;
+        color: var(--text-tertiary);
+    }
+
+    .check {
+        color: var(--live);
+        font-size: 16px;
+    }
+
+    .check.dim {
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 640px) {
+        .row {
+            grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.6fr) minmax(0, 1fr);
+            font-size: 14px;
+        }
+    }
+</style>
