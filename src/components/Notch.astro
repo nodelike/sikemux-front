@@ -1,0 +1,190 @@
+---
+const steps = [
+    {
+        title: "Glance",
+        body: "The notch shows which agents are working and which are done, without opening anything.",
+        from: 0,
+    },
+    {
+        title: "Answer",
+        body: "When an agent needs permission, the island grows to ask. Allow or deny it right there.",
+        from: 2.6,
+    },
+    {
+        title: "Open",
+        body: "Rest the pointer on it to see every agent, then click one to jump straight to it.",
+        from: 5.1,
+    },
+    {
+        title: "Done",
+        body: "When an agent finishes, the island says which one, then settles back.",
+        from: 7.1,
+    },
+] as const;
+---
+
+<section class="section" id="new">
+    <div class="page" data-notch>
+        <div class="section-head intro">
+            <p class="label">New in 0.5 · The notch</p>
+            <h2>Your agents live in the notch.</h2>
+            <p>
+                A small island over the MacBook notch keeps every agent in sight, even when Sikemux is behind another app. Macs without a
+                notch get a slim pill instead.
+            </p>
+        </div>
+        <figure class="screen">
+            <video muted loop playsinline preload="none" width="2400" height="960" poster="/video/notch-poster.jpg" aria-label="The notch island: agents working, Claude asking to run a command and being allowed, the list of agents opening, then Codex finishing">
+                <source src="/video/notch.webm" type="video/webm" />
+                <source src="/video/notch.mp4" type="video/mp4" />
+            </video>
+        </figure>
+        <ol class="steps">
+            {
+                steps.map((step, index) => (
+                    <li>
+                        <button type="button" data-from={step.from} aria-current={index === 0 ? "step" : undefined}>
+                            <span class="progress" aria-hidden="true" />
+                            <span class="title">{step.title}</span>
+                            <span class="body">{step.body}</span>
+                        </button>
+                    </li>
+                ))
+            }
+        </ol>
+    </div>
+</section>
+
+<script>
+    for (const notch of document.querySelectorAll<HTMLElement>("[data-notch]")) {
+        const video = notch.querySelector("video");
+        const buttons = [...notch.querySelectorAll<HTMLButtonElement>("[data-from]")];
+        if (!video) continue;
+        const starts = buttons.map((button) => Number(button.dataset.from));
+
+        const sync = () => {
+            const time = video.currentTime;
+            const index = starts.findLastIndex((start) => time >= start);
+            const end = starts[index + 1] ?? video.duration;
+            buttons.forEach((button, i) => {
+                if (i === index) button.setAttribute("aria-current", "step");
+                else button.removeAttribute("aria-current");
+                const share = i < index ? 1 : i === index ? (time - starts[i]) / (end - starts[i]) : 0;
+                button.style.setProperty("--share", String(Math.min(Math.max(share, 0), 1)));
+            });
+        };
+        const loop = () => {
+            sync();
+            if (!video.paused) requestAnimationFrame(loop);
+        };
+        video.addEventListener("play", loop);
+        video.addEventListener("seeked", sync);
+        buttons.forEach((button, i) => {
+            button.addEventListener("click", () => {
+                video.currentTime = starts[i];
+                video.play();
+            });
+        });
+
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            video.controls = true;
+            continue;
+        }
+
+        new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) video.play().catch(() => {});
+                else video.pause();
+            },
+            { rootMargin: "200px 0px" },
+        ).observe(video);
+    }
+</script>
+
+<style>
+    .intro {
+        margin-inline: auto;
+        text-align: center;
+        justify-items: center;
+    }
+
+    .screen {
+        margin: 0;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        overflow: hidden;
+        background: #17141e;
+        box-shadow: 0 40px 120px -50px color-mix(in oklab, var(--acc) 45%, transparent);
+    }
+
+    video {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1280 / 512;
+    }
+
+    .steps {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 20px;
+        margin: 28px 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .steps button {
+        display: grid;
+        align-content: start;
+        gap: 6px;
+        width: 100%;
+        padding: 0;
+        border: 0;
+        background: none;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity var(--dur-2) var(--ease-out);
+    }
+
+    .steps button[aria-current] {
+        opacity: 1;
+    }
+
+    .progress {
+        position: relative;
+        height: 2px;
+        margin-bottom: 10px;
+        border-radius: 1px;
+        background: var(--border);
+        overflow: hidden;
+    }
+
+    .progress::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--acc);
+        transform: scaleX(var(--share, 0));
+        transform-origin: left;
+    }
+
+    .title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .body {
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 760px) {
+        .steps {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+</style>
