@@ -5,8 +5,23 @@ import aws from "../assets/shots/aws-ecs-logs-card.png";
 import rundeck from "../assets/shots/rundeck-deploy-card.png";
 import signoz from "../assets/shots/signoz-dashboard-card.png";
 import bruno from "../assets/shots/bruno-card.png";
+import github from "../assets/shots/github-run-card.png";
 
 const plugins = [
+    {
+        icon: "github",
+        name: "GitHub Actions",
+        claim: "Watch CI without opening GitHub.",
+        points: ["Runs, jobs and their logs", "Re-run, download artifacts, approve deploys", "Bitbucket Pipelines too"],
+        image: github,
+        alt: "A passing release workflow with its four jobs and the test report",
+    },
+    {
+        icon: "jira",
+        name: "Jira",
+        claim: "Your issue, next to the branch that fixes it.",
+        points: ["Search, comment, move and assign", "Log time without leaving", "Agents can read and update issues"],
+    },
     {
         icon: "rundeck",
         name: "Rundeck",
@@ -42,11 +57,12 @@ const plugins = [
 ] as const;
 ---
 
-<div class="plugins">
+<section class="section" id="plugins">
+<div class="page">
     <div class="section-head">
         <p class="label">Built-in plugins</p>
-        <h2>Check production without leaving.</h2>
-        <p>Turn on the tools your team already uses. Watch a deploy, read the logs or send an API request right next to the code, and hand anything you find to an agent.</p>
+        <h2>CI, issues and production, without leaving.</h2>
+        <p>Turn on the tools your team already uses. Watch CI, move an issue, follow a deploy or read the logs right next to the code, and hand anything you find to an agent.</p>
     </div>
     <div class="grid">
         {
@@ -64,20 +80,29 @@ const plugins = [
                             ))}
                         </ul>
                     </header>
-                    <div class="shot">
-                        <Image src={plugin.image} alt={plugin.alt} format="avif" quality={80} widths={[720, 1080, 1440]} sizes="(min-width: 1240px) 600px, 100vw" />
-                    </div>
+                    {"image" in plugin ? (
+                        <div class="shot">
+                            <Image src={plugin.image} alt={plugin.alt} format="avif" quality={80} widths={[720, 1080, 1440]} sizes="(min-width: 1240px) 600px, 100vw" />
+                        </div>
+                    ) : (
+                        <div class="shot issue" role="img" aria-label="A Jira issue in Sikemux, in progress, with its branch and a comment from an agent">
+                            <p class="key mono">WEB-412 <span class="status">In progress</span></p>
+                            <p class="summary">Sign-up form rejects emails with a plus sign</p>
+                            <p class="meta mono"><span>fix/plus-sign-emails</span><span>3h logged</span></p>
+                            <div class="comment">
+                                <p class="author">Claude Code</p>
+                                <p>Fixed the email check and added tests for addresses with a plus sign. Pull request #218 is ready for review.</p>
+                            </div>
+                        </div>
+                    )}
                 </article>
             ))
         }
     </div>
 </div>
+</section>
 
 <style>
-    .plugins {
-        margin-top: clamp(88px, 12vw, 144px);
-    }
-
     .grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -160,6 +185,60 @@ const plugins = [
         mask-image: linear-gradient(to bottom, #000 72%, transparent), linear-gradient(to right, #000 88%, transparent);
         mask-composite: intersect;
         -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent);
+    }
+
+    .issue {
+        display: grid;
+        align-content: start;
+        gap: 12px;
+        min-height: 300px;
+        padding: 22px 24px;
+    }
+
+    .issue .key {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    .status {
+        padding: 2px 8px;
+        border-radius: var(--radius-1);
+        background: color-mix(in oklab, #2684ff 18%, transparent);
+        color: #7ab2ff;
+    }
+
+    .summary {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .issue .meta {
+        display: flex;
+        gap: 16px;
+        font-size: 11.5px;
+        color: var(--text-tertiary);
+    }
+
+    .comment {
+        display: grid;
+        gap: 6px;
+        margin-top: 6px;
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+        font-size: 13.5px;
+        line-height: 1.5;
+    }
+
+    .author {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--brand-claude);
     }
 
     @media (max-width: 900px) {
