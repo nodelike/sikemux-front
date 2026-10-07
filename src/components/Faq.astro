@@ -2,7 +2,6 @@
 import { REPO_URL } from "../lib/release";
 import Fit from "./Fit.astro";
 
-const QUARANTINE = "xattr -dr com.apple.quarantine /Applications/Sikemux.app";
 ---
 
 <section class="section" id="faq">
@@ -38,7 +37,7 @@ const QUARANTINE = "xattr -dr com.apple.quarantine /Applications/Sikemux.app";
                 <p>
                     Those are built around the agents. Superset and Conductor run a crowd of agents in parallel, on your Mac or in the cloud, and
                     cmux is a terminal made for juggling many sessions. Sikemux is built around the project: agents share one window with the
-                    editor, Git, a real browser and your AWS, Rundeck, SigNoz and Bruno views, all on the same folder. It's also a 10 MB download.
+                    editor, Git, a real browser and your GitHub, Jira, AWS, Rundeck, SigNoz and Bruno views, all on the same folder. It's also a 14 MB download.
                 </p>
             </details>
             <details>
@@ -63,15 +62,16 @@ const QUARANTINE = "xattr -dr com.apple.quarantine /Applications/Sikemux.app";
                 </p>
             </details>
             <details>
-                <summary>macOS says it can't check the app for malware.</summary>
-                <p>Builds aren't notarized by Apple yet. Drag Sikemux into Applications, then run this once:</p>
-                <pre><code>{QUARANTINE}</code></pre>
-                <p>After that, updates install from inside the app.</p>
+                <summary>Is there a phone app?</summary>
+                <p>
+                    Yes. Android is in testing on Google Play, and iPhone is coming soon. <a href="/phone">Get it here</a>, sign in with the same
+                    account as Sikemux on your computer, and allow the phone once on the computer. The Mac app itself never needs an account.
+                </p>
             </details>
             <details>
                 <summary>Intel Macs, Windows, Linux?</summary>
                 <p>
-                    Downloads are for Apple Silicon Macs on macOS 11 or later. Linux builds are coming soon. Windows and Intel Macs can build
+                    Downloads are for Apple Silicon Macs on macOS 11 or later, signed and notarized by Apple. The notch island needs macOS 14. Linux builds are coming soon. Windows and Intel Macs can build
                     it from source, but there's no download for them yet.
                 </p>
             </details>
