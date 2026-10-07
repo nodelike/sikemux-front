@@ -1,195 +1,353 @@
 ---
+import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
-import Logo from "../components/Logo.astro";
+import Nav from "../components/Nav.astro";
+import Dither from "../components/Dither.astro";
+import device from "../assets/phone/phone-device.png";
+import asking from "../assets/phone/phone-asking.png";
+import { DISCORD_URL, latestRelease, starCount } from "../lib/release";
+
+const [release, stars] = await Promise.all([latestRelease(), starCount()]);
 
 const testers = "https://groups.google.com/g/sikemux-android-testers";
 const optIn = "https://play.google.com/apps/testing/com.nodelike.sikemux.mobile";
 const play = "https://play.google.com/store/apps/details?id=com.nodelike.sikemux.mobile";
+
+const steps = [
+    { title: "Join the testers group", body: "Google Play only lets testers in while the app is in testing.", href: testers, action: "Join the group" },
+    { title: "Become a tester", body: "Opt in on Google Play with the same Google account.", href: optIn, action: "Become a tester" },
+    { title: "Install Sikemux", body: "It shows up on Google Play like any other app.", href: play, action: "Get it on Google Play", primary: true },
+];
+
+const connect = [
+    { title: "Sign in", body: "Use the same account you signed in with in Sikemux on your computer." },
+    { title: "Allow it once", body: "Your computer asks before the phone can see anything. Click Allow." },
+    { title: "That's it", body: "Agents, chats and terminals show up on the phone, end to end encrypted." },
+];
 ---
 
-<Base
-    title="Sikemux on your phone"
-    description="Watch your coding agents work, answer what they ask and start new chats from your phone.">
-    <header class="top">
-        <div class="page bar">
-            <a class="brand" href="/" aria-label="Sikemux home">
-                <span class="mark"><Logo size={20} /></span>
-                <span class="word">SIKE<span>MUX</span></span>
-            </a>
-        </div>
-    </header>
-    <main class="page phone">
-        <h1>Sikemux on your phone</h1>
-        <p class="lede">
-            Watch your agents work, answer what they ask and start new chats from anywhere. Sign in with the same
-            account as Sikemux on your computer, then click <strong>Allow</strong> on the computer when it asks.
-        </p>
+<Base title="Sikemux on your phone" description="Watch your coding agents work, answer what they ask and start new chats from your phone.">
+    <Nav release={release} stars={stars} />
+    <main>
+        <section class="hero">
+            <Dither class="grain" />
+            <div class="page layout">
+                <div class="copy">
+                    <p class="label">Phone app</p>
+                    <h1>Your agents, in your pocket.</h1>
+                    <p class="lede">
+                        Watch every agent on your computer work, answer the one that needs you from a notification, and start new chats from
+                        anywhere.
+                    </p>
 
-        <section class="card">
-            <h2>Android</h2>
-            <p>Sikemux is in testing on Google Play. Join the testers first, then install it.</p>
-            <ol>
-                <li><span>Join the testers group</span><a class="button" href={testers}>Join</a></li>
-                <li><span>Become a tester on Google Play</span><a class="button" href={optIn}>Become a tester</a></li>
-                <li><span>Install Sikemux</span><a class="button primary" href={play}>Get it on Google Play</a></li>
-            </ol>
+                    <div class="platform">
+                        <div class="platform-head">
+                            <h2>Android</h2>
+                            <span class="pill live">In testing</span>
+                        </div>
+                        <ol class="steps">
+                            {
+                                steps.map((step, index) => (
+                                    <li>
+                                        <span class="number mono">{index + 1}</span>
+                                        <div class="step-text">
+                                            <p class="step-title">{step.title}</p>
+                                            <p class="step-body">{step.body}</p>
+                                        </div>
+                                        <a class:list={["btn", { primary: step.primary }]} href={step.href}>
+                                            {step.action}
+                                        </a>
+                                    </li>
+                                ))
+                            }
+                        </ol>
+                    </div>
+
+                    <div class="platform quiet">
+                        <div class="platform-head">
+                            <h2>iPhone</h2>
+                            <span class="pill">Coming soon</span>
+                        </div>
+                        <p class="step-body"><a href={DISCORD_URL}>Join the Discord</a> to hear the day it's out.</p>
+                    </div>
+                </div>
+
+                <div class="phones">
+                    <figure class="phone">
+                        <Image src={device} alt="The phone app on a MacBook Pro: one agent asking to run a command, three open chats and recent ones" widths={[320, 640]} sizes="300px" loading="eager" />
+                    </figure>
+                    <figure class="phone back">
+                        <Image src={asking} alt="An agent asking permission to run the tests, with Deny, Always allow and Allow" widths={[320, 640]} sizes="300px" loading="eager" />
+                    </figure>
+                </div>
+            </div>
         </section>
 
-        <section class="card quiet">
-            <h2>iPhone</h2>
-            <p>Coming soon.</p>
+        <section class="section connect">
+            <div class="page">
+                <div class="section-head">
+                    <h2>Connecting takes a minute.</h2>
+                </div>
+                <ol class="cards">
+                    {
+                        connect.map((step, index) => (
+                            <li>
+                                <span class="number mono">{index + 1}</span>
+                                <h3>{step.title}</h3>
+                                <p>{step.body}</p>
+                            </li>
+                        ))
+                    }
+                </ol>
+            </div>
         </section>
     </main>
 </Base>
 
 <style>
-    .top {
-        border-bottom: 1px solid var(--border);
+    .hero {
+        position: relative;
+        padding-block: clamp(48px, 7vw, 96px);
+        isolation: isolate;
+        overflow: hidden;
     }
 
-    .bar {
-        display: flex;
-        align-items: center;
-        height: 64px;
+    .hero :global(.grain) {
+        inset: 0;
+        mask-image: radial-gradient(ellipse 70% 80% at 70% 30%, #000 10%, transparent 70%);
+        -webkit-mask-image: radial-gradient(ellipse 70% 80% at 70% 30%, #000 10%, transparent 70%);
     }
 
-    .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        color: var(--text-primary);
-    }
-
-    .mark {
+    .layout {
         display: grid;
-        place-items: center;
-        color: var(--acc);
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+        align-items: center;
+        gap: clamp(32px, 6vw, 88px);
     }
 
-    .word {
-        font-size: 14px;
-        font-weight: 600;
-        letter-spacing: 0.16em;
-    }
-
-    .word span {
-        color: var(--text-tertiary);
-    }
-
-    .phone {
-        max-width: 640px;
-        padding-block: clamp(48px, 8vw, 96px);
+    .copy {
+        display: grid;
+        gap: 18px;
     }
 
     h1 {
-        margin: 0 0 16px;
-        font-size: clamp(36px, 5vw, 52px);
-        line-height: 1.04;
-        letter-spacing: -0.04em;
+        font-size: clamp(40px, 5.4vw, 68px);
+        line-height: 1;
+        letter-spacing: -0.05em;
     }
 
     .lede {
-        margin: 0 0 40px;
-        font-size: 17px;
-        line-height: 1.6;
+        max-width: 52ch;
+        font-size: 18px;
+        line-height: 1.55;
     }
 
-    .lede strong {
-        color: var(--text-primary);
-        font-weight: 600;
-    }
-
-    .card {
+    .platform {
         display: grid;
-        gap: 10px;
-        margin-bottom: 16px;
-        padding: 24px;
+        gap: 14px;
+        margin-top: 10px;
+        padding: 20px;
         border: 1px solid var(--border);
-        border-radius: var(--radius-3);
-        background: var(--surface-raised);
+        border-radius: var(--radius-4);
+        background: color-mix(in oklab, var(--surface) 80%, transparent);
     }
 
-    .card h2 {
-        margin: 0;
-        font-size: 20px;
-        letter-spacing: -0.025em;
-        color: var(--text-primary);
-    }
-
-    .card p {
-        margin: 0;
-        line-height: 1.6;
-    }
-
-    .card.quiet {
+    .platform.quiet {
+        gap: 8px;
+        margin-top: 0;
         background: none;
     }
 
-    ol {
-        display: grid;
-        gap: 10px;
-        margin: 8px 0 0;
-        padding: 0;
-        list-style: none;
-        counter-reset: step;
-    }
-
-    li {
+    .platform-head {
         display: flex;
         align-items: center;
-        gap: 12px;
-        counter-increment: step;
+        gap: 10px;
     }
 
-    li::before {
-        content: counter(step);
+    .platform h2 {
+        font-size: 19px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+    }
+
+    .pill {
+        padding: 2px 9px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    .pill.live {
+        border-color: color-mix(in oklab, var(--live) 40%, var(--border));
+        background: color-mix(in oklab, var(--live) 8%, transparent);
+        color: var(--live);
+    }
+
+    .steps {
+        display: grid;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .steps li {
+        display: grid;
+        grid-template-columns: 28px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 0;
+    }
+
+    .steps li + li {
+        border-top: 1px solid var(--border);
+    }
+
+    .number {
         display: grid;
         place-items: center;
-        flex: none;
-        width: 24px;
-        height: 24px;
-        border-radius: 999px;
-        background: color-mix(in oklab, var(--ink) 10%, transparent);
-        color: var(--text-primary);
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    li span {
-        flex: 1;
-    }
-
-    .button {
-        display: inline-flex;
-        align-items: center;
-        height: 36px;
-        padding-inline: 14px;
+        width: 28px;
+        height: 28px;
         border: 1px solid var(--border-strong);
-        border-radius: var(--radius-2);
-        font-size: 14px;
-        font-weight: 600;
+        border-radius: 999px;
+        font-size: 12px;
         color: var(--text-primary);
+    }
+
+    .step-title {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .step-body {
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: var(--text-tertiary);
+    }
+
+    .step-body a {
+        color: var(--text-secondary);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .btn {
+        height: 36px;
+        font-size: 13.5px;
         white-space: nowrap;
     }
 
-    .button:hover {
-        background: var(--surface-hover);
+    .btn.primary {
+        border-color: color-mix(in oklab, var(--acc) 70%, var(--bg-dim));
+        background: var(--acc);
+        color: var(--on-accent);
+        font-weight: 600;
     }
 
-    .button.primary {
-        border-color: var(--ink);
-        background: var(--ink);
-        color: var(--bg);
+    .btn.primary:hover {
+        background: color-mix(in oklab, var(--acc) 88%, var(--ink));
+    }
+
+    .phones {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: clamp(16px, 2.5vw, 28px);
+        isolation: isolate;
+    }
+
+    .phones::before {
+        content: "";
+        position: absolute;
+        inset: -10% -15%;
+        z-index: -1;
+        background: radial-gradient(closest-side, color-mix(in oklab, var(--acc) 22%, transparent), transparent);
+    }
+
+    /* A titanium edge, then a thin black bezel, around a screen with iOS's own corners. */
+    .phone {
+        flex: none;
+        width: min(46%, 270px);
+        margin: 0;
+        padding: 4px;
+        border-radius: 15.6% / 7.2%;
+        background: #050507;
+        box-shadow:
+            0 0 0 1px #3b3b42,
+            0 40px 80px -30px rgba(0, 0, 0, 0.8);
+    }
+
+    .phone :global(img) {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 402 / 874;
+        border-radius: 14.7% / 6.8%;
+    }
+
+    .back {
+        transform: translateY(64px);
+    }
+
+    .connect .section-head {
+        margin-bottom: 32px;
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .cards li {
+        display: grid;
+        align-content: start;
+        gap: 10px;
+        padding: 22px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background: var(--surface);
+    }
+
+    .cards h3 {
+        margin-top: 6px;
+        font-size: 17px;
+    }
+
+    .cards p {
+        font-size: 14.5px;
+        line-height: 1.55;
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 900px) {
+        .layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .phones {
+            order: -1;
+            padding-bottom: 64px;
+        }
+
+        .cards {
+            grid-template-columns: minmax(0, 1fr);
+        }
     }
 
     @media (max-width: 520px) {
-        li {
-            display: grid;
-            grid-template-columns: 24px minmax(0, 1fr);
-            row-gap: 8px;
+        .steps li {
+            grid-template-columns: 28px minmax(0, 1fr);
+            row-gap: 10px;
         }
 
-        li .button {
+        .steps .btn {
             grid-column: 2;
             justify-self: start;
         }
