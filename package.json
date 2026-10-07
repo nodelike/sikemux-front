@@ -10,7 +10,8 @@
     "dev": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "og": "astro build && node scripts/og.mjs"
+    "og": "astro build && node scripts/og.mjs",
+    "shots": "node scripts/shots.mjs"
   },
   "dependencies": {
     "@paper-design/shaders": "0.0.81",
