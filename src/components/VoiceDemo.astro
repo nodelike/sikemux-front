@@ -1,0 +1,148 @@
+---
+import AgentIcon from "./AgentIcon.astro";
+
+const words = "Make the empty state on the projects page friendlier, and add a button to open a folder".split(" ");
+---
+
+<div class="demo" role="img" aria-label="Holding the right Option key while the spoken words appear in the agent's message box">
+    <div class="composer">
+        <p class="text">
+            {words.map((word, index) => <span style={`--i: ${index}`}>{word} </span>)}
+        </p>
+        <div class="row">
+            <span class="agent"><AgentIcon agent="codex" size={14} /> Codex</span>
+            <span class="wave" aria-hidden="true">
+                {Array.from({ length: 14 }, (_, index) => <i style={`--i: ${index}`} />)}
+            </span>
+            <span class="mic">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+                    <rect x="5.5" y="1.8" width="5" height="8" rx="2.5" />
+                    <path d="M3.2 7.6a4.8 4.8 0 0 0 9.6 0M8 12.4v2" />
+                </svg>
+            </span>
+        </div>
+    </div>
+    <p class="hint">
+        <span class="key">⌥</span>
+        <span>Hold right Option to talk</span>
+    </p>
+</div>
+
+<style>
+    .demo {
+        display: grid;
+        justify-items: center;
+        gap: 18px;
+        width: 100%;
+        max-width: 560px;
+    }
+
+    .composer {
+        display: grid;
+        gap: 18px;
+        width: 100%;
+        padding: 16px 16px 12px;
+        border: 1px solid var(--border-selected);
+        border-radius: var(--radius-4);
+        background: var(--surface-sunken);
+    }
+
+    .text {
+        min-height: 3.2em;
+        font-size: 16px;
+        line-height: 1.55;
+        color: var(--text-primary);
+    }
+
+    .text span {
+        opacity: 0;
+        animation: word 0.25s var(--ease-out) forwards;
+        animation-delay: calc(0.4s + var(--i) * 0.2s);
+    }
+
+    .row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .agent {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--brand-codex);
+    }
+
+    .wave {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        height: 20px;
+        margin-left: auto;
+    }
+
+    .wave i {
+        width: 3px;
+        height: 100%;
+        border-radius: 2px;
+        background: var(--acc);
+        transform: scaleY(0.2);
+        animation: wave 0.9s ease-in-out infinite alternate;
+        animation-delay: calc(var(--i) * -0.13s);
+    }
+
+    .mic {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--acc);
+        color: var(--on-accent);
+    }
+
+    .hint {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--text-tertiary);
+    }
+
+    .key {
+        display: grid;
+        place-items: center;
+        min-width: 30px;
+        height: 30px;
+        border: 1px solid var(--border-strong);
+        border-bottom-width: 3px;
+        border-radius: var(--radius-2);
+        font-family: var(--kbd);
+        font-size: 15px;
+        color: var(--text-primary);
+    }
+
+    @keyframes word {
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes wave {
+        to {
+            transform: scaleY(1);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .text span {
+            animation: none;
+            opacity: 1;
+        }
+        .wave i {
+            animation: none;
+            transform: scaleY(0.5);
+        }
+    }
+</style>

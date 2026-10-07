@@ -1,7 +1,8 @@
 ---
 import { Image } from "astro:assets";
 import Icon from "./Icon.astro";
-import Plugins from "./Plugins.astro";
+import BrowserDemo from "./BrowserDemo.astro";
+import VoiceDemo from "./VoiceDemo.astro";
 import editor from "../assets/shots/files-focus.png";
 import term from "../assets/shots/terminals-focus.png";
 import git from "../assets/shots/git-focus.png";
@@ -10,47 +11,74 @@ import activity from "../assets/shots/activity-page.png";
 
 const features = [
     {
+        id: "agents",
         label: "Agents",
         icon: "agent",
-        title: "Ask an agent to fix it, and watch it work.",
-        body: "Start Claude Code, Codex or another agent right next to your code. It reads the project, edits files and runs commands while you watch, and you can step in at any time. Hand it a failing test, an error from the terminal, log lines or a GitHub issue in one click.",
+        title: "Agents in your project",
+        body: "Start Claude Code, Codex or another agent right next to your code. It reads the project, edits files and runs commands while you watch, and you can step in at any time.",
+        points: ["@ attaches a file, # hands over an issue or pull request", "Send a failing test, a terminal error or a log line in one click", "Give a chat its own branch so agents don't collide"],
         image: agents,
         alt: "Codex running the test suite, then committing its fix",
     },
     {
+        id: "browser",
+        label: "Browser",
+        icon: "browser",
+        title: "A browser for every agent",
+        body: "Your agent opens your app, clicks through it and takes screenshots, like a tester would. It's the same web engine as Safari, and you can take over the tab at any time.",
+        points: ["Clicks, types and reads the page", "Checks its own work at phone size", "Shows you what it saw in the chat"],
+        demo: "browser",
+    },
+    {
+        id: "review",
         label: "Review",
         icon: "git",
-        title: "Check what it changed, then ship.",
-        body: "See every file the agent touched before you commit, and let it write the commit message. Pull requests, issues and CI checks from GitHub and Bitbucket open right next to your code, so you can review and merge without a browser tab.",
+        title: "Review and ship in-app",
+        body: "See every file the agent touched before you commit, and let it write the commit message. Pull requests, reviews and CI runs from GitHub and Bitbucket open next to your code.",
+        points: ["Check out a pull request in a click", "GitHub Actions and Bitbucket Pipelines with logs", "Several accounts per host"],
         image: git,
         alt: "A commit message written by the agent above the files it changed",
     },
     {
+        id: "code",
         label: "Code",
         icon: "editor",
-        title: "A real code editor when you want to dive in.",
+        title: "A real code editor",
         body: "Jump to any file, go to definitions, search the whole project and compare changes side by side. It also previews images, PDFs, video and Office files.",
+        points: ["Go to definition and find references", "Search the whole project", "Side-by-side diffs"],
         image: editor,
         alt: "The project's files beside a TypeScript file in the editor",
     },
     {
+        id: "terminals",
         label: "Terminals",
         icon: "command",
-        title: "Terminals that keep running.",
-        body: "Split as many terminals as you need for your dev server, tests and scripts. Close the window and your terminals and agents keep running in the background, right where you left them.",
+        title: "Terminals that outlive the app",
+        body: "Quit Sikemux, or let it update, and your terminals and agents keep running. Open it again and everything is where you left it, even a chat in the middle of a reply.",
+        points: ["Drag a tab to split beside, above or below", "Survives quitting and updates", "SSH to your servers"],
         image: term,
         alt: "A terminal showing 50 passing tests",
     },
     {
+        id: "voice",
+        label: "Voice",
+        icon: "send",
+        title: "Voice dictation",
+        body: "Hold the right Option key and speak. The words appear as you say them, transcribed on your Mac, and go to the agent you're looking at.",
+        points: ["Hold right Option, or tap the mic", "Words show up as you speak", "Nothing leaves your Mac"],
+        demo: "voice",
+    },
+    {
+        id: "activity",
         label: "Activity",
         icon: "activity",
-        title: "See what your agents got done.",
+        title: "Agent activity",
         body: "Time spent, chats, tokens and commits, day by day, for each agent and each project. It only counts work done in Sikemux, and it never leaves your Mac.",
+        points: ["A year of activity at a glance", "Broken down by agent and project", "Kept on your Mac"],
         image: activity,
         alt: "The Activity page: totals, a year of daily activity, and breakdowns by agent and by project",
     },
 ] as const;
-
 ---
 
 <section class="section" id="features">
@@ -60,34 +88,63 @@ const features = [
             <h2>Everything for one project, in one window.</h2>
             <p>Your agents, code, terminals, Git and a browser all open on the same project folder, so nothing gets lost between apps.</p>
         </div>
-    </div>
-    <div class="page">
 
-        <div class="features">
+        <div class="explorer" data-explorer>
+            <div class="pills" role="tablist" aria-label="Features">
+                {
+                    features.map((feature, index) => (
+                        <button type="button" role="tab" id={`feature-tab-${feature.id}`} aria-controls={`feature-${feature.id}`} aria-selected={index === 0 ? "true" : "false"}>
+                            <Icon name={feature.icon} size={14} />
+                            {feature.label}
+                        </button>
+                    ))
+                }
+            </div>
+
             {
                 features.map((feature, index) => (
-                    <article class:list={["feature", { flip: index % 2 === 1 }]}>
+                    <article class="panel" role="tabpanel" id={`feature-${feature.id}`} aria-labelledby={`feature-tab-${feature.id}`} hidden={index !== 0}>
                         <div class="text">
-                            <p class="tag">
-                                <span class="label name">
-                                    <Icon name={feature.icon} size={14} />
-                                    {feature.label}
-                                </span>
-                            </p>
                             <h3>{feature.title}</h3>
                             <p>{feature.body}</p>
+                            <ul>
+                                {feature.points.map((point) => (
+                                    <li>{point}</li>
+                                ))}
+                            </ul>
                         </div>
-                        <div class="shot frame" style={`--natural: ${feature.image.width / 2}px`}>
-                            <Image src={feature.image} alt={feature.alt} format="avif" quality={80} widths={[760, 1140, 1520]} sizes="(min-width: 1240px) 760px, 100vw" />
+                        <div class="visual">
+                            {"image" in feature && (
+                                <div class="shot-wrap" style={`--natural: ${feature.image.width / 2}px`}>
+                                    <Image src={feature.image} alt={feature.alt} format="avif" quality={80} widths={[760, 1140, 1520]} sizes="(min-width: 1240px) 760px, 100vw" />
+                                </div>
+                            )}
+                            {"demo" in feature && feature.demo === "browser" && <BrowserDemo />}
+                            {"demo" in feature && feature.demo === "voice" && <VoiceDemo />}
                         </div>
                     </article>
                 ))
             }
         </div>
 
-        <Plugins />
     </div>
 </section>
+
+<script>
+    for (const explorer of document.querySelectorAll<HTMLElement>("[data-explorer]")) {
+        const tabs = [...explorer.querySelectorAll<HTMLButtonElement>("[role=tab]")];
+        for (const tab of tabs) {
+            tab.addEventListener("click", () => {
+                for (const other of tabs) {
+                    const selected = other === tab;
+                    other.setAttribute("aria-selected", String(selected));
+                    const panel = explorer.querySelector<HTMLElement>(`#${other.getAttribute("aria-controls")}`);
+                    if (panel) panel.hidden = !selected;
+                }
+            });
+        }
+    }
+</script>
 
 <style>
     .intro {
@@ -96,36 +153,83 @@ const features = [
         justify-items: center;
     }
 
-    .features {
+    .explorer {
         display: grid;
-        gap: clamp(56px, 8vw, 96px);
+        gap: 32px;
     }
 
-    .feature {
+    .pills {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .pills button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 36px;
+        padding-inline: 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2);
+        background: var(--surface);
+        color: var(--text-secondary);
+        font: inherit;
+        font-size: 14px;
+        cursor: pointer;
+        transition:
+            border-color var(--dur-2) var(--ease-out),
+            color var(--dur-2) var(--ease-out);
+    }
+
+    .pills button:hover {
+        color: var(--text-primary);
+    }
+
+    .pills button[aria-selected="true"] {
+        border-color: var(--border-selected);
+        background: var(--surface-selected);
+        color: var(--text-primary);
+    }
+
+    .panel {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-        align-items: start;
-        gap: clamp(24px, 4vw, 64px);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr);
+        align-items: center;
+        gap: clamp(24px, 4vw, 56px);
+        min-height: 520px;
+        padding: clamp(20px, 3vw, 36px);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background:
+            radial-gradient(70% 60% at 100% 0%, color-mix(in oklab, var(--acc) 9%, transparent), transparent 70%),
+            var(--surface);
+        animation: rise 0.28s var(--ease-out);
     }
 
-    .feature.flip {
-        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    .panel[hidden] {
+        display: none;
     }
 
-    .feature.flip .text {
-        order: 2;
-    }
-
-    .feature.flip .frame {
-        justify-self: end;
+    @keyframes rise {
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
     }
 
     .text {
-        position: sticky;
-        top: 96px;
         display: grid;
         gap: 16px;
-        padding-top: 8px;
+        padding-left: 8px;
+    }
+
+    h3 {
+        font-size: clamp(22px, 2.2vw, 28px);
+        font-weight: 500;
+        line-height: 1.15;
+        letter-spacing: -0.03em;
     }
 
     .text p {
@@ -133,69 +237,58 @@ const features = [
         line-height: 1.65;
     }
 
-    .frame {
-        position: relative;
-        justify-self: start;
-        width: fit-content;
-        max-width: 100%;
-        padding: 10px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-4);
-        background:
-            radial-gradient(90% 60% at 50% 0%, color-mix(in oklab, var(--acc) 10%, transparent), transparent 70%),
-            var(--surface);
-        overflow: visible;
+    ul {
+        display: grid;
+        gap: 8px;
+        margin: 4px 0 0;
+        padding: 0;
+        list-style: none;
     }
 
-    .frame :global(img) {
+    li {
+        position: relative;
+        padding-left: 22px;
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--live);
+    }
+
+    .visual {
+        display: grid;
+        place-items: center;
+        min-width: 0;
+    }
+
+    .shot-wrap {
+        width: fit-content;
+        max-width: 100%;
+    }
+
+    .shot-wrap :global(img) {
         width: var(--natural);
         max-width: 100%;
+        max-height: 460px;
+        object-fit: contain;
         border: 1px solid var(--border);
         border-radius: var(--radius-3);
     }
 
-    .tag {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .name {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--text-secondary);
-    }
-
-    .op-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-
-    h3 {
-        font-size: 24px;
-        line-height: 1.2;
-        letter-spacing: -0.025em;
-    }
-
-
     @media (max-width: 860px) {
-        .feature,
-        .feature.flip {
+        .panel {
             grid-template-columns: minmax(0, 1fr);
+            min-height: 0;
         }
+    }
 
-        .feature.flip .text {
-            order: 0;
-        }
-
-        .text {
-            position: static;
+    @media (prefers-reduced-motion: reduce) {
+        .panel {
+            animation: none;
         }
     }
 </style>

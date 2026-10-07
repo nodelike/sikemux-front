@@ -1,0 +1,341 @@
+---
+import AgentIcon from "./AgentIcon.astro";
+---
+
+<div class="demo" aria-label="An agent opening the sign-up page in its browser tab, clicking the button and checking the result" role="img">
+    <div class="browser">
+        <div class="bar">
+            <span class="dots"><i></i><i></i><i></i></span>
+            <span class="url mono">localhost:5173/signup</span>
+        </div>
+        <div class="page">
+            <p class="title">Create your account</p>
+            <span class="field"></span>
+            <span class="field short"></span>
+            <span class="cta">Sign up<span class="ring"></span></span>
+            <p class="toast">Welcome aboard</p>
+        </div>
+    </div>
+    <div class="log">
+        <p class="who"><span class="mark"><AgentIcon agent="claude" size={14} /></span>Claude Code</p>
+        <p class="line l1 mono"><span class="verb">open</span> localhost:5173/signup</p>
+        <p class="line l2 mono"><span class="verb">type</span> email, password</p>
+        <p class="line l3 mono"><span class="verb">click</span> "Sign up"</p>
+        <p class="line l4 mono"><span class="verb">shot</span> 390 × 844</p>
+        <p class="line l5 say">The form works and the welcome message shows on a phone too.</p>
+    </div>
+</div>
+
+<style>
+    .demo {
+        --loop: 9s;
+        display: grid;
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+        gap: 12px;
+        width: 100%;
+        max-width: 640px;
+    }
+
+    .browser,
+    .log {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface-sunken);
+        overflow: hidden;
+    }
+
+    .bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .dots {
+        display: flex;
+        gap: 5px;
+    }
+
+    .dots i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--gray-500);
+    }
+
+    .url {
+        flex: 1;
+        padding: 3px 8px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-1);
+        font-size: 11px;
+        color: var(--text-tertiary);
+    }
+
+    .page {
+        position: relative;
+        display: grid;
+        gap: 10px;
+        padding: 26px 22px 30px;
+    }
+
+    .title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .field {
+        height: 26px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-1);
+        background: var(--surface);
+    }
+
+    .field::after {
+        content: "";
+        display: block;
+        width: 0;
+        height: 6px;
+        margin: 9px 8px;
+        border-radius: 3px;
+        background: var(--gray-700);
+        animation: fill var(--loop) var(--ease-out) infinite;
+    }
+
+    .field.short::after {
+        animation-name: fill-short;
+    }
+
+    .cta {
+        position: relative;
+        justify-self: start;
+        padding: 6px 14px;
+        border-radius: var(--radius-2);
+        background: var(--acc);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--on-accent);
+    }
+
+    .ring {
+        position: absolute;
+        inset: -6px;
+        border: 2px solid var(--acc);
+        border-radius: 10px;
+        opacity: 0;
+        animation: ring var(--loop) ease-out infinite;
+    }
+
+    .toast {
+        position: absolute;
+        right: 14px;
+        bottom: 12px;
+        padding: 4px 10px;
+        border: 1px solid color-mix(in oklab, var(--live) 40%, var(--border));
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--live) 10%, var(--surface));
+        font-size: 11px;
+        color: var(--live);
+        opacity: 0;
+        animation: toast var(--loop) var(--ease-out) infinite;
+    }
+
+    .log {
+        display: grid;
+        align-content: start;
+        gap: 8px;
+        padding: 12px 14px;
+    }
+
+    .who {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+        font-size: 12px;
+        color: var(--text-primary);
+    }
+
+    .mark {
+        display: grid;
+        color: var(--brand-claude);
+    }
+
+    .line {
+        font-size: 11px;
+        color: var(--text-secondary);
+        opacity: 0;
+        animation: appear var(--loop) var(--ease-out) infinite;
+    }
+
+    .verb {
+        margin-right: 8px;
+        color: #ff6ac1;
+    }
+
+    .say {
+        font-size: 12.5px;
+        line-height: 1.45;
+        color: var(--text-primary);
+    }
+
+    .l2 {
+        animation-name: appear-2;
+    }
+    .l3 {
+        animation-name: appear-3;
+    }
+    .l4 {
+        animation-name: appear-4;
+    }
+    .l5 {
+        animation-name: appear-5;
+    }
+
+    @keyframes appear {
+        0%,
+        4% {
+            opacity: 0;
+        }
+        8%,
+        92% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+    @keyframes appear-2 {
+        0%,
+        16% {
+            opacity: 0;
+        }
+        20%,
+        92% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+    @keyframes appear-3 {
+        0%,
+        36% {
+            opacity: 0;
+        }
+        40%,
+        92% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+    @keyframes appear-4 {
+        0%,
+        52% {
+            opacity: 0;
+        }
+        56%,
+        92% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+    @keyframes appear-5 {
+        0%,
+        64% {
+            opacity: 0;
+        }
+        68%,
+        92% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+    @keyframes fill {
+        0%,
+        16% {
+            width: 0;
+        }
+        26%,
+        92% {
+            width: 60%;
+        }
+        100% {
+            width: 0;
+        }
+    }
+    @keyframes fill-short {
+        0%,
+        24% {
+            width: 0;
+        }
+        32%,
+        92% {
+            width: 35%;
+        }
+        100% {
+            width: 0;
+        }
+    }
+    @keyframes ring {
+        0%,
+        38% {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        41% {
+            opacity: 1;
+        }
+        50%,
+        100% {
+            opacity: 0;
+            transform: scale(1.25);
+        }
+    }
+    @keyframes toast {
+        0%,
+        44% {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        48%,
+        92% {
+            opacity: 1;
+            transform: none;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .demo {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .line,
+        .toast,
+        .ring,
+        .field::after {
+            animation: none;
+            opacity: 1;
+        }
+        .ring {
+            opacity: 0;
+        }
+        .field::after {
+            width: 50%;
+        }
+    }
+</style>
