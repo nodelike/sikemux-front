@@ -30,4 +30,4 @@ Resolve this project with `agentctl context --format env` before context-sensiti
 - The look follows the app's `DESIGN.md`: the accent means selected, focused, or the one primary action; hairlines, not shadows; sans for what the site says, mono for what the machine says.
 - Copy must be true of the shipped app. Check claims against the app's README before writing them.
 - Run `pnpm build` before committing; it type-checks and builds.
-- `public/og.png` is the share card. After changing the hero or the headline, run `pnpm og` to regenerate it from `src/pages/og.astro`.
+- `public/og.png` is the share card and `public/og-github.png` is the same card at GitHub's 2:1 social preview size. After changing the hero or the headline, run `pnpm og` to regenerate both from `src/pages/og.astro`, then upload the GitHub one in the sikemux repo's settings.
