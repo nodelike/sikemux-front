@@ -3,11 +3,13 @@ import { Image } from "astro:assets";
 import Icon from "./Icon.astro";
 import BrowserDemo from "./BrowserDemo.astro";
 import VoiceDemo from "./VoiceDemo.astro";
+import VisualsDemo from "./VisualsDemo.astro";
 import editor from "../assets/shots/files-focus.png";
 import term from "../assets/shots/terminals-focus.png";
 import git from "../assets/shots/git-focus.png";
-import agents from "../assets/shots/agents-focus.png";
+import agents from "../assets/cards/agents.png";
 import activity from "../assets/shots/activity-page.png";
+import simulator from "../assets/cards/simulator.png";
 
 const features = [
     {
@@ -18,7 +20,7 @@ const features = [
         body: "Start Claude Code, Codex or another agent right next to your code. It reads the project, edits files and runs commands while you watch, and you can step in at any time.",
         points: ["@ attaches a file, # hands over an issue or pull request", "Send a failing test, a terminal error or a log line in one click", "Give a chat its own branch so agents don't collide"],
         image: agents,
-        alt: "Codex running the test suite, then committing its fix",
+        alt: "Codex explaining why a terminal test was flaky, then running the tests and committing its fix",
     },
     {
         id: "browser",
@@ -30,12 +32,31 @@ const features = [
         demo: "browser",
     },
     {
+        id: "simulator",
+        label: "Simulator",
+        icon: "phone",
+        title: "The iOS Simulator, on the agent's desk",
+        body: "Building for iPhone? The agent builds your app, installs it on a real iOS Simulator beside its chat, then taps, types and takes screenshots to check its work. You see every tap, and you can pick up the device yourself.",
+        points: ["Any iPhone or iPad Simulator from Xcode", "Home, lock, rotate and screenshot from the toolbar", "Agents attach, launch, tap, type and swipe"],
+        image: simulator,
+        alt: "An agent's chat beside an iPhone 18 Pro Simulator on its desk, showing the phone app's permission card",
+    },
+    {
+        id: "visuals",
+        label: "Visuals",
+        icon: "eye",
+        title: "Answers you can see",
+        body: "When words aren't enough, the agent draws its answer right in the chat: a diagram of how your services talk, a chart from your production data, or mockups to pick from before it writes a line of code.",
+        points: ["Diagrams, charts, tables and mockups", "Built from your code, logs and data", "Live in the chat, in your theme"],
+        demo: "visuals",
+    },
+    {
         id: "review",
         label: "Review",
         icon: "git",
         title: "Review and ship in-app",
-        body: "See every file the agent touched before you commit, and let it write the commit message. Pull requests, reviews and CI runs from GitHub and Bitbucket open next to your code.",
-        points: ["Check out a pull request in a click", "GitHub Actions and Bitbucket Pipelines with logs", "Several accounts per host"],
+        body: "See every file the agent touched before you commit, and let it write the commit message. Pull requests, merge requests, reviews and CI from GitHub, GitLab and Bitbucket open next to your code.",
+        points: ["Check out a pull request in a click", "GitHub Actions, GitLab and Bitbucket pipelines with logs", "Several accounts per host"],
         image: git,
         alt: "A commit message written by the agent above the files it changed",
     },
@@ -72,9 +93,9 @@ const features = [
         id: "activity",
         label: "Activity",
         icon: "activity",
-        title: "Agent activity",
-        body: "Time spent, chats, tokens and commits, day by day, for each agent and each project. It only counts work done in Sikemux, and it never leaves your Mac.",
-        points: ["A year of activity at a glance", "Broken down by agent and project", "Kept on your Mac"],
+        title: "Agent activity and cost",
+        body: "Time spent, chats, tokens, commits and what they would cost at API prices, day by day, for each agent, model and project. It only counts work done in Sikemux, and it never leaves your Mac.",
+        points: ["A year of activity at a glance", "Cost by model, priced from LiteLLM", "Kept on your Mac"],
         image: activity,
         alt: "The Activity page: totals, a year of daily activity, and breakdowns by agent and by project",
     },
@@ -121,6 +142,7 @@ const features = [
                             )}
                             {"demo" in feature && feature.demo === "browser" && <BrowserDemo />}
                             {"demo" in feature && feature.demo === "voice" && <VoiceDemo />}
+                            {"demo" in feature && feature.demo === "visuals" && <VisualsDemo />}
                         </div>
                     </article>
                 ))
@@ -271,10 +293,10 @@ const features = [
     }
 
     .shot-wrap :global(img) {
-        width: var(--natural);
-        max-width: 100%;
+        width: auto;
+        height: auto;
+        max-width: min(100%, var(--natural));
         max-height: 460px;
-        object-fit: contain;
         border: 1px solid var(--border);
         border-radius: var(--radius-3);
     }

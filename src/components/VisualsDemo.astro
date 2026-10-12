@@ -1,0 +1,131 @@
+---
+import { Image } from "astro:assets";
+import diagram from "../assets/cards/visual-diagram.png";
+import chart from "../assets/cards/visual-chart.png";
+import mockup from "../assets/cards/visual-mockup.png";
+
+const shots = [
+    { image: diagram, caption: "A diagram of how checkout flows, and where it breaks", alt: "An agent's reply with a diagram of a checkout request moving through five services, the failing call to payments marked in red" },
+    { image: chart, caption: "A chart from production data, before and after a fix", alt: "An agent's reply with a latency chart from SigNoz showing p95 falling from 3.1 seconds to 390 milliseconds after a deploy" },
+    { image: mockup, caption: "Three mockups to pick from, before any code", alt: "An agent's reply with three mockups of an empty projects page, the guided one marked recommended" },
+];
+---
+
+<div class="visuals" data-visuals>
+    <div class="frames">
+        {
+            shots.map((shot, index) => (
+                <figure class:list={["frame", { on: index === 0 }]}>
+                    <Image src={shot.image} alt={shot.alt} width={Math.round(shot.image.width / 2)} densities={[1, 2]} format="webp" quality={92} />
+                </figure>
+            ))
+        }
+    </div>
+    <ol class="captions">
+        {
+            shots.map((shot, index) => (
+                <li class:list={{ on: index === 0 }}>
+                    <span class="bar" aria-hidden="true" />
+                    {shot.caption}
+                </li>
+            ))
+        }
+    </ol>
+</div>
+
+<script>
+    for (const root of document.querySelectorAll<HTMLElement>("[data-visuals]")) {
+        const frames = [...root.querySelectorAll<HTMLElement>(".frame")];
+        const captions = [...root.querySelectorAll<HTMLElement>(".captions li")];
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) continue;
+        let shown = 0;
+        const show = (next: number) => {
+            frames[shown].classList.remove("on");
+            captions[shown].classList.remove("on");
+            shown = next;
+            frames[shown].classList.add("on");
+            captions[shown].classList.add("on");
+        };
+        let timer = 0;
+        const start = () => {
+            window.clearInterval(timer);
+            timer = window.setInterval(() => show((shown + 1) % frames.length), 4500);
+        };
+        captions.forEach((caption, index) =>
+            caption.addEventListener("click", () => {
+                show(index);
+                start();
+            }),
+        );
+        new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : window.clearInterval(timer))).observe(root);
+    }
+</script>
+
+<style>
+    .visuals {
+        display: grid;
+        gap: 14px;
+        width: 100%;
+    }
+
+    .frames {
+        display: grid;
+    }
+
+    .frame {
+        grid-area: 1 / 1;
+        margin: 0;
+        opacity: 0;
+        transition: opacity 0.5s var(--ease-out);
+    }
+
+    .frame.on {
+        opacity: 1;
+    }
+
+    .frame :global(img) {
+        width: 100%;
+        height: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+    }
+
+    .captions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .captions li {
+        display: grid;
+        gap: 8px;
+        font-size: 12.5px;
+        line-height: 1.4;
+        color: var(--text-tertiary);
+        cursor: pointer;
+        transition: color var(--dur-2) var(--ease-out);
+    }
+
+    .captions li.on {
+        color: var(--text-primary);
+    }
+
+    .bar {
+        height: 2px;
+        border-radius: 1px;
+        background: var(--border);
+    }
+
+    .on .bar {
+        background: var(--acc);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .frame {
+            transition: none;
+        }
+    }
+</style>
