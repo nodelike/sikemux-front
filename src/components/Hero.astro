@@ -18,9 +18,9 @@ const { release, stars } = Astro.props;
     <Dither class="grain" />
     <div class="page">
         <div class="copy">
-            <a class="news" href="#new">
-                <span class="tag mono">New in 0.5</span>
-                <span>Your agents on your phone and in the notch</span>
+            <a class="news" href="#features">
+                <span class="tag mono">New in 0.5.1</span>
+                <span>iOS Simulator, visual answers, databases and GitLab</span>
                 <span class="arrow" aria-hidden="true">→</span>
             </a>
             <h1>The IDE for you and your coding agents.</h1>
@@ -46,8 +46,8 @@ const { release, stars } = Astro.props;
             <Image
                 src={hero}
                 alt="A Claude Code agent fixing a bug on the Sikemux site, with the page open in its own browser tab"
-                widths={[1440, 2160, 2880]}
-                sizes="(min-width: 1520px) 1440px, 100vw"
+                widths={[1560, 2340, 3120, 3520]}
+                sizes="(min-width: 1640px) 1560px, 100vw"
                 format="avif"
                 quality={72}
                 loading="eager"
@@ -131,7 +131,7 @@ const { release, stars } = Astro.props;
         border-radius: var(--radius-4);
         overflow: hidden;
         background: var(--surface-sunken);
-        aspect-ratio: 1440 / 900;
+        aspect-ratio: 1760 / 900;
     }
 
     .shot-frame :global(img) {
@@ -143,7 +143,7 @@ const { release, stars } = Astro.props;
     .stage-wrap {
         position: relative;
         isolation: isolate;
-        width: min(100% - 2 * var(--gutter), 1440px);
+        width: min(100% - 2 * var(--gutter), 1560px);
         margin-inline: auto;
     }
 
