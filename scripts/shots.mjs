@@ -15,10 +15,16 @@ const cards = resolve(site, "src/assets/cards");
 const CARDS = [
     ["spaces", "projects-rail-rail.png", { left: 0, top: 92, width: 516, height: 612 }],
     ["ssh", "spaces-rail.png", { left: 0, top: 590, width: 516, height: 340 }],
-    ["limits", "accounts.png", { left: 2930, top: 1565, width: 510, height: 570 }],
+    ["limits", "accounts.png", { left: 2940, top: 1500, width: 510, height: 650 }],
     ["splits", "terminals.png", { left: 556, top: 86, width: 2350, height: 2052 }],
     ["deck", "command-deck-deck.png", { left: 0, top: 0, width: 960, height: 600 }],
-    ["tools", "agent-tools.png", { left: 790, top: 530, width: 1000, height: 625 }],
+    ["agents", "agents-chat.png", { left: 360, top: 170, width: 1600, height: 1110 }],
+    ["simulator", "simulator.png", { left: 560, top: 84, width: 2346, height: 2056 }],
+    ["database", "database.png", { left: 1110, top: 100, width: 2340, height: 1260 }],
+    ["visual-diagram", "visual-diagram-stage.png", { left: 380, top: 340, width: 1580, height: 900 }],
+    ["visual-chart", "visual-chart-stage.png", { left: 380, top: 340, width: 1580, height: 900 }],
+    ["visual-mockup", "visual-mockup-stage.png", { left: 380, top: 340, width: 1580, height: 900 }],
+    ["tools", "agent-tools.png", { left: 540, top: 930, width: 960, height: 600 }],
 ];
 
 const pnpm = (cwd, ...args) => execFileSync("pnpm", args, { cwd, stdio: "inherit" });
@@ -26,12 +32,13 @@ const pnpm = (cwd, ...args) => execFileSync("pnpm", args, { cwd, stdio: "inherit
 const only = process.argv.slice(2);
 const wants = (part) => only.length === 0 || only.includes(part);
 
+// The phone goes first: the Mac's Simulator scene shows the phone app's own screen.
+if (wants("phone")) pnpm(resolve(app, "mobile"), "showcase", "--site", phone, "device", "asking");
 if (wants("mac")) {
     pnpm(app, "showcase", "--site", shots);
-    // The hero is shown wide, so it is taken on a smaller screen to keep the app's text large.
-    pnpm(app, "showcase", "--width", "1440", "--height", "900", "--out", resolve(app, "showcase/out/hero-1440"), "--site", resolve(site, "src/assets/hero"), "hero");
+    // The hero is taken on an ultrawide screen: the rails keep their width and the chat and browser get the room.
+    pnpm(app, "showcase", "--width", "1760", "--height", "900", "--out", resolve(app, "showcase/out/hero-wide"), "--site", resolve(site, "src/assets/hero"), "hero");
 }
-if (wants("phone")) pnpm(resolve(app, "mobile"), "showcase", "--site", phone, "device", "asking");
 if (wants("mac") || wants("cards")) {
     await mkdir(cards, { recursive: true });
     for (const [name, source, region] of CARDS) {
