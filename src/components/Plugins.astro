@@ -6,13 +6,23 @@ import rundeck from "../assets/shots/rundeck-deploy-card.png";
 import signoz from "../assets/shots/signoz-dashboard-card.png";
 import bruno from "../assets/shots/bruno-card.png";
 import github from "../assets/shots/github-run-card.png";
+import database from "../assets/cards/database.png";
 
 const plugins = [
+    {
+        icon: "database",
+        name: "Database",
+        claim: "Query your database next to the code that uses it.",
+        points: ["PostgreSQL, MySQL, MariaDB and SQLite", "Passwords kept in your Keychain", "Copy as CSV or send results to an agent", "Agents query it read-only by default"],
+        image: database,
+        alt: "A PostgreSQL console listing the last day's failed orders, with the schema's tables beside it",
+        wide: true,
+    },
     {
         icon: "github",
         name: "GitHub Actions",
         claim: "Watch CI without opening GitHub.",
-        points: ["Runs, jobs and their logs", "Re-run, download artifacts, approve deploys", "Bitbucket Pipelines too"],
+        points: ["Runs, jobs and their logs", "Re-run, download artifacts, approve deploys", "GitLab and Bitbucket pipelines too"],
         image: github,
         alt: "A passing release workflow with its four jobs and the test report",
     },
@@ -20,13 +30,13 @@ const plugins = [
         icon: "jira",
         name: "Jira",
         claim: "Your issue, next to the branch that fixes it.",
-        points: ["Search, comment, move and assign", "Log time without leaving", "Agents can read and update issues"],
+        points: ["Your sprint board, cards you can move", "Search, comment, assign and log time", "Agents can read and update issues"],
     },
     {
         icon: "rundeck",
         name: "Rundeck",
         claim: "Deploy a branch and watch every step land.",
-        points: ["Which branch is live on each service", "Step-by-step output as it streams", "Run again or abort in place"],
+        points: ["Which branch is live on each service", "Step-by-step output as it streams", "A notification when a deploy ends"],
         image: rundeck,
         alt: "A Rundeck deploy of billing-service at step 5 of 6, with live output",
     },
@@ -67,7 +77,7 @@ const plugins = [
     <div class="grid">
         {
             plugins.map((plugin) => (
-                <article class="card">
+                <article class:list={["card", { wide: "wide" in plugin && plugin.wide }]}>
                     <header>
                         <span class="name">
                             <Icon name={plugin.icon} size={18} />
@@ -241,7 +251,31 @@ const plugins = [
         color: var(--brand-claude);
     }
 
+    .card.wide {
+        grid-column: 1 / -1;
+        grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+        grid-template-rows: auto;
+    }
+
+    .card.wide header {
+        align-content: center;
+        padding-right: 8px;
+    }
+
+    .card.wide .shot {
+        align-self: stretch;
+        margin: 28px 0 0;
+    }
+
     @media (max-width: 900px) {
+        .card.wide {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .card.wide .shot {
+            margin: 0 0 0 28px;
+        }
+
         .grid {
             grid-template-columns: minmax(0, 1fr);
         }
