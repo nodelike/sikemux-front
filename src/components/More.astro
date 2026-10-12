@@ -7,6 +7,8 @@ import splits from "../assets/cards/splits.png";
 import ssh from "../assets/cards/ssh.png";
 import limits from "../assets/cards/limits.png";
 import tools from "../assets/cards/tools.png";
+import simulator from "../assets/cards/simulator.png";
+import VisualsDemo from "./VisualsDemo.astro";
 
 const cards = [
     {
@@ -33,7 +35,7 @@ const cards = [
     },
     {
         title: "Sikemux Tools for Agents",
-        body: "Agents drive Sikemux and its plugins: open, click and screenshot your app, start and read tasks, search SigNoz logs, comment on and move Jira issues.",
+        body: "Agents drive Sikemux and its plugins: the browser and the iOS Simulator, your tasks, read-only database queries, SigNoz logs and Jira issues.",
         image: tools,
         alt: "Nine tool calls: reading a Jira issue and SigNoz logs, starting the dev task, opening, clicking and screenshotting checkout, then commenting on and moving the issue",
     },
@@ -82,6 +84,35 @@ const cards = [
             <p class="label">And more</p>
             <h2>Everything else, built in.</h2>
         </div>
+        <div class="featured">
+            <article class="feature">
+                <div class="feature-shot">
+                    <Image
+                        src={simulator}
+                        alt="An agent's chat beside an iPhone 18 Pro Simulator on its desk: it built the app, installed it, tapped through and is taking a screenshot"
+                        width={Math.round(simulator.width / 2)}
+                        densities={[1, 2]}
+                        format="webp"
+                        quality={90}
+                    />
+                </div>
+                <div class="feature-text">
+                    <p class="kicker">iOS Simulator</p>
+                    <h3>Agents test your iPhone app, right beside the chat.</h3>
+                    <p>The agent builds your app, installs it on a real iOS Simulator on its desk, then taps, types and takes screenshots to check its own work. You see every tap, and can pick up the device yourself.</p>
+                </div>
+            </article>
+            <article class="feature">
+                <div class="feature-shot">
+                    <VisualsDemo />
+                </div>
+                <div class="feature-text">
+                    <p class="kicker">Visual answers</p>
+                    <h3>When words aren't enough, the agent draws.</h3>
+                    <p>A diagram of how your services talk, a chart from production data, mockups to pick from before any code. Built from your code, logs and data, and shown right in the chat.</p>
+                </div>
+            </article>
+        </div>
         <ul class="cards">
             {
                 cards.map((card) => (
@@ -91,6 +122,17 @@ const cards = [
                                 <button type="button" class="zoom" data-zoom={card.image.src} data-alt={card.alt} aria-label={`Show larger: ${card.alt}`}>
                                     <Image src={card.image} alt={card.alt} width={Math.round(card.image.width / 2)} densities={[1, 2]} format="webp" quality={95} />
                                 </button>
+                            )}
+                            {"voice" in card && (
+                                <div class="voice">
+                                    <p>{card.voice}<span class="caret" /></p>
+                                    <div class="voice-row">
+                                        <span class="key">⌥</span>
+                                        <span class="wave" aria-hidden="true">
+                                            {Array.from({ length: 12 }, (_, index) => <i style={`--i: ${index}`} />)}
+                                        </span>
+                                    </div>
+                                </div>
                             )}
                             {"terminal" in card && (
                                 <div class="term mono">
@@ -145,6 +187,85 @@ const cards = [
 </script>
 
 <style>
+    .featured {
+        display: grid;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .feature {
+        display: grid;
+        grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+        align-items: center;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background:
+            radial-gradient(80% 60% at 50% 0%, color-mix(in oklab, var(--acc) 10%, transparent), transparent 70%),
+            var(--surface);
+    }
+
+    .feature-shot {
+        padding: 22px;
+    }
+
+    .feature:nth-child(2) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    }
+
+    .feature:nth-child(2) .feature-text {
+        order: -1;
+    }
+
+    .feature-shot > :global(img) {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+    }
+
+    .feature-text {
+        display: grid;
+        align-content: start;
+        gap: 12px;
+        padding: 28px 36px;
+    }
+
+    .kicker {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--acc);
+    }
+
+    .feature-text h3 {
+        padding: 0;
+        font-size: clamp(24px, 2.6vw, 34px);
+        font-weight: 500;
+        line-height: 1.15;
+        letter-spacing: -0.03em;
+    }
+
+    .feature-text > p:not(.kicker) {
+        padding: 0;
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 900px) {
+        .feature,
+        .feature:nth-child(2) {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .feature:nth-child(2) .feature-text {
+            order: 0;
+        }
+    }
+
     .cards {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -257,6 +378,82 @@ const cards = [
         padding: 24px;
         font-size: 13px;
         color: var(--text-primary);
+    }
+
+    .voice {
+        display: grid;
+        align-content: center;
+        gap: 18px;
+        height: 100%;
+        padding: 24px;
+    }
+
+    .voice p {
+        padding: 12px 14px;
+        border: 1px solid var(--border-selected);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: var(--text-primary);
+    }
+
+    .caret {
+        display: inline-block;
+        width: 2px;
+        height: 1em;
+        margin-left: 2px;
+        vertical-align: -2px;
+        background: var(--acc);
+    }
+
+    .voice-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .voice .key {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border: 1px solid var(--border-strong);
+        border-bottom-width: 3px;
+        border-radius: var(--radius-2);
+        font-family: var(--kbd);
+        font-size: 15px;
+        color: var(--text-primary);
+    }
+
+    .wave {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        height: 22px;
+    }
+
+    .wave i {
+        width: 3px;
+        height: 100%;
+        border-radius: 2px;
+        background: var(--acc);
+        transform: scaleY(0.25);
+        animation: wave 0.9s ease-in-out infinite alternate;
+        animation-delay: calc(var(--i) * -0.13s);
+    }
+
+    @keyframes wave {
+        to {
+            transform: scaleY(1);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .wave i {
+            animation: none;
+            transform: scaleY(0.5);
+        }
     }
 
     .term b {
