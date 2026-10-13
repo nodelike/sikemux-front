@@ -24,7 +24,7 @@ const CARDS = [
     ["visual-diagram", "visual-diagram-stage.png", { left: 380, top: 340, width: 1580, height: 900 }],
     ["visual-chart", "visual-chart-stage.png", { left: 380, top: 340, width: 1580, height: 900 }],
     ["visual-mockup", "visual-mockup-stage.png", { left: 380, top: 340, width: 1580, height: 900 }],
-    ["tools", "agent-tools.png", { left: 540, top: 930, width: 960, height: 600 }],
+    ["tools", "agent-tools.png", { left: 820, top: 505, width: 1120, height: 700 }],
 ];
 
 const pnpm = (cwd, ...args) => execFileSync("pnpm", args, { cwd, stdio: "inherit" });
