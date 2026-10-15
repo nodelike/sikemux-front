@@ -15,6 +15,7 @@
         document.addEventListener("click", (event) => {
             const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[data-release-dmg]") : null;
             if (link) posthog.capture("download_clicked", { url: link.href }, { transport: "sendBeacon" });
+            if (event.target instanceof Element && event.target.closest("[data-install-copy]")) posthog.capture("install_command_copied");
         });
     }
 

@@ -4,6 +4,7 @@
     "deploymentEnabled": { "*": false, "main": true }
   },
   "rewrites": [
+    { "source": "/install", "destination": "https://raw.githubusercontent.com/nodelike/sikemux/main/scripts/install.sh" },
     { "source": "/ingest/static/(.*)", "destination": "https://eu-assets.i.posthog.com/static/$1" },
     { "source": "/ingest/array/(.*)", "destination": "https://eu-assets.i.posthog.com/array/$1" },
     { "source": "/ingest/(.*)", "destination": "https://eu.i.posthog.com/$1" }
