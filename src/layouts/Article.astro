@@ -69,6 +69,7 @@ const breadcrumbs = {
 <style>
     .article {
         display: grid;
+        grid-template-columns: minmax(0, 1fr);
         gap: 56px;
         max-width: 880px;
         padding-block: clamp(32px, 6vw, 72px) clamp(64px, 8vw, 112px);
@@ -111,6 +112,7 @@ const breadcrumbs = {
 
     :global(:where(.article) section) {
         display: grid;
+        grid-template-columns: minmax(0, 1fr);
         gap: 16px;
     }
 
@@ -158,6 +160,7 @@ const breadcrumbs = {
 
     .cta {
         display: grid;
+        grid-template-columns: minmax(0, 1fr);
         gap: 20px;
         padding: clamp(24px, 4vw, 40px);
         border: 1px solid var(--border);

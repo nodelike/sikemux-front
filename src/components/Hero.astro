@@ -21,7 +21,7 @@ const { release, stars } = Astro.props;
         <div class="copy">
             <a class="news" href="#features">
                 <span class="tag mono">New in 0.5.1</span>
-                <span>iOS Simulator, visual answers, databases and GitLab</span>
+                <span class="what">iOS Simulator, visual answers, databases and GitLab</span>
                 <span class="arrow" aria-hidden="true">→</span>
             </a>
             <h1>The IDE for you and your coding agents.</h1>
@@ -74,6 +74,7 @@ const { release, stars } = Astro.props;
 
     .copy {
         display: grid;
+        grid-template-columns: minmax(0, 1fr);
         justify-items: center;
         gap: 22px;
         max-width: 860px;
@@ -88,6 +89,7 @@ const { release, stars } = Astro.props;
         height: 32px;
         padding: 0 12px 0 4px;
         border: 1px solid var(--border);
+        max-width: 100%;
         border-radius: 999px;
         background: color-mix(in oklab, var(--surface) 70%, transparent);
         font-size: 13.5px;
@@ -101,6 +103,7 @@ const { release, stars } = Astro.props;
     }
 
     .news .tag {
+        flex: none;
         padding: 3px 9px;
         border: 1px solid var(--border-selected);
         border-radius: 999px;
@@ -110,7 +113,14 @@ const { release, stars } = Astro.props;
         color: var(--text-primary);
     }
 
+    .news .what {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
     .news .arrow {
+        flex: none;
         color: var(--text-tertiary);
     }
 
