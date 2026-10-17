@@ -1,0 +1,100 @@
+---
+import Article from "../../layouts/Article.astro";
+import AgentIcon from "../../components/AgentIcon.astro";
+import Highlights from "../../components/Highlights.astro";
+import { AGENTS, agentPath } from "../../lib/agents";
+
+const description =
+    "Sikemux runs Claude Code, Codex, OpenCode, Hermes, Grok, OMP and Pi on your Mac, signed in with your own plan. No extra AI subscription, several agents on one project.";
+---
+
+<Article title="Coding agents that run in Sikemux · Claude Code, Codex and more" description={description} crumbs={[{ name: "Agents", path: "/agents" }]}>
+    <header>
+        <p class="label">Agents</p>
+        <h1>Bring the coding agent you already use.</h1>
+        <p class="lede">
+            Sikemux doesn't sell AI. It runs the coding agent CLIs you already have, signed in with your own account, so your Claude or ChatGPT
+            plan is the one doing the work. Run several on the same project and give each one its own task.
+        </p>
+    </header>
+
+    <section>
+        <h2>Supported agents</h2>
+        <ul class="agents">
+            {
+                AGENTS.map((agent) => (
+                    <li style={`--brand: ${agent.color}`}>
+                        <a href={agentPath(agent)}>
+                            <span class="mark">
+                                <AgentIcon agent={agent.icon} size={20} />
+                            </span>
+                            <span class="name">{agent.name}</span>
+                            <span class="maker">{agent.maker}</span>
+                            <span class="how">{agent.chat ? "Chat or terminal" : "Terminal"}</span>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+        <p>Claude Code and Codex can each keep several accounts, with the limits left on each plan shown in the rail.</p>
+    </section>
+
+    <section>
+        <h2>What every agent gets</h2>
+        <Highlights />
+    </section>
+</Article>
+
+<style>
+    .agents {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .agents a {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr) auto auto;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+        text-decoration: none;
+        transition: border-color var(--dur-2) var(--ease-out);
+    }
+
+    .agents a:hover {
+        border-color: var(--border-strong);
+    }
+
+    .mark {
+        display: grid;
+        place-items: center;
+        color: var(--brand);
+    }
+
+    .name {
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .maker,
+    .how {
+        font-size: 14px;
+        color: var(--text-tertiary);
+    }
+
+    @media (max-width: 640px) {
+        .agents a {
+            grid-template-columns: 36px minmax(0, 1fr) auto;
+        }
+
+        .maker {
+            display: none;
+        }
+    }
+</style>

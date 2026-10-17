@@ -1,0 +1,112 @@
+---
+import type { GetStaticPaths } from "astro";
+import Article from "../../layouts/Article.astro";
+import Highlights from "../../components/Highlights.astro";
+import { COMPARISONS, comparisonPath, type Comparison } from "../../lib/comparisons";
+import { formatSize, latestRelease } from "../../lib/release";
+
+export const getStaticPaths = (() => COMPARISONS.map((comparison) => ({ params: { slug: comparison.slug }, props: { comparison } }))) satisfies GetStaticPaths;
+
+interface Props {
+    comparison: Comparison;
+}
+
+const { comparison } = Astro.props;
+const release = await latestRelease();
+const others = COMPARISONS.filter((other) => other !== comparison);
+const description = `Sikemux vs ${comparison.name}: how a free agentic IDE for Claude Code and Codex compares with ${comparison.name}, the ${comparison.kind}, and which one fits how you work.`;
+---
+
+<Article
+    title={`Sikemux vs ${comparison.name} · an agentic IDE compared`}
+    description={description}
+    crumbs={[
+        { name: "Compare", path: "/vs" },
+        { name: `vs ${comparison.name}`, path: comparisonPath(comparison) },
+    ]}>
+    <header>
+        <p class="label">Compared</p>
+        <h1>Sikemux vs {comparison.name}</h1>
+        <p class="lede">{comparison.what}</p>
+    </header>
+
+    <section>
+        <h2>The difference</h2>
+        <p>{comparison.difference}</p>
+    </section>
+
+    <section class="picks">
+        <div class="pick">
+            <h2>Pick {comparison.name} if</h2>
+            <ul>{comparison.pickThem.map((line) => <li>{line}</li>)}</ul>
+        </div>
+        <div class="pick own">
+            <h2>Pick Sikemux if</h2>
+            <ul>{comparison.pickSikemux.map((line) => <li>{line}</li>)}</ul>
+        </div>
+    </section>
+
+    {
+        comparison.bytes !== undefined && release.dmgBytes !== null && (
+            <section>
+                <h2>Download size</h2>
+                <p>
+                    Sikemux is <span data-release-size>{formatSize(release.dmgBytes)}</span> to download. {comparison.name}'s Apple Silicon installer was{" "}
+                    {formatSize(comparison.bytes)} when we checked on 27 September 2026. Sikemux uses the web engine already built into macOS instead of
+                    shipping its own.
+                </p>
+            </section>
+        )
+    }
+
+    <section>
+        <h2>What you get in Sikemux</h2>
+        <Highlights />
+    </section>
+
+    <section>
+        <h2>More comparisons</h2>
+        <p>
+            {
+                others.map((other, index) => (
+                    <>
+                        <a href={comparisonPath(other)}>Sikemux vs {other.name}</a>
+                        {index < others.length - 1 ? " · " : ""}
+                    </>
+                ))
+            }
+        </p>
+    </section>
+</Article>
+
+<style>
+    .picks {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .pick {
+        display: grid;
+        align-content: start;
+        gap: 14px;
+        padding: 22px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+    }
+
+    .pick.own {
+        border-color: var(--border-selected);
+        background: color-mix(in oklab, var(--surface-selected) 50%, var(--surface));
+    }
+
+    .pick h2 {
+        font-size: 20px;
+    }
+
+    @media (max-width: 640px) {
+        .picks {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>

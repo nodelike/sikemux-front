@@ -1,0 +1,185 @@
+---
+import Base from "./Base.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import DownloadButton from "../components/DownloadButton.astro";
+import InstallCommand from "../components/InstallCommand.astro";
+import LiveRelease from "../components/LiveRelease.astro";
+import { formatSize, latestRelease, starCount } from "../lib/release";
+
+interface Crumb {
+    name: string;
+    path: string;
+}
+
+interface Props {
+    title: string;
+    description: string;
+    crumbs: Crumb[];
+    structuredData?: Record<string, unknown>[];
+}
+
+const { title, description, crumbs, structuredData = [] } = Astro.props;
+const [release, stars] = await Promise.all([latestRelease(), starCount()]);
+
+const breadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [{ name: "Sikemux", path: "/" }, ...crumbs].map((crumb, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: crumb.name,
+        item: new URL(crumb.path, Astro.site).href,
+    })),
+};
+---
+
+<Base title={title} description={description} structuredData={[breadcrumbs, ...structuredData]}>
+    <Nav release={release} stars={stars} />
+    <main class="page article">
+        <nav class="crumbs mono" aria-label="Breadcrumb">
+            <a href="/">Sikemux</a>
+            {
+                crumbs.map((crumb, index) =>
+                    index === crumbs.length - 1 ? (
+                        <span aria-current="page">{crumb.name}</span>
+                    ) : (
+                        <a href={crumb.path}>{crumb.name}</a>
+                    ),
+                )
+            }
+        </nav>
+        <slot />
+        <aside class="cta">
+            <div>
+                <h2>Try it on your own project.</h2>
+                <p>Free for Apple Silicon Macs on macOS 11 or later{release.dmgBytes !== null && <>, <span data-release-size>{formatSize(release.dmgBytes)}</span> to download</>}.</p>
+            </div>
+            <div class="actions">
+                <DownloadButton href={release.dmgUrl} />
+                <InstallCommand />
+            </div>
+        </aside>
+    </main>
+    <Footer />
+    <LiveRelease />
+</Base>
+
+<style>
+    .article {
+        display: grid;
+        gap: 56px;
+        max-width: 880px;
+        padding-block: clamp(32px, 6vw, 72px) clamp(64px, 8vw, 112px);
+    }
+
+    .crumbs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    .crumbs > * + *::before {
+        content: "/";
+        margin-right: 8px;
+        color: var(--border-strong);
+    }
+
+    .crumbs a:hover {
+        color: var(--text-primary);
+    }
+
+    :global(:where(.article) header) {
+        display: grid;
+        gap: 18px;
+    }
+
+    :global(:where(.article) h1) {
+        font-size: clamp(38px, 5.4vw, 64px);
+        line-height: 1.02;
+        letter-spacing: -0.05em;
+    }
+
+    :global(:where(.article) .lede) {
+        max-width: 60ch;
+        font-size: 18px;
+        line-height: 1.6;
+    }
+
+    :global(:where(.article) section) {
+        display: grid;
+        gap: 16px;
+    }
+
+    :global(:where(.article) section h2) {
+        font-size: clamp(24px, 3vw, 30px);
+        line-height: 1.15;
+        letter-spacing: -0.03em;
+    }
+
+    :global(:where(.article) section p),
+    :global(:where(.article) section li) {
+        max-width: 68ch;
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    :global(:where(.article) section ul) {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    :global(:where(.article) section p a) {
+        color: var(--text-primary);
+        text-decoration: underline;
+        text-decoration-color: var(--border-strong);
+        text-underline-offset: 3px;
+    }
+
+    :global(:where(.article) section p a:hover) {
+        text-decoration-color: var(--text-primary);
+    }
+
+    :global(:where(.article) pre) {
+        margin: 0;
+        padding: 14px 16px;
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface-sunken);
+        font-size: 13px;
+        color: var(--text-primary);
+    }
+
+    .cta {
+        display: grid;
+        gap: 20px;
+        padding: clamp(24px, 4vw, 40px);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background:
+            radial-gradient(70% 90% at 15% 0%, color-mix(in oklab, var(--acc) 16%, transparent), transparent 65%),
+            var(--surface);
+    }
+
+    .cta h2 {
+        font-size: clamp(24px, 3vw, 32px);
+        letter-spacing: -0.03em;
+    }
+
+    .cta p {
+        margin-top: 8px;
+        font-size: 15px;
+    }
+
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+    }
+</style>

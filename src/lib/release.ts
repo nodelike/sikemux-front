@@ -22,6 +22,7 @@ export interface GithubRelease {
     assets: GithubAsset[];
     html_url?: string;
     body?: string | null;
+    body_html?: string;
     prerelease?: boolean;
     draft?: boolean;
 }
@@ -55,6 +56,35 @@ export async function recentReleases(count = 3): Promise<ReleaseNote[]> {
     } catch {
         return [];
     }
+}
+
+export interface ChangelogEntry {
+    version: string;
+    url: string;
+    publishedAt: string;
+    html: string;
+}
+
+export async function stableChangelog(): Promise<ChangelogEntry[]> {
+    const entries: ChangelogEntry[] = [];
+    for (let page = 1; page <= 5; page++) {
+        const response = await fetch(`https://api.github.com/repos/nodelike/sikemux/releases?per_page=100&page=${page}`, {
+            headers: { ...githubHeaders(), Accept: "application/vnd.github.html+json" },
+        });
+        if (!response.ok) throw new Error(`GitHub releases page ${page} answered ${response.status}`);
+        const releases = (await response.json()) as GithubRelease[];
+        for (const release of releases) {
+            if (release.prerelease || release.draft) continue;
+            entries.push({
+                version: release.tag_name.replace(/^v/, ""),
+                url: release.html_url ?? RELEASES_URL,
+                publishedAt: release.published_at,
+                html: (release.body_html ?? "").replace(/^\s*<h1>.*?<\/h1>/s, "").replace(/<(\/?)h2>/g, "<$1h3>"),
+            });
+        }
+        if (releases.length < 100) break;
+    }
+    return entries;
 }
 
 function githubHeaders(): Record<string, string> {

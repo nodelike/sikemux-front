@@ -1,0 +1,74 @@
+---
+import Article from "../layouts/Article.astro";
+import { stableChangelog } from "../lib/release";
+
+const entries = await stableChangelog();
+const date = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+---
+
+<Article
+    title="Sikemux changelog · what's new in each release"
+    description="Every stable Sikemux release and what changed in it: new agent features, the browser, Git, the phone app and fixes, newest first."
+    crumbs={[{ name: "Changelog", path: "/changelog" }]}>
+    <header>
+        <p class="label">Changelog</p>
+        <h1>What's new in Sikemux.</h1>
+        <p class="lede">Every stable release, newest first. Sikemux updates itself, and nightlies with unreleased work are on <a href="https://github.com/nodelike/sikemux/releases">GitHub</a>.</p>
+    </header>
+
+    {
+        entries.map((entry) => (
+            <section class="release" id={`v${entry.version}`}>
+                <div class="meta">
+                    <h2>
+                        <a href={`#v${entry.version}`}>v{entry.version}</a>
+                    </h2>
+                    <time class="mono" datetime={entry.publishedAt}>
+                        {date(entry.publishedAt)}
+                    </time>
+                </div>
+                <div class="notes" set:html={entry.html} />
+            </section>
+        ))
+    }
+</Article>
+
+<style>
+    .lede a {
+        color: var(--text-primary);
+        text-decoration: underline;
+        text-decoration-color: var(--border-strong);
+        text-underline-offset: 3px;
+    }
+
+    .release {
+        padding-top: 40px;
+        border-top: 1px solid var(--border);
+        scroll-margin-top: 72px;
+    }
+
+    .meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 14px;
+    }
+
+    time {
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    .notes {
+        display: grid;
+        gap: 14px;
+    }
+
+    .notes :global(h3) {
+        margin-top: 10px;
+    }
+
+    .notes :global(code) {
+        color: var(--text-primary);
+    }
+</style>

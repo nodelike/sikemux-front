@@ -1,0 +1,125 @@
+---
+import Logo from "./Logo.astro";
+import { AGENTS, agentPath } from "../lib/agents";
+import { COMPARISONS, comparisonPath } from "../lib/comparisons";
+import { DISCORD_URL, REPO_URL } from "../lib/release";
+
+const columns = [
+    { title: "Agents", links: [...AGENTS.map((agent) => ({ label: agent.name, href: agentPath(agent) })), { label: "All agents", href: "/agents" }] },
+    { title: "Compare", links: [...COMPARISONS.map((comparison) => ({ label: `vs ${comparison.name}`, href: comparisonPath(comparison) })), { label: "All comparisons", href: "/vs" }] },
+    {
+        title: "Sikemux",
+        links: [
+            { label: "Features", href: "/#features" },
+            { label: "Phone app", href: "/phone" },
+            { label: "Changelog", href: "/changelog" },
+            { label: "Docs", href: "https://docs.sikemux.com" },
+            { label: "GitHub", href: REPO_URL },
+            { label: "Discord", href: DISCORD_URL },
+        ],
+    },
+    {
+        title: "Legal",
+        links: [
+            { label: "Privacy", href: "/privacy" },
+            { label: "Terms", href: "/terms" },
+            { label: "License", href: `${REPO_URL}/blob/main/LICENSE` },
+        ],
+    },
+];
+---
+
+<footer class="footer">
+    <nav class="page columns" aria-label="Footer">
+        {
+            columns.map((column) => (
+                <div class="column">
+                    <p class="label">{column.title}</p>
+                    <ul>
+                        {column.links.map((link) => (
+                            <li>
+                                <a href={link.href}>{link.label}</a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ))
+        }
+    </nav>
+    <div class="page row">
+        <span class="brand">
+            <Logo size={14} />
+            <span class="mono"><code>sike</code> + <code>mux</code>, built by <a href="https://github.com/nodelike">@nodelike</a></span>
+        </span>
+    </div>
+</footer>
+
+<style>
+    .footer {
+        border-top: 1px solid var(--border);
+    }
+
+    .columns {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 32px;
+        padding-block: 48px 8px;
+    }
+
+    .column {
+        display: grid;
+        align-content: start;
+        gap: 14px;
+    }
+
+    ul {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 14px;
+    }
+
+    a {
+        color: var(--text-secondary);
+        transition: color var(--dur-2) var(--ease-out);
+    }
+
+    a:hover {
+        color: var(--text-primary);
+    }
+
+    .row {
+        padding-block: 28px;
+        font-size: 13px;
+        color: var(--text-tertiary);
+    }
+
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .brand .mono {
+        font-size: 12px;
+    }
+
+    .brand code {
+        font-size: inherit;
+        color: var(--text-secondary);
+    }
+
+    .brand a {
+        text-decoration: underline;
+        text-decoration-color: var(--border-strong);
+        text-underline-offset: 3px;
+    }
+
+    @media (max-width: 720px) {
+        .columns {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+</style>

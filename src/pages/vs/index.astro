@@ -1,0 +1,69 @@
+---
+import Article from "../../layouts/Article.astro";
+import { COMPARISONS, comparisonPath } from "../../lib/comparisons";
+
+const description = "How Sikemux, a free agentic IDE for Claude Code and Codex on Mac, compares with Cursor, Zed, Warp, Superset, Conductor and cmux.";
+---
+
+<Article title="Sikemux compared with Cursor, Zed, Warp, Superset, Conductor and cmux" description={description} crumbs={[{ name: "Compare", path: "/vs" }]}>
+    <header>
+        <p class="label">Compared</p>
+        <h1>Sikemux and the tools you're weighing it against.</h1>
+        <p class="lede">
+            Sikemux is built around one way of working: one window per project, with your agents in it. Here's how that differs from the editors,
+            terminals and agent runners people compare it with, and when each one is the better pick.
+        </p>
+    </header>
+
+    <section>
+        <ul class="list">
+            {
+                COMPARISONS.map((comparison) => (
+                    <li>
+                        <a href={comparisonPath(comparison)}>
+                            <span class="name">Sikemux vs {comparison.name}</span>
+                            <span class="kind">{comparison.kind}</span>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </section>
+</Article>
+
+<style>
+    .list {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .list a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 18px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+        text-decoration: none;
+        transition: border-color var(--dur-2) var(--ease-out);
+    }
+
+    .list a:hover {
+        border-color: var(--border-strong);
+    }
+
+    .name {
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .kind {
+        font-size: 14px;
+        color: var(--text-tertiary);
+    }
+</style>

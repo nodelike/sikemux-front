@@ -1,0 +1,59 @@
+---
+interface Props {
+    agent?: string;
+}
+
+const { agent = "Your agent" } = Astro.props;
+
+const items = [
+    { title: "Its own browser tab", body: `${agent} opens your app, clicks through it and takes screenshots in a real WebKit tab beside its chat, and you can take over at any time.` },
+    { title: "A live iOS Simulator", body: `Building for iPhone? ${agent} builds your app, installs it on a Simulator on its desk, and taps and types to check its own work.` },
+    { title: "Review and ship", body: "See every file the agent touched before you commit. Pull requests, reviews and CI from GitHub, GitLab and Bitbucket open next to the code." },
+    { title: "A real code editor", body: "Go to definitions, search the whole project and compare changes side by side, without opening another app." },
+    { title: "Terminals that outlive the app", body: "Quit Sikemux or let it update, and the agents and terminals keep running. Open it again and everything is where you left it." },
+    { title: "Answers from anywhere", body: "When an agent needs you, answer it from the MacBook notch, or from the phone app over an end to end encrypted link." },
+];
+---
+
+<ul class="highlights">
+    {
+        items.map((item) => (
+            <li>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+            </li>
+        ))
+    }
+</ul>
+
+<style>
+    .highlights {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        display: grid;
+        align-content: start;
+        gap: 8px;
+        padding: 20px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+    }
+
+    li p {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 640px) {
+        .highlights {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>

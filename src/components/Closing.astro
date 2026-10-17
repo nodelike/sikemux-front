@@ -1,5 +1,6 @@
 ---
 import Logo from "./Logo.astro";
+import Footer from "./Footer.astro";
 import Dither from "./Dither.astro";
 import DownloadButton from "./DownloadButton.astro";
 import InstallCommand from "./InstallCommand.astro";
@@ -42,22 +43,7 @@ const { release, releases } = Astro.props;
     </div>
 </section>
 
-<footer class="footer">
-    <div class="page row">
-        <span class="brand">
-            <Logo size={14} />
-            <span class="mono"><code>sike</code> + <code>mux</code>, built by <a href="https://github.com/nodelike">@nodelike</a></span>
-        </span>
-        <nav aria-label="Footer">
-            <a href={REPO_URL}>GitHub</a>
-            <a href="https://discord.gg/UKfmHpF9kX">Discord</a>
-            <a href={RELEASES_URL}>Releases</a>
-            <a href={`${REPO_URL}/blob/main/LICENSE`}>License</a>
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
-        </nav>
-    </div>
-</footer>
+<Footer />
 
 <style>
     .closing {
@@ -162,52 +148,15 @@ const { release, releases } = Astro.props;
         color: var(--text-tertiary);
     }
 
-    .small a,
-    .footer a {
+    .small a {
         color: var(--text-secondary);
         text-decoration: underline;
         text-decoration-color: var(--border-strong);
         text-underline-offset: 3px;
     }
 
-    .small a:hover,
-    .footer a:hover {
+    .small a:hover {
         color: var(--text-primary);
-    }
-
-    .footer {
-        border-top: 1px solid var(--border);
-    }
-
-    .row {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        padding-block: 28px;
-        font-size: 13px;
-        color: var(--text-tertiary);
-    }
-
-    .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .brand .mono {
-        font-size: 12px;
-    }
-
-    .brand code {
-        font-size: inherit;
-        color: var(--text-secondary);
-    }
-
-    nav {
-        display: flex;
-        gap: 20px;
     }
 
     @media (max-width: 860px) {

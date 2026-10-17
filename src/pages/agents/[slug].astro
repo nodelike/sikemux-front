@@ -1,0 +1,104 @@
+---
+import type { GetStaticPaths } from "astro";
+import Article from "../../layouts/Article.astro";
+import AgentIcon from "../../components/AgentIcon.astro";
+import Highlights from "../../components/Highlights.astro";
+import { AGENTS, agentPath, type AgentPage } from "../../lib/agents";
+import { COMPARISONS, comparisonPath } from "../../lib/comparisons";
+
+export const getStaticPaths = (() => AGENTS.map((agent) => ({ params: { slug: agent.slug }, props: { agent } }))) satisfies GetStaticPaths;
+
+interface Props {
+    agent: AgentPage;
+}
+
+const { agent } = Astro.props;
+const others = AGENTS.filter((other) => other !== agent);
+const where = agent.chat ? "in a chat beside your code" : "in a terminal beside your code";
+const description = `Run ${agent.name}, ${agent.maker}'s coding agent, ${where} in Sikemux, a free agentic IDE for Mac. It gets its own browser tab, Git review and your tools, on ${agent.plan}.`;
+---
+
+<Article
+    title={`${agent.name} in an IDE for Mac · Sikemux`}
+    description={description}
+    crumbs={[
+        { name: "Agents", path: "/agents" },
+        { name: agent.name, path: agentPath(agent) },
+    ]}>
+    <header style={`--brand: ${agent.color}`}>
+        <span class="mark"><AgentIcon agent={agent.icon} size={28} /></span>
+        <h1>{agent.name}, with a whole IDE around it.</h1>
+        <p class="lede">
+            Sikemux runs the {agent.name} you already have installed, signed in with {agent.plan}. It works {where}, with its own browser tab, the
+            project's Git and your CI, issues and logs in the same window. Sikemux adds no AI of its own and never sees your credentials.
+        </p>
+    </header>
+
+    <section>
+        <h2>What {agent.name} gets in Sikemux</h2>
+        <Highlights agent={agent.name} />
+        {
+            agent.accounts && (
+                <p>
+                    Keep a personal and a work {agent.name} account side by side, see how much of each plan is left in the rail, and let a chat
+                    move on to your next account when one hits its limit, if you turn that on.
+                </p>
+            )
+        }
+    </section>
+
+    <section>
+        <h2>Set up {agent.name}</h2>
+        <p>Install it with its own installer, or click Install beside it on Sikemux's welcome screen, which runs the same command in a terminal you can watch:</p>
+        <pre><code>{agent.install}</code></pre>
+        <p>Then sign in the usual way:</p>
+        <pre><code>{agent.signIn}</code></pre>
+        <p>Open a project in Sikemux and {agent.name} is ready. Sikemux finds <code>{agent.command}</code> on your PATH and in the folders its installer uses.</p>
+    </section>
+
+    <section>
+        <h2>How Sikemux runs it</h2>
+        <p>{agent.runs}</p>
+        <p><a href={`https://docs.sikemux.com/each-agent/${agent.slug}`}>{agent.name} in the Sikemux docs</a></p>
+    </section>
+
+    <section>
+        <h2>Other agents</h2>
+        <p>
+            Sikemux runs several agents on the same project, so you can hand one task to {agent.name} and another to{" "}
+            {
+                others.map((other, index) => (
+                    <>
+                        <a href={agentPath(other)}>{other.name}</a>
+                        {index < others.length - 2 ? ", " : index === others.length - 2 ? " or " : ""}
+                    </>
+                ))
+            }.
+        </p>
+        <p>
+            Weighing it against other tools? See Sikemux{" "}
+            {
+                COMPARISONS.slice(0, 3).map((comparison, index) => (
+                    <>
+                        <a href={comparisonPath(comparison)}>vs {comparison.name}</a>
+                        {index < 1 ? ", " : index === 1 ? " and " : ""}
+                    </>
+                ))
+            }
+            .
+        </p>
+    </section>
+</Article>
+
+<style>
+    .mark {
+        display: grid;
+        place-items: center;
+        width: 52px;
+        height: 52px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: var(--surface);
+        color: var(--brand);
+    }
+</style>
