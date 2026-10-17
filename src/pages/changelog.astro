@@ -1,6 +1,6 @@
 ---
 import Article from "../layouts/Article.astro";
-import { stableChangelog } from "../lib/release";
+import { REPO_URL, stableChangelog } from "../lib/release";
 
 const entries = await stableChangelog();
 const date = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
@@ -9,12 +9,23 @@ const date = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "
 <Article
     title="Sikemux changelog · what's new in each release"
     description="Every stable Sikemux release and what changed in it: new agent features, the browser, Git, the phone app and fixes, newest first."
-    crumbs={[{ name: "Changelog", path: "/changelog" }]}>
+    crumbs={[{ name: "Changelog", path: "/changelog" }]}
+    noindex={entries.length === 0}>
     <header>
         <p class="label">Changelog</p>
         <h1>What's new in Sikemux.</h1>
         <p class="lede">Every stable release, newest first. Sikemux updates itself, and nightlies with unreleased work are on <a href="https://github.com/nodelike/sikemux/releases">GitHub</a>.</p>
     </header>
+
+    {
+        entries.length === 0 && (
+            <section>
+                <p>
+                    The release notes couldn't be loaded just now. Read them on <a href={`${REPO_URL}/releases`}>GitHub</a>.
+                </p>
+            </section>
+        )
+    }
 
     {
         entries.map((entry) => (

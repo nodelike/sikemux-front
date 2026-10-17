@@ -41,9 +41,7 @@ function firstParagraph(body: string | null | undefined): string {
 
 export async function recentReleases(count = 3): Promise<ReleaseNote[]> {
     try {
-        const response = await fetch("https://api.github.com/repos/nodelike/sikemux/releases?per_page=60", { headers: githubHeaders() });
-        if (!response.ok) return [];
-        const releases = (await response.json()) as GithubRelease[];
+        const releases = await github<GithubRelease[]>("/repos/nodelike/sikemux/releases?per_page=100");
         return releases
             .filter((release) => !release.prerelease && !release.draft)
             .slice(0, count)
@@ -68,11 +66,12 @@ export interface ChangelogEntry {
 export async function stableChangelog(): Promise<ChangelogEntry[]> {
     const entries: ChangelogEntry[] = [];
     for (let page = 1; page <= 5; page++) {
-        const response = await fetch(`https://api.github.com/repos/nodelike/sikemux/releases?per_page=100&page=${page}`, {
-            headers: { ...githubHeaders(), Accept: "application/vnd.github.html+json" },
-        });
-        if (!response.ok) throw new Error(`GitHub releases page ${page} answered ${response.status}`);
-        const releases = (await response.json()) as GithubRelease[];
+        let releases: GithubRelease[];
+        try {
+            releases = await github<GithubRelease[]>(`/repos/nodelike/sikemux/releases?per_page=100&page=${page}`, "application/vnd.github.html+json");
+        } catch {
+            return entries;
+        }
         for (const release of releases) {
             if (release.prerelease || release.draft) continue;
             entries.push({
@@ -87,17 +86,27 @@ export async function stableChangelog(): Promise<ChangelogEntry[]> {
     return entries;
 }
 
-function githubHeaders(): Record<string, string> {
-    const headers: Record<string, string> = { Accept: "application/vnd.github+json" };
+const githubAnswers = new Map<string, Promise<unknown>>();
+
+// Each build or dev server asks GitHub once per URL, since anonymous calls are capped at 60 an hour.
+function github<T>(path: string, accept = "application/vnd.github+json"): Promise<T> {
+    const key = `${accept} ${path}`;
+    const known = githubAnswers.get(key);
+    if (known) return known as Promise<T>;
+    const headers: Record<string, string> = { Accept: accept };
     if (import.meta.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${import.meta.env.GITHUB_TOKEN}`;
-    return headers;
+    const answer = fetch(`https://api.github.com${path}`, { headers }).then((response) => {
+        if (!response.ok) throw new Error(`GitHub answered ${response.status} for ${path}`);
+        return response.json() as Promise<T>;
+    });
+    answer.catch(() => githubAnswers.delete(key));
+    githubAnswers.set(key, answer);
+    return answer;
 }
 
 export async function starCount(): Promise<number | null> {
     try {
-        const response = await fetch("https://api.github.com/repos/nodelike/sikemux", { headers: githubHeaders() });
-        if (!response.ok) return null;
-        const repo = (await response.json()) as { stargazers_count: number };
+        const repo = await github<{ stargazers_count: number }>("/repos/nodelike/sikemux");
         return repo.stargazers_count;
     } catch {
         return null;
@@ -124,9 +133,7 @@ export function toRelease(release: GithubRelease): Release {
 
 export async function latestRelease(): Promise<Release> {
     try {
-        const response = await fetch(LATEST_RELEASE_API, { headers: githubHeaders() });
-        if (!response.ok) return FALLBACK;
-        return toRelease((await response.json()) as GithubRelease);
+        return toRelease(await github<GithubRelease>("/repos/nodelike/sikemux/releases/latest"));
     } catch {
         return FALLBACK;
     }

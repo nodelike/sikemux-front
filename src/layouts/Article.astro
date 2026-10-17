@@ -17,9 +17,10 @@ interface Props {
     description: string;
     crumbs: Crumb[];
     structuredData?: Record<string, unknown>[];
+    noindex?: boolean;
 }
 
-const { title, description, crumbs, structuredData = [] } = Astro.props;
+const { title, description, crumbs, structuredData = [], noindex = false } = Astro.props;
 const [release, stars] = await Promise.all([latestRelease(), starCount()]);
 
 const breadcrumbs = {
@@ -34,7 +35,7 @@ const breadcrumbs = {
 };
 ---
 
-<Base title={title} description={description} structuredData={[breadcrumbs, ...structuredData]}>
+<Base title={title} description={description} structuredData={[breadcrumbs, ...structuredData]} noindex={noindex}>
     <Nav release={release} stars={stars} />
     <main class="page article">
         <nav class="crumbs mono" aria-label="Breadcrumb">
