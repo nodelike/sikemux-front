@@ -2,18 +2,6 @@
 import AgentIcon from "./AgentIcon.astro";
 import { AGENTS, agentPath } from "../lib/agents";
 
-const pathFor = (icon: string) => agentPath(AGENTS.find((agent) => agent.icon === icon)!);
-
-const agents = [
-    { id: "claude", name: "Claude Code", login: "claude auth login", color: "var(--brand-claude)" },
-    { id: "codex", name: "Codex", login: "codex login", color: "var(--brand-codex)" },
-    { id: "hermes", name: "Hermes", login: "hermes login", color: "var(--brand-hermes)" },
-    { id: "opencode", name: "OpenCode", login: "opencode auth login", color: "var(--brand-opencode)" },
-    { id: "grok", name: "Grok", login: "grok login", color: "var(--brand-grok)" },
-    { id: "pi", name: "Pi", login: "/login inside pi", color: "var(--brand-pi)" },
-    { id: "omp", name: "OMP", login: "/login inside omp", color: "var(--brand-omp)" },
-] as const;
-
 const points = [
     "No extra AI subscription",
     "Add several Claude or Codex accounts, and see the limits left on each",
@@ -36,14 +24,14 @@ const points = [
         </div>
         <ul class="agents">
             {
-                agents.map((agent) => (
+                AGENTS.map((agent) => (
                     <li style={`--brand: ${agent.color}`}>
-                        <a href={pathFor(agent.id)}>
+                        <a href={agentPath(agent)}>
                             <span class="mark">
-                                <AgentIcon agent={agent.id} size={20} />
+                                <AgentIcon agent={agent.icon} size={20} />
                             </span>
                             <span class="name">{agent.name}</span>
-                            <code class="login mono">{agent.login}</code>
+                            <code class="login mono">{agent.signIn}</code>
                         </a>
                     </li>
                 ))

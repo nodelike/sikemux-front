@@ -108,7 +108,7 @@ export const AGENTS: AgentPage[] = [
         color: "var(--brand-pi)",
         command: "pi",
         install: "curl -fsSL https://pi.dev/install.sh | sh",
-        signIn: "pi --terminal-login",
+        signIn: "/login inside pi",
         plan: "your own provider accounts",
         runs: "Pi runs in its own terminal inside the project, where you use it as you would anywhere else. If Pi crashes, Sikemux starts it again on the same session.",
         chat: false,
