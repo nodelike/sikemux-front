@@ -11,7 +11,7 @@ const cards = [
 ];
 for (const { path, width, height } of cards) {
     const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
-    await page.goto("http://localhost:4399/og/", { waitUntil: "networkidle" });
+    await page.goto("http://localhost:4399/og", { waitUntil: "networkidle" });
     await page.screenshot({ path: resolve(root, path) });
     await page.close();
     console.log(`wrote ${path}`);
