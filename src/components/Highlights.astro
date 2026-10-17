@@ -6,12 +6,12 @@ interface Props {
 const { agent = "Your agent" } = Astro.props;
 
 const items = [
-    { title: "Its own browser tab", body: `${agent} opens your app, clicks through it and takes screenshots in a real WebKit tab beside its chat, and you can take over at any time.` },
-    { title: "A live iOS Simulator", body: `Building for iPhone? ${agent} builds your app, installs it on a Simulator on its desk, and taps and types to check its own work.` },
-    { title: "Review and ship", body: "See every file the agent touched before you commit. Pull requests, reviews and CI from GitHub, GitLab and Bitbucket open next to the code." },
-    { title: "A real code editor", body: "Go to definitions, search the whole project and compare changes side by side, without opening another app." },
-    { title: "Terminals that outlive the app", body: "Quit Sikemux or let it update, and the agents and terminals keep running. Open it again and everything is where you left it." },
-    { title: "Answers from anywhere", body: "When an agent needs you, answer it from the MacBook notch, or from the phone app over an end to end encrypted link." },
+    { href: "/#features", title: "Its own browser tab", body: `${agent} opens your app, clicks through it and takes screenshots in a real WebKit tab beside its chat, and you can take over at any time.` },
+    { href: "/#more", title: "A live iOS Simulator", body: `Building for iPhone? ${agent} builds your app, installs it on a Simulator on its desk, and taps and types to check its own work.` },
+    { href: "/#features", title: "Review and ship", body: "See every file the agent touched before you commit. Pull requests, reviews and CI from GitHub, GitLab and Bitbucket open next to the code." },
+    { href: "/#features", title: "A real code editor", body: "Go to definitions, search the whole project and compare changes side by side, without opening another app." },
+    { href: "/#features", title: "Terminals that outlive the app", body: "Quit Sikemux or let it update, and the agents and terminals keep running. Open it again and everything is where you left it." },
+    { href: "/phone", title: "Answers from anywhere", body: "When an agent needs you, answer it from the MacBook notch, or from the phone app over an end to end encrypted link." },
 ];
 ---
 
@@ -19,8 +19,10 @@ const items = [
     {
         items.map((item) => (
             <li>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
+                <a href={item.href}>
+                    <h3>{item.title}</h3>
+                    <p>{item.body}</p>
+                </a>
             </li>
         ))
     }
@@ -36,17 +38,23 @@ const items = [
         list-style: none;
     }
 
-    li {
+    a {
         display: grid;
+        height: 100%;
         align-content: start;
         gap: 8px;
         padding: 20px;
         border: 1px solid var(--border);
         border-radius: var(--radius-3);
         background: var(--surface);
+        transition: border-color var(--dur-2) var(--ease-out);
     }
 
-    li p {
+    a:hover {
+        border-color: color-mix(in oklab, var(--acc) 45%, var(--border));
+    }
+
+    a p {
         font-size: 15px;
         line-height: 1.6;
     }
