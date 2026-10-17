@@ -5,7 +5,7 @@ import Dither from "./Dither.astro";
 import DownloadButton from "./DownloadButton.astro";
 import InstallCommand from "./InstallCommand.astro";
 import Shipping from "./Shipping.astro";
-import { formatSize, REPO_URL, RELEASES_URL, type Release, type ReleaseNote } from "../lib/release";
+import { formatSize, REPO_URL, type Release, type ReleaseNote } from "../lib/release";
 
 interface Props {
     release: Release;
@@ -25,7 +25,7 @@ const { release, releases } = Astro.props;
             <h2>Open a project.<br />Keep it open.</h2>
             <div class="actions">
                 <DownloadButton href={release.dmgUrl} />
-                <a class="btn notes" href={RELEASES_URL}><span>What's new in v<span data-release-version>{release.version}</span></span></a>
+                <a class="btn notes" href={`/changelog#v${release.version}`}><span>What's new in v<span data-release-version>{release.version}</span></span></a>
             </div>
             <InstallCommand />
             <p class="facts mono">

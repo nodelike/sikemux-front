@@ -1,4 +1,6 @@
 ---
+import { COMPARISONS, comparisonPath } from "../lib/comparisons";
+
 const rows = [
     { capability: "Agents, code, Git and a browser on the same project", sikemux: true, usual: "Switch between apps" },
     { capability: "Agents test your app in their own browser tab", sikemux: true, usual: "Extra setup" },
@@ -37,6 +39,10 @@ const rows = [
                 ))
             }
         </div>
+        <nav class="versus" aria-label="Comparisons">
+            <span class="label">Compared one to one</span>
+            {COMPARISONS.map((comparison) => <a class="btn" href={comparisonPath(comparison)}>vs {comparison.name}</a>)}
+        </nav>
     </div>
 </section>
 
@@ -80,6 +86,18 @@ const rows = [
 
     .check.dim {
         color: var(--text-secondary);
+    }
+
+    .versus {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin-top: 28px;
+    }
+
+    .versus .label {
+        margin-right: 8px;
     }
 
     @media (max-width: 640px) {

@@ -1,5 +1,8 @@
 ---
 import AgentIcon from "./AgentIcon.astro";
+import { AGENTS, agentPath } from "../lib/agents";
+
+const pathFor = (icon: string) => agentPath(AGENTS.find((agent) => agent.icon === icon)!);
 
 const agents = [
     { id: "claude", name: "Claude Code", login: "claude auth login", color: "var(--brand-claude)" },
@@ -29,16 +32,19 @@ const points = [
                 or ChatGPT plan is the one doing the work.
             </p>
             <ul class="points">{points.map((point) => <li>{point}</li>)}</ul>
+            <a class="more" href="/agents">How each agent runs in Sikemux</a>
         </div>
         <ul class="agents">
             {
                 agents.map((agent) => (
                     <li style={`--brand: ${agent.color}`}>
-                        <span class="mark">
-                            <AgentIcon agent={agent.id} size={20} />
-                        </span>
-                        <span class="name">{agent.name}</span>
-                        <code class="login mono">{agent.login}</code>
+                        <a href={pathFor(agent.id)}>
+                            <span class="mark">
+                                <AgentIcon agent={agent.id} size={20} />
+                            </span>
+                            <span class="name">{agent.name}</span>
+                            <code class="login mono">{agent.login}</code>
+                        </a>
                     </li>
                 ))
             }
@@ -91,13 +97,31 @@ const points = [
         background: var(--surface);
     }
 
-    .agents li {
+    .agents a {
         display: grid;
         grid-template-columns: 32px minmax(0, 1fr) auto;
         align-items: center;
         gap: 14px;
         padding: 10px 12px;
         border-radius: var(--radius-3);
+        transition: background var(--dur-2) var(--ease-out);
+    }
+
+    .agents a:hover {
+        background: var(--surface-hover);
+    }
+
+    .more {
+        justify-self: start;
+        font-size: 14px;
+        color: var(--text-secondary);
+        text-decoration: underline;
+        text-decoration-color: var(--border-strong);
+        text-underline-offset: 3px;
+    }
+
+    .more:hover {
+        color: var(--text-primary);
     }
 
     .mark {

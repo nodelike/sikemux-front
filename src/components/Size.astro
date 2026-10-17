@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { formatSize, type Release } from "../lib/release";
+import { COMPARISONS, comparisonPath } from "../lib/comparisons";
 import sikemuxIcon from "../assets/apps/sikemux.png";
 import ghosttyIcon from "../assets/apps/ghostty.png";
 import zedIcon from "../assets/apps/zed.png";
@@ -21,6 +22,11 @@ const others = [
     { name: "Warp", icon: warpIcon, bytes: 334_774_677 },
     { name: "Superset", icon: supersetIcon, bytes: 453_107_779 },
 ];
+
+const versus = (name: string) => {
+    const comparison = COMPARISONS.find((other) => other.name === name);
+    return comparison && comparisonPath(comparison);
+};
 
 const largest = Math.max(...others.map((app) => app.bytes));
 const bar = (bytes: number) => `--share: ${Math.max(bytes / largest, 0.004)}`;
@@ -48,7 +54,13 @@ const bar = (bytes: number) => `--share: ${Math.max(bytes / largest, 0.004)}`;
                 others.map((app) => (
                     <li>
                         <Image class="icon" src={app.icon} alt="" width={32} densities={[2, 3]} format="webp" />
-                        <span class="name">{app.name}</span>
+                        {versus(app.name) ? (
+                            <a class="name" href={versus(app.name)} aria-label={`Sikemux vs ${app.name}`}>
+                                {app.name}
+                            </a>
+                        ) : (
+                            <span class="name">{app.name}</span>
+                        )}
                         <span class="value mono">{formatSize(app.bytes)}</span>
                         <span class="track">
                             <span class="fill" style={bar(app.bytes)} />
@@ -113,6 +125,18 @@ const bar = (bytes: number) => `--share: ${Math.max(bytes / largest, 0.004)}`;
 
     .name {
         grid-area: name;
+    }
+
+    a.name {
+        justify-self: start;
+        text-decoration: underline;
+        text-decoration-color: var(--border-strong);
+        text-underline-offset: 3px;
+        transition: text-decoration-color var(--dur-2) var(--ease-out);
+    }
+
+    a.name:hover {
+        text-decoration-color: currentColor;
     }
 
     .value {

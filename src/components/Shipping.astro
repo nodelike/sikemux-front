@@ -1,5 +1,5 @@
 ---
-import { RELEASES_URL, type ReleaseNote } from "../lib/release";
+import type { ReleaseNote } from "../lib/release";
 
 interface Props {
     releases: ReleaseNote[];
@@ -18,7 +18,7 @@ const DATE = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", 
                 <ol>
                     {releases.map((release) => (
                         <li>
-                            <a href={release.url}>
+                            <a href={`/changelog#v${release.version}`}>
                                 <span class="version mono">v{release.version}</span>
                                 <time class="mono" datetime={release.publishedAt}>
                                     {DATE.format(new Date(release.publishedAt))}
@@ -28,7 +28,7 @@ const DATE = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", 
                         </li>
                     ))}
                 </ol>
-                <a class="all" href={RELEASES_URL.replace(/\/latest$/, "")}>
+                <a class="all" href="/changelog">
                     Every release
                 </a>
             </div>
