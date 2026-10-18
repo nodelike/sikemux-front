@@ -1,0 +1,287 @@
+---
+import Article from "../layouts/Article.astro";
+
+const marks = [
+    { name: "White", file: "mark-white", ground: "dark" },
+    { name: "Black", file: "mark-black", ground: "light" },
+    { name: "Purple", file: "mark-purple", ground: "dark" },
+];
+
+const icons = [
+    { name: "Rounded", file: "icon-dark-rounded", svg: true },
+    { name: "Square", file: "icon-dark-square", svg: true },
+    { name: "Dock icon", file: "app-icon", svg: false },
+];
+
+const colors = [
+    { name: "Purple", hex: "#A277FF", rgb: "162, 119, 255", use: "The mark, and the one thing on a page that matters most." },
+    { name: "Ink", hex: "#E7E5EF", rgb: "231, 229, 239", use: "Text and the mark on dark grounds." },
+    { name: "Ground", hex: "#0F0F13", rgb: "15, 15, 19", use: "The background everything sits on." },
+    { name: "Night", hex: "#09090B", rgb: "9, 9, 11", use: "The darker ground behind panels and bars." },
+];
+---
+
+<Article
+    title="Sikemux brand · logo, icon and colours"
+    description="The Sikemux mark, app icon and colours to download, with how to write the name and how to use them."
+    crumbs={[{ name: "Brand", path: "/brand" }]}>
+    <header>
+        <p class="label">Brand</p>
+        <h1>Sikemux brand.</h1>
+        <p class="lede">The mark, the icon and the colours, for writing about Sikemux or linking to it.</p>
+        <div>
+            <a class="btn primary" href="/brand/sikemux-brand.zip" download>Download all assets</a>
+        </div>
+    </header>
+
+    <section>
+        <h2>The name</h2>
+        <p>
+            Sikemux is one word with a capital S, for both the app and the company behind it. Not SikeMux, Sike Mux or SIKEMUX in running text, and not
+            "the Sikemux app" when Sikemux will do.
+        </p>
+    </section>
+
+    <section>
+        <h2>Using the assets</h2>
+        <ul>
+            <li>Leave room around the mark, at least half its width on every side, at any size.</li>
+            <li>Use the files as they are: don't recolour, stretch, rotate, outline or add effects to them.</li>
+            <li>Don't use them in a way that suggests Sikemux made, sponsors or endorses your work.</li>
+            <li>Don't use them in the name or logo of your own product, company or project.</li>
+        </ul>
+        <p>Questions, or a use not covered here: <a href="mailto:contact@nodelike.com">contact@nodelike.com</a>.</p>
+    </section>
+
+    <section>
+        <h2>The mark</h2>
+        <p>The S on its own. Use it wherever Sikemux needs a logo: white on dark grounds, black on light ones, purple where it should stand out.</p>
+        <ul class="tiles">
+            {
+                marks.map((mark) => (
+                    <li class="tile">
+                        <div class:list={["stage", mark.ground]}>
+                            <img src={`/brand/${mark.file}.svg`} alt={`The Sikemux mark in ${mark.name.toLowerCase()}`} width="72" height="72" />
+                        </div>
+                        <div class="meta">
+                            <span>{mark.name}</span>
+                            <span class="files mono">
+                                <a href={`/brand/${mark.file}.svg`} download>SVG</a>
+                                <a href={`/brand/${mark.file}-1024.png`} download>PNG</a>
+                            </span>
+                        </div>
+                    </li>
+                ))
+            }
+        </ul>
+    </section>
+
+    <section>
+        <h2>The icon</h2>
+        <p>The mark on the app's dark ground. Use it to stand for Sikemux as an app, or where a logo needs a tile of its own, such as an avatar.</p>
+        <ul class="tiles">
+            {
+                icons.map((icon) => (
+                    <li class="tile">
+                        <div class="stage dark">
+                            <img src={icon.svg ? `/brand/${icon.file}.svg` : `/brand/${icon.file}-1024.png`} alt={`The Sikemux icon, ${icon.name.toLowerCase()}`} width="96" height="96" />
+                        </div>
+                        <div class="meta">
+                            <span>{icon.name}</span>
+                            <span class="files mono">
+                                {icon.svg && <a href={`/brand/${icon.file}.svg`} download>SVG</a>}
+                                <a href={`/brand/${icon.file}-1024.png`} download>PNG</a>
+                            </span>
+                        </div>
+                    </li>
+                ))
+            }
+        </ul>
+    </section>
+
+    <section>
+        <h2>Colours</h2>
+        <p>Sikemux is dark, with purple kept for the one thing that matters most. The mark looks best in Ink or Purple on Ground.</p>
+        <ul class="swatches">
+            {
+                colors.map((color) => (
+                    <li class="swatch">
+                        <span class="chip" style={`background: ${color.hex}`} />
+                        <div class="swatch-text">
+                            <span class="swatch-name">{color.name}</span>
+                            <span class="mono values">
+                                {color.hex} · RGB {color.rgb}
+                            </span>
+                            <span class="use">{color.use}</span>
+                        </div>
+                        <button class="copy mono" type="button" data-copy={color.hex}>
+                            Copy
+                        </button>
+                    </li>
+                ))
+            }
+        </ul>
+    </section>
+
+    <section>
+        <h2>Type</h2>
+        <p>
+            Words are set in <a href="https://fonts.google.com/specimen/Figtree">Figtree</a>, and anything the machine says, like commands and paths, in <a
+                href="https://www.jetbrains.com/lp/mono/">JetBrains Mono</a>. Both are free under the SIL Open Font License.
+        </p>
+    </section>
+</Article>
+
+<script>
+    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy]")) {
+        button.addEventListener("click", async () => {
+            await navigator.clipboard.writeText(button.dataset.copy!);
+            button.textContent = "Copied";
+            setTimeout(() => (button.textContent = "Copy"), 1200);
+        });
+    }
+</script>
+
+<style>
+    .btn.primary {
+        border-color: color-mix(in oklab, var(--acc) 70%, var(--bg-dim));
+        background: var(--acc);
+        color: var(--on-accent);
+        font-weight: 600;
+    }
+
+    .btn.primary:hover {
+        background: color-mix(in oklab, var(--acc) 88%, var(--ink));
+    }
+
+    .tiles {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin: 8px 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .tile {
+        display: grid;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        overflow: hidden;
+    }
+
+    .stage {
+        display: grid;
+        place-items: center;
+        aspect-ratio: 4 / 3;
+    }
+
+    .stage.dark {
+        background: var(--bg);
+    }
+
+    .stage.light {
+        background: var(--ink);
+    }
+
+    .meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 14px;
+        border-top: 1px solid var(--border);
+        font-size: 14px;
+        color: var(--text-primary);
+    }
+
+    .files {
+        display: flex;
+        gap: 12px;
+        font-size: 12px;
+    }
+
+    .files a {
+        color: var(--text-tertiary);
+        transition: color var(--dur-1) var(--ease-out);
+    }
+
+    .files a:hover {
+        color: var(--text-primary);
+    }
+
+    .swatches {
+        display: grid;
+        margin: 8px 0 0;
+        padding: 0;
+        gap: 0;
+        list-style: none;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+    }
+
+    .swatch {
+        display: grid;
+        grid-template-columns: 48px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 16px;
+        max-width: none;
+        padding: 14px;
+    }
+
+    .swatch + .swatch {
+        border-top: 1px solid var(--border);
+    }
+
+    .chip {
+        width: 48px;
+        height: 48px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2);
+    }
+
+    .swatch-text {
+        display: grid;
+        gap: 2px;
+        line-height: 1.4;
+    }
+
+    .swatch-name {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .values {
+        font-size: 12px;
+    }
+
+    .use {
+        font-size: 13.5px;
+        color: var(--text-tertiary);
+    }
+
+    .copy {
+        height: 28px;
+        padding-inline: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2);
+        background: none;
+        font-size: 12px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition:
+            background var(--dur-1) var(--ease-out),
+            border-color var(--dur-1) var(--ease-out);
+    }
+
+    .copy:hover {
+        background: var(--surface-hover);
+        border-color: var(--border-strong);
+    }
+
+    @media (max-width: 640px) {
+        .tiles {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>
