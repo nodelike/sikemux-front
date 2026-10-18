@@ -1,9 +1,9 @@
 ---
 import type { GetStaticPaths } from "astro";
 import ShareCard from "../../components/ShareCard.astro";
-import { CARDS, type Card } from "../../lib/cards";
+import { CARDS, DOCS_CARD, type Card } from "../../lib/cards";
 
-export const getStaticPaths = (() => CARDS.map((card) => ({ params: { path: card.path.slice(1) }, props: { card } }))) satisfies GetStaticPaths;
+export const getStaticPaths = (() => [...CARDS, DOCS_CARD].map((card) => ({ params: { path: card.path.slice(1) }, props: { card } }))) satisfies GetStaticPaths;
 
 interface Props {
     card: Card;

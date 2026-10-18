@@ -33,4 +33,11 @@ export const CARDS: Card[] = [
     { path: "/delete-account", label: "Account", title: "Delete your account", body: "How to delete your Sikemux account, and what is deleted when you do." },
 ];
 
+export const DOCS_CARD: Card = {
+    path: "/docs",
+    label: "Docs",
+    title: "Sikemux docs.",
+    body: "Install Sikemux, run your coding agents in it, and drive it from the keyboard, the CLI or an agent.",
+};
+
 export const cardImagePath = (path: string) => `/og${path}.jpg`;
