@@ -7,6 +7,17 @@ const marks = [
     { name: "Purple", file: "mark-purple", ground: "dark" },
 ];
 
+const wordmarks = [
+    { name: "White", file: "wordmark-white", ground: "dark" },
+    { name: "Black", file: "wordmark-black", ground: "light" },
+];
+
+const lockups = [
+    { name: "White", file: "lockup-white", ground: "dark" },
+    { name: "Black", file: "lockup-black", ground: "light" },
+    { name: "Purple", file: "lockup-purple", ground: "dark" },
+];
+
 const icons = [
     { name: "Rounded", file: "icon-dark-rounded", svg: true },
     { name: "Square", file: "icon-dark-square", svg: true },
@@ -23,12 +34,12 @@ const colors = [
 
 <Article
     title="Sikemux brand · logo, icon and colours"
-    description="The Sikemux mark, app icon and colours to download, with how to write the name and how to use them."
+    description="The Sikemux wordmark, mark, app icon and colours to download, with how to write the name and how to use them."
     crumbs={[{ name: "Brand", path: "/brand" }]}>
     <header>
         <p class="label">Brand</p>
         <h1>Sikemux brand.</h1>
-        <p class="lede">The mark, the icon and the colours, for writing about Sikemux or linking to it.</p>
+        <p class="lede">The wordmark, the mark, the icon and the colours, for writing about Sikemux or linking to it.</p>
         <div>
             <a class="btn primary" href="/brand/sikemux-brand.zip" download>Download all assets</a>
         </div>
@@ -54,8 +65,50 @@ const colors = [
     </section>
 
     <section>
+        <h2>The wordmark</h2>
+        <p>The name, lettered. Use it when you mention Sikemux and there's room for it; more people know the name than the S.</p>
+        <ul class="tiles wide">
+            {
+                wordmarks.map((wordmark) => (
+                    <li class="tile">
+                        <div class:list={["stage", wordmark.ground]}>
+                            <img src={`/brand/${wordmark.file}.svg`} alt={`The Sikemux wordmark in ${wordmark.name.toLowerCase()}`} width="220" height="30" />
+                        </div>
+                        <div class="meta">
+                            <span>{wordmark.name}</span>
+                            <span class="files mono">
+                                <a href={`/brand/${wordmark.file}.svg`} download>SVG</a>
+                                <a href={`/brand/${wordmark.file}-2048.png`} download>PNG</a>
+                            </span>
+                        </div>
+                    </li>
+                ))
+            }
+        </ul>
+        <p>Beside the mark, as it sits at the top of this page. Keep the two together as they are; don't move or resize one against the other.</p>
+        <ul class="tiles">
+            {
+                lockups.map((lockup) => (
+                    <li class="tile">
+                        <div class:list={["stage", lockup.ground]}>
+                            <img src={`/brand/${lockup.file}.svg`} alt={`The Sikemux mark and wordmark in ${lockup.name.toLowerCase()}`} width="200" height="41" />
+                        </div>
+                        <div class="meta">
+                            <span>{lockup.name}</span>
+                            <span class="files mono">
+                                <a href={`/brand/${lockup.file}.svg`} download>SVG</a>
+                                <a href={`/brand/${lockup.file}-2048.png`} download>PNG</a>
+                            </span>
+                        </div>
+                    </li>
+                ))
+            }
+        </ul>
+    </section>
+
+    <section>
         <h2>The mark</h2>
-        <p>The S on its own. Use it wherever Sikemux needs a logo: white on dark grounds, black on light ones, purple where it should stand out.</p>
+        <p>The S on its own, for tight spaces and rows of logos: white on dark grounds, black on light ones, purple where it should stand out.</p>
         <ul class="tiles">
             {
                 marks.map((mark) => (
@@ -161,6 +214,14 @@ const colors = [
         margin: 8px 0 0;
         padding: 0;
         list-style: none;
+    }
+
+    .tiles.wide {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .wide .stage {
+        aspect-ratio: 2 / 1;
     }
 
     .tile {
@@ -280,7 +341,8 @@ const colors = [
     }
 
     @media (max-width: 640px) {
-        .tiles {
+        .tiles,
+        .tiles.wide {
             grid-template-columns: minmax(0, 1fr);
         }
     }
