@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /og$
+Disallow: /card/
 
 Sitemap: https://sikemux.com/sitemap.xml

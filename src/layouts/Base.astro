@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Analytics from "../components/Analytics.astro";
+import { CARDS, cardImagePath } from "../lib/cards";
 
 interface Props {
     title: string;
@@ -11,8 +12,9 @@ interface Props {
 
 const { title, description, structuredData = [], noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Astro.site);
-const ogUrl = new URL("/og.png", Astro.site);
-const ogAlt = "Sikemux, the IDE for you and your coding agents. A Mac window with a coding agent, its browser tab and the project beside it.";
+const card = CARDS.find((card) => card.path === canonical.pathname);
+const ogUrl = new URL(card ? cardImagePath(card.path) : "/og.png", Astro.site);
+const ogAlt = card ? `${card.title} ${card.body}` : "Sikemux, the IDE for you and your coding agents. A Mac window with a coding agent, its browser tab and the project beside it.";
 ---
 
 <!doctype html>
