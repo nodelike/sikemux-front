@@ -49,6 +49,7 @@ const ogAlt = card ? `${card.title} ${card.body}` : "Sikemux, the IDE for you an
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogUrl} />
         <meta name="twitter:image:alt" content={ogAlt} />
+        <meta name="twitter:site" content="@sikemux" />
         <meta name="twitter:creator" content="@nodelike" />
         {structuredData.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
     </head>
