@@ -17,7 +17,7 @@ export const COMPARISONS: Comparison[] = [
         what: "Cursor is an AI code editor built on VS Code. It comes with its own agent, its own models and its own subscription, and it is at its best while you write code by hand with AI completing it.",
         difference:
             "Sikemux has no AI of its own. It runs the coding agents you already pay for, such as Claude Code and Codex, and builds the window around them: each agent gets its own browser tab, an iOS Simulator and your Git, CI, issues and logs on the same project.",
-        pickThem: ["You write most of the code yourself and want AI completions as you type.", "You want one subscription that bundles the editor and the models.", "You need Windows or Linux today."],
+        pickThem: ["You write most of the code yourself and want AI completions as you type.", "You want one subscription that bundles the editor and the models.", "You need Windows today."],
         pickSikemux: [
             "Claude Code or Codex does most of the typing, and you want to watch, steer and review it.",
             "You want to keep your Claude or ChatGPT plan instead of paying for another one.",
@@ -32,7 +32,7 @@ export const COMPARISONS: Comparison[] = [
         what: "Zed is a fast, native code editor written in Rust, with an agent panel and support for external agents. It is built first for writing code by hand.",
         difference:
             "Sikemux assumes the agents do most of the typing. It runs several of them on one repo, each with its own chat, browser tab and terminals, and keeps the editor, Git and your deploy tools a key away.",
-        pickThem: ["You mostly write code by hand and want the best editor for it.", "You pair with other people in the editor in real time.", "You need Linux today."],
+        pickThem: ["You mostly write code by hand and want the best editor for it.", "You pair with other people in the editor in real time."],
         pickSikemux: [
             "You spend your day giving tasks to Claude Code or Codex and reviewing what comes back.",
             "You want several agents on one project without juggling terminal windows.",
@@ -47,7 +47,7 @@ export const COMPARISONS: Comparison[] = [
         what: "Warp is a terminal with AI agents built in. Its agents run in the terminal, with Warp's own models and plans.",
         difference:
             "Sikemux is a whole IDE around the agents you already use: chats with Claude Code, Codex and others, a code editor, Git review, a browser per agent and terminals that keep running after you quit.",
-        pickThem: ["You want a terminal first, with AI help on commands.", "You want Warp's own agent and models.", "You need Windows or Linux today."],
+        pickThem: ["You want a terminal first, with AI help on commands.", "You want Warp's own agent and models.", "You need Windows today."],
         pickSikemux: [
             "You want the agent's work as a chat you can read, steer and review, not only a terminal scroll.",
             "You want to keep your Claude or ChatGPT plan.",
