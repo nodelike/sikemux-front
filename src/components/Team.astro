@@ -1,0 +1,123 @@
+---
+import { Image } from "astro:assets";
+import board from "../assets/shots/agent-board-stage.png";
+import mention from "../assets/shots/composer-buddies-composer.png";
+
+const points = [
+    {
+        title: "Agents start their own helpers",
+        body: "Give one agent a big job and it can split it up and start teammates. Each works in its own worktree and lands its commits on your branch when its piece is done.",
+    },
+    {
+        title: "They talk to each other",
+        body: "Type @ and an agent's name to bring it into a chat. Agents message each other, read each other's replies and wait for each other to finish.",
+    },
+    {
+        title: "One board for the work",
+        body: "Cards come from Jira or from you. Agents claim a card and move it to Done, or to Needs you when they're stuck. Turn on Auto and Sikemux starts agents on open cards, as many at once as you allow.",
+    },
+    {
+        title: "Commits never get mixed up",
+        body: "Agents sharing a checkout commit only the lines they wrote. When a build breaks, an agent can find out which agent broke it and ask it to fix it.",
+    },
+];
+---
+
+<section class="section" id="team">
+    <div class="page">
+        <div class="section-head">
+            <p class="label">Agents together</p>
+            <h2>Agents that work as a team.</h2>
+            <p>One agent can start others, hand them pieces of a job and keep a board of who is doing what. You watch it all, and step in only when a card needs you.</p>
+        </div>
+        <div class="layout">
+            <figure class="board">
+                <Image src={board} alt="The agent board: Otter's team with three cards in progress and one done, Wren's team running checks, Heron's card waiting on you, and two open cards for Auto to pick up" format="avif" quality={80} widths={[720, 1080, 1440]} sizes="(min-width: 1240px) 700px, 100vw" />
+            </figure>
+            <div class="side">
+                <ol class="points">
+                    {points.map((point, index) => (
+                        <li>
+                            <span class="num">0{index + 1}</span>
+                            <div>
+                                <h3>{point.title}</h3>
+                                <p>{point.body}</p>
+                            </div>
+                        </li>
+                    ))}
+                </ol>
+                <figure class="mention">
+                    <Image src={mention} alt="The composer reading 'ask @Maple then @', with a list of agents from several projects to pick from" format="avif" quality={80} widths={[560, 840]} sizes="(min-width: 1240px) 460px, 100vw" />
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+        gap: 40px;
+        align-items: start;
+    }
+
+    figure {
+        margin: 0;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background: var(--surface-sunken);
+    }
+
+    figure :global(img) {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .side {
+        display: grid;
+        gap: 28px;
+    }
+
+    .points {
+        display: grid;
+        gap: 24px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .points li {
+        display: grid;
+        grid-template-columns: 28px minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .num {
+        font-family: var(--mono);
+        font-size: 12px;
+        line-height: 24px;
+        color: var(--acc);
+    }
+
+    h3 {
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 24px;
+    }
+
+    .points p {
+        margin-top: 4px;
+        font-size: 14.5px;
+        line-height: 1.55;
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 900px) {
+        .layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>
