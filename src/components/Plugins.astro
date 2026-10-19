@@ -1,25 +1,44 @@
 ---
 import { Image } from "astro:assets";
 import Icon from "./Icon.astro";
-import aws from "../assets/shots/aws-ecs-logs-card.png";
-import rundeck from "../assets/shots/rundeck-deploy-card.png";
-import signoz from "../assets/shots/signoz-dashboard-card.png";
-import bruno from "../assets/shots/bruno-card.png";
-import github from "../assets/shots/github-run-card.png";
-import database from "../assets/cards/database.png";
-import jira from "../assets/cards/jira.png";
+import database from "../assets/shots/database-stage.png";
+import github from "../assets/shots/github-run-stage.png";
+import jira from "../assets/shots/jira-board-stage.png";
+import rundeck from "../assets/shots/rundeck-deploy-stage.png";
+import signoz from "../assets/shots/signoz-dashboard-stage.png";
+import aws from "../assets/shots/aws-ecs-logs-stage.png";
+import bruno from "../assets/shots/bruno-stage.png";
 
 const plugins = [
     {
+        id: "jira",
+        icon: "jira",
+        name: "Jira",
+        claim: "Your issue, next to the branch that fixes it.",
+        points: ["Your sprint board, filtered like Jira's own", "Search, comment, assign and log time", "Agents read, move and file issues"],
+        image: jira,
+        alt: "A Jira sprint board grouped by person, with cards in To do, In progress, In review and Done",
+    },
+    {
+        id: "database",
         icon: "database",
         name: "Database",
         claim: "Query your database next to the code that uses it.",
-        points: ["PostgreSQL, MySQL, MariaDB and SQLite", "Passwords kept in your Keychain", "Copy as CSV or send results to an agent", "Agents query it read-only by default"],
+        points: ["PostgreSQL, MySQL, MariaDB and SQLite", "Passwords kept in your Keychain", "Agents query it read-only by default"],
         image: database,
         alt: "A PostgreSQL console listing the last day's failed orders, with the schema's tables beside it",
-        wide: true,
     },
     {
+        id: "bruno",
+        icon: "bruno",
+        name: "Bruno",
+        claim: "Send requests from the collection in your repo.",
+        points: ["Uses the collection saved in your repo", "Switch between environments", "Scripts before and after a request"],
+        image: bruno,
+        alt: "A Bruno POST request and its 201 Created JSON response",
+    },
+    {
+        id: "github",
         icon: "github",
         name: "GitHub Actions",
         claim: "Watch CI without opening GitHub.",
@@ -28,14 +47,7 @@ const plugins = [
         alt: "A passing release workflow with its four jobs and the test report",
     },
     {
-        icon: "jira",
-        name: "Jira and Linear",
-        claim: "Your issue, next to the branch that fixes it.",
-        points: ["Your sprint board, filtered like Jira's own", "Search, comment, assign and log time", "Agents read, comment on, move and file issues"],
-        image: jira,
-        alt: "A Jira sprint board grouped by person, with cards in To do, In progress, In review and Done",
-    },
-    {
+        id: "rundeck",
         icon: "rundeck",
         name: "Rundeck",
         claim: "Deploy a branch and watch every step land.",
@@ -44,6 +56,7 @@ const plugins = [
         alt: "A Rundeck deploy of billing-service at step 5 of 6, with live output",
     },
     {
+        id: "signoz",
         icon: "signoz",
         name: "SigNoz",
         claim: "See what production is doing right now.",
@@ -52,6 +65,7 @@ const plugins = [
         alt: "A SigNoz dashboard with request rate, error rate, throughput and p99 latency",
     },
     {
+        id: "aws",
         icon: "aws",
         name: "AWS",
         claim: "Follow a service's logs without the AWS console.",
@@ -59,162 +73,385 @@ const plugins = [
         image: aws,
         alt: "CloudWatch logs streaming for an ECS service, with a warning and an error highlighted",
     },
-    {
-        icon: "bruno",
-        name: "Bruno",
-        claim: "Send requests from the collection in your repo.",
-        points: ["Uses the collection saved in your repo", "Switch between environments", "Scripts that run before and after a request"],
-        image: bruno,
-        alt: "A Bruno POST request and its 201 Created JSON response",
-    },
+] as const;
+
+const extras = [
+    { icon: "linear", name: "Linear" },
+    { icon: "gitlab", name: "GitLab" },
+    { icon: "bitbucket", name: "Bitbucket" },
+    { icon: "vercel", name: "Vercel" },
+    { icon: "slack", name: "Slack" },
 ] as const;
 ---
 
 <section class="section" id="plugins">
 <div class="page">
-    <div class="section-head">
-        <p class="label">Built-in plugins</p>
-        <h2>CI, issues and production, without leaving.</h2>
-        <p>Turn on the tools your team already uses. Watch CI, move an issue, follow a deploy or roll back a Vercel release right next to the code, and hand anything you find to an agent.</p>
+    <div class="head">
+        <div class="section-head">
+            <p class="label">Built-in plugins</p>
+            <h2>CI, issues and production, without leaving.</h2>
+        </div>
+        <p class="lede">Turn on the tools your team already uses, right next to the code, and hand anything you find in them to an agent.</p>
     </div>
-    <div class="grid">
-        {
-            plugins.map((plugin) => (
-                <article class:list={["card", { wide: "wide" in plugin && plugin.wide }]}>
-                    <header>
-                        <span class="name">
-                            <Icon name={plugin.icon} size={18} />
-                            {plugin.name}
-                        </span>
-                        <h3>{plugin.claim}</h3>
-                        <ul>
-                            {plugin.points.map((point) => (
-                                <li>{point}</li>
-                            ))}
-                        </ul>
-                    </header>
-                    <div class="shot">
-                        <Image src={plugin.image} alt={plugin.alt} format="avif" quality={80} widths={[720, 1080, 1440]} sizes="(min-width: 1240px) 600px, 100vw" />
-                    </div>
-                </article>
-            ))
-        }
+    <div class="track" style={`--count: ${plugins.length}`} data-plugins>
+        <div class="dock">
+            <ol class="rail" role="tablist" aria-label="Plugins">
+                {plugins.map((plugin, index) => (
+                    <li>
+                        <button type="button" role="tab" id={`plugin-tab-${plugin.id}`} aria-selected={index === 0 ? "true" : "false"} aria-controls={`plugin-${plugin.id}`}>
+                            <span class="mark"><Icon name={plugin.icon} size={18} /></span>
+                            <span class="words">
+                                <span class="name">{plugin.name}</span>
+                                <span class="claim">{plugin.claim}</span>
+                            </span>
+                            <span class="meter" aria-hidden="true"></span>
+                        </button>
+                    </li>
+                ))}
+            </ol>
+            <div class="window">
+                <div class="bar">
+                    <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                    <span class="title" data-plugin-title>{plugins[0].name}</span>
+                </div>
+                <div class="stage">
+                    {plugins.map((plugin, index) => (
+                        <figure id={`plugin-${plugin.id}`} role="tabpanel" aria-labelledby={`plugin-tab-${plugin.id}`} class:list={{ on: index === 0 }}>
+                            <div class="shot">
+                                <Image src={plugin.image} alt={plugin.alt} format="avif" quality={80} widths={[880, 1320, 1760]} sizes="(min-width: 1240px) 880px, 100vw" />
+                            </div>
+                            <figcaption>
+                                {plugin.points.map((point) => <span>{point}</span>)}
+                            </figcaption>
+                        </figure>
+                    ))}
+                </div>
+            </div>
+        </div>
     </div>
+    <p class="also">
+        <span class="label">Also built in</span>
+        {extras.map((extra) => (
+            <span class="chip"><Icon name={extra.icon} size={15} />{extra.name}</span>
+        ))}
+    </p>
 </div>
 </section>
 
+<script>
+    for (const track of document.querySelectorAll<HTMLElement>("[data-plugins]")) {
+        const tabs = [...track.querySelectorAll<HTMLButtonElement>("[role=tab]")];
+        const panels = [...track.querySelectorAll<HTMLElement>("[role=tabpanel]")];
+        const title = track.querySelector<HTMLElement>("[data-plugin-title]")!;
+        const pinned = matchMedia("(min-width: 901px)");
+        let current = 0;
+        let frame = 0;
+
+        const show = (index: number) => {
+            if (index === current) return;
+            current = index;
+            tabs.forEach((tab, i) => tab.setAttribute("aria-selected", String(i === index)));
+            panels.forEach((panel, i) => panel.classList.toggle("on", i === index));
+            title.textContent = tabs[index].querySelector(".name")!.textContent;
+        };
+
+        const step = () => parseFloat(getComputedStyle(track, "::after").height) / tabs.length;
+        const pinTop = () => parseFloat(getComputedStyle(track).getPropertyValue("--pin-top"));
+        const offset = () => track.getBoundingClientRect().top + window.scrollY;
+
+        const follow = () => {
+            frame = 0;
+            const progress = (window.scrollY - offset() + pinTop()) / step();
+            const index = Math.min(tabs.length - 1, Math.max(0, Math.floor(progress)));
+            show(index);
+            track.style.setProperty("--fill", String(Math.min(1, Math.max(0, progress - index))));
+        };
+        const schedule = () => {
+            if (!frame) frame = requestAnimationFrame(follow);
+        };
+
+        new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting && pinned.matches) {
+                window.addEventListener("scroll", schedule, { passive: true });
+                schedule();
+            } else {
+                window.removeEventListener("scroll", schedule);
+            }
+        }).observe(track);
+
+        tabs.forEach((tab, index) =>
+            tab.addEventListener("click", () => {
+                if (!pinned.matches) return show(index);
+                const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+                window.scrollTo({ top: offset() - pinTop() + (index + 0.05) * step(), behavior: still ? "auto" : "smooth" });
+            }),
+        );
+    }
+</script>
+
 <style>
-    .grid {
+    .head {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+        align-items: end;
+        gap: 40px;
+        margin-bottom: 48px;
     }
 
-    .card {
-        position: relative;
-        display: grid;
-        grid-template-rows: auto 1fr;
-        overflow: hidden;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-4);
-        background:
-            radial-gradient(120% 70% at 0% 0%, color-mix(in oklab, var(--acc) 7%, transparent), transparent 60%),
-            var(--surface);
-        transition: border-color var(--dur-2) var(--ease-out);
+    .head .section-head {
+        margin-bottom: 0;
     }
 
-    .card:hover {
-        border-color: var(--border-strong);
-    }
-
-    header {
-        display: grid;
-        gap: 12px;
-        padding: 26px 28px 22px;
-    }
-
-    .name {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-family: var(--mono);
-        font-size: 12px;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+    .lede {
+        font-size: 16px;
+        line-height: 1.6;
         color: var(--text-secondary);
     }
 
-    h3 {
-        font-size: 22px;
-        line-height: 1.2;
-        letter-spacing: -0.02em;
+    .track {
+        --pin-top: 96px;
+        --step: 34vh;
+        --fill: 0;
     }
 
-    ul {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin: 4px 0 0;
+    .track::after {
+        content: "";
+        display: block;
+        height: calc(var(--count) * var(--step));
+    }
+
+    .dock {
+        position: sticky;
+        top: var(--pin-top);
+        display: grid;
+        grid-template-columns: 300px minmax(0, 1fr);
+        gap: 20px;
+        align-items: start;
+    }
+
+    .rail {
+        display: grid;
+        gap: 2px;
+        margin: 0;
         padding: 0;
         list-style: none;
     }
 
-    li {
-        padding: 4px 10px;
+    .rail button {
+        position: relative;
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr);
+        gap: 14px;
+        align-items: center;
+        width: 100%;
+        padding: 12px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-3);
+        background: none;
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        overflow: hidden;
+        transition:
+            background var(--dur-1) var(--ease-out),
+            border-color var(--dur-1) var(--ease-out);
+    }
+
+    .rail button:hover {
+        background: var(--surface-hover);
+    }
+
+    .rail button[aria-selected="true"] {
+        border-color: var(--border);
+        background: var(--surface-raised);
+    }
+
+    .mark {
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
         border: 1px solid var(--border);
-        border-radius: var(--radius-full, 999px);
-        background: color-mix(in oklab, var(--bg-dim) 60%, transparent);
-        font-size: 12.5px;
+        border-radius: var(--radius-2);
+        background: var(--surface-sunken);
+        color: var(--text-primary);
+    }
+
+    .words {
+        display: grid;
+        gap: 2px;
+    }
+
+    .name {
+        font-size: 15px;
+        font-weight: 500;
         color: var(--text-secondary);
     }
 
-    .shot {
-        position: relative;
-        margin: 0 0 0 28px;
+    [aria-selected="true"] .name {
+        color: var(--text-primary);
+    }
+
+    .claim {
+        display: none;
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--text-tertiary);
+    }
+
+    [aria-selected="true"] .claim {
+        display: block;
+    }
+
+    .meter {
+        position: absolute;
+        inset: auto 12px 0;
+        height: 1px;
+        background: var(--acc);
+        transform: scaleX(0);
+        transform-origin: left;
+    }
+
+    [aria-selected="true"] .meter {
+        transform: scaleX(var(--fill));
+    }
+
+    .window {
         border: 1px solid var(--border);
-        border-right: 0;
-        border-bottom: 0;
-        border-radius: var(--radius-3) 0 0 0;
+        border-radius: var(--radius-4);
         background: var(--surface-sunken);
         overflow: hidden;
-        align-self: end;
+    }
+
+    .bar {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        height: 36px;
+        padding-inline: 14px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .dots {
+        display: flex;
+        gap: 6px;
+    }
+
+    .dots i {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--gray-400);
+    }
+
+    .title {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    .stage {
+        display: grid;
+    }
+
+    figure {
+        grid-area: 1 / 1;
+        margin: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+            opacity 200ms var(--ease-out),
+            visibility 0s 200ms;
+    }
+
+    figure.on {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 200ms var(--ease-out);
+    }
+
+    .shot {
+        aspect-ratio: 2880 / 1840;
+        max-height: calc(100svh - var(--pin-top) - 120px);
+        overflow: hidden;
     }
 
     .shot img {
+        display: block;
         width: 100%;
-        height: auto;
-        mask-image: linear-gradient(to bottom, #000 72%, transparent), linear-gradient(to right, #000 88%, transparent);
-        mask-composite: intersect;
-        -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent);
+        height: 100%;
+        object-fit: cover;
+        object-position: top left;
     }
 
-    .card.wide {
-        grid-column: 1 / -1;
-        grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
-        grid-template-rows: auto;
+    figcaption {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 22px;
+        padding: 14px 18px;
+        border-top: 1px solid var(--border);
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text-tertiary);
     }
 
-    .card.wide header {
-        align-content: center;
-        padding-right: 8px;
+    figcaption span::before {
+        content: "→ ";
+        color: var(--acc);
     }
 
-    .card.wide .shot {
-        align-self: stretch;
-        margin: 28px 0 0;
+    .also {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin-top: 28px;
+    }
+
+    .also .label {
+        margin-right: 8px;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 32px;
+        padding-inline: 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2);
+        font-size: 13px;
+        color: var(--text-secondary);
     }
 
     @media (max-width: 900px) {
-        .card.wide {
+        .head,
+        .dock {
             grid-template-columns: minmax(0, 1fr);
         }
 
-        .card.wide .shot {
-            margin: 0 0 0 28px;
+        .track::after {
+            display: none;
         }
 
-        .grid {
-            grid-template-columns: minmax(0, 1fr);
+        .dock {
+            position: static;
+        }
+
+        .rail {
+            grid-auto-flow: column;
+            grid-auto-columns: max-content;
+            overflow-x: auto;
+        }
+
+        .rail .claim,
+        .rail .meter {
+            display: none;
+        }
+
+        .shot {
+            max-height: none;
         }
     }
 </style>
