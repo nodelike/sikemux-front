@@ -211,7 +211,7 @@ const extras = [
         display: grid;
         grid-template-columns: 36px minmax(0, 1fr);
         gap: 14px;
-        align-items: start;
+        align-items: center;
         width: 100%;
         padding: 12px;
         border: 1px solid transparent;
@@ -249,13 +249,16 @@ const extras = [
 
     .words {
         display: grid;
-        gap: 2px;
-        padding-top: 7px;
+        gap: 4px;
+    }
+
+    .rail [aria-selected="true"] {
+        align-items: start;
     }
 
     .name {
         font-size: 15px;
-        line-height: 22px;
+        line-height: 1.1;
         font-weight: 500;
         color: var(--text-secondary);
     }
