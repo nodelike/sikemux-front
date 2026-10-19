@@ -1,44 +1,25 @@
 ---
 import { Image } from "astro:assets";
 import Icon from "./Icon.astro";
-import database from "../assets/shots/database-stage.png";
-import github from "../assets/shots/github-run-stage.png";
-import jira from "../assets/shots/jira-board-stage.png";
-import rundeck from "../assets/shots/rundeck-deploy-stage.png";
-import signoz from "../assets/shots/signoz-dashboard-stage.png";
-import aws from "../assets/shots/aws-ecs-logs-stage.png";
-import bruno from "../assets/shots/bruno-stage.png";
+import aws from "../assets/shots/aws-ecs-logs-card.png";
+import rundeck from "../assets/shots/rundeck-deploy-card.png";
+import signoz from "../assets/shots/signoz-dashboard-card.png";
+import bruno from "../assets/shots/bruno-card.png";
+import github from "../assets/shots/github-run-card.png";
+import database from "../assets/cards/database.png";
+import jira from "../assets/cards/jira.png";
 
 const plugins = [
     {
-        id: "jira",
-        icon: "jira",
-        name: "Jira",
-        claim: "Your issue, next to the branch that fixes it.",
-        points: ["Your sprint board, filtered like Jira's own", "Search, comment, assign and log time", "Agents read, move and file issues"],
-        image: jira,
-        alt: "A Jira sprint board grouped by person, with cards in To do, In progress, In review and Done",
-    },
-    {
-        id: "database",
         icon: "database",
         name: "Database",
         claim: "Query your database next to the code that uses it.",
-        points: ["PostgreSQL, MySQL, MariaDB and SQLite", "Passwords kept in your Keychain", "Agents query it read-only by default"],
+        points: ["PostgreSQL, MySQL, MariaDB and SQLite", "Passwords kept in your Keychain", "Copy as CSV or send results to an agent", "Agents query it read-only by default"],
         image: database,
         alt: "A PostgreSQL console listing the last day's failed orders, with the schema's tables beside it",
+        wide: true,
     },
     {
-        id: "bruno",
-        icon: "bruno",
-        name: "Bruno",
-        claim: "Send requests from the collection in your repo.",
-        points: ["Uses the collection saved in your repo", "Switch between environments", "Scripts before and after a request"],
-        image: bruno,
-        alt: "A Bruno POST request and its 201 Created JSON response",
-    },
-    {
-        id: "github",
         icon: "github",
         name: "GitHub Actions",
         claim: "Watch CI without opening GitHub.",
@@ -47,7 +28,14 @@ const plugins = [
         alt: "A passing release workflow with its four jobs and the test report",
     },
     {
-        id: "rundeck",
+        icon: "jira",
+        name: "Jira and Linear",
+        claim: "Your issue, next to the branch that fixes it.",
+        points: ["Your sprint board, filtered like Jira's own", "Search, comment, assign and log time", "Agents read, comment on, move and file issues"],
+        image: jira,
+        alt: "A Jira sprint board grouped by person, with cards in To do, In progress, In review and Done",
+    },
+    {
         icon: "rundeck",
         name: "Rundeck",
         claim: "Deploy a branch and watch every step land.",
@@ -56,7 +44,6 @@ const plugins = [
         alt: "A Rundeck deploy of billing-service at step 5 of 6, with live output",
     },
     {
-        id: "signoz",
         icon: "signoz",
         name: "SigNoz",
         claim: "See what production is doing right now.",
@@ -65,7 +52,6 @@ const plugins = [
         alt: "A SigNoz dashboard with request rate, error rate, throughput and p99 latency",
     },
     {
-        id: "aws",
         icon: "aws",
         name: "AWS",
         claim: "Follow a service's logs without the AWS console.",
@@ -73,352 +59,162 @@ const plugins = [
         image: aws,
         alt: "CloudWatch logs streaming for an ECS service, with a warning and an error highlighted",
     },
-] as const;
-
-const extras = [
-    { icon: "linear", name: "Linear" },
-    { icon: "gitlab", name: "GitLab" },
-    { icon: "bitbucket", name: "Bitbucket" },
-    { icon: "vercel", name: "Vercel" },
-    { icon: "slack", name: "Slack" },
+    {
+        icon: "bruno",
+        name: "Bruno",
+        claim: "Send requests from the collection in your repo.",
+        points: ["Uses the collection saved in your repo", "Switch between environments", "Scripts that run before and after a request"],
+        image: bruno,
+        alt: "A Bruno POST request and its 201 Created JSON response",
+    },
 ] as const;
 ---
 
 <section class="section" id="plugins">
 <div class="page">
-    <div class="head">
-        <div class="section-head">
-            <p class="label">Built-in plugins</p>
-            <h2>CI, issues and production, without leaving.</h2>
-        </div>
-        <p class="lede">Turn on the tools your team already uses, right next to the code, and hand anything you find in them to an agent.</p>
+    <div class="section-head">
+        <p class="label">Built-in plugins</p>
+        <h2>CI, issues and production, without leaving.</h2>
+        <p>Turn on the tools your team already uses. Watch CI, move an issue, follow a deploy or roll back a Vercel release right next to the code, and hand anything you find to an agent.</p>
     </div>
-    <div class="dock" data-plugins>
-        <ol class="rail" role="tablist" aria-label="Plugins">
-            {plugins.map((plugin, index) => (
-                <li>
-                    <button type="button" role="tab" id={`plugin-tab-${plugin.id}`} aria-selected={index === 0 ? "true" : "false"} aria-controls={`plugin-${plugin.id}`}>
-                        <span class="mark"><Icon name={plugin.icon} size={18} /></span>
-                        <span class="words">
-                            <span class="name">{plugin.name}</span>
-                            <span class="claim">{plugin.claim}</span>
+    <div class="grid">
+        {
+            plugins.map((plugin) => (
+                <article class:list={["card", { wide: "wide" in plugin && plugin.wide }]}>
+                    <header>
+                        <span class="name">
+                            <Icon name={plugin.icon} size={18} />
+                            {plugin.name}
                         </span>
-                        <span class="meter" aria-hidden="true"></span>
-                    </button>
-                </li>
-            ))}
-        </ol>
-        <div class="window">
-            <div class="bar">
-                <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-                <span class="title" data-plugin-title>{plugins[0].name}</span>
-            </div>
-            <div class="stage">
-                {plugins.map((plugin, index) => (
-                    <figure id={`plugin-${plugin.id}`} role="tabpanel" aria-labelledby={`plugin-tab-${plugin.id}`} class:list={{ on: index === 0 }}>
-                        <div class="shot">
-                            <Image src={plugin.image} alt={plugin.alt} format="avif" quality={80} widths={[880, 1320, 1760]} sizes="(min-width: 1240px) 880px, 100vw" />
-                        </div>
-                        <figcaption>
-                            {plugin.points.map((point) => <span>{point}</span>)}
-                        </figcaption>
-                    </figure>
-                ))}
-            </div>
-        </div>
+                        <h3>{plugin.claim}</h3>
+                        <ul>
+                            {plugin.points.map((point) => (
+                                <li>{point}</li>
+                            ))}
+                        </ul>
+                    </header>
+                    <div class="shot">
+                        <Image src={plugin.image} alt={plugin.alt} format="avif" quality={80} widths={[720, 1080, 1440]} sizes="(min-width: 1240px) 600px, 100vw" />
+                    </div>
+                </article>
+            ))
+        }
     </div>
-    <p class="also">
-        <span class="label">Also built in</span>
-        {extras.map((extra) => (
-            <span class="chip"><Icon name={extra.icon} size={15} />{extra.name}</span>
-        ))}
-    </p>
 </div>
 </section>
 
-<script>
-    for (const dock of document.querySelectorAll<HTMLElement>("[data-plugins]")) {
-        const tabs = [...dock.querySelectorAll<HTMLButtonElement>("[role=tab]")];
-        const panels = [...dock.querySelectorAll<HTMLElement>("[role=tabpanel]")];
-        const title = dock.querySelector<HTMLElement>("[data-plugin-title]")!;
-        const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-        let current = 0;
-        let timer = 0;
-
-        const show = (index: number) => {
-            current = index;
-            tabs.forEach((tab, i) => tab.setAttribute("aria-selected", String(i === index)));
-            panels.forEach((panel, i) => panel.classList.toggle("on", i === index));
-            title.textContent = tabs[index].querySelector(".name")!.textContent;
-        };
-        const play = () => {
-            if (still) return;
-            clearInterval(timer);
-            dock.dataset.playing = "";
-            timer = window.setInterval(() => show((current + 1) % tabs.length), 6000);
-        };
-        const stop = () => {
-            clearInterval(timer);
-            delete dock.dataset.playing;
-        };
-
-        tabs.forEach((tab, index) =>
-            tab.addEventListener("click", () => {
-                show(index);
-                stop();
-            }),
-        );
-        new IntersectionObserver(([entry]) => (entry.isIntersecting ? play() : stop()), { threshold: 0.4 }).observe(dock);
-    }
-</script>
-
 <style>
-    .head {
+    .grid {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
-        align-items: end;
-        gap: 40px;
-        margin-bottom: 48px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
     }
 
-    .head .section-head {
-        margin-bottom: 0;
+    .card {
+        position: relative;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background:
+            radial-gradient(120% 70% at 0% 0%, color-mix(in oklab, var(--acc) 7%, transparent), transparent 60%),
+            var(--surface);
+        transition: border-color var(--dur-2) var(--ease-out);
     }
 
-    .lede {
-        font-size: 16px;
-        line-height: 1.6;
+    .card:hover {
+        border-color: var(--border-strong);
+    }
+
+    header {
+        display: grid;
+        gap: 12px;
+        padding: 26px 28px 22px;
+    }
+
+    .name {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
         color: var(--text-secondary);
     }
 
-    .dock {
-        display: grid;
-        grid-template-columns: 300px minmax(0, 1fr);
-        gap: 20px;
-        align-items: start;
+    h3 {
+        font-size: 22px;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
     }
 
-    .rail {
-        display: grid;
-        gap: 2px;
-        margin: 0;
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 4px 0 0;
         padding: 0;
         list-style: none;
     }
 
-    .rail button {
-        position: relative;
-        display: grid;
-        grid-template-columns: 36px minmax(0, 1fr);
-        gap: 14px;
-        align-items: center;
-        width: 100%;
-        padding: 12px;
-        border: 1px solid transparent;
-        border-radius: var(--radius-3);
-        background: none;
-        color: inherit;
-        font: inherit;
-        text-align: left;
-        cursor: pointer;
-        overflow: hidden;
-        transition:
-            background var(--dur-1) var(--ease-out),
-            border-color var(--dur-1) var(--ease-out);
-    }
-
-    .rail button:hover {
-        background: var(--surface-hover);
-    }
-
-    .rail button[aria-selected="true"] {
-        border-color: var(--border);
-        background: var(--surface-raised);
-    }
-
-    .mark {
-        display: grid;
-        place-items: center;
-        width: 36px;
-        height: 36px;
+    li {
+        padding: 4px 10px;
         border: 1px solid var(--border);
-        border-radius: var(--radius-2);
-        background: var(--surface-sunken);
-        color: var(--text-primary);
-    }
-
-    .words {
-        display: grid;
-        gap: 4px;
-    }
-
-    .rail [aria-selected="true"] {
-        align-items: start;
-    }
-
-    .name {
-        font-size: 15px;
-        line-height: 1.1;
-        font-weight: 500;
+        border-radius: var(--radius-full, 999px);
+        background: color-mix(in oklab, var(--bg-dim) 60%, transparent);
+        font-size: 12.5px;
         color: var(--text-secondary);
-    }
-
-    [aria-selected="true"] .name {
-        color: var(--text-primary);
-    }
-
-    .claim {
-        display: none;
-        font-size: 13px;
-        line-height: 1.45;
-        color: var(--text-tertiary);
-    }
-
-    [aria-selected="true"] .claim {
-        display: block;
-    }
-
-    .meter {
-        position: absolute;
-        inset: auto 12px 0;
-        height: 1px;
-        background: var(--acc);
-        transform: scaleX(0);
-        transform-origin: left;
-    }
-
-    [data-playing] [aria-selected="true"] .meter {
-        animation: fill 6s linear forwards;
-    }
-
-    @keyframes fill {
-        to {
-            transform: scaleX(1);
-        }
-    }
-
-    .window {
-        border: 1px solid var(--border);
-        border-radius: var(--radius-4);
-        background: var(--surface-sunken);
-        overflow: hidden;
-    }
-
-    .bar {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        height: 36px;
-        padding-inline: 14px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .dots {
-        display: flex;
-        gap: 6px;
-    }
-
-    .dots i {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--gray-400);
-    }
-
-    .title {
-        font-family: var(--mono);
-        font-size: 12px;
-        color: var(--text-tertiary);
-    }
-
-    .stage {
-        display: grid;
-    }
-
-    figure {
-        grid-area: 1 / 1;
-        margin: 0;
-        opacity: 0;
-        visibility: hidden;
-        transition:
-            opacity 200ms var(--ease-out),
-            visibility 0s 200ms;
-    }
-
-    figure.on {
-        opacity: 1;
-        visibility: visible;
-        transition: opacity 200ms var(--ease-out);
     }
 
     .shot {
-        aspect-ratio: 2880 / 1840;
+        position: relative;
+        margin: 0 0 0 28px;
+        border: 1px solid var(--border);
+        border-right: 0;
+        border-bottom: 0;
+        border-radius: var(--radius-3) 0 0 0;
+        background: var(--surface-sunken);
         overflow: hidden;
+        align-self: end;
     }
 
     .shot img {
-        display: block;
         width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: top left;
+        height: auto;
+        mask-image: linear-gradient(to bottom, #000 72%, transparent), linear-gradient(to right, #000 88%, transparent);
+        mask-composite: intersect;
+        -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent);
     }
 
-    figcaption {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px 22px;
-        padding: 14px 18px;
-        border-top: 1px solid var(--border);
-        font-family: var(--mono);
-        font-size: 12px;
-        color: var(--text-tertiary);
+    .card.wide {
+        grid-column: 1 / -1;
+        grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+        grid-template-rows: auto;
     }
 
-    figcaption span::before {
-        content: "→ ";
-        color: var(--acc);
+    .card.wide header {
+        align-content: center;
+        padding-right: 8px;
     }
 
-    .also {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 8px;
-        margin-top: 28px;
-    }
-
-    .also .label {
-        margin-right: 8px;
-    }
-
-    .chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        height: 32px;
-        padding-inline: 12px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-2);
-        font-size: 13px;
-        color: var(--text-secondary);
+    .card.wide .shot {
+        align-self: stretch;
+        margin: 28px 0 0;
     }
 
     @media (max-width: 900px) {
-        .head,
-        .dock {
+        .card.wide {
             grid-template-columns: minmax(0, 1fr);
         }
 
-        .rail {
-            grid-auto-flow: column;
-            grid-auto-columns: max-content;
-            overflow-x: auto;
+        .card.wide .shot {
+            margin: 0 0 0 28px;
         }
 
-        .rail .claim,
-        .rail .meter {
-            display: none;
+        .grid {
+            grid-template-columns: minmax(0, 1fr);
         }
     }
 </style>
