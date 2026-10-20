@@ -17,7 +17,7 @@ import LiveRelease from "../components/LiveRelease.astro";
 import { getImage } from "astro:assets";
 import hero from "../assets/hero/hero.png";
 import { FAQ, faqStructuredData } from "../lib/faq";
-import { DISCORD_URL, formatSize, latestRelease, recentReleases, REPO_URL, starCount } from "../lib/release";
+import { DISCORD_URL, X_URL, formatSize, latestRelease, recentReleases, REPO_URL, starCount } from "../lib/release";
 
 const [release, stars, releases] = await Promise.all([latestRelease(), starCount(), recentReleases()]);
 
@@ -40,7 +40,7 @@ const structuredData = [
         name: "Sikemux",
         url: "https://sikemux.com/",
         logo: "https://sikemux.com/apple-touch-icon.png",
-        sameAs: [REPO_URL, DISCORD_URL, "https://x.com/sikemux"],
+        sameAs: [REPO_URL, DISCORD_URL, X_URL],
     },
     {
         "@context": "https://schema.org",

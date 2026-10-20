@@ -2,7 +2,7 @@
 import Logo from "./Logo.astro";
 import { AGENTS, agentPath } from "../lib/agents";
 import { COMPARISONS, comparisonPath } from "../lib/comparisons";
-import { DISCORD_URL, REPO_URL } from "../lib/release";
+import { DISCORD_URL, REPO_URL, X_URL } from "../lib/release";
 
 const columns = [
     { title: "Agents", links: [...AGENTS.map((agent) => ({ label: agent.name, href: agentPath(agent) })), { label: "All agents", href: "/agents" }] },
@@ -17,6 +17,7 @@ const columns = [
             { label: "Docs", href: "https://docs.sikemux.com" },
             { label: "GitHub", href: REPO_URL },
             { label: "Discord", href: DISCORD_URL },
+            { label: "X", href: X_URL },
         ],
     },
     {
