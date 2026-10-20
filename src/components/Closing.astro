@@ -29,7 +29,7 @@ const { release, releases } = Astro.props;
             </div>
             <InstallCommand />
             <p class="facts mono">
-                {release.dmgBytes !== null && <><span data-release-size>{formatSize(release.dmgBytes)}</span> · </>}Apple Silicon, macOS 11+ · FSL · <a href="#size">How it stays small</a>
+                {release.dmgBytes !== null && <><span data-release-size>{formatSize(release.dmgBytes)}</span> · </>}Apple Silicon, macOS 11+ · <a href="#size">How it stays small</a>
             </p>
         </div>
         <div class="source">

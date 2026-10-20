@@ -47,10 +47,6 @@ export const FAQ: FaqEntry[] = [
         answer: "Downloads are for Apple Silicon Macs on macOS 11 or later, signed and notarized by Apple, and for x86_64 Linux as a .deb, .rpm or AppImage. The notch island needs macOS 14, and the iOS Simulator needs macOS 15 with Xcode. The Linux build does not update itself yet. Windows and Intel Macs can build it from source, but there's no download for them yet.",
     },
     {
-        question: "Is Sikemux open source?",
-        answer: `It's source-available. The <a href="${REPO_URL}">source is on GitHub</a> under the <a href="${REPO_URL}/blob/main/LICENSE">FSL license</a>, which lets you read, use and change it but not sell a copy.`,
-    },
-    {
         question: "What does it cost?",
         answer: "Nothing, at home or at work. You only pay for the agents' own plans, the ones you already have.",
     },
