@@ -54,7 +54,7 @@ const breadcrumbs = {
         <aside class="cta">
             <div>
                 <h2>Try it on your own project.</h2>
-                <p>Free for Apple Silicon Macs on macOS 11 or later{release.dmgBytes !== null && <>, <span data-release-size>{formatSize(release.dmgBytes)}</span> to download</>}.</p>
+                <p>Free for Apple Silicon Macs on macOS 11 or later and x86_64 Linux{release.dmgBytes !== null && <>, <span data-release-size>{formatSize(release.dmgBytes)}</span> to download on a Mac</>}.</p>
             </div>
             <div class="actions">
                 <DownloadButton href={release.dmgUrl} />

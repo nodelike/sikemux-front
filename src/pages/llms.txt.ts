@@ -8,9 +8,9 @@ export const GET: APIRoute = ({ site }) => {
     const url = (path: string) => new URL(path, site).href;
     const body = `# Sikemux
 
-> Sikemux is a free, source-available agentic IDE for Apple Silicon Macs. It runs the coding agents you already use (Claude Code, Codex, OpenCode, Hermes, Grok, OMP and Pi), signed in with your own plan, in one window with a code editor, terminals, Git review, a real browser tab for each agent, an iOS Simulator, and your GitHub, GitLab, Bitbucket, Jira, database, AWS, Rundeck, SigNoz and Bruno views. Sikemux has no AI of its own and never sends code anywhere except to the agent you choose.
+> Sikemux is a free, source-available agentic IDE for Apple Silicon Macs and x86_64 Linux. It runs the coding agents you already use (Claude Code, Codex, OpenCode, Hermes, Grok, OMP and Pi), signed in with your own plan, in one window with a code editor, terminals, Git review, a real browser tab for each agent, an iOS Simulator, and your GitHub, GitLab, Bitbucket, Jira, database, AWS, Rundeck, SigNoz and Bruno views. Sikemux has no AI of its own and never sends code anywhere except to the agent you choose.
 
-- Download: ${url("/")} (about 16 MB, macOS 11 or later, Apple Silicon)
+- Download: ${url("/")} (macOS 11 or later on Apple Silicon, about 16 MB; x86_64 Linux as a .deb, .rpm or AppImage)
 - Install from a terminal: \`${INSTALL_COMMAND}\`
 - Source: ${REPO_URL} (Functional Source License)
 - Docs: https://docs.sikemux.com

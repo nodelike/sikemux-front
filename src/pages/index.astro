@@ -22,7 +22,7 @@ import { DISCORD_URL, X_URL, formatSize, latestRelease, recentReleases, REPO_URL
 const [release, stars, releases] = await Promise.all([latestRelease(), starCount(), recentReleases()]);
 
 const description =
-    "Sikemux is a free agentic IDE for Mac. Run Claude Code, Codex and other coding agents beside your editor, Git and a real browser, then review and ship in one window.";
+    "Sikemux is a free agentic IDE for Mac and Linux. Run Claude Code, Codex and other coding agents beside your editor, Git and a real browser, in one window.";
 
 const screenshot = await getImage({ src: hero, width: 1560, format: "png" });
 const origin = Astro.site!.href.replace(/\/$/, "");
@@ -61,7 +61,7 @@ const structuredData = [
             "Answer agents from the MacBook notch or the phone app",
         ],
         applicationCategory: "DeveloperApplication",
-        operatingSystem: "macOS 11 or later",
+        operatingSystem: "macOS 11 or later, Linux",
         softwareVersion: release.version,
         downloadUrl: release.dmgUrl,
         ...(release.dmgBytes !== null && { fileSize: formatSize(release.dmgBytes) }),
