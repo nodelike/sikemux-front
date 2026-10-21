@@ -1,7 +1,7 @@
 @font-face {
-    font-family: "Figtree";
-    src: url("/fonts/Figtree-latin-wght-normal.woff2") format("woff2");
-    font-weight: 300 900;
+    font-family: "Space Grotesk";
+    src: url("/fonts/SpaceGrotesk-latin-wght-normal.woff2") format("woff2");
+    font-weight: 300 700;
     font-display: swap;
 }
 
@@ -63,7 +63,7 @@
     --brand-grok: #fcfcfc;
     --live: #61ffca;
 
-    --ui: "Figtree", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    --ui: "Space Grotesk", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
     --kbd: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
 
@@ -113,6 +113,7 @@ html {
 
 body {
     font-family: var(--ui);
+    font-feature-settings: "ss01" 1, "cv01" 1;
     font-size: 15px;
     line-height: 1.55;
     letter-spacing: -0.005em;
