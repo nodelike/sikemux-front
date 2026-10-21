@@ -306,6 +306,34 @@ const features = [
             grid-template-columns: minmax(0, 1fr);
             min-height: 0;
         }
+
+        .text {
+            padding-left: 0;
+        }
+
+        .shot-wrap {
+            width: 100%;
+        }
+
+        .shot-wrap :global(img) {
+            width: 100%;
+            max-width: none;
+            max-height: none;
+        }
+    }
+
+    @media (max-width: 520px) {
+        .pills {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .pills button {
+            justify-content: center;
+            gap: 6px;
+            padding-inline: 8px;
+            font-size: 13px;
+        }
     }
 
     @media (prefers-reduced-motion: reduce) {

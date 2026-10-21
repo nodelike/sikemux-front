@@ -42,6 +42,14 @@ import { INSTALL_COMMAND } from "../lib/release";
         transition: border-color var(--dur-2) var(--ease-out);
     }
 
+    @media (max-width: 420px) {
+        .install {
+            gap: 8px;
+            padding-inline: 12px 10px;
+            font-size: 11px;
+        }
+    }
+
     .install:hover {
         border-color: var(--border-strong);
     }

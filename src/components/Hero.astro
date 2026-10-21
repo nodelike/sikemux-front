@@ -215,4 +215,25 @@ const { release, stars } = Astro.props;
         color: var(--gray-500);
     }
 
+    @media (max-width: 520px) {
+        .lede {
+            font-size: 16.5px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            width: min(100%, 340px);
+        }
+
+        .actions > :global(*) {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .meta {
+            --sep: 22px;
+        }
+    }
+
 </style>
