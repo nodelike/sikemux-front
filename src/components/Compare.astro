@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import Logo from "./Logo.astro";
+import sikemux from "../assets/apps/sikemux.png";
 import cursor from "../assets/apps/cursor.png";
 import zed from "../assets/apps/zed.png";
 import warp from "../assets/apps/warp.png";
@@ -25,11 +25,9 @@ const icons: Record<string, ImageMetadata> = { cursor, zed, warp, superset, cond
                         <a href={comparisonPath(comparison)}>
                             <span class="ground">
                                 <span class="pair">
-                                    <span class="ours">
-                                        <Logo size={22} />
-                                    </span>
+                                    <Image class="icon" src={sikemux} alt="" width={56} densities={[2, 3]} format="webp" />
                                     <span class="vs mono">vs</span>
-                                    <Image class="theirs" src={icons[comparison.slug]} alt="" width={44} densities={[2, 3]} format="webp" />
+                                    <Image class="icon" src={icons[comparison.slug]} alt="" width={56} densities={[2, 3]} format="webp" />
                                 </span>
                             </span>
                             <span class="caption">
@@ -104,19 +102,9 @@ const icons: Record<string, ImageMetadata> = { cursor, zed, warp, superset, cond
         color: var(--text-tertiary);
     }
 
-    .ours,
-    .theirs {
-        display: grid;
-        place-items: center;
-        width: 44px;
-        height: 44px;
-        border-radius: var(--radius-3);
-    }
-
-    .ours {
-        border: 1px solid var(--border-selected);
-        background: var(--surface-raised);
-        color: var(--acc);
+    .pair :global(.icon) {
+        width: 56px;
+        height: 56px;
     }
 
     .caption {
