@@ -5,17 +5,21 @@ import { poses } from "../lib/buddies";
 import "../styles/buddies.css";
 
 const agents = [
-    { id: "otter", name: "Otter", icon: "claude", brand: "var(--brand-claude)", pack: "buddies", shape: "mochi", x: 18, y: 64 },
-    { id: "heron", name: "Heron", icon: "codex", brand: "var(--brand-codex)", pack: "googly", shape: "pair", x: 80, y: 22 },
-    { id: "wren", name: "Wren", icon: "opencode", brand: "var(--brand-opencode)", pack: "screens", shape: "telly", x: 82, y: 78 },
-    { id: "lynx", name: "Lynx", icon: "grok", brand: "var(--brand-grok)", pack: "soot", shape: "soot", x: 30, y: 16 },
+    { id: "otter", name: "Otter", icon: "claude", brand: "var(--brand-claude)", pack: "buddies", shape: "mochi", x: 12, y: 50 },
+    { id: "heron", name: "Heron", icon: "codex", brand: "var(--brand-codex)", pack: "japan", shape: "neko", x: 26, y: 18 },
+    { id: "wren", name: "Wren", icon: "opencode", brand: "var(--brand-opencode)", pack: "screens", shape: "telly", x: 74, y: 18 },
+    { id: "badger", name: "Badger", icon: "pi", brand: "var(--brand-pi)", pack: "personas", shape: "engineer", x: 88, y: 50 },
+    { id: "finch", name: "Finch", icon: "hermes", brand: "var(--brand-hermes)", pack: "chibi", shape: "hood", x: 74, y: 84 },
+    { id: "lynx", name: "Lynx", icon: "grok", brand: "var(--brand-grok)", pack: "soot", shape: "soot", x: 26, y: 84 },
 ] as const;
 
 const script = [
     { from: "otter", to: "heron", text: "The sign-in test fails in Safari. Heron, can you take it?" },
     { from: "heron", to: "wren", text: "Fixed in session.ts. Wren, can you check it in your browser tab?" },
-    { from: "wren", to: "lynx", text: "Works at phone size too. Lynx, the release notes are yours." },
-    { from: "lynx", to: "otter", text: "Written. Otter, it's ready for a review." },
+    { from: "wren", to: "badger", text: "Works at phone size too. Badger, can you try it in the Simulator?" },
+    { from: "badger", to: "finch", text: "Taps through fine on iPhone. Finch, the release notes are yours." },
+    { from: "finch", to: "lynx", text: "Written. Lynx, can you watch CI?" },
+    { from: "lynx", to: "otter", text: "CI is green. Otter, it's ready for your review." },
 ];
 
 const hub = { x: 50, y: 50 };
@@ -40,7 +44,7 @@ const hub = { x: 50, y: 50 };
                 agents.map((agent) => {
                     const all = poses(agent.pack, agent.shape);
                     return (
-                        <div class="agent" data-agent={agent.id} data-poses={JSON.stringify(all)} style={`left: ${agent.x}%; top: ${agent.y}%; --brand: ${agent.brand}`}>
+                        <div class:list={["agent", { start: agent.x < 15, end: agent.x > 85 }]} data-agent={agent.id} data-poses={JSON.stringify(all)} style={`--x: ${agent.x}%; top: ${agent.y}%; --brand: ${agent.brand}`}>
                             <p class="bubble" />
                             <span class="buddy" data-motion={all.idle.motion || undefined} set:html={all.idle.markup} />
                             <span class="name">
@@ -138,8 +142,8 @@ const hub = { x: 50, y: 50 };
     .scene {
         position: relative;
         max-width: 980px;
-        margin-inline: auto;
-        aspect-ratio: 16 / 8.5;
+        margin: 72px auto 0;
+        aspect-ratio: 16 / 9;
     }
 
     .lines {
@@ -165,6 +169,15 @@ const hub = { x: 50, y: 50 };
         justify-items: center;
         gap: 10px;
         translate: -50% -34px;
+        z-index: 2;
+    }
+
+    .agent {
+        left: clamp(56px, var(--x), calc(100% - 56px));
+    }
+
+    .agent:has(.bubble.on) {
+        z-index: 3;
     }
 
     .hub .face {
@@ -236,7 +249,7 @@ const hub = { x: 50, y: 50 };
         color: var(--text-primary);
         text-align: left;
         opacity: 0;
-        transform: translate(-50%, 8px);
+        transform: translate(var(--bubble-x, -50%), 8px);
         transition:
             opacity 0.25s var(--ease-out),
             transform 0.25s var(--ease-out);
@@ -245,11 +258,22 @@ const hub = { x: 50, y: 50 };
 
     .bubble.on {
         opacity: 1;
-        transform: translate(-50%, 0);
+        transform: translate(var(--bubble-x, -50%), 0);
+    }
+
+    .agent.start .bubble {
+        --bubble-x: 0%;
+        left: 0;
+    }
+
+    .agent.end .bubble {
+        --bubble-x: -100%;
+        left: 100%;
     }
 
     .packet {
         position: absolute;
+        z-index: 1;
         top: -5px;
         left: -5px;
         width: 10px;
@@ -274,6 +298,10 @@ const hub = { x: 50, y: 50 };
         .agent .buddy {
             width: 52px;
             height: 52px;
+        }
+
+        .state {
+            display: none;
         }
 
         .hub .face {
