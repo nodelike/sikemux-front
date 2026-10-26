@@ -2,24 +2,21 @@
 import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
-import Agents from "../components/Agents.astro";
-import Features from "../components/Features.astro";
-import Phone from "../components/Phone.astro";
-import Notch from "../components/Notch.astro";
-import Marquee from "../components/Marquee.astro";
+import Team from "../components/Team.astro";
+import Bento from "../components/Bento.astro";
 import Compare from "../components/Compare.astro";
 import Plugins from "../components/Plugins.astro";
-import More from "../components/More.astro";
 import Size from "../components/Size.astro";
 import Faq from "../components/Faq.astro";
+import Platforms from "../components/Platforms.astro";
 import Closing from "../components/Closing.astro";
 import LiveRelease from "../components/LiveRelease.astro";
 import { getImage } from "astro:assets";
 import hero from "../assets/hero/hero.png";
 import { FAQ, faqStructuredData } from "../lib/faq";
-import { DISCORD_URL, X_URL, formatSize, latestRelease, recentReleases, REPO_URL, starCount } from "../lib/release";
+import { DISCORD_URL, X_URL, formatSize, latestRelease, REPO_URL, starCount } from "../lib/release";
 
-const [release, stars, releases] = await Promise.all([latestRelease(), starCount(), recentReleases()]);
+const [release, stars] = await Promise.all([latestRelease(), starCount()]);
 
 const description =
     "Sikemux is a free agentic IDE for Mac and Linux. Run Claude Code, Codex and other coding agents beside your editor, Git and a real browser, in one window.";
@@ -82,17 +79,28 @@ const structuredData = [
     <Nav release={release} stars={stars} />
     <main>
         <Hero release={release} stars={stars} />
-        <Marquee />
-        <Features />
-        <Notch />
-        <Phone />
-        <Agents />
+        <Team />
+        <Bento />
         <Plugins />
-        <More />
-        <Compare />
         <Size release={release} />
+        <Compare />
         <Faq />
+        <Platforms release={release} />
     </main>
-    <Closing release={release} releases={releases} />
+    <Closing release={release} />
     <LiveRelease />
 </Base>
+
+<script>
+    const reveal = new IntersectionObserver(
+        (entries) => {
+            for (const entry of entries) {
+                if (!entry.isIntersecting) continue;
+                entry.target.classList.add("shown");
+                reveal.unobserve(entry.target);
+            }
+        },
+        { rootMargin: "0px 0px -10% 0px" },
+    );
+    for (const node of document.querySelectorAll("[data-reveal]")) reveal.observe(node);
+</script>

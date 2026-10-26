@@ -1,109 +1,181 @@
 ---
+import { Image } from "astro:assets";
+import Logo from "./Logo.astro";
+import cursor from "../assets/apps/cursor.png";
+import zed from "../assets/apps/zed.png";
+import warp from "../assets/apps/warp.png";
+import superset from "../assets/apps/superset.png";
 import { COMPARISONS, comparisonPath } from "../lib/comparisons";
 
-const rows = [
-    { capability: "Agents, code, Git and a browser on the same project", sikemux: true, usual: "Switch between apps" },
-    { capability: "Agents test your app in their own browser tab", sikemux: true, usual: "Extra setup" },
-    { capability: "Agents test your iOS app in a live Simulator", sikemux: true, usual: "Extra setup" },
-    { capability: "Agents keep running after you quit", sikemux: true, usual: "Only inside tmux" },
-    { capability: "Answer agents from your phone or the notch", sikemux: true, usual: "—" },
-    { capability: "CI, issues, logs and deploys next to the code", sikemux: true, usual: "Browser tabs" },
-    { capability: "Runs on the AI plan you already pay for", sikemux: true, usual: true },
-] as const;
+const icons: Record<string, ImageMetadata> = { cursor, zed, warp, superset };
 ---
 
-<section class="section" id="compare">
+<section class="compare" id="compare">
     <div class="page">
-        <div class="section-head">
-            <p class="label">Compared</p>
-            <h2>One window instead of five.</h2>
+        <div class="statement" data-reveal>
+            <h2 class="display">One window instead of five.</h2>
             <p>What changes when your agents, code and tools share a project, rather than living in a terminal, an editor and a pile of browser tabs.</p>
         </div>
-        <div class="table" role="table" aria-label="Sikemux compared with separate apps">
-            <div class="row head" role="row">
-                <span role="columnheader">What you get</span>
-                <span role="columnheader" class="own">Sikemux</span>
-                <span role="columnheader">Separate apps</span>
-            </div>
+        <ul class="cards" data-reveal>
             {
-                rows.map((row) => (
-                    <div class="row" role="row">
-                        <span role="cell">{row.capability}</span>
-                        <span role="cell" class="own">
-                            <span class="check" aria-label="Yes">✓</span>
-                        </span>
-                        <span role="cell" class="usual">
-                            {row.usual === true ? <span class="check dim" aria-label="Yes">✓</span> : row.usual}
-                        </span>
-                    </div>
+                COMPARISONS.map((comparison) => (
+                    <li>
+                        <a href={comparisonPath(comparison)}>
+                            <span class="ground">
+                                <span class="pair">
+                                    <span class="ours">
+                                        <Logo size={22} />
+                                    </span>
+                                    <span class="vs mono">vs</span>
+                                    {icons[comparison.slug] ? (
+                                        <Image class="theirs" src={icons[comparison.slug]} alt="" width={44} densities={[2, 3]} format="webp" />
+                                    ) : (
+                                        <span class="theirs letter">{comparison.name.slice(0, 1).toUpperCase()}</span>
+                                    )}
+                                </span>
+                            </span>
+                            <span class="caption">
+                                <span>
+                                    <span class="title">Sikemux vs {comparison.name}</span>
+                                    <span class="kind">{comparison.kind}</span>
+                                </span>
+                                <span class="arrow" aria-hidden="true">→</span>
+                            </span>
+                        </a>
+                    </li>
                 ))
             }
-        </div>
-        <nav class="versus" aria-label="Comparisons">
-            <span class="label">Compared one to one</span>
-            {COMPARISONS.map((comparison) => <a class="btn" href={comparisonPath(comparison)}>vs {comparison.name}</a>)}
-        </nav>
+        </ul>
     </div>
 </section>
 
 <style>
-    .table {
-        border-top: 1px solid var(--border);
+    .compare {
+        padding-block: clamp(80px, 10vw, 136px);
     }
 
-    .row {
+    .cards {
         display: grid;
-        grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr) minmax(0, 1fr);
-        align-items: center;
-        gap: 16px;
-        padding: 16px 4px;
-        border-bottom: 1px solid var(--border);
-        font-size: 15px;
-        color: var(--text-primary);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
     }
 
-    .head {
-        font-family: var(--mono);
-        font-size: 11px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+    a {
+        display: grid;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        overflow: hidden;
+        background: var(--gray-100);
+        transition: border-color var(--dur-2) var(--ease-out);
+    }
+
+    a:hover {
+        border-color: var(--border-strong);
+    }
+
+    .ground {
+        display: grid;
+        place-items: center;
+        aspect-ratio: 16 / 7;
+        border-bottom: 1px solid var(--border);
+        background:
+            radial-gradient(50% 70% at 50% 100%, color-mix(in oklab, var(--acc) 0%, transparent), transparent),
+            radial-gradient(circle at 1px 1px, var(--gray-300) 1px, transparent 0) 0 0 / 8px 8px,
+            var(--surface-sunken);
+        transition: background var(--dur-2) var(--ease-out);
+    }
+
+    a:hover .ground {
+        background:
+            radial-gradient(50% 70% at 50% 100%, color-mix(in oklab, var(--acc) 22%, transparent), transparent),
+            radial-gradient(circle at 1px 1px, var(--gray-300) 1px, transparent 0) 0 0 / 8px 8px,
+            var(--surface-sunken);
+    }
+
+    .pair {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .vs {
+        font-size: 12px;
         color: var(--text-tertiary);
     }
 
-    .head .own {
+    .ours,
+    .theirs {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-3);
+    }
+
+    .ours {
+        border: 1px solid var(--border-selected);
+        background: var(--surface-raised);
         color: var(--acc);
     }
 
-    .usual {
-        font-size: 14px;
+    .letter {
+        border: 1px solid var(--border-strong);
+        background: var(--gray-200);
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .caption {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 18px;
+    }
+
+    .caption > span:first-child {
+        display: grid;
+    }
+
+    .title {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .kind {
+        display: block;
+        font-size: 13px;
         color: var(--text-tertiary);
     }
 
-    .check {
-        color: var(--live);
-        font-size: 16px;
+    .kind::first-letter {
+        text-transform: uppercase;
     }
 
-    .check.dim {
-        color: var(--text-secondary);
+    .arrow {
+        color: var(--text-tertiary);
+        transition: transform var(--dur-2) var(--ease-out);
     }
 
-    .versus {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 8px;
-        margin-top: 28px;
+    a:hover .arrow {
+        transform: translateX(3px);
+        color: var(--text-primary);
     }
 
-    .versus .label {
-        margin-right: 8px;
+    @media (max-width: 900px) {
+        .cards {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
     }
 
-    @media (max-width: 640px) {
-        .row {
-            grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.6fr) minmax(0, 1fr);
-            font-size: 14px;
+    @media (max-width: 560px) {
+        .cards {
+            grid-template-columns: minmax(0, 1fr);
         }
     }
 </style>

@@ -1,45 +1,66 @@
 ---
-import Logo from "./Logo.astro";
 import Footer from "./Footer.astro";
+import Buddy from "./Buddy.astro";
 import Dither from "./Dither.astro";
 import DownloadButton from "./DownloadButton.astro";
 import InstallCommand from "./InstallCommand.astro";
-import Shipping from "./Shipping.astro";
-import { formatSize, REPO_URL, type Release, type ReleaseNote } from "../lib/release";
+import { REPO_URL, type Release } from "../lib/release";
+import type { BuddyState } from "../lib/buddies";
 
 interface Props {
     release: Release;
-    releases: ReleaseNote[];
 }
 
-const { release, releases } = Astro.props;
+const { release } = Astro.props;
+
+const crowd: { pack: string; shape: string; state: BuddyState }[] = [
+    { pack: "buddies", shape: "ghostie", state: "idle" },
+    { pack: "screens", shape: "laptop", state: "working" },
+    { pack: "japan", shape: "daruma", state: "idle" },
+    { pack: "googly", shape: "specs", state: "idle" },
+    { pack: "chibi", shape: "hood", state: "working" },
+    { pack: "soot", shape: "konpeito", state: "idle" },
+    { pack: "peekers", shape: "frog", state: "idle" },
+    { pack: "buddies", shape: "onigiri", state: "done" },
+    { pack: "cyclops", shape: "drop", state: "idle" },
+    { pack: "personas", shape: "engineer", state: "working" },
+    { pack: "glow", shape: "orb", state: "idle" },
+    { pack: "japan", shape: "kitsune", state: "idle" },
+    { pack: "screens", shape: "arcade", state: "waiting" },
+    { pack: "buddies", shape: "penguin", state: "idle" },
+    { pack: "matrix", shape: "visor", state: "working" },
+    { pack: "personas", shape: "designer", state: "idle" },
+    { pack: "peekers", shape: "owl", state: "idle" },
+    { pack: "chibi", shape: "buns", state: "done" },
+    { pack: "buddies", shape: "slime", state: "idle" },
+];
 ---
 
-<section class="section closing">
+<section class="closing">
     <div class="page">
-      <Shipping releases={releases} />
-      <div class="panel grid">
-        <Dither class="grain" />
-        <div class="cta">
-            <span class="mark"><Logo size={40} /></span>
-            <h2>Open a project.<br />Keep it open.</h2>
-            <div class="actions">
-                <DownloadButton href={release.dmgUrl} />
-                <a class="btn notes" href={`/changelog#v${release.version}`}><span>What's new in v<span data-release-version>{release.version}</span></span></a>
+        <div class="panel">
+            <Dither class="grain" />
+            <div class="cta">
+                <p class="label">Every agent gets a buddy</p>
+                <h2 class="display">Open a project.<br />Keep it open.</h2>
+                <p>Bring the agents you already use. Sikemux gives them the rest of your tools, and each one a buddy you can spot from across the room.</p>
+                <div class="actions">
+                    <DownloadButton href={release.dmgUrl} />
+                    <a class="btn notes" href={`/changelog#v${release.version}`}><span>What's new in v<span data-release-version>{release.version}</span></span></a>
+                </div>
+                <InstallCommand />
+                <p class="source">Or build it yourself: <a href={REPO_URL}>clone it from GitHub</a>. Needs Rust, Node 22 and pnpm.</p>
             </div>
-            <InstallCommand />
-            <p class="facts mono">
-                {release.dmgBytes !== null && <><span data-release-size>{formatSize(release.dmgBytes)}</span> · </>}Apple Silicon, macOS 11+ · <a href="#size">How it stays small</a>
-            </p>
+            <ul class="crowd" aria-hidden="true">
+                {
+                    crowd.map((member, index) => (
+                        <li style={`--lift: ${(index % 3) * 6}px`}>
+                            <Buddy pack={member.pack} shape={member.shape} state={member.state} size={52} />
+                        </li>
+                    ))
+                }
+            </ul>
         </div>
-        <div class="source">
-            <p class="label">Or build it yourself</p>
-            <pre><code><span class="prompt">$</span> git clone https://github.com/nodelike/sikemux
-<span class="prompt">$</span> cd sikemux && pnpm install
-<span class="prompt">$</span> make dev</code></pre>
-            <p class="small">Needs Rust, Node 22 and pnpm. <a href={`${REPO_URL}/blob/main/CONTRIBUTING.md`}>Contributing guide</a></p>
-        </div>
-      </div>
     </div>
 </section>
 
@@ -47,121 +68,85 @@ const { release, releases } = Astro.props;
 
 <style>
     .closing {
-        padding-top: 0;
-        border-top: 0;
+        padding-block: clamp(64px, 8vw, 112px);
     }
 
     .panel {
         position: relative;
-        overflow: hidden;
-        padding: clamp(32px, 5vw, 64px);
+        display: grid;
+        justify-items: center;
+        gap: 56px;
+        padding: clamp(56px, 8vw, 96px) 0 0;
         border: 1px solid var(--border);
-        border-radius: 20px;
-        background:
-            radial-gradient(70% 90% at 15% 0%, color-mix(in oklab, var(--acc) 22%, transparent), transparent 65%),
-            radial-gradient(60% 80% at 100% 100%, color-mix(in oklab, var(--live) 8%, transparent), transparent 70%),
-            var(--surface);
+        border-radius: var(--radius-4);
+        background: radial-gradient(70% 70% at 50% 100%, color-mix(in oklab, var(--acc) 16%, transparent), transparent), var(--surface-sunken);
+        overflow: hidden;
         isolation: isolate;
     }
 
     .panel :global(.grain) {
         inset: 0;
-        mask-image: radial-gradient(ellipse 60% 80% at 15% 0%, #000, transparent 70%);
-        -webkit-mask-image: radial-gradient(ellipse 60% 80% at 15% 0%, #000, transparent 70%);
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-        align-items: end;
-        gap: clamp(32px, 5vw, 72px);
-    }
-
-    .mark {
-        display: block;
-        margin-bottom: 4px;
-        color: var(--acc);
+        z-index: -1;
+        mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 10%, transparent 75%);
+        -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 10%, transparent 75%);
     }
 
     .cta {
         display: grid;
-        gap: 28px;
+        justify-items: center;
+        gap: 20px;
+        max-width: 640px;
+        padding-inline: var(--gutter);
+        text-align: center;
     }
 
-    .cta h2 {
-        font-size: clamp(34px, 5vw, 56px);
-        line-height: 1.02;
-        letter-spacing: -0.04em;
+    .cta > p:not(.label) {
+        font-size: 17px;
     }
 
     .actions {
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
         gap: 10px;
-    }
-
-    .facts {
-        margin-top: -12px;
-        font-size: 12px;
-        color: var(--text-tertiary);
-    }
-
-    .facts a {
-        color: inherit;
-        text-decoration: underline;
-        text-underline-offset: 3px;
     }
 
     .notes {
         height: 44px;
-        padding-inline: 18px;
     }
 
-    .source {
-        display: grid;
-        gap: 12px;
-    }
-
-    pre {
-        margin: 0;
-        padding: 18px 20px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-3);
-        background: var(--surface);
-        overflow-x: auto;
-        font-size: 13px;
-        line-height: 1.8;
-        color: var(--text-primary);
-    }
-
-    pre code {
-        font-size: inherit;
-    }
-
-    .prompt {
-        color: var(--live);
-        user-select: none;
-    }
-
-    .small {
+    .cta > .source {
         font-size: 13px;
         color: var(--text-tertiary);
     }
 
-    .small a {
+    .source a {
         color: var(--text-secondary);
         text-decoration: underline;
-        text-decoration-color: var(--border-strong);
         text-underline-offset: 3px;
     }
 
-    .small a:hover {
-        color: var(--text-primary);
+    .crowd {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: clamp(6px, 1.4vw, 18px);
+        width: 100%;
+        margin: 0;
+        padding: 0 16px;
+        list-style: none;
+        overflow: hidden;
     }
 
-    @media (max-width: 860px) {
-        .grid {
-            grid-template-columns: minmax(0, 1fr);
+    .crowd li {
+        flex: none;
+        margin-bottom: calc(-8px - var(--lift));
+    }
+
+    @media (max-width: 680px) {
+        .crowd {
+            --buddy-size: 40px;
+            justify-content: flex-start;
         }
     }
 </style>

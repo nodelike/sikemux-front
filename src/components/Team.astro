@@ -1,0 +1,284 @@
+---
+import Logo from "./Logo.astro";
+import AgentIcon from "./AgentIcon.astro";
+import { poses } from "../lib/buddies";
+import "../styles/buddies.css";
+
+const agents = [
+    { id: "otter", name: "Otter", icon: "claude", brand: "var(--brand-claude)", pack: "buddies", shape: "mochi", x: 18, y: 64 },
+    { id: "heron", name: "Heron", icon: "codex", brand: "var(--brand-codex)", pack: "googly", shape: "pair", x: 80, y: 22 },
+    { id: "wren", name: "Wren", icon: "opencode", brand: "var(--brand-opencode)", pack: "screens", shape: "telly", x: 82, y: 78 },
+    { id: "lynx", name: "Lynx", icon: "grok", brand: "var(--brand-grok)", pack: "soot", shape: "soot", x: 30, y: 16 },
+] as const;
+
+const script = [
+    { from: "otter", to: "heron", text: "The sign-in test fails in Safari. Heron, can you take it?" },
+    { from: "heron", to: "wren", text: "Fixed in session.ts. Wren, can you check it in your browser tab?" },
+    { from: "wren", to: "lynx", text: "Works at phone size too. Lynx, the release notes are yours." },
+    { from: "lynx", to: "otter", text: "Written. Otter, it's ready for a review." },
+];
+
+const hub = { x: 50, y: 50 };
+---
+
+<section class="team" aria-labelledby="team-title">
+    <div class="page">
+        <div class="statement" data-reveal>
+            <p class="label">Agents that work together</p>
+            <h2 id="team-title" class="display">Your agents talk to each other.</h2>
+            <p>They message each other, hand off work and start helpers beside them. Each one gets a name and a buddy, and asks you when it's stuck.</p>
+        </div>
+        <div class="scene" data-team={JSON.stringify(script)} role="img" aria-label="Four agents, Otter, Heron, Wren and Lynx, passing a sign-in bug between them until it is fixed, checked and ready for review">
+            <svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                {agents.map((agent) => <line x1={agent.x} y1={agent.y} x2={hub.x} y2={hub.y} />)}
+            </svg>
+            <div class="hub" style={`left: ${hub.x}%; top: ${hub.y}%`}>
+                <span class="face"><Logo size={36} /></span>
+                <span class="name mono">sikemux</span>
+            </div>
+            {
+                agents.map((agent) => {
+                    const all = poses(agent.pack, agent.shape);
+                    return (
+                        <div class="agent" data-agent={agent.id} data-poses={JSON.stringify(all)} style={`left: ${agent.x}%; top: ${agent.y}%; --brand: ${agent.brand}`}>
+                            <p class="bubble" />
+                            <span class="buddy" data-motion={all.idle.motion || undefined} set:html={all.idle.markup} />
+                            <span class="name">
+                                <AgentIcon agent={agent.icon} size={14} />
+                                {agent.name}
+                                <span class="state mono">idle</span>
+                            </span>
+                        </div>
+                    );
+                })
+            }
+            <span class="packet" aria-hidden="true"></span>
+        </div>
+    </div>
+</section>
+
+<script>
+    type Line = { from: string; to: string; text: string };
+    type State = "idle" | "working" | "waiting" | "done";
+
+    const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    for (const scene of document.querySelectorAll<HTMLElement>("[data-team]")) {
+        const script = JSON.parse(scene.dataset.team ?? "[]") as Line[];
+        const packet = scene.querySelector<HTMLElement>(".packet")!;
+        const hub = scene.querySelector<HTMLElement>(".hub")!;
+        const agentEl = (id: string) => scene.querySelector<HTMLElement>(`[data-agent="${id}"]`)!;
+        const centre = (node: HTMLElement) => {
+            const box = scene.getBoundingClientRect();
+            const face = node.querySelector(".buddy, .face")!.getBoundingClientRect();
+            return [face.left + face.width / 2 - box.left, face.top + face.height / 2 - box.top];
+        };
+        const pose = (id: string, state: State) => {
+            const agent = agentEl(id);
+            const poses = JSON.parse(agent.dataset.poses ?? "{}") as Record<State, { motion: string; markup: string }>;
+            const buddy = agent.querySelector<HTMLElement>(".buddy")!;
+            buddy.innerHTML = poses[state].markup;
+            if (poses[state].motion) buddy.dataset.motion = poses[state].motion;
+            else delete buddy.dataset.motion;
+            agent.querySelector(".state")!.textContent = state;
+            agent.dataset.state = state;
+        };
+        const say = (line: Line) => {
+            for (const bubble of scene.querySelectorAll(".bubble")) bubble.classList.remove("on");
+            const bubble = agentEl(line.from).querySelector(".bubble")!;
+            bubble.textContent = line.text;
+            bubble.classList.add("on");
+        };
+
+        if (still) {
+            say(script[0]);
+            continue;
+        }
+
+        let visible = false;
+        let running = false;
+        const run = async () => {
+            if (running) return;
+            running = true;
+            let index = 0;
+            while (visible) {
+                const line = script[index % script.length];
+                pose(line.from, "working");
+                say(line);
+                await wait(1600);
+                const stops = [centre(agentEl(line.from)), centre(hub), centre(agentEl(line.to))];
+                packet.style.opacity = "1";
+                await packet.animate(
+                    stops.map(([x, y]) => ({ transform: `translate(${x}px, ${y}px)` })),
+                    { duration: 1300, easing: "cubic-bezier(.5,0,.3,1)", fill: "forwards" },
+                ).finished;
+                packet.style.opacity = "0";
+                pose(line.from, "done");
+                pose(line.to, "waiting");
+                await wait(900);
+                index += 1;
+                if (index % script.length === 0) for (const agent of scene.querySelectorAll<HTMLElement>("[data-agent]")) pose(agent.dataset.agent!, "idle");
+            }
+            running = false;
+        };
+
+        new IntersectionObserver(([entry]) => {
+            visible = entry.isIntersecting;
+            if (visible) run();
+        }).observe(scene);
+    }
+</script>
+
+<style>
+    .team {
+        padding-block: clamp(96px, 12vw, 160px) clamp(64px, 8vw, 112px);
+    }
+
+    .scene {
+        position: relative;
+        max-width: 980px;
+        margin-inline: auto;
+        aspect-ratio: 16 / 8.5;
+    }
+
+    .lines {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+
+    .lines line {
+        stroke: var(--gray-700);
+        stroke-width: 2;
+        stroke-dasharray: 0.1 7;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
+    }
+
+    .hub,
+    .agent {
+        position: absolute;
+        display: grid;
+        justify-items: center;
+        gap: 10px;
+        translate: -50% -34px;
+    }
+
+    .hub .face {
+        display: grid;
+        place-items: center;
+        width: 76px;
+        height: 76px;
+        border: 1px solid var(--border-selected);
+        border-radius: var(--radius-4);
+        background: var(--surface-raised);
+        color: var(--acc);
+        box-shadow: 0 0 80px -6px color-mix(in oklab, var(--acc) 55%, transparent);
+    }
+
+    .hub .name {
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    .agent .buddy {
+        width: 68px;
+        height: 68px;
+    }
+
+    .agent .name {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 10px 3px 8px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-pill);
+        background: var(--surface-sunken);
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-primary);
+        transition: border-color var(--dur-2) var(--ease-out);
+    }
+
+    .agent .name :global(svg),
+    .agent .name :global(img) {
+        color: var(--brand);
+    }
+
+    .state {
+        font-size: 10.5px;
+        color: var(--text-tertiary);
+    }
+
+    .agent[data-state="waiting"] .name {
+        border-color: var(--border-selected);
+    }
+
+    .agent[data-state="done"] .state {
+        color: var(--live);
+    }
+
+    .bubble {
+        position: absolute;
+        bottom: calc(100% + 4px);
+        left: 50%;
+        width: max-content;
+        max-width: 240px;
+        padding: 10px 14px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-3);
+        background: var(--surface-raised);
+        font-size: 13.5px;
+        line-height: 1.4;
+        color: var(--text-primary);
+        text-align: left;
+        opacity: 0;
+        transform: translate(-50%, 8px);
+        transition:
+            opacity 0.25s var(--ease-out),
+            transform 0.25s var(--ease-out);
+        pointer-events: none;
+    }
+
+    .bubble.on {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    .packet {
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--acc);
+        box-shadow: 0 0 18px 4px color-mix(in oklab, var(--acc) 70%, transparent);
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    @media (max-width: 720px) {
+        .scene {
+            aspect-ratio: 4 / 5;
+        }
+
+        .bubble {
+            max-width: 170px;
+            font-size: 12px;
+        }
+
+        .agent .buddy {
+            width: 52px;
+            height: 52px;
+        }
+
+        .hub .face {
+            width: 60px;
+            height: 60px;
+        }
+    }
+</style>

@@ -1,0 +1,394 @@
+---
+import { Image } from "astro:assets";
+import AgentIcon from "./AgentIcon.astro";
+import BrowserDemo from "./BrowserDemo.astro";
+import VoiceDemo from "./VoiceDemo.astro";
+import VisualsDemo from "./VisualsDemo.astro";
+import agentsShot from "../assets/cards/agents.png";
+import simulator from "../assets/cards/simulator.png";
+import phone from "../assets/phone/phone-device.png";
+import git from "../assets/shots/git-focus.png";
+import terminals from "../assets/shots/terminals-focus.png";
+import activity from "../assets/shots/activity-page.png";
+import { AGENTS, agentPath } from "../lib/agents";
+
+const belt = [...AGENTS, ...AGENTS];
+---
+
+<section class="bento-section" id="features">
+    <div class="page">
+        <div class="statement" data-reveal>
+            <h2 class="display">One window. Every tool your agents need.</h2>
+            <p>Your agents, code, terminals, Git and a browser all open on the same project folder, so nothing gets lost between apps.</p>
+        </div>
+
+        <div class="bento">
+            <article class="card span-4" data-reveal>
+                <div class="text">
+                    <h3>Agents in your project</h3>
+                    <p>Start Claude Code, Codex or another agent next to your code. It reads the project, edits files and runs commands while you watch. @ attaches a file, # hands over an issue or pull request.</p>
+                </div>
+                <div class="bleed">
+                    <Image src={agentsShot} alt="Codex explaining why a terminal test was flaky, then running the tests and committing its fix" format="avif" quality={78} widths={[800, 1200, 1600]} sizes="(min-width: 1240px) 760px, 100vw" />
+                </div>
+            </article>
+
+            <article class="card span-2 plan" data-reveal>
+                <div class="belts" aria-hidden="true">
+                    {
+                        [0, 1, 2, 3].map((row) => (
+                            <div class:list={["belt", { back: row % 2 === 1 }]} style={`--offset: ${row * -90}px`}>
+                                {belt.map((agent) => (
+                                    <span class="chip" style={`--brand: ${agent.color}`}>
+                                        <AgentIcon agent={agent.icon} size={18} />
+                                        {agent.name}
+                                    </span>
+                                ))}
+                            </div>
+                        ))
+                    }
+                </div>
+                <div class="text">
+                    <h3>Use the AI plan you already pay for</h3>
+                    <p>
+                        Sikemux doesn't sell AI. It runs {AGENTS.map((agent, index) => (
+                            <>
+                                <a href={agentPath(agent)}>{agent.name}</a>
+                                {index < AGENTS.length - 2 ? ", " : index === AGENTS.length - 2 ? " and " : ""}
+                            </>
+                        ))} with your own login, and shows the limits left on each account.
+                    </p>
+                </div>
+            </article>
+
+            <article class="card span-3" data-reveal>
+                <div class="text">
+                    <h3>A browser for every agent</h3>
+                    <p>Your agent opens your app, clicks through it and takes screenshots, like a tester would. Same engine as Safari, and you can take over the tab at any time.</p>
+                </div>
+                <div class="demo"><BrowserDemo /></div>
+            </article>
+
+            <article class="card span-3 notch" data-notch data-reveal>
+                <div class="text">
+                    <h3>Your agents live in the notch</h3>
+                    <p>A small island over the MacBook notch shows who's working, asks you when an agent needs permission and says when one is done, even with Sikemux behind another app.</p>
+                </div>
+                <figure class="screen">
+                    <video muted loop playsinline preload="none" width="2400" height="960" poster="/video/notch-poster.jpg" aria-label="The notch island: agents working, Claude asking to run a command and being allowed, the list of agents opening, then Codex finishing">
+                        <source src="/video/notch.webm" type="video/webm" />
+                        <source src="/video/notch.mp4" type="video/mp4" />
+                    </video>
+                </figure>
+            </article>
+
+            <article class="card span-2 phone" data-reveal>
+                <div class="text">
+                    <h3>Close the laptop. They keep going.</h3>
+                    <p>Check on agents, answer them and start new ones from your phone. Android is in testing; iPhone soon. <a href="/phone">Get the app</a></p>
+                </div>
+                <div class="handset">
+                    <Image src={phone} alt="The phone app: one agent asking to run a command, three open chats and recent ones" widths={[300, 600]} sizes="300px" />
+                </div>
+            </article>
+
+            <article class="card span-2" data-reveal>
+                <div class="text">
+                    <h3>The iOS Simulator, on the agent's desk</h3>
+                    <p>The agent builds your app, installs it on a real Simulator beside its chat, then taps, types and takes screenshots to check its work.</p>
+                </div>
+                <div class="bleed">
+                    <Image src={simulator} alt="An agent's chat beside an iPhone Simulator on its desk" format="avif" quality={78} widths={[600, 900, 1200]} sizes="(min-width: 1240px) 400px, 100vw" />
+                </div>
+            </article>
+
+            <article class="card span-2" data-reveal>
+                <div class="text">
+                    <h3>Talk instead of typing</h3>
+                    <p>Hold the right Option key and speak. The words appear as you say them, transcribed on your Mac, and go to the agent you're looking at.</p>
+                </div>
+                <div class="demo"><VoiceDemo /></div>
+            </article>
+
+            <article class="card span-4" data-reveal>
+                <div class="text">
+                    <h3>Answers you can see</h3>
+                    <p>When words aren't enough, the agent draws in the chat: a diagram of how your services talk, a chart from production data, or mockups to pick from before it writes code.</p>
+                </div>
+                <div class="demo wide"><VisualsDemo /></div>
+            </article>
+
+            <article class="card span-2" data-reveal>
+                <div class="text">
+                    <h3>Terminals that outlive the app</h3>
+                    <p>Quit Sikemux, or let it update, and your terminals and agents keep running. Open it again and everything is where you left it.</p>
+                </div>
+                <div class="bleed">
+                    <Image src={terminals} alt="A terminal showing 50 passing tests" format="avif" quality={80} widths={[600, 1092]} sizes="400px" />
+                </div>
+            </article>
+
+            <article class="card span-3" data-reveal>
+                <div class="text">
+                    <h3>Review and ship in the app</h3>
+                    <p>See every file the agent touched and which agent wrote each change, then let it write the commit message. Pull requests and CI from GitHub, GitLab and Bitbucket open beside the code.</p>
+                </div>
+                <div class="bleed">
+                    <Image src={git} alt="A commit message written by the agent above the files it changed" format="avif" quality={80} widths={[650, 1304]} sizes="(min-width: 1240px) 590px, 100vw" />
+                </div>
+            </article>
+
+            <article class="card span-3" data-reveal>
+                <div class="text">
+                    <h3>What your agents did, and what it would cost</h3>
+                    <p>Time, chats, tokens and commits for each agent, model and project, priced at API rates. It never leaves your Mac.</p>
+                </div>
+                <div class="bleed">
+                    <Image src={activity} alt="The Activity page: totals, a year of daily activity, and breakdowns by agent and by project" format="avif" quality={80} widths={[650, 1300]} sizes="(min-width: 1240px) 590px, 100vw" />
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<script>
+    for (const notch of document.querySelectorAll<HTMLElement>("[data-notch]")) {
+        const video = notch.querySelector("video");
+        if (!video) continue;
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            video.controls = true;
+            continue;
+        }
+        new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) video.play().catch(() => {});
+                else video.pause();
+            },
+            { rootMargin: "200px 0px" },
+        ).observe(video);
+    }
+</script>
+
+<style>
+    .bento-section {
+        padding-block: clamp(64px, 8vw, 112px);
+    }
+
+    .bento {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        min-height: 420px;
+        padding: 28px 28px 0;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background: linear-gradient(to bottom, var(--gray-100), var(--surface-sunken));
+        overflow: hidden;
+    }
+
+    .span-2 {
+        grid-column: span 2;
+    }
+
+    .span-3 {
+        grid-column: span 3;
+    }
+
+    .span-4 {
+        grid-column: span 4;
+    }
+
+    .text {
+        display: grid;
+        gap: 10px;
+        max-width: 52ch;
+    }
+
+    .card h3 {
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.2;
+        letter-spacing: -0.025em;
+    }
+
+    .card p {
+        font-size: 15px;
+        line-height: 1.55;
+    }
+
+    .card p a {
+        color: var(--text-primary);
+        text-decoration: underline;
+        text-decoration-color: var(--border-strong);
+        text-underline-offset: 3px;
+    }
+
+    .bleed {
+        margin-top: auto;
+        margin-right: -28px;
+        border: 1px solid var(--border-strong);
+        border-right: 0;
+        border-bottom: 0;
+        border-top-left-radius: var(--radius-3);
+        overflow: hidden;
+        background: var(--surface-sunken);
+        flex: 1;
+        min-height: 200px;
+        max-height: 400px;
+    }
+
+    .bleed :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: left top;
+    }
+
+    .demo {
+        display: grid;
+        place-items: center;
+        flex: 1;
+        padding-bottom: 28px;
+    }
+
+    .demo.wide {
+        align-items: end;
+    }
+
+    .plan {
+        justify-content: space-between;
+        padding-bottom: 28px;
+    }
+
+    .belts {
+        display: grid;
+        align-content: center;
+        flex: 1;
+        gap: 12px;
+        margin-inline: -28px;
+        mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+    }
+
+    .belt {
+        display: flex;
+        gap: 10px;
+        width: max-content;
+        margin-left: var(--offset);
+        animation: belt 40s linear infinite;
+    }
+
+    .belt.back {
+        animation-direction: reverse;
+    }
+
+    @keyframes belt {
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .belt {
+            animation: none;
+        }
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 46px;
+        padding-inline: 14px 18px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-pill);
+        background: var(--gray-200);
+        font-size: 15px;
+        font-weight: 500;
+        white-space: nowrap;
+        color: var(--text-primary);
+    }
+
+    .chip :global(svg),
+    .chip :global(img) {
+        color: var(--brand);
+    }
+
+    .notch {
+        padding-inline: 0;
+    }
+
+    .notch .text {
+        padding-inline: 28px;
+    }
+
+    .screen {
+        margin: auto 0 0;
+    }
+
+    .screen video {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .phone {
+        padding-bottom: 0;
+    }
+
+    .handset {
+        width: 62%;
+        margin: auto auto -40%;
+        border-radius: 28px;
+        overflow: hidden;
+        border: 6px solid #111;
+        box-shadow: 0 30px 60px -20px #000;
+    }
+
+    @media (max-width: 1000px) {
+        .bento {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .span-2,
+        .span-3 {
+            grid-column: span 1;
+        }
+
+        .span-4 {
+            grid-column: span 2;
+        }
+    }
+
+    @media (max-width: 680px) {
+        .bento {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .span-2,
+        .span-3,
+        .span-4 {
+            grid-column: auto;
+        }
+
+        .card {
+            min-height: 0;
+            padding: 22px 22px 0;
+        }
+
+        .bleed {
+            margin-right: -22px;
+        }
+
+        .handset {
+            margin-bottom: -30%;
+        }
+    }
+</style>

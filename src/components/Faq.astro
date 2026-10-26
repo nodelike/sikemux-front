@@ -1,13 +1,14 @@
 ---
 import { FAQ } from "../lib/faq";
-import Fit from "./Fit.astro";
+import { DISCORD_URL } from "../lib/release";
 ---
 
-<section class="section" id="faq">
-    <Fit />
+<section class="faq" id="faq">
     <div class="page grid">
-        <div class="section-head">
-            <h2>Before you download.</h2>
+        <div class="head">
+            <h2 class="display">Questions</h2>
+            <p>Short answers about price, agents, privacy and which computers it runs on.</p>
+            <a class="ask" href={DISCORD_URL}>Ask us something else on Discord →</a>
         </div>
         <div class="list">
             {
@@ -23,6 +24,26 @@ import Fit from "./Fit.astro";
 </section>
 
 <style>
+    .faq {
+        padding-block: clamp(80px, 10vw, 136px);
+    }
+
+    .head {
+        position: sticky;
+        top: 96px;
+        display: grid;
+        gap: 16px;
+    }
+
+    .head p {
+        font-size: 16px;
+    }
+
+    .ask {
+        font-size: 14px;
+        color: var(--text-primary);
+    }
+
     .grid {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
@@ -30,30 +51,14 @@ import Fit from "./Fit.astro";
         gap: clamp(24px, 5vw, 72px);
     }
 
-    .grid .section-head {
-        position: sticky;
-        top: 96px;
-        align-content: start;
-        margin-bottom: 0;
-    }
-
     .list {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
-        gap: 10px;
+        border-top: 1px solid var(--border);
     }
 
     details {
-        padding-inline: 22px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-3);
-        background: var(--surface);
-        transition: border-color var(--dur-2) var(--ease-out);
-    }
-
-    details:hover,
-    details[open] {
-        border-color: var(--border-strong);
+        border-bottom: 1px solid var(--border);
     }
 
     summary {
@@ -61,8 +66,8 @@ import Fit from "./Fit.astro";
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        padding-block: 18px;
-        font-size: 16px;
+        padding-block: 22px;
+        font-size: 17px;
         font-weight: 500;
         color: var(--text-primary);
         cursor: pointer;
@@ -95,7 +100,7 @@ import Fit from "./Fit.astro";
     }
 
     details :global(a) {
-        color: var(--acc);
+        color: var(--text-primary);
         text-decoration: underline;
         text-underline-offset: 3px;
     }
@@ -120,7 +125,7 @@ import Fit from "./Fit.astro";
             grid-template-columns: minmax(0, 1fr);
         }
 
-        .grid .section-head {
+        .head {
             position: static;
         }
     }

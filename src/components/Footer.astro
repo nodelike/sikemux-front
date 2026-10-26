@@ -32,7 +32,15 @@ const columns = [
 ---
 
 <footer class="footer">
-    <nav class="page columns" aria-label="Footer">
+    <div class="page top">
+    <div class="about">
+        <a class="home" href="/" aria-label="Sikemux home">
+            <span class="mark"><Logo size={16} /></span>
+            Sikemux
+        </a>
+        <p class="pitch">The IDE for you and your coding agents. Claude Code, Codex and the rest, with your shell, browser, logs and deploys in one window.</p>
+    </div>
+    <nav class="columns" aria-label="Footer">
         {
             columns.map((column) => (
                 <div class="column">
@@ -48,6 +56,7 @@ const columns = [
             ))
         }
     </nav>
+    </div>
     <div class="page row">
         <span class="brand">
             <Logo size={14} />
@@ -61,11 +70,47 @@ const columns = [
         border-top: 1px solid var(--border);
     }
 
+    .top {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+        gap: clamp(32px, 6vw, 96px);
+        padding-block: 64px 16px;
+    }
+
+    .about {
+        display: grid;
+        align-content: start;
+        gap: 20px;
+    }
+
+    .home {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        width: fit-content;
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .mark {
+        display: grid;
+        place-items: center;
+        color: var(--acc);
+    }
+
+    .pitch {
+        max-width: 22ch;
+        font-size: clamp(22px, 2.2vw, 28px);
+        line-height: 1.2;
+        letter-spacing: -0.025em;
+        color: var(--text-primary);
+    }
+
     .columns {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 32px;
-        padding-block: 48px 8px;
     }
 
     .column {
@@ -117,6 +162,12 @@ const columns = [
         text-decoration: underline;
         text-decoration-color: var(--border-strong);
         text-underline-offset: 3px;
+    }
+
+    @media (max-width: 860px) {
+        .top {
+            grid-template-columns: minmax(0, 1fr);
+        }
     }
 
     @media (max-width: 720px) {

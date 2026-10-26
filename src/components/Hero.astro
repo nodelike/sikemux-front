@@ -30,25 +30,24 @@ const { release, stars } = Astro.props;
             </p>
             <div class="actions">
                 <DownloadButton href={release.dmgUrl} />
-                <GithubStars stars={stars} label="Star on GitHub" size="large" count={false} />
+                <GithubStars stars={stars} label="Star on GitHub" size="large" />
             </div>
             <InstallCommand />
             <p class="meta mono">
                 <span>v<span data-release-version>{release.version}</span></span>
-                {release.dmgBytes !== null && <span><span data-release-size>{formatSize(release.dmgBytes)}</span></span>}
-                <span>Mac, Apple Silicon</span>
+                {release.dmgBytes !== null && <span data-release-size>{formatSize(release.dmgBytes)}</span>}
+                <span>Mac and Linux</span>
                 <span>free</span>
             </p>
-            <p class="also">Also on your phone: <a href="/phone">Android, in testing</a> · iPhone soon</p>
         </div>
     </div>
-    <div class="stage-wrap">
-        <figure class="shot-frame">
+    <div class="stage">
+        <figure class="window">
             <Image
                 src={hero}
                 alt="A Claude Code agent beside its own browser tab, open on vercel.com"
-                widths={[828, 1170, 1560, 2340, 3120, 3520]}
-                sizes="(min-width: 1640px) 1560px, 100vw"
+                widths={[828, 1170, 1560, 2340, 3120]}
+                sizes="(min-width: 1360px) 1280px, 100vw"
                 format="avif"
                 quality={72}
                 loading="eager"
@@ -61,12 +60,12 @@ const { release, stars } = Astro.props;
 <style>
     .hero {
         position: relative;
-        padding-block: clamp(48px, 7vw, 88px) clamp(64px, 8vw, 96px);
+        padding-block: clamp(56px, 8vw, 104px) clamp(64px, 8vw, 96px);
         isolation: isolate;
     }
 
     .hero :global(.grain) {
-        inset: 0 0 30%;
+        inset: 0 0 35%;
         mask-image: radial-gradient(ellipse 70% 90% at 50% 0%, #000 10%, transparent 70%);
         -webkit-mask-image: radial-gradient(ellipse 70% 90% at 50% 0%, #000 10%, transparent 70%);
     }
@@ -75,8 +74,8 @@ const { release, stars } = Astro.props;
         display: grid;
         grid-template-columns: minmax(0, 1fr);
         justify-items: center;
-        gap: 22px;
-        max-width: 860px;
+        gap: 24px;
+        max-width: 980px;
         margin: 0 auto clamp(40px, 5vw, 56px);
         text-align: center;
     }
@@ -86,10 +85,10 @@ const { release, stars } = Astro.props;
         align-items: center;
         gap: 10px;
         height: 32px;
+        max-width: 100%;
         padding: 0 12px 0 4px;
         border: 1px solid var(--border);
-        max-width: 100%;
-        border-radius: 999px;
+        border-radius: var(--radius-pill);
         background: color-mix(in oklab, var(--surface) 70%, transparent);
         font-size: 13.5px;
         color: var(--text-secondary);
@@ -105,7 +104,7 @@ const { release, stars } = Astro.props;
         flex: none;
         padding: 3px 9px;
         border: 1px solid var(--border);
-        border-radius: 999px;
+        border-radius: var(--radius-pill);
         background: var(--gray-200);
         font-size: 11px;
         letter-spacing: 0.04em;
@@ -123,62 +122,18 @@ const { release, stars } = Astro.props;
         color: var(--text-tertiary);
     }
 
-    .also {
-        margin-top: -10px;
-        font-size: 13px;
-        color: var(--text-tertiary);
-    }
-
-    .also a {
-        color: var(--text-secondary);
-        text-decoration: underline;
-        text-decoration-color: var(--border-strong);
-        text-underline-offset: 3px;
-    }
-
-    .shot-frame {
-        margin: 0;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-4);
-        overflow: hidden;
-        background: var(--surface-sunken);
-        aspect-ratio: 1760 / 900;
-    }
-
-    .shot-frame :global(img) {
-        display: block;
-        width: 100%;
-        height: auto;
-    }
-
-    .stage-wrap {
-        position: relative;
-        isolation: isolate;
-        width: min(100% - 2 * var(--gutter), 1560px);
-        margin-inline: auto;
-    }
-
-    .stage-wrap::before {
-        content: "";
-        position: absolute;
-        inset: 8% 6% -6%;
-        z-index: -1;
-        background: radial-gradient(60% 55% at 50% 40%, color-mix(in oklab, var(--acc) 38%, transparent), transparent 70%);
-        filter: blur(40px);
-        opacity: 0.55;
-    }
-
     h1 {
-        max-width: 16ch;
-        font-size: clamp(40px, 5.8vw, 78px);
-        line-height: 1;
-        letter-spacing: -0.05em;
+        max-width: 15ch;
+        font-size: clamp(46px, 7.4vw, 100px);
+        font-weight: 500;
+        line-height: 0.96;
+        letter-spacing: -0.055em;
     }
 
     .lede {
-        font-size: 18px;
+        max-width: 50ch;
+        font-size: clamp(17px, 1.6vw, 20px);
         line-height: 1.55;
-        max-width: 58ch;
     }
 
     .actions {
@@ -189,37 +144,45 @@ const { release, stars } = Astro.props;
     }
 
     .meta {
-        --sep: 32px;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        row-gap: 6px;
-        margin-left: calc(-1 * var(--sep));
-        clip-path: inset(0 0 0 var(--sep));
+        gap: 4px 18px;
         font-size: 12px;
         color: var(--text-tertiary);
     }
 
-    .meta > span {
+    .stage {
         position: relative;
-        margin-left: var(--sep);
+        width: min(100% - 2 * var(--gutter), 1280px);
+        margin-inline: auto;
     }
 
-    /* The dot before the first item on each line falls in the clipped strip, so a wrapped line never starts with one. */
-    .meta > span::before {
-        content: "·";
+    .stage::before {
+        content: "";
         position: absolute;
-        left: calc(-1 * var(--sep));
-        width: var(--sep);
-        text-align: center;
-        color: var(--gray-500);
+        inset: 8% 6% -6%;
+        z-index: -1;
+        background: radial-gradient(60% 55% at 50% 40%, color-mix(in oklab, var(--acc) 38%, transparent), transparent 70%);
+        filter: blur(40px);
+        opacity: 0.55;
+    }
+
+    .window {
+        margin: 0;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        overflow: hidden;
+        background: var(--surface-sunken);
+        aspect-ratio: 3520 / 1800;
+    }
+
+    .window :global(img) {
+        width: 100%;
+        height: auto;
     }
 
     @media (max-width: 520px) {
-        .lede {
-            font-size: 16.5px;
-        }
-
         .actions {
             display: grid;
             grid-template-columns: minmax(0, 1fr);
@@ -230,10 +193,5 @@ const { release, stars } = Astro.props;
             width: 100%;
             justify-content: center;
         }
-
-        .meta {
-            --sep: 22px;
-        }
     }
-
 </style>
