@@ -24,6 +24,9 @@ importers:
       '@astrojs/check':
         specifier: ^0.9.10
         version: 0.9.10(@emnapi/runtime@1.11.3)(prettier@3.9.9)(typescript@6.0.3)
+      esbuild:
+        specifier: 0.28.2
+        version: 0.28.2
       playwright-core:
         specifier: ^1.63.0
         version: 1.63.0

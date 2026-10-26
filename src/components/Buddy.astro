@@ -1,0 +1,18 @@
+---
+import "../styles/buddies.css";
+import { buddy, type BuddyState } from "../lib/buddies";
+
+interface Props {
+    pack: string;
+    shape: string;
+    state?: BuddyState;
+    size?: number;
+    class?: string;
+    [attribute: `data-${string}`]: string;
+}
+
+const { pack, shape, state = "idle", size = 48, class: className, ...rest } = Astro.props;
+const drawn = buddy(pack, shape, state);
+---
+
+<span class:list={["buddy", className]} data-motion={drawn.motion || undefined} style={`width: var(--buddy-size, ${size}px); height: var(--buddy-size, ${size}px)`} set:html={drawn.markup} {...rest} />

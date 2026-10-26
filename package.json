@@ -12,7 +12,8 @@
     "preview": "astro preview",
     "og": "astro build && node scripts/og.mjs",
     "shots": "node scripts/shots.mjs",
-    "notch": "node scripts/notch.mjs"
+    "notch": "node scripts/notch.mjs",
+    "buddies": "node scripts/buddies.mjs"
   },
   "dependencies": {
     "@paper-design/shaders": "0.0.81",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "esbuild": "0.28.2",
     "playwright-core": "^1.63.0",
     "typescript": "^6.0.3"
   }
