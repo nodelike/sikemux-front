@@ -64,11 +64,11 @@ const { release } = Astro.props;
 
     .tile {
         position: relative;
-        display: grid;
-        align-content: end;
+        display: flex;
+        flex-direction: column;
         gap: 6px;
         min-height: 280px;
-        padding: 24px;
+        padding: 112px 24px 24px;
         border: 1px solid var(--border);
         border-radius: var(--radius-4);
         background: linear-gradient(to bottom, var(--gray-100), var(--surface-sunken));
@@ -131,7 +131,8 @@ const { release } = Astro.props;
     }
 
     .go {
-        margin-top: 14px;
+        margin-top: auto;
+        padding-top: 14px;
         font-size: 14px;
         font-weight: 500;
         color: var(--text-secondary);
