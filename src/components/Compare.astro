@@ -5,9 +5,11 @@ import cursor from "../assets/apps/cursor.png";
 import zed from "../assets/apps/zed.png";
 import warp from "../assets/apps/warp.png";
 import superset from "../assets/apps/superset.png";
+import conductor from "../assets/apps/conductor.png";
+import cmux from "../assets/apps/cmux.png";
 import { COMPARISONS, comparisonPath } from "../lib/comparisons";
 
-const icons: Record<string, ImageMetadata> = { cursor, zed, warp, superset };
+const icons: Record<string, ImageMetadata> = { cursor, zed, warp, superset, conductor, cmux };
 ---
 
 <section class="compare" id="compare">
@@ -27,11 +29,7 @@ const icons: Record<string, ImageMetadata> = { cursor, zed, warp, superset };
                                         <Logo size={22} />
                                     </span>
                                     <span class="vs mono">vs</span>
-                                    {icons[comparison.slug] ? (
-                                        <Image class="theirs" src={icons[comparison.slug]} alt="" width={44} densities={[2, 3]} format="webp" />
-                                    ) : (
-                                        <span class="theirs letter">{comparison.name.slice(0, 1).toUpperCase()}</span>
-                                    )}
+                                    <Image class="theirs" src={icons[comparison.slug]} alt="" width={44} densities={[2, 3]} format="webp" />
                                 </span>
                             </span>
                             <span class="caption">
@@ -119,14 +117,6 @@ const icons: Record<string, ImageMetadata> = { cursor, zed, warp, superset };
         border: 1px solid var(--border-selected);
         background: var(--surface-raised);
         color: var(--acc);
-    }
-
-    .letter {
-        border: 1px solid var(--border-strong);
-        background: var(--gray-200);
-        font-size: 18px;
-        font-weight: 600;
-        color: var(--text-primary);
     }
 
     .caption {
