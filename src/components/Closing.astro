@@ -101,8 +101,10 @@ const crowd: { pack: string; shape: string; state: BuddyState }[] = [
 
     .cta {
         display: grid;
+        grid-template-columns: minmax(0, 1fr);
         justify-items: center;
         gap: 20px;
+        width: 100%;
         max-width: 640px;
         padding-inline: var(--gutter);
         text-align: center;
