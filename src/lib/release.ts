@@ -114,7 +114,7 @@ export async function starCount(): Promise<number | null> {
     }
 }
 
-const FALLBACK: Release = { version: "0.5.1", dmgUrl: RELEASES_URL, dmgBytes: 15_656_758, publishedAt: null };
+const FALLBACK: Release = { version: "0.6.0", dmgUrl: RELEASES_URL, dmgBytes: 24_872_033, publishedAt: null };
 
 export const LATEST_RELEASE_API = "https://api.github.com/repos/nodelike/sikemux/releases/latest";
 

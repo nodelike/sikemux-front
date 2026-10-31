@@ -16,7 +16,7 @@ export const FAQ: FaqEntry[] = [
     },
     {
         question: "Is this Electron?",
-        answer: "No. Sikemux is built with Tauri and Rust and uses the web engine macOS already has, which is why it's small and quick to start.",
+        answer: "No. Sikemux is written in Rust and drawn natively on the GPU, with no web page in between. Only its browser tabs use a web engine, the WebKit macOS already has, which is why it's small and quick to start.",
     },
     {
         question: "How is Sikemux different from Cursor?",
@@ -24,7 +24,7 @@ export const FAQ: FaqEntry[] = [
     },
     {
         question: "How is this different from Superset, Conductor or cmux?",
-        answer: `Those are built around the agents. <a href="/vs/superset">Superset</a> and <a href="/vs/conductor">Conductor</a> run a crowd of agents in parallel, on your Mac or in the cloud, and <a href="/vs/cmux">cmux</a> is a terminal made for juggling many sessions. Sikemux is built around the project: agents share one window with the editor, Git, a real browser and your GitHub, GitLab, Bitbucket, Jira, database, AWS, Rundeck, SigNoz and Bruno views, all on the same folder. It's also a 16 MB download.`,
+        answer: `Those are built around the agents. <a href="/vs/superset">Superset</a> and <a href="/vs/conductor">Conductor</a> run a crowd of agents in parallel, on your Mac or in the cloud, and <a href="/vs/cmux">cmux</a> is a terminal made for juggling many sessions. Sikemux is built around the project: agents share one window with the editor, Git, a real browser and your GitHub, GitLab, Bitbucket, Jira, database, AWS, Rundeck, SigNoz and Bruno views, all on the same folder. It's also a 25 MB download.`,
     },
     {
         question: "Why not Zed and a terminal?",
@@ -40,11 +40,11 @@ export const FAQ: FaqEntry[] = [
     },
     {
         question: "Is there a phone app?",
-        answer: `Yes. Android is in testing on Google Play, and iPhone is coming soon. <a href="/phone">Get it here</a>, sign in with the same account as Sikemux on your computer, and allow the phone once on the computer. The Mac app itself never needs an account.`,
+        answer: `Yes. Android is in testing on Google Play, and iPhone is in testing on TestFlight. <a href="/phone">Get it here</a> and sign in with the same account as Sikemux on your computer; that's all it takes to reach it. The Mac app itself never needs an account.`,
     },
     {
         question: "Linux, Windows, Intel Macs?",
-        answer: "Downloads are for Apple Silicon Macs on macOS 11 or later, signed and notarized by Apple, and for x86_64 Linux as a .deb, .rpm or AppImage. The notch island needs macOS 14, and the iOS Simulator needs macOS 15 with Xcode. The Linux build does not update itself yet. Windows and Intel Macs can build it from source, but there's no download for them yet.",
+        answer: "Downloads are for Apple Silicon Macs on macOS 11 or later, signed and notarized by Apple, and for x86_64 Linux as a .deb, .rpm or AppImage. The notch island needs macOS 14, and the iOS Simulator needs macOS 15 with Xcode. The AppImage updates itself; for the .deb and .rpm, Settings shows the one line that installs each new release. Windows and Intel Macs can build it from source, but there's no download for them yet.",
     },
     {
         question: "What does it cost?",
