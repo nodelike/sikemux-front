@@ -7,9 +7,9 @@ import VisualsDemo from "./VisualsDemo.astro";
 import agentsShot from "../assets/cards/agents.png";
 import simulator from "../assets/cards/simulator.png";
 import phone from "../assets/phone/phone-device.png";
-import git from "../assets/shots/git-focus.png";
-import terminals from "../assets/shots/terminals-focus.png";
-import activity from "../assets/shots/activity-page.png";
+import git from "../assets/cards/git.png";
+import terminals from "../assets/cards/terminals.png";
+import activity from "../assets/cards/activity.png";
 import { AGENTS, agentPath } from "../lib/agents";
 
 const belt = [...AGENTS, ...AGENTS];
@@ -29,7 +29,7 @@ const belt = [...AGENTS, ...AGENTS];
                     <p>Start Claude Code, Codex or another agent next to your code. It reads the project, edits files and runs commands while you watch. @ attaches a file, # hands over an issue or pull request.</p>
                 </div>
                 <div class="bleed">
-                    <Image src={agentsShot} alt="Codex explaining why a terminal test was flaky, then running the tests and committing its fix" format="avif" quality={78} widths={[800, 1200, 1600]} sizes="(min-width: 1240px) 760px, 100vw" />
+                    <Image src={agentsShot} alt="Claude Code explaining why some carts came out a cent off, then running the tests and committing its fix" format="avif" quality={78} widths={[800, 1200, 1600]} sizes="(min-width: 1240px) 760px, 100vw" />
                 </div>
             </article>
 
@@ -113,7 +113,7 @@ const belt = [...AGENTS, ...AGENTS];
             <article class="card span-4" data-reveal>
                 <div class="text">
                     <h3>Answers you can see</h3>
-                    <p>When words aren't enough, the agent draws in the chat: a diagram of how your services talk, a chart from production data, or mockups to pick from before it writes code.</p>
+                    <p>When words aren't enough, the agent draws in the chat: a diagram of how your tables connect, a chart from production data, or mockups to pick from before it writes code.</p>
                 </div>
                 <div class="demo wide"><VisualsDemo /></div>
             </article>
@@ -124,7 +124,7 @@ const belt = [...AGENTS, ...AGENTS];
                     <p>Quit Sikemux, or let it update, and your terminals and agents keep running. Open it again and everything is where you left it.</p>
                 </div>
                 <div class="bleed">
-                    <Image src={terminals} alt="A terminal showing 50 passing tests" format="avif" quality={80} widths={[600, 1092]} sizes="400px" />
+                    <Image src={terminals} alt="A terminal showing eight passing tests" format="avif" quality={80} widths={[650, 1300]} sizes="400px" />
                 </div>
             </article>
 
@@ -134,7 +134,7 @@ const belt = [...AGENTS, ...AGENTS];
                     <p>See every file the agent touched and which agent wrote each change, then let it write the commit message. Pull requests and CI from GitHub, GitLab and Bitbucket open beside the code.</p>
                 </div>
                 <div class="bleed">
-                    <Image src={git} alt="A commit message written by the agent above the files it changed" format="avif" quality={80} widths={[650, 1304]} sizes="(min-width: 1240px) 590px, 100vw" />
+                    <Image src={git} alt="A commit message above the two files the agent changed, beside their diff" format="avif" quality={80} widths={[820, 1640]} sizes="(min-width: 1240px) 590px, 100vw" />
                 </div>
             </article>
 
@@ -144,7 +144,7 @@ const belt = [...AGENTS, ...AGENTS];
                     <p>Time, chats, tokens and commits for each agent, model and project, priced at API rates. It never leaves your Mac.</p>
                 </div>
                 <div class="bleed">
-                    <Image src={activity} alt="The Activity page: totals, a year of daily activity, and breakdowns by agent and by project" format="avif" quality={80} widths={[650, 1300]} sizes="(min-width: 1240px) 590px, 100vw" />
+                    <Image src={activity} alt="The Usage page: totals, a year of daily activity, and breakdowns by model and by agent" format="avif" quality={80} widths={[780, 1560]} sizes="(min-width: 1240px) 590px, 100vw" />
                 </div>
             </article>
         </div>
