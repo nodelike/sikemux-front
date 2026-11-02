@@ -1,7 +1,7 @@
 // Retakes the product pictures on the site: the phone app's showcase, then the Mac app's own
 // window drawn offscreen by the app repo's film scenes, and the cards cut from them. The scene
-// `hero` is the hero: the agent's chat beside its desk's browser on a checkout page the film
-// serves on localhost. The scene `site` draws every card. SIKEMUX_REPO points at the app's checkout.
+// `hero` is the hero: the agent's chat beside its desk's browser, open on the live vercel.com, so
+// it needs the network. The scene `site` draws every card. SIKEMUX_REPO points at the app's checkout.
 import { execFileSync } from "node:child_process";
 import { mkdir } from "node:fs/promises";
 import { homedir } from "node:os";
