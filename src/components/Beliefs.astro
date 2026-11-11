@@ -1,0 +1,95 @@
+---
+const beliefs = [
+    { title: "Your AI, your login.", body: "We don't sell models. Sikemux runs the plan you already pay for." },
+    { title: "Native, or nothing.", body: "Typing and scrolling never get slower, even with twenty agents streaming." },
+    { title: "Agents are teammates.", body: "They get names, talk to each other and ask you only what's yours to decide." },
+    { title: "If we don't use it, it goes.", body: "Every feature here is one we reach for daily. The rest gets cut." },
+];
+---
+
+<section class="beliefs" aria-labelledby="beliefs-title">
+    <div class="page">
+        <div class="head" data-reveal>
+            <p class="label">What we believe</p>
+            <h2 id="beliefs-title" class="display">Built by people <em>who use it all day.</em></h2>
+        </div>
+        <ol data-reveal>
+            {
+                beliefs.map((belief, index) => (
+                    <li>
+                        <span class="number mono">{String(index + 1).padStart(2, "0")}</span>
+                        <p>
+                            <strong>{belief.title}</strong>
+                            {belief.body}
+                        </p>
+                    </li>
+                ))
+            }
+        </ol>
+    </div>
+</section>
+
+<style>
+    .beliefs {
+        padding-block: clamp(64px, 9vw, 128px) 0;
+    }
+
+    .head {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 32px;
+    }
+
+    .head .label {
+        color: var(--acc-soft);
+    }
+
+    .display {
+        font-size: clamp(40px, 4.6vw, 56px);
+    }
+
+    ol {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 48px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-top: 1px solid var(--border);
+    }
+
+    li {
+        display: grid;
+        grid-template-columns: 56px minmax(0, 1fr);
+        padding-block: 22px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .number {
+        padding-top: 8px;
+        font-size: 13px;
+        color: var(--acc-soft);
+    }
+
+    li p {
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--text-tertiary);
+    }
+
+    strong {
+        display: block;
+        margin-bottom: 6px;
+        font-family: var(--serif);
+        font-size: 30px;
+        font-weight: 400;
+        line-height: 1.1;
+        color: var(--text-primary);
+    }
+
+    @media (max-width: 760px) {
+        ol {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+</style>
