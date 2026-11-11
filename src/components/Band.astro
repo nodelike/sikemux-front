@@ -45,6 +45,14 @@ const { art, label, titleId, focus = "center", overlap = 90, room = overlap + 40
         position: static;
     }
 
+    .behind .veil {
+        bottom: 22%;
+    }
+
+    .behind .band :global(.art) {
+        height: calc(78% - 24px);
+    }
+
     .band :global(.art),
     .veil {
         position: absolute;
@@ -122,8 +130,14 @@ const { art, label, titleId, focus = "center", overlap = 90, room = overlap + 40
             align-items: end;
         }
 
-        .band :global(.art) {
+        .band :global(.art),
+        .behind .band :global(.art) {
             height: 300px;
+        }
+
+        .behind .veil {
+            bottom: auto;
+            height: 440px;
         }
 
         .veil {
