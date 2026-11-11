@@ -1,5 +1,7 @@
 ---
 import { Image } from "astro:assets";
+import Band from "./Band.astro";
+import art from "../assets/art/compare-cabin.jpg";
 import sikemux from "../assets/apps/sikemux.png";
 import cursor from "../assets/apps/cursor.png";
 import zed from "../assets/apps/zed.png";
@@ -13,113 +15,145 @@ const icons: Record<string, ImageMetadata> = { cursor, zed, warp, superset, cond
 ---
 
 <section class="compare" id="compare">
-    <div class="page">
-        <div class="statement" data-reveal>
-            <h2 class="display">One window instead of five.</h2>
-            <p>What changes when your agents, code and tools share a project, rather than living in a terminal, an editor and a pile of browser tabs.</p>
-        </div>
-        <ul class="cards" data-reveal>
+    <Band art={art} label="Compare" focus="right center">
+        <Fragment slot="title">One window<br /><em>instead of five.</em></Fragment>
+        <Fragment slot="lede">What changes when your agents, code and tools share a project, rather than living in a terminal, an editor and a pile of browser tabs.</Fragment>
+        <div class="deck" data-compare data-reveal>
+            <div class="rivals" role="tablist" aria-label="Compare Sikemux with">
+                {
+                    COMPARISONS.map((comparison, index) => (
+                        <button type="button" role="tab" id={`vs-tab-${comparison.slug}`} aria-controls={`vs-${comparison.slug}`} aria-selected={index === 0 ? "true" : "false"}>
+                            <Image class="icon" src={icons[comparison.slug]} alt="" width={36} densities={[2, 3]} format="webp" />
+                            <span>
+                                <span class="name">{comparison.name}</span>
+                                <span class="kind">{comparison.kind}</span>
+                            </span>
+                        </button>
+                    ))
+                }
+            </div>
             {
-                COMPARISONS.map((comparison) => (
-                    <li>
-                        <a href={comparisonPath(comparison)}>
-                            <span class="ground">
-                                <span class="pair">
-                                    <Image class="icon" src={sikemux} alt="" width={56} densities={[2, 3]} format="webp" />
-                                    <span class="vs mono">vs</span>
-                                    <Image class="icon" src={icons[comparison.slug]} alt="" width={56} densities={[2, 3]} format="webp" />
-                                </span>
+                COMPARISONS.map((comparison, index) => (
+                    <article class="verdict" role="tabpanel" id={`vs-${comparison.slug}`} aria-labelledby={`vs-tab-${comparison.slug}`} hidden={index !== 0}>
+                        <header>
+                            <span class="pair">
+                                <Image class="mark" src={sikemux} alt="" width={44} densities={[2, 3]} format="webp" />
+                                <span class="vs mono">vs</span>
+                                <Image class="mark" src={icons[comparison.slug]} alt="" width={44} densities={[2, 3]} format="webp" />
                             </span>
-                            <span class="caption">
-                                <span>
-                                    <span class="title">Sikemux vs {comparison.name}</span>
-                                    <span class="kind">{comparison.kind}</span>
-                                </span>
-                                <span class="arrow" aria-hidden="true">→</span>
-                            </span>
+                            <h3>Sikemux vs {comparison.name}</h3>
+                        </header>
+                        <p class="difference">{comparison.difference}</p>
+                        <div class="picks">
+                            <div>
+                                <p class="label">Pick {comparison.name} if</p>
+                                <ul>
+                                    {comparison.pickThem.map((reason) => (
+                                        <li>{reason}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div class="ours">
+                                <p class="label">Pick Sikemux if</p>
+                                <ul>
+                                    {comparison.pickSikemux.map((reason) => (
+                                        <li>{reason}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                        <a class="more" href={comparisonPath(comparison)}>
+                            The full comparison <span aria-hidden="true">→</span>
                         </a>
-                    </li>
+                    </article>
                 ))
             }
-        </ul>
-    </div>
+        </div>
+    </Band>
 </section>
+
+<script>
+    for (const deck of document.querySelectorAll<HTMLElement>("[data-compare]")) {
+        const tabs = [...deck.querySelectorAll<HTMLButtonElement>("[role=tab]")];
+        const show = (index: number) =>
+            tabs.forEach((tab, i) => {
+                tab.setAttribute("aria-selected", String(i === index));
+                tab.tabIndex = i === index ? 0 : -1;
+                deck.querySelector<HTMLElement>(`#${tab.getAttribute("aria-controls")}`)!.hidden = i !== index;
+            });
+        tabs.forEach((tab, i) => {
+            tab.addEventListener("click", () => show(i));
+            tab.addEventListener("keydown", (event) => {
+                const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[event.key];
+                if (step === undefined) return;
+                event.preventDefault();
+                const next = (i + step + tabs.length) % tabs.length;
+                show(next);
+                tabs[next].focus();
+            });
+        });
+        show(0);
+    }
+</script>
 
 <style>
     .compare {
-        padding-block: clamp(80px, 10vw, 136px);
+        padding-block: 0 clamp(24px, 3vw, 40px);
     }
 
-    .cards {
+    .deck {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
         gap: 14px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
+        align-items: start;
     }
 
-    a {
+    .rivals {
         display: grid;
+        gap: 6px;
+        padding: 6px;
         border: 1px solid var(--border);
         border-radius: var(--radius-4);
-        overflow: hidden;
-        background: var(--gray-100);
-        transition: border-color var(--dur-2) var(--ease-out);
+        background: color-mix(in oklab, var(--surface-raised) 92%, transparent);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
-    a:hover {
-        border-color: var(--border-strong);
-    }
-
-    .ground {
-        display: grid;
-        place-items: center;
-        aspect-ratio: 16 / 7;
-        border-bottom: 1px solid var(--border);
-        background:
-            radial-gradient(50% 70% at 50% 100%, color-mix(in oklab, var(--acc) 0%, transparent), transparent),
-            radial-gradient(circle at 1px 1px, var(--gray-300) 1px, transparent 0) 0 0 / 8px 8px,
-            var(--surface-sunken);
-        transition: background var(--dur-2) var(--ease-out);
-    }
-
-    a:hover .ground {
-        background:
-            radial-gradient(50% 70% at 50% 100%, color-mix(in oklab, var(--acc) 22%, transparent), transparent),
-            radial-gradient(circle at 1px 1px, var(--gray-300) 1px, transparent 0) 0 0 / 8px 8px,
-            var(--surface-sunken);
-    }
-
-    .pair {
+    .rivals button {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 14px;
+        padding: 10px 12px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-3);
+        background: none;
+        font: inherit;
+        text-align: left;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition:
+            background var(--dur-2) var(--ease-out),
+            border-color var(--dur-2) var(--ease-out);
     }
 
-    .vs {
-        font-size: 12px;
-        color: var(--text-tertiary);
+    .rivals button:hover {
+        background: var(--surface-hover);
     }
 
-    .pair :global(.icon) {
-        width: 56px;
-        height: 56px;
+    .rivals button[aria-selected="true"] {
+        border-color: var(--border-selected);
+        background: var(--surface-selected);
+        color: var(--text-primary);
     }
 
-    .caption {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 14px 18px;
+    .rivals :global(.icon) {
+        flex: none;
+        width: 36px;
+        height: 36px;
     }
 
-    .caption > span:first-child {
-        display: grid;
-    }
-
-    .title {
+    .name {
+        display: block;
         font-size: 15px;
         font-weight: 500;
         color: var(--text-primary);
@@ -135,29 +169,146 @@ const icons: Record<string, ImageMetadata> = { cursor, zed, warp, superset, cond
         text-transform: uppercase;
     }
 
-    .arrow {
-        color: var(--text-tertiary);
-        transition: transform var(--dur-2) var(--ease-out);
+    .verdict {
+        display: grid;
+        align-content: start;
+        gap: 22px;
+        min-height: 100%;
+        padding: clamp(22px, 3vw, 36px);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background:
+            radial-gradient(70% 60% at 100% 0%, color-mix(in oklab, var(--acc) 12%, transparent), transparent),
+            linear-gradient(to bottom, var(--gray-100), var(--surface-sunken));
     }
 
-    a:hover .arrow {
-        transform: translateX(3px);
+    .verdict[hidden] {
+        display: none;
+    }
+
+    header {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+
+    .pair {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pair :global(.mark) {
+        width: 44px;
+        height: 44px;
+    }
+
+    .vs {
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    h3 {
+        font-family: var(--serif);
+        font-size: clamp(30px, 3vw, 40px);
+        font-weight: 400;
+        line-height: 1;
+        letter-spacing: -0.01em;
+    }
+
+    .difference {
+        max-width: 64ch;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--text-secondary);
+    }
+
+    .picks {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .picks > div {
+        display: grid;
+        align-content: start;
+        gap: 12px;
+        padding: 18px 20px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-3);
+        background: color-mix(in oklab, var(--bg-dim) 60%, transparent);
+    }
+
+    .picks .ours {
+        border-color: var(--border-selected);
+    }
+
+    .ours .label {
+        color: var(--acc-soft);
+    }
+
+    ul {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        position: relative;
+        padding-left: 18px;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--text-secondary);
+    }
+
+    li::before {
+        content: "–";
+        position: absolute;
+        left: 0;
+        color: var(--text-tertiary);
+    }
+
+    .ours li::before {
+        content: "✓";
+        color: var(--acc-soft);
+    }
+
+    .more {
+        justify-self: start;
+        font-size: 14px;
+        font-weight: 500;
         color: var(--text-primary);
     }
 
-    @media (max-width: 900px) {
-        .cards {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
+    .more span {
+        display: inline-block;
+        transition: transform var(--dur-2) var(--ease-out);
     }
 
-    @media (max-width: 560px) {
-        .cards {
+    .more:hover span {
+        transform: translateX(3px);
+    }
+
+    @media (max-width: 900px) {
+        .deck {
             grid-template-columns: minmax(0, 1fr);
         }
 
-        .ground {
-            aspect-ratio: 16 / 5;
+        .rivals {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .rivals button {
+            flex: none;
+        }
+
+        .picks {
+            grid-template-columns: minmax(0, 1fr);
         }
     }
 </style>
