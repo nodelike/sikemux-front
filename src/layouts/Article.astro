@@ -57,7 +57,7 @@ const breadcrumbs = {
                 <p>Free for Apple Silicon Macs on macOS 11 or later and x86_64 Linux{release.dmgBytes !== null && <>, <span data-release-size>{formatSize(release.dmgBytes)}</span> to download on a Mac</>}.</p>
             </div>
             <div class="actions">
-                <DownloadButton href={release.dmgUrl} />
+                <DownloadButton release={release} />
                 <InstallCommand />
             </div>
         </aside>

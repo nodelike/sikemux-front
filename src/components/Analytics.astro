@@ -13,8 +13,8 @@
         });
 
         document.addEventListener("click", (event) => {
-            const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[data-release-dmg]") : null;
-            if (link) posthog.capture("download_clicked", { url: link.href }, { transport: "sendBeacon" });
+            const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[data-release-dmg], a[data-download]") : null;
+            if (link) posthog.capture("download_clicked", { url: link.href, platform: link.dataset.platform }, { transport: "sendBeacon" });
             if (event.target instanceof Element && event.target.closest("[data-install-copy]")) posthog.capture("install_command_copied");
         });
     }

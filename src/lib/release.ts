@@ -9,6 +9,7 @@ export interface Release {
     version: string;
     dmgUrl: string;
     dmgBytes: number | null;
+    appImageUrl: string;
     publishedAt: string | null;
 }
 
@@ -115,7 +116,7 @@ export async function starCount(): Promise<number | null> {
     }
 }
 
-const FALLBACK: Release = { version: "0.6.0", dmgUrl: RELEASES_URL, dmgBytes: 24_872_033, publishedAt: null };
+const FALLBACK: Release = { version: "0.6.0", dmgUrl: RELEASES_URL, dmgBytes: 24_872_033, appImageUrl: RELEASES_URL, publishedAt: null };
 
 export const LATEST_RELEASE_API = "https://api.github.com/repos/nodelike/sikemux/releases/latest";
 
@@ -125,10 +126,12 @@ export function formatSize(bytes: number): string {
 
 export function toRelease(release: GithubRelease): Release {
     const dmg = release.assets.find((asset) => asset.name.endsWith("_aarch64.dmg"));
+    const appImage = release.assets.find((asset) => asset.name.endsWith("_amd64.AppImage"));
     return {
         version: release.tag_name.replace(/^v/, ""),
         dmgUrl: dmg?.browser_download_url ?? RELEASES_URL,
         dmgBytes: dmg?.size ?? null,
+        appImageUrl: appImage?.browser_download_url ?? RELEASES_URL,
         publishedAt: release.published_at,
     };
 }

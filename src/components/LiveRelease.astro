@@ -1,4 +1,5 @@
 <script>
+    import { pointDownloads } from "../lib/download";
     import { LATEST_RELEASE_API, formatSize, toRelease, type GithubRelease } from "../lib/release";
 
     const CACHE_KEY = "sikemux-release";
@@ -22,6 +23,11 @@
         const release = toRelease(github);
         for (const node of document.querySelectorAll("[data-release-version]")) node.textContent = release.version;
         for (const link of document.querySelectorAll<HTMLAnchorElement>("a[data-release-dmg]")) link.href = release.dmgUrl;
+        for (const link of document.querySelectorAll<HTMLAnchorElement>("a[data-download]")) {
+            link.dataset.dmg = release.dmgUrl;
+            link.dataset.appimage = release.appImageUrl;
+        }
+        pointDownloads();
         if (release.dmgBytes === null) return;
         for (const node of document.querySelectorAll("[data-release-size]")) node.textContent = formatSize(release.dmgBytes);
         for (const fill of document.querySelectorAll<HTMLElement>("[data-release-bar]")) {

@@ -29,7 +29,7 @@ const { release, stars } = Astro.props;
                 Bring Claude Code, Codex or OpenCode. Sikemux gives them your shell, browser, logs and deploys, in one native app.
             </p>
             <div class="actions">
-                <DownloadButton href={release.dmgUrl} />
+                <DownloadButton release={release} />
                 <GithubStars stars={stars} label="Star on GitHub" size="large" />
             </div>
             <InstallCommand />

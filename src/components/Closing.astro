@@ -53,7 +53,7 @@ const crowd: { pack: string; shape: string; state: BuddyState }[] = [
                 <h2 class="display">Open a project.<br />Keep it open.</h2>
                 <p>Bring the agents you already use. Sikemux gives them the rest of your tools, and each one a buddy you can spot from across the room.</p>
                 <div class="actions">
-                    <DownloadButton href={release.dmgUrl} />
+                    <DownloadButton release={release} />
                     <a class="btn notes" href={`/changelog#v${release.version}`}><span>What's new in v<span data-release-version>{release.version}</span></span></a>
                 </div>
                 <InstallCommand />
