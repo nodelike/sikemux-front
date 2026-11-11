@@ -6,7 +6,7 @@ import Footer from "../components/Footer.astro";
 import Dither from "../components/Dither.astro";
 import device from "../assets/phone/phone-device.png";
 import asking from "../assets/phone/phone-asking.png";
-import { DISCORD_URL, latestRelease, starCount } from "../lib/release";
+import { APP_STORE_URL, latestRelease, starCount } from "../lib/release";
 
 const [release, stars] = await Promise.all([latestRelease(), starCount()]);
 
@@ -43,6 +43,22 @@ const connect = [
 
                     <div class="platform">
                         <div class="platform-head">
+                            <h2>iPhone</h2>
+                            <span class="pill live">On the App Store</span>
+                        </div>
+                        <ol class="steps">
+                            <li>
+                                <span class="number mono">1</span>
+                                <div class="step-text">
+                                    <p class="step-title">Install Sikemux</p>
+                                    <p class="step-body">Free on the App Store, for iOS 17 and later.</p>
+                                </div>
+                                <a class="btn primary" href={APP_STORE_URL}>Get it on the App Store</a>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="platform">
+                        <div class="platform-head">
                             <h2>Android</h2>
                             <span class="pill live">In testing</span>
                         </div>
@@ -64,13 +80,6 @@ const connect = [
                         </ol>
                     </div>
 
-                    <div class="platform quiet">
-                        <div class="platform-head">
-                            <h2>iPhone</h2>
-                            <span class="pill">In testing</span>
-                        </div>
-                        <p class="step-body">Testers get it from TestFlight. <a href={DISCORD_URL}>Ask on Discord</a> to join them.</p>
-                    </div>
                 </div>
 
                 <div class="phones">
@@ -152,12 +161,6 @@ const connect = [
         border: 1px solid var(--border);
         border-radius: var(--radius-4);
         background: color-mix(in oklab, var(--surface) 80%, transparent);
-    }
-
-    .platform.quiet {
-        gap: 8px;
-        margin-top: 0;
-        background: none;
     }
 
     .platform-head {

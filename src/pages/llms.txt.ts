@@ -29,7 +29,7 @@ ${FAQ.map((entry) => `### ${entry.question}\n\n${entry.answer.replace(/<[^>]+>/g
 
 ## More
 
-- [Phone app](${url("/phone")}): watch agents and answer them from Android or iPhone, both in testing
+- [Phone app](${url("/phone")}): watch agents and answer them from iPhone (App Store) or Android (in testing)
 - [Changelog](${url("/changelog")})
 `;
     return new Response(body, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
