@@ -1,4 +1,6 @@
 ---
+import Band from "./Band.astro";
+import art from "../assets/art/platforms-traveler.jpg";
 import { ANDROID, APPLE, LINUX } from "../lib/marks";
 import { APP_STORE_URL, RELEASES_URL, type Release } from "../lib/release";
 
@@ -10,12 +12,9 @@ const { release } = Astro.props;
 ---
 
 <section class="platforms" id="download">
-    <div class="page">
-        <div class="statement" data-reveal>
-            <p class="label">Download</p>
-            <h2 class="display">On your Mac. In your pocket.</h2>
-            <p>Run your agents on a Mac or a Linux box, then answer them from your phone wherever you are.</p>
-        </div>
+    <Band art={art} label="Download" focus="center 60%">
+        <Fragment slot="title">On your Mac.<br /><em>In your pocket.</em></Fragment>
+        <Fragment slot="lede">Run your agents on a Mac or a Linux box, then answer them from your phone wherever you are.</Fragment>
         <div class="tiles" data-reveal>
             <a class="tile main" href={release.dmgUrl} data-release-dmg>
                 <span class="state mono live">Available</span>
@@ -46,12 +45,12 @@ const { release } = Astro.props;
                 <span class="go">Download on the App Store ↗</span>
             </a>
         </div>
-    </div>
+    </Band>
 </section>
 
 <style>
     .platforms {
-        padding-block: clamp(80px, 10vw, 136px);
+        padding-block: 0 clamp(24px, 3vw, 40px);
     }
 
     .tiles {

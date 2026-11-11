@@ -6,6 +6,22 @@
 }
 
 @font-face {
+    font-family: "Instrument Serif";
+    src: url("/fonts/InstrumentSerif-latin-normal.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Instrument Serif";
+    src: url("/fonts/InstrumentSerif-latin-italic.woff2") format("woff2");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
     font-family: "JetBrains Mono";
     src: url("/fonts/JetBrainsMonoNerdFontMono-Regular-Base.woff2") format("woff2");
     font-weight: 400;
@@ -22,10 +38,11 @@
 :root {
     color-scheme: dark;
 
-    --bg: #0f0f13;
-    --bg-dim: #09090b;
+    --bg: #100e16;
+    --bg-dim: #0b0a12;
     --ink: #e7e5ef;
     --acc: #a277ff;
+    --acc-soft: #c9b3ff;
     --dither-dot: #1f1f26;
 
     --gray-100: color-mix(in oklab, var(--ink) 4%, var(--bg));
@@ -64,6 +81,7 @@
     --live: #61ffca;
 
     --ui: "Space Grotesk", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
     --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
     --kbd: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
 
@@ -186,7 +204,7 @@ img {
 .label {
     font-family: var(--mono);
     font-size: 11px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--text-tertiary);
 }
@@ -237,6 +255,9 @@ main {
     padding-inline: 16px;
     border-radius: var(--radius-2);
     border: 1px solid var(--border);
+    background: color-mix(in oklab, var(--surface-raised) 90%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     font-size: 14px;
     font-weight: 500;
     color: var(--text-primary);
@@ -246,7 +267,7 @@ main {
 }
 
 .btn:hover {
-    background: var(--surface-hover);
+    background: var(--gray-200);
     border-color: var(--border-strong);
 }
 
@@ -259,9 +280,15 @@ main {
 }
 
 .display {
-    font-size: clamp(40px, 6vw, 84px);
-    line-height: 0.98;
-    letter-spacing: -0.055em;
+    font-family: var(--serif);
+    font-size: clamp(44px, 6vw, 84px);
+    font-weight: 400;
+    line-height: 0.96;
+    letter-spacing: -0.01em;
+}
+
+.display em {
+    color: var(--acc-soft);
 }
 
 .statement {

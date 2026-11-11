@@ -1,6 +1,8 @@
 ---
 import { Image } from "astro:assets";
 import AgentIcon from "./AgentIcon.astro";
+import Band from "./Band.astro";
+import art from "../assets/art/features-control-room.jpg";
 import BrowserDemo from "./BrowserDemo.astro";
 import VoiceDemo from "./VoiceDemo.astro";
 import VisualsDemo from "./VisualsDemo.astro";
@@ -16,12 +18,9 @@ const belt = [...AGENTS, ...AGENTS];
 ---
 
 <section class="bento-section" id="features">
-    <div class="page">
-        <div class="statement" data-reveal>
-            <h2 class="display">One window. Every tool your agents need.</h2>
-            <p>Your agents, code, terminals, Git and a browser all open on the same project folder, so nothing gets lost between apps.</p>
-        </div>
-
+    <Band art={art} label="Features" focus="right 40%">
+        <Fragment slot="title">One window.<br /><em>Every tool your agents need.</em></Fragment>
+        <Fragment slot="lede">Your agents, code, terminals, Git and a browser all open on the same project folder, so nothing gets lost between apps.</Fragment>
         <div class="bento">
             <article class="card span-4" data-reveal>
                 <div class="text">
@@ -148,7 +147,7 @@ const belt = [...AGENTS, ...AGENTS];
                 </div>
             </article>
         </div>
-    </div>
+    </Band>
 </section>
 
 <script>
@@ -171,7 +170,7 @@ const belt = [...AGENTS, ...AGENTS];
 
 <style>
     .bento-section {
-        padding-block: clamp(32px, 4vw, 56px) clamp(64px, 8vw, 112px);
+        padding-block: 0 clamp(24px, 3vw, 40px);
     }
 
     .bento {

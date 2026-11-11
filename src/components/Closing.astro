@@ -1,7 +1,8 @@
 ---
 import Footer from "./Footer.astro";
 import Buddy from "./Buddy.astro";
-import Dither from "./Dither.astro";
+import { Picture } from "astro:assets";
+import art from "../assets/art/closing-dawn.jpg";
 import DownloadButton from "./DownloadButton.astro";
 import InstallCommand from "./InstallCommand.astro";
 import { REPO_URL, type Release } from "../lib/release";
@@ -45,12 +46,12 @@ const crowd: { pack: string; shape: string; state: BuddyState }[] = [
 ---
 
 <section class="closing">
+    <Picture class="art" src={art} alt="" formats={["avif", "webp"]} widths={[640, 960, 1280]} sizes="100vw" quality={55} loading="lazy" decoding="async" />
     <div class="page">
         <div class="panel">
-            <Dither class="grain" />
-            <div class="cta">
+            <div class="cta" data-reveal>
                 <p class="label">Every agent gets a buddy</p>
-                <h2 class="display">Open a project.<br />Keep it open.</h2>
+                <h2 class="display">Open a project.<br /><em>Keep it open.</em></h2>
                 <p>Bring the agents you already use. Sikemux gives them the rest of your tools, and each one a buddy you can spot from across the room.</p>
                 <div class="actions">
                     <DownloadButton release={release} />
@@ -76,62 +77,82 @@ const crowd: { pack: string; shape: string; state: BuddyState }[] = [
 
 <style>
     .closing {
-        padding-block: clamp(64px, 8vw, 112px);
-    }
-
-    .panel {
+        --dusk: #1b1430;
         position: relative;
-        display: grid;
-        justify-items: center;
-        gap: 56px;
-        padding: clamp(56px, 8vw, 96px) 0 0;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-4);
-        background: radial-gradient(70% 70% at 50% 100%, color-mix(in oklab, var(--acc) 16%, transparent), transparent), var(--surface-sunken);
+        padding-block: clamp(160px, 16vw, 220px) 0;
         overflow: hidden;
         isolation: isolate;
     }
 
-    .panel :global(.grain) {
-        inset: 0;
+    .closing :global(.art) {
+        position: absolute;
+        inset: 0 0 12px;
         z-index: -1;
-        mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 10%, transparent 75%);
-        -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 10%, transparent 75%);
+        width: 100%;
+        height: calc(100% - 12px);
+        object-fit: cover;
+        object-position: right 40%;
+        mask-image: linear-gradient(transparent, #000 26%, #000 80%, transparent 97%);
+        -webkit-mask-image: linear-gradient(transparent, #000 26%, #000 80%, transparent 97%);
+    }
+
+    .panel {
+        display: grid;
+        gap: 56px;
     }
 
     .cta {
         display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        justify-items: center;
+        justify-items: start;
         gap: 20px;
-        width: 100%;
-        max-width: 640px;
-        padding-inline: var(--gutter);
-        text-align: center;
+        max-width: 560px;
+        color: color-mix(in oklab, var(--dusk) 86%, transparent);
+    }
+
+    .cta .label {
+        font-weight: 700;
+        color: color-mix(in oklab, var(--dusk) 80%, transparent);
+    }
+
+    .cta .display {
+        color: var(--dusk);
+        text-shadow: none;
+    }
+
+    .cta .display em {
+        color: #5b3fd0;
     }
 
     .cta > p:not(.label) {
         font-size: 17px;
+        font-weight: 500;
     }
 
     .actions {
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
         gap: 10px;
     }
 
     .notes {
         height: 44px;
+        border-color: color-mix(in oklab, var(--dusk) 20%, transparent);
+        background: color-mix(in oklab, #fff 70%, transparent);
+        color: var(--dusk);
+    }
+
+    .notes:hover {
+        background: color-mix(in oklab, #fff 85%, transparent);
+        border-color: color-mix(in oklab, var(--dusk) 35%, transparent);
     }
 
     .cta > .source {
         font-size: 13px;
-        color: var(--text-tertiary);
+        color: color-mix(in oklab, var(--dusk) 75%, transparent);
     }
 
     .source a {
-        color: var(--text-secondary);
+        color: var(--dusk);
         text-decoration: underline;
         text-underline-offset: 3px;
     }
@@ -151,6 +172,21 @@ const crowd: { pack: string; shape: string; state: BuddyState }[] = [
     .crowd li {
         flex: none;
         margin-bottom: calc(-8px - var(--lift));
+    }
+
+    @media (max-width: 720px) {
+        .closing::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(transparent 6%, color-mix(in oklab, #f4e7d4 66%, transparent) 22%, color-mix(in oklab, #f4e7d4 60%, transparent) 80%, transparent 94%);
+        }
+
+        .closing :global(.art) {
+            mask-image: linear-gradient(transparent, #000 20%, #000 88%, transparent);
+            -webkit-mask-image: linear-gradient(transparent, #000 20%, #000 88%, transparent);
+        }
     }
 
     @media (max-width: 680px) {

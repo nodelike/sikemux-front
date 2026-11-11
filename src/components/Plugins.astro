@@ -1,6 +1,8 @@
 ---
 import { Image } from "astro:assets";
 import Icon from "./Icon.astro";
+import Band from "./Band.astro";
+import art from "../assets/art/plugins-railyard.jpg";
 import aws from "../assets/shots/aws-ecs-logs-card.png";
 import rundeck from "../assets/shots/rundeck-deploy-card.png";
 import signoz from "../assets/shots/signoz-dashboard-card.png";
@@ -77,11 +79,9 @@ const plugins = [
 ---
 
 <section class="plugins" id="plugins">
-    <div class="page">
-        <div class="statement" data-reveal>
-            <h2 class="display">CI, issues and production, without leaving.</h2>
-            <p>Turn on the tools your team already uses. Watch CI, move an issue or follow a deploy right next to the code, and hand anything you find to an agent.</p>
-        </div>
+    <Band art={art} label="Plugins" focus="right center">
+        <Fragment slot="title">CI, issues and production,<br /><em>without leaving.</em></Fragment>
+        <Fragment slot="lede">Turn on the tools your team already uses. Watch CI, move an issue or follow a deploy right next to the code, and hand anything you find to an agent.</Fragment>
         <div class="deck" data-plugins data-reveal>
             <div class="tiles" role="tablist" aria-label="Plugins">
                 {
@@ -113,7 +113,7 @@ const plugins = [
                 ))
             }
         </div>
-    </div>
+    </Band>
 </section>
 
 <script>
@@ -152,7 +152,7 @@ const plugins = [
 
 <style>
     .plugins {
-        padding-block: clamp(80px, 10vw, 136px);
+        padding-block: 0 clamp(24px, 3vw, 40px);
     }
 
     .deck {
@@ -163,7 +163,7 @@ const plugins = [
     .tiles {
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: flex-start;
         gap: 10px;
     }
 
@@ -202,13 +202,13 @@ const plugins = [
     }
 
     .tiles button[aria-selected="true"] {
-        border-color: var(--border-strong);
-        background: var(--gray-300);
-        color: var(--text-primary);
+        border-color: var(--acc);
+        background: var(--acc);
+        color: var(--on-accent);
     }
 
     .tiles button[aria-selected="true"] .glyph {
-        background: var(--gray-500);
+        background: var(--bg-dim);
     }
 
     .panel {

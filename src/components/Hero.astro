@@ -1,7 +1,7 @@
 ---
-import { Image } from "astro:assets";
+import { Image, Picture } from "astro:assets";
 import hero from "../assets/hero/hero.png";
-import Dither from "./Dither.astro";
+import art from "../assets/art/hero-observatory.jpg";
 import GithubStars from "./GithubStars.astro";
 import DownloadButton from "./DownloadButton.astro";
 import InstallCommand from "./InstallCommand.astro";
@@ -13,10 +13,30 @@ interface Props {
 }
 
 const { release, stars } = Astro.props;
+
+const tasks = [
+    { task: "Cart totals a cent off", agent: "Wren", state: "working", x: 60, y: 16 },
+    { task: "Tax rules per country", agent: "Crusch", state: "waiting", x: 80, y: 30 },
+    { task: "Stripe webhook retries", agent: "Suzuha", state: "waiting", x: 62, y: 44 },
+    { task: "Pre-push hook tests", agent: "Takamura", state: "working", x: 74, y: 58 },
+];
 ---
 
 <section class="hero">
-    <Dither class="grain" />
+    <div class="sky">
+        <Picture class="art" src={art} alt="" formats={["avif", "webp"]} widths={[828, 1280, 1600]} sizes="100vw" quality={62} loading="eager" fetchpriority="high" />
+        <ul class="tasks" aria-hidden="true">
+            {
+                tasks.map((task, index) => (
+                    <li class="mono" style={`left: ${task.x}%; top: ${task.y}%; animation-delay: ${index * -1.5}s`}>
+                        <span class:list={["dot", task.state]} />
+                        {task.task}
+                        <span class="who">@{task.agent}</span>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
     <div class="page">
         <div class="copy">
             <a class="news" href="/changelog#v0.6.0">
@@ -24,7 +44,7 @@ const { release, stars } = Astro.props;
                 <span class="what">A new native app, drawn on the GPU and lighter on memory</span>
                 <span class="arrow" aria-hidden="true">→</span>
             </a>
-            <h1>The IDE for you and your coding agents.</h1>
+            <h1>The IDE for you<br /><em>and your coding agents.</em></h1>
             <p class="lede">
                 Bring Claude Code, Codex or OpenCode. Sikemux gives them your shell, browser, logs and deploys, in one native app.
             </p>
@@ -60,24 +80,102 @@ const { release, stars } = Astro.props;
 <style>
     .hero {
         position: relative;
-        padding-block: clamp(56px, 8vw, 104px) clamp(32px, 4vw, 56px);
+        padding-block: clamp(96px, 12vw, 150px) clamp(32px, 4vw, 56px);
         isolation: isolate;
     }
 
-    .hero :global(.grain) {
-        inset: 0 0 35%;
-        mask-image: radial-gradient(ellipse 70% 90% at 50% 0%, #000 10%, transparent 70%);
-        -webkit-mask-image: radial-gradient(ellipse 70% 90% at 50% 0%, #000 10%, transparent 70%);
+    .sky {
+        position: absolute;
+        inset: 0 0 calc(min(100vw - 2 * var(--gutter), 1280px) * 0.3 + clamp(32px, 4vw, 56px));
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .sky :global(.art) {
+        width: 100%;
+        height: calc(100% - 12px);
+        object-fit: cover;
+        object-position: right 30%;
+    }
+
+    .sky::before,
+    .sky::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .sky::before {
+        z-index: 1;
+        background: linear-gradient(90deg, color-mix(in oklab, var(--bg-dim) 86%, transparent) 0%, color-mix(in oklab, var(--bg-dim) 60%, transparent) 34%, transparent 58%);
+    }
+
+    .sky::after {
+        z-index: 1;
+        background: linear-gradient(transparent 55%, var(--bg-dim) calc(100% - 40px));
+    }
+
+    .tasks {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .tasks li {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 11px;
+        border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+        border-radius: var(--radius-2);
+        background: color-mix(in oklab, var(--bg-dim) 84%, transparent);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        font-size: 12.5px;
+        color: var(--text-primary);
+        white-space: nowrap;
+        animation: bob 6s ease-in-out infinite;
+    }
+
+    .who {
+        color: var(--acc-soft);
+    }
+
+    .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--live);
+    }
+
+    .dot.waiting {
+        background: #fbbf24;
+    }
+
+    @keyframes bob {
+        50% {
+            transform: translateY(-6px);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .tasks li {
+            animation: none;
+        }
     }
 
     .copy {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
-        justify-items: center;
+        justify-items: start;
         gap: 24px;
-        max-width: 980px;
-        margin: 0 auto clamp(40px, 5vw, 56px);
-        text-align: center;
+        max-width: 760px;
+        margin: 0 0 clamp(56px, 7vw, 96px);
     }
 
     .news {
@@ -123,22 +221,28 @@ const { release, stars } = Astro.props;
     }
 
     h1 {
-        max-width: 15ch;
-        font-size: clamp(46px, 7.4vw, 100px);
-        font-weight: 500;
-        line-height: 0.96;
-        letter-spacing: -0.055em;
+        font-family: var(--serif);
+        font-size: clamp(50px, 6.4vw, 88px);
+        font-weight: 400;
+        line-height: 0.95;
+        letter-spacing: -0.01em;
+        text-shadow: 0 2px 24px color-mix(in oklab, var(--bg-dim) 60%, transparent);
+    }
+
+    h1 em {
+        color: var(--acc-soft);
     }
 
     .lede {
-        max-width: 50ch;
-        font-size: clamp(17px, 1.6vw, 20px);
+        max-width: 46ch;
+        font-size: clamp(17px, 1.6vw, 19px);
         line-height: 1.55;
+        color: color-mix(in oklab, var(--ink) 88%, transparent);
+        text-shadow: 0 1px 12px var(--bg-dim);
     }
 
     .actions {
         display: flex;
-        justify-content: center;
         flex-wrap: wrap;
         gap: 10px;
     }
@@ -146,7 +250,6 @@ const { release, stars } = Astro.props;
     .meta {
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
         gap: 4px 18px;
         font-size: 12px;
         color: var(--text-tertiary);
@@ -180,6 +283,16 @@ const { release, stars } = Astro.props;
     .window :global(img) {
         width: 100%;
         height: auto;
+    }
+
+    @media (max-width: 960px) {
+        .tasks {
+            display: none;
+        }
+
+        .sky::before {
+            background: linear-gradient(90deg, color-mix(in oklab, var(--bg-dim) 80%, transparent), color-mix(in oklab, var(--bg-dim) 45%, transparent));
+        }
     }
 
     @media (max-width: 520px) {

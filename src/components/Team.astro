@@ -2,6 +2,8 @@
 import { Image } from "astro:assets";
 import icon from "../assets/apps/sikemux.png";
 import AgentIcon from "./AgentIcon.astro";
+import Band from "./Band.astro";
+import art from "../assets/art/team-signals.jpg";
 import { poses } from "../lib/buddies";
 import "../styles/buddies.css";
 
@@ -27,12 +29,9 @@ const hub = { x: 50, y: 50 };
 ---
 
 <section class="team" aria-labelledby="team-title">
-    <div class="page">
-        <div class="statement" data-reveal>
-            <p class="label">Agents that work together</p>
-            <h2 id="team-title" class="display">Your agents talk to each other.</h2>
-            <p>They message each other, hand off work and start helpers beside them. Each one gets a name and a buddy, and asks you when it's stuck.</p>
-        </div>
+    <Band art={art} label="Agents that work together" titleId="team-title" focus="center 30%" overlap={250} room={270} behind>
+        <Fragment slot="title">Your agents<br /><em>talk to each other.</em></Fragment>
+        <Fragment slot="lede">They message each other, hand off work and start helpers beside them. Each one gets a name and a buddy, and asks you when it's stuck.</Fragment>
         <div class="scene" data-team={JSON.stringify(script)} role="img" aria-label="Four agents, Otter, Heron, Wren and Lynx, passing a sign-in bug between them until it is fixed, checked and ready for review">
             <svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                 {agents.map((agent) => <line x1={agent.x} y1={agent.y} x2={hub.x} y2={hub.y} />)}
@@ -59,7 +58,7 @@ const hub = { x: 50, y: 50 };
             }
             <span class="packet" aria-hidden="true"></span>
         </div>
-    </div>
+    </Band>
 </section>
 
 <script>
@@ -137,13 +136,13 @@ const hub = { x: 50, y: 50 };
 
 <style>
     .team {
-        padding-block: clamp(48px, 6vw, 80px) clamp(32px, 4vw, 56px);
+        padding-block: clamp(16px, 3vw, 40px) clamp(24px, 3vw, 40px);
     }
 
     .scene {
         position: relative;
         max-width: 980px;
-        margin: 72px auto 0;
+        margin: 0 auto;
         aspect-ratio: 16 / 9;
     }
 
