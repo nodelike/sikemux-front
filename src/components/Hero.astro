@@ -1,10 +1,9 @@
 ---
 import { Image, Picture } from "astro:assets";
 import hero from "../assets/hero/hero.png";
-import art from "../assets/art/hero-observatory.jpg";
+import art from "../assets/art/hero-scholar.jpg";
 import GithubStars from "./GithubStars.astro";
 import DownloadButton from "./DownloadButton.astro";
-import InstallCommand from "./InstallCommand.astro";
 import { formatSize, type Release } from "../lib/release";
 
 interface Props {
@@ -14,36 +13,15 @@ interface Props {
 
 const { release, stars } = Astro.props;
 
-const tasks = [
-    { task: "Cart totals a cent off", agent: "Wren", state: "working", x: 60, y: 16 },
-    { task: "Tax rules per country", agent: "Crusch", state: "waiting", x: 80, y: 30 },
-    { task: "Stripe webhook retries", agent: "Suzuha", state: "waiting", x: 62, y: 44 },
-    { task: "Pre-push hook tests", agent: "Takamura", state: "working", x: 74, y: 58 },
-];
 ---
 
 <section class="hero">
     <div class="sky">
         <Picture class="art" src={art} alt="" formats={["avif", "webp"]} widths={[828, 1280, 1600]} sizes="100vw" quality={62} loading="eager" fetchpriority="high" />
-        <ul class="tasks" aria-hidden="true">
-            {
-                tasks.map((task, index) => (
-                    <li class="mono" style={`left: ${task.x}%; top: ${task.y}%; animation-delay: ${index * -1.5}s`}>
-                        <span class:list={["dot", task.state]} />
-                        {task.task}
-                        <span class="who">@{task.agent}</span>
-                    </li>
-                ))
-            }
-        </ul>
     </div>
     <div class="page">
         <div class="copy">
-            <a class="news" href="/changelog#v0.6.0">
-                <span class="tag mono">New in 0.6</span>
-                <span class="what">A new native app, drawn on the GPU and lighter on memory</span>
-                <span class="arrow" aria-hidden="true">→</span>
-            </a>
+            <a class="news mono" href="/changelog#v0.6.0">New in 0.6 · drawn on the GPU <span aria-hidden="true">→</span></a>
             <h1>The IDE for you<br /><em>and your coding agents.</em></h1>
             <p class="lede">
                 Bring Claude Code, Codex or OpenCode. Sikemux gives them your shell, browser, logs and deploys, in one native app.
@@ -52,11 +30,10 @@ const tasks = [
                 <DownloadButton release={release} />
                 <GithubStars stars={stars} label="Star on GitHub" size="large" />
             </div>
-            <InstallCommand />
             <p class="meta mono">
+                <span class="install">$ curl -fsSL https://sikemux.com/install | sh</span>
                 <span>v<span data-release-version>{release.version}</span></span>
                 {release.dmgBytes !== null && <span data-release-size>{formatSize(release.dmgBytes)}</span>}
-                <span>Mac and Linux</span>
                 <span>free</span>
             </p>
         </div>
@@ -91,11 +68,21 @@ const tasks = [
         overflow: hidden;
     }
 
+    .sky {
+        background: linear-gradient(#151932, #23273f);
+    }
+
     .sky :global(.art) {
-        width: 100%;
-        height: calc(100% - 12px);
-        object-fit: cover;
-        object-position: right 30%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: auto;
+        height: calc(100% - min(100vw - 2 * var(--gutter), 1280px) * 0.24);
+        max-width: none;
+        -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%), linear-gradient(#000 78%, transparent 99%);
+        -webkit-mask-composite: source-in;
+        mask-image: linear-gradient(90deg, transparent, #000 18%), linear-gradient(#000 78%, transparent 99%);
+        mask-composite: intersect;
     }
 
     .sky::before,
@@ -108,65 +95,12 @@ const tasks = [
 
     .sky::before {
         z-index: 1;
-        background: linear-gradient(90deg, color-mix(in oklab, var(--bg-dim) 86%, transparent) 0%, color-mix(in oklab, var(--bg-dim) 60%, transparent) 34%, transparent 58%);
+        background: linear-gradient(90deg, color-mix(in oklab, var(--bg-dim) 55%, transparent) 0%, color-mix(in oklab, var(--bg-dim) 25%, transparent) 40%, transparent 60%);
     }
 
     .sky::after {
         z-index: 1;
         background: linear-gradient(transparent 55%, var(--bg-dim) calc(100% - 40px));
-    }
-
-    .tasks {
-        position: absolute;
-        inset: 0;
-        z-index: 2;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
-
-    .tasks li {
-        position: absolute;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 7px 11px;
-        border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
-        border-radius: var(--radius-2);
-        background: color-mix(in oklab, var(--bg-dim) 84%, transparent);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
-        font-size: 12.5px;
-        color: var(--text-primary);
-        white-space: nowrap;
-        animation: bob 6s ease-in-out infinite;
-    }
-
-    .who {
-        color: var(--acc-soft);
-    }
-
-    .dot {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--live);
-    }
-
-    .dot.waiting {
-        background: #fbbf24;
-    }
-
-    @keyframes bob {
-        50% {
-            transform: translateY(-6px);
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .tasks li {
-            animation: none;
-        }
     }
 
     .copy {
@@ -179,50 +113,20 @@ const tasks = [
     }
 
     .news {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        height: 32px;
-        max-width: 100%;
-        padding: 0 12px 0 4px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-pill);
-        background: color-mix(in oklab, var(--surface) 70%, transparent);
-        font-size: 13.5px;
-        color: var(--text-secondary);
-        transition: border-color var(--dur-2) var(--ease-out);
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--acc-soft);
+        transition: color var(--dur-2) var(--ease-out);
     }
 
     .news:hover {
-        border-color: var(--border-strong);
         color: var(--text-primary);
-    }
-
-    .news .tag {
-        flex: none;
-        padding: 3px 9px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-pill);
-        background: var(--gray-200);
-        font-size: 11px;
-        letter-spacing: 0.04em;
-        color: var(--text-primary);
-    }
-
-    .news .what {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-
-    .news .arrow {
-        flex: none;
-        color: var(--text-tertiary);
     }
 
     h1 {
         font-family: var(--serif);
-        font-size: clamp(50px, 6.4vw, 88px);
+        font-size: clamp(52px, 6.8vw, 96px);
         font-weight: 400;
         line-height: 0.95;
         letter-spacing: -0.01em;
@@ -251,8 +155,13 @@ const tasks = [
         display: flex;
         flex-wrap: wrap;
         gap: 4px 18px;
-        font-size: 12px;
+        font-size: 12.5px;
         color: var(--text-tertiary);
+    }
+
+    .meta .install {
+        color: var(--text-secondary);
+        user-select: all;
     }
 
     .stage {
@@ -286,10 +195,6 @@ const tasks = [
     }
 
     @media (max-width: 960px) {
-        .tasks {
-            display: none;
-        }
-
         .sky::before {
             background: linear-gradient(90deg, color-mix(in oklab, var(--bg-dim) 80%, transparent), color-mix(in oklab, var(--bg-dim) 45%, transparent));
         }
