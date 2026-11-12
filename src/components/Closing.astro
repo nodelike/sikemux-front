@@ -77,7 +77,7 @@ const crowd: { pack: string; shape: string; state: BuddyState }[] = [
 
 <style>
     .closing {
-        --dusk: #1b1430;
+        --dusk: #ece8f4;
         position: relative;
         padding-block: clamp(160px, 16vw, 220px) 0;
         overflow: hidden;
@@ -120,7 +120,7 @@ const crowd: { pack: string; shape: string; state: BuddyState }[] = [
     }
 
     .cta .display em {
-        color: #5b3fd0;
+        color: #c9b3ff;
     }
 
     .cta > p:not(.label) {
@@ -137,12 +137,12 @@ const crowd: { pack: string; shape: string; state: BuddyState }[] = [
     .notes {
         height: 44px;
         border-color: color-mix(in oklab, var(--dusk) 20%, transparent);
-        background: color-mix(in oklab, #fff 70%, transparent);
+        background: color-mix(in oklab, #0b0a12 60%, transparent);
         color: var(--dusk);
     }
 
     .notes:hover {
-        background: color-mix(in oklab, #fff 85%, transparent);
+        background: color-mix(in oklab, #0b0a12 80%, transparent);
         border-color: color-mix(in oklab, var(--dusk) 35%, transparent);
     }
 
@@ -180,7 +180,7 @@ const crowd: { pack: string; shape: string; state: BuddyState }[] = [
             position: absolute;
             inset: 0;
             z-index: -1;
-            background: linear-gradient(transparent 6%, color-mix(in oklab, #f4e7d4 66%, transparent) 22%, color-mix(in oklab, #f4e7d4 60%, transparent) 80%, transparent 94%);
+            background: linear-gradient(transparent 6%, color-mix(in oklab, #0b0a12 66%, transparent) 22%, color-mix(in oklab, #0b0a12 60%, transparent) 80%, transparent 94%);
         }
 
         .closing :global(.art) {
