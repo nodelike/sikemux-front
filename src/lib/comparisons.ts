@@ -7,6 +7,7 @@ export interface Comparison {
     pickThem: string[];
     pickSikemux: string[];
     bytes?: number;
+    checked?: string;
     measuredAs?: string;
 }
 
@@ -52,8 +53,8 @@ export const COMPARISONS: Comparison[] = [
             "Paradev is built around the agents. Sikemux is built around the project: agents share one window with the editor, Git, a real browser and your GitHub, GitLab, Bitbucket, Jira, database, AWS, Rundeck, SigNoz and Bruno views, all on the same folder.",
         pickThem: ["You want to run a crowd of agents in parallel and merge the best results.", "Worktree-per-task is the way you want to work.", "You want hosted cloud machines for a team."],
         pickSikemux: ["You want the phone app and your other computers free, not in a paid plan.", "You want agents to test in their own browser tab or iOS Simulator.", "You want a small app: Sikemux is a fraction of Paradev's download."],
-        bytes: 453_107_779,
-        measuredAs: "Superset",
+        bytes: 250_250_275,
+        checked: "13 November 2026",
     },
     {
         slug: "herdr",
@@ -102,7 +103,8 @@ export const COMPARISONS: Comparison[] = [
             "You want to keep your Claude or ChatGPT plan instead of paying for another one.",
             "You want agents to test your app in a real browser or iOS Simulator before you look.",
         ],
-        bytes: 291_841_306,
+        bytes: 302_990_563,
+        checked: "13 November 2026",
     },
     {
         slug: "zed",
@@ -117,7 +119,8 @@ export const COMPARISONS: Comparison[] = [
             "You want several agents on one project without juggling terminal windows.",
             "You want your CI, issues, logs and deploys next to the code the agent is changing.",
         ],
-        bytes: 122_610_677,
+        bytes: 88_653_699,
+        checked: "13 November 2026",
     },
     {
         slug: "warp",
@@ -133,6 +136,7 @@ export const COMPARISONS: Comparison[] = [
             "You want the editor, Git and a browser on the same project as the agent.",
         ],
         bytes: 334_774_677,
+        checked: "27 September 2026",
     },
 ];
 
