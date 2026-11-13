@@ -9,7 +9,7 @@ import { AGENTS, agentPath } from "../../lib/agents";
             AGENTS.map((agent) => (
                 <li style={`--brand: var(--brand-${agent.icon})`}>
                     <a href={agentPath(agent)}>
-                        <AgentIcon agent={agent.icon} size={36} />
+                        <AgentIcon agent={agent.icon} size={32} />
                         {agent.name}
                     </a>
                 </li>
