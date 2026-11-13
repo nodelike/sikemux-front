@@ -660,8 +660,12 @@
     font-size: 12.5px;
     min-width: 0;
 }
-.app .team-run.waiting .team-line {
+.app .team-run:not(.folded) .team-line {
     visibility: hidden;
+    opacity: 0;
+}
+.app .team-run.folded .team-line {
+    transition: opacity 0.14s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .app .team-line .chev {
     width: 10px;
@@ -669,9 +673,6 @@
     color: var(--quiet);
     transition: rotate 0.22s;
     flex: none;
-}
-.app .team-run.open .team-line .chev {
-    rotate: 90deg;
 }
 .app .team-marks {
     display: flex;
@@ -718,28 +719,29 @@
     color: var(--quiet);
 }
 .app .team-open {
+    display: grid;
+    grid-template-rows: 1fr;
+    margin-top: 4px;
+}
+.app .team-run.folded .team-open {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+        grid-template-rows 0.14s cubic-bezier(0.4, 0, 1, 1),
+        opacity 0.14s cubic-bezier(0.4, 0, 1, 1);
+}
+.app .team-letters {
+    min-height: 0;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 14px;
-    margin-top: 4px;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s;
 }
-.app .team-run.open .team-open {
-    visibility: visible;
-    opacity: 1;
+.app .team-letter:not(.landed) {
+    display: none;
 }
-.app .team-open .earlier {
-    align-self: flex-start;
-    height: 22px;
-    margin-left: -6px;
-    padding: 0 6px;
-    display: flex;
-    align-items: center;
-    border-radius: 5px;
-    font-size: 11px;
-    color: var(--quiet);
+.app .team-letter.landed {
+    animation: w-in 0.17s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .app .sum.waiting {

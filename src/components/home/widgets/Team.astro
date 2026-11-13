@@ -57,9 +57,19 @@ const faces = cast.map((agent) => ({ ...agent, idle: buddy(agent.pack, agent.sha
             if (drawn.motion) face.dataset.motion = drawn.motion;
             else delete face.dataset.motion;
         };
+        const rows = [...box.querySelectorAll<HTMLElement>("[data-row]")];
+        const first = rows.map((row) => ({ state: row.dataset.state, face: row.querySelector<HTMLElement>(".buddy")!.innerHTML }));
+        const reset = () =>
+            rows.forEach((row, index) => {
+                row.dataset.state = first[index].state;
+                const face = row.querySelector<HTMLElement>(".buddy")!;
+                face.innerHTML = first[index].face;
+                delete face.dataset.motion;
+            });
         box.addEventListener("step", (event) => {
             const step = (event as CustomEvent).detail as string;
-            if (!step?.startsWith("team:") || step === "team:open") return;
+            if (!step?.startsWith("team:")) return;
+            if (step === "team:reset") return reset();
             const [, , from, to] = step.split(":");
             pose(from, "done");
             pose(to, "working");

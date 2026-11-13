@@ -6,63 +6,87 @@ import type { AgentIconId } from "../../../../lib/agents";
 
 interface Props {
     messages: { from: string; name: string; agent: AgentIconId; to: string; text: string; when: string }[];
-    opens?: number;
     took: string;
 }
 
-const { messages, opens = 4, took } = Astro.props;
+const { messages, took } = Astro.props;
 const agents = [...new Map(messages.map((message) => [message.agent + message.name, message])).values()];
-const earlier = messages.length - opens;
+const last = messages[messages.length - 1];
 ---
 
-<div class="team-run" data-team-run data-messages={JSON.stringify(messages.map(({ name, text }) => ({ name, text })))}>
-    {messages.map((message, index) => <span hidden data-step={`team:${index}:${message.from}:${message.to}`} data-wait={index === 0 ? "500" : "1300"} />)}
-    <span hidden data-step="team:open" data-wait="900"></span>
+<div class="team-run" data-team-run data-relay={JSON.stringify(messages.map(({ from, to }) => `${from}:${to}`))}>
     <p class="team-line">
         <svg class="chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></svg>
         <span class="team-marks">
-            {agents.slice(0, 4).map((agent, index) => <span class="mark" data-mark={index} style={`color: var(--brand-${agent.agent})`}><AgentIcon agent={agent.agent} size={16} /></span>)}
-            {agents.length > 4 && <span class="more" data-more>+{agents.length - 4}</span>}
+            {agents.slice(0, 4).map((agent) => <span class="mark" style={`color: var(--brand-${agent.agent})`}><AgentIcon agent={agent.agent} size={16} /></span>)}
+            {agents.length > 4 && <span class="more">+{agents.length - 4}</span>}
         </span>
-        <b class="count" data-count>1 message</b>
-        <span class="words"><span class="said-by">{[...new Set(messages.map((message) => message.name))].map((name) => <span data-by={name} hidden={name !== messages[0].name}><AgentName name={name} /></span>)}</span><span class="said" data-words>{messages[0].text}</span></span>
-        <span class="took" data-took>{took}</span>
+        <b class="count">{messages.length} messages</b>
+        <span class="words"><span class="said-by"><AgentName name={last.name} /></span><span class="said">{last.text}</span></span>
+        <span class="took">{took}</span>
     </p>
     <div class="team-open">
-        <p class="earlier">Show {earlier} earlier</p>
-        {
-            messages.slice(earlier).map((message) => (
-                <Letter name={message.name} agent={message.agent} when={message.when}>
-                    {message.text}
-                </Letter>
-            ))
-        }
+        <div class="team-letters">
+            {
+                messages.map((message) => (
+                    <div class="team-letter" data-letter>
+                        <Letter name={message.name} agent={message.agent} when={message.when}>
+                            {message.text}
+                        </Letter>
+                    </div>
+                ))
+            }
+        </div>
     </div>
 </div>
 
 <script>
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
     for (const run of document.querySelectorAll<HTMLElement>("[data-team-run]")) {
-        const messages = JSON.parse(run.dataset.messages ?? "[]") as { name: string; text: string }[];
-        const count = run.querySelector<HTMLElement>("[data-count]")!;
-        const words = run.querySelector<HTMLElement>("[data-words]")!;
-        const marks = [...run.querySelectorAll<HTMLElement>("[data-mark]")];
-        const more = run.querySelector<HTMLElement>("[data-more]");
-        const show = (landed: number) => {
-            const latest = messages[landed - 1];
-            count.textContent = landed === 1 ? "1 message" : `${landed} messages`;
-            words.textContent = latest.text;
-            for (const by of run.querySelectorAll<HTMLElement>("[data-by]")) by.hidden = by.dataset.by !== latest.name;
-            marks.forEach((mark, index) => (mark.hidden = index > landed));
-            if (more) more.hidden = landed < 5;
+        const relay = JSON.parse(run.dataset.relay ?? "[]") as string[];
+        const letters = [...run.querySelectorAll<HTMLElement>("[data-letter]")];
+        const column = run.closest<HTMLElement>(".column");
+        const say = (detail: string) => run.dispatchEvent(new CustomEvent("step", { detail, bubbles: true }));
+        const land = (index: number) => {
+            letters[index].classList.add("landed");
+            say(`team:${index}:${relay[index]}`);
+            column?.scrollTo({ top: column.scrollHeight, behavior: still ? "auto" : "smooth" });
         };
-        run.classList.add("waiting");
-        show(1);
-        run.addEventListener("step", (event) => {
-            const step = (event as CustomEvent).detail as string;
-            if (!step?.startsWith("team:")) return;
-            if (step === "team:open") return run.classList.add("open");
-            run.classList.remove("waiting");
-            show(Number(step.split(":")[1]) + 1);
-        });
+
+        if (still) {
+            letters.forEach((_, index) => land(index));
+            continue;
+        }
+
+        let showing = false;
+        let playing = false;
+        const loop = async () => {
+            playing = true;
+            while (showing) {
+                run.classList.remove("folded");
+                letters.forEach((letter) => letter.classList.remove("landed"));
+                column?.scrollTo({ top: 0 });
+                say("team:reset");
+                await wait(700);
+                for (let index = 0; index < letters.length; index++) {
+                    land(index);
+                    await wait(1500);
+                }
+                await wait(1400);
+                column?.scrollTo({ top: 0, behavior: "smooth" });
+                run.classList.add("folded");
+                await wait(4200);
+            }
+            playing = false;
+        };
+        new IntersectionObserver(
+            ([entry]) => {
+                showing = entry.isIntersecting;
+                if (showing && !playing) loop();
+            },
+            { threshold: 0.35 },
+        ).observe(run.closest(".app") ?? run);
     }
 </script>

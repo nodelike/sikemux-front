@@ -8,14 +8,12 @@ interface Props {
     agent: AgentIconId;
     to?: string;
     when?: string;
-    step?: string;
-    wait?: number;
 }
 
-const { name, agent, to, when, step = "", wait = 600 } = Astro.props;
+const { name, agent, to, when } = Astro.props;
 ---
 
-<div class="from" data-step={step} data-wait={String(wait)}>
+<div class="from">
     <p class="by">
         <span class="mark" style={`color: var(--brand-${agent})`}><AgentIcon agent={agent} size={17} /></span>
         <b><AgentName name={name} /></b>
