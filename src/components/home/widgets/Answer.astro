@@ -10,7 +10,7 @@ const fixAt = 445.2;
 ---
 
 <div class="app answer" data-play data-answer>
-    <Head title="Checkout latency after the fix" who="@Kaito" />
+    <Head title="Checkout latency after the fix" who="Kaito" />
     <div class="column">
         <Bubble when="12:41 PM">did the payments fix bring checkout p95 back down?</Bubble>
         <Run calls={[{ verb: "traces", kind: "plugin", icon: "signoz", target: "checkout-api", took: 0.5 }]} worked="Worked for 1s" wait={400} />

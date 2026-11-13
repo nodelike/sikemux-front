@@ -1,5 +1,6 @@
 ---
 import AgentIcon from "../../../AgentIcon.astro";
+import AgentName from "../../../AgentName.astro";
 import type { AgentIconId } from "../../../../lib/agents";
 
 interface Props {
@@ -16,6 +17,6 @@ const { title, who, agent = "claude" } = Astro.props;
         {agent === "chief" ? <img src="/brand/mark-purple.svg" alt="" width="15" height="15" /> : <AgentIcon agent={agent} size={15} />}
     </span>
     <span class="title">{title}</span>
-    <span class="who">{who}</span>
+    <span class="who"><AgentName name={who} /></span>
     <span class="seg"><span class="on">GUI</span><span>TUI</span></span>
 </div>

@@ -1,5 +1,6 @@
 ---
 import AgentIcon from "../../AgentIcon.astro";
+import AgentName from "../../AgentName.astro";
 import Bubble from "./chat/Bubble.astro";
 import Prose from "./chat/Prose.astro";
 import "./app.css";
@@ -38,7 +39,7 @@ const rows = [
                     </span>
                     <span class="layer peek">
                         <span class="head">
-                            <span class="side"><span class="tile" style="color: var(--brand-claude)"><AgentIcon agent="claude" size={20} /></span><span class="lead">Otter</span></span>
+                            <span class="side"><span class="tile" style="color: var(--brand-claude)"><AgentIcon agent="claude" size={20} /></span><span class="lead"><AgentName name="Otter" /></span></span>
                             <span class="side r"><span class="trail">Needs you</span><span class="st blocked"><span class="ping"></span><span class="ping"></span><span class="dot"></span></span></span>
                         </span>
                         <span class="body">

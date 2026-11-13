@@ -1,4 +1,5 @@
 ---
+import AgentName from "../../AgentName.astro";
 import "./app.css";
 
 const rows = [
@@ -31,7 +32,7 @@ const rows = [
     </div>
     <div class="foot">
         <span class="count mono" data-step data-wait="80">5 rows</span>
-        <button type="button" class="qbtn" data-send>Send to agent</button>
+        <button type="button" class="qbtn" data-send><span data-unsent>Send to agent</span><span data-sent hidden>Sent to <AgentName name="Wren" /></span></button>
     </div>
 </div>
 
@@ -47,7 +48,8 @@ const rows = [
         });
         const send = box.querySelector<HTMLButtonElement>("[data-send]")!;
         send.addEventListener("click", () => {
-            send.textContent = "Sent to @Wren";
+            send.querySelector<HTMLElement>("[data-unsent]")!.hidden = true;
+            send.querySelector<HTMLElement>("[data-sent]")!.hidden = false;
             send.classList.add("sent");
         });
     }

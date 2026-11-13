@@ -1,0 +1,29 @@
+---
+import "../styles/buddies.css";
+import { buddy } from "../lib/buddies";
+import { faceOf } from "../lib/showcase-buddies";
+
+interface Props {
+    name: string;
+}
+
+const { name } = Astro.props;
+const face = faceOf(name);
+---
+
+<span class="agent-name">{face ? <span class="buddy" set:html={buddy(face.pack, face.shape, "idle").markup} /> : <img src="/brand/mark-purple.svg" alt="" />}@{name}</span>
+
+<style>
+    .agent-name {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.28em;
+        white-space: nowrap;
+        vertical-align: bottom;
+    }
+    .agent-name > :first-child {
+        width: 1.2em;
+        height: 1.2em;
+        flex: none;
+    }
+</style>

@@ -1,5 +1,6 @@
 ---
 import Feature from "./Feature.astro";
+import AgentName from "../AgentName.astro";
 import Icon, { type IconName } from "../Icon.astro";
 import Chat from "./widgets/Chat.astro";
 import Chief from "./widgets/Chief.astro";
@@ -35,10 +36,10 @@ const tools: { icon: IconName; name: string; does: string }[] = [
 
 <Feature tag="Chief" ground="night" flip id="chief">
     <Fragment slot="title">Every project<br /><span class="chip">gets a chief.</span></Fragment>
-    <p>Tell @Chief what you want. It hands the work to Claude Code, Codex and your other agents, answers what it can, and brings you only the calls that need you.</p>
+    <p>Tell <AgentName name="Chief" /> what you want. It hands the work to Claude Code, Codex and your other agents, answers what it can, and brings you only the calls that need you.</p>
     <p>Back after an hour away? It tells you what landed and what was decided for you, and any of it can be overruled.</p>
     <ul class="facts" slot="list">
-        <li><b>Calls</b>Only the questions that are yours, with @Chief’s pick.</li>
+        <li><b>Calls</b>Only the questions that are yours, with <AgentName name="Chief" />’s pick.</li>
         <li><b>Overrule</b>Any decision it made, undone in one click.</li>
         <li><b>While you were away</b>What landed, what was decided, what waits.</li>
     </ul>

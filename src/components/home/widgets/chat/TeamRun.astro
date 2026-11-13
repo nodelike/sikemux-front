@@ -1,6 +1,7 @@
 ---
 import AgentIcon from "../../../AgentIcon.astro";
 import Letter from "./Letter.astro";
+import AgentName from "../../../AgentName.astro";
 import type { AgentIconId } from "../../../../lib/agents";
 
 interface Props {
@@ -24,7 +25,7 @@ const earlier = messages.length - opens;
             {agents.length > 4 && <span class="more" data-more>+{agents.length - 4}</span>}
         </span>
         <b class="count" data-count>1 message</b>
-        <span class="words" data-words>@{messages[0].name}: {messages[0].text}</span>
+        <span class="words"><span class="said-by">{[...new Set(messages.map((message) => message.name))].map((name) => <span data-by={name} hidden={name !== messages[0].name}><AgentName name={name} /></span>)}</span>: <span data-words>{messages[0].text}</span></span>
         <span class="took" data-took>{took}</span>
     </p>
     <div class="team-open">
@@ -49,7 +50,8 @@ const earlier = messages.length - opens;
         const show = (landed: number) => {
             const latest = messages[landed - 1];
             count.textContent = landed === 1 ? "1 message" : `${landed} messages`;
-            words.textContent = `@${latest.name}: ${latest.text}`;
+            words.textContent = latest.text;
+            for (const by of run.querySelectorAll<HTMLElement>("[data-by]")) by.hidden = by.dataset.by !== latest.name;
             marks.forEach((mark, index) => (mark.hidden = index > landed));
             if (more) more.hidden = landed < 5;
         };

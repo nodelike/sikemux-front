@@ -1,5 +1,6 @@
 ---
 import AgentIcon from "../../../AgentIcon.astro";
+import AgentName from "../../../AgentName.astro";
 import type { AgentIconId } from "../../../../lib/agents";
 
 export type RowState = "idle" | "working" | "asks" | "done";
@@ -26,7 +27,7 @@ const { task, name, agent, age, project, state = "idle", face, id } = Astro.prop
         <span class="row-task">{task}</span>
         {(age || project) && <span class="row-sub">{[age, project].filter(Boolean).join(" · ")}</span>}
     </span>
-    <span class="row-name">@{name}</span>
+    <span class="row-name">{face ? `@${name}` : <AgentName name={name} />}</span>
     <span class="row-state" aria-label={state}>
         <span class="loader">{Array.from({ length: 9 }, (_, i) => <i style={`--o:-${(i * 0.17).toFixed(2)}s`} />)}</span>
         <span class="dot" />

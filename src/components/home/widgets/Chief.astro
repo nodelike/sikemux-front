@@ -1,4 +1,5 @@
 ---
+import AgentName from "../../AgentName.astro";
 import Head from "./chat/Head.astro";
 import Bubble from "./chat/Bubble.astro";
 import Run, { type Call } from "./chat/Run.astro";
@@ -23,7 +24,7 @@ const plan: Call[] = [
 ---
 
 <div class="app chief" data-play data-chief>
-    <Head title="New onboarding" who="@Chief" agent="chief" />
+    <Head title="New onboarding" who="Chief" agent="chief" />
     <div class="beats">
         <div class="beat ask">
             <Bubble when="2:47 PM">Ship the new onboarding by Friday.</Bubble>
@@ -36,10 +37,10 @@ const plan: Call[] = [
         </div>
 
         <div class="beat away" data-step="away" data-wait="3600">
-            <p class="by"><img src="/brand/mark-purple.svg" alt="" width="14" height="14" /><b>@Chief</b><span>while you were away</span></p>
+            <p class="by"><b><AgentName name="Chief" /></b><span>while you were away</span></p>
             <div class="report">
                 <p class="line"><span><b>4 landed.</b> Checklist, invite step, empty states and docs are on main.</span><span class="btn">Try it</span></p>
-                <p class="line"><span>@Heron kept the old copy on step 2.</span><span class="btn">Overrule</span></p>
+                <p class="line"><span><AgentName name="Heron" /> kept the old copy on step 2.</span><span class="btn">Overrule</span></p>
                 <div class="call">
                     <p class="q">Sign-up: magic links or passwords?</p>
                     <div class="opts">

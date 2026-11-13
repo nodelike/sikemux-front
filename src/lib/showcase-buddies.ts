@@ -11,3 +11,10 @@ export const TEAM: { id: string; name: string; agent: AgentIconId; pack: string;
 
 export const PICKED = { agent: "Otter", pack: "buddies", shape: "mochi" };
 
+
+const ELSEWHERE = [{ name: "Kaito", pack: "personas", shape: "data" }];
+
+/** The buddy an agent wears wherever its @name shows; @Chief wears the Sikemux mark instead. */
+export function faceOf(name: string): { pack: string; shape: string } | undefined {
+    return [...TEAM, ...ELSEWHERE].find((agent) => agent.name === name);
+}
