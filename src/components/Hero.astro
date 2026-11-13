@@ -33,6 +33,8 @@ const { release, stars } = Astro.props;
             <div class="where">
                 <p class="meta mono">
                     <span class="install">$ curl -fsSL https://sikemux.com/install | sh</span>
+                    <span class="install">$ brew install --cask nodelike/tap/sikemux</span>
+                    <span class="break" aria-hidden="true"></span>
                     <span>Apple Silicon Mac and Linux</span>
                     {release.dmgBytes !== null && <span data-release-size>{formatSize(release.dmgBytes)}</span>}
                     <span>free · MIT</span>
@@ -179,6 +181,11 @@ const { release, stars } = Astro.props;
     .meta .install {
         color: var(--text-secondary);
         user-select: all;
+    }
+
+    .meta .break {
+        flex-basis: 100%;
+        height: 0;
     }
 
     .stage {
