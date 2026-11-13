@@ -1,62 +1,108 @@
 ---
 import { Image } from "astro:assets";
-import "../styles/global.css";
-import Logo from "./Logo.astro";
+import "../styles/home.css";
 import AgentIcon from "./AgentIcon.astro";
+import Notch from "./home/widgets/Notch.astro";
 import hero from "../assets/hero/hero.png";
-import type { AgentIconId } from "../lib/agents";
+import { cardHeadline, type CardVisual } from "../lib/cards";
+import { formatSize, latestRelease } from "../lib/release";
 
 interface Props {
     title: string;
-    body: string;
+    chip?: string;
     label?: string;
-    agents?: readonly { id: AgentIconId; color: string }[];
+    visual: CardVisual;
 }
 
-const ALL_AGENTS = [
-    { id: "claude", color: "var(--brand-claude)" },
-    { id: "codex", color: "var(--brand-codex)" },
-    { id: "hermes", color: "var(--brand-hermes)" },
-    { id: "pi", color: "var(--brand-pi)" },
-    { id: "opencode", color: "var(--brand-opencode)" },
-    { id: "omp", color: "var(--brand-omp)" },
-    { id: "grok", color: "var(--brand-grok)" },
-] as const;
+const { title, chip, label, visual } = Astro.props;
+const headline = cardHeadline({ title, chip });
+const size = headline.length > 36 ? "long" : headline.length > 22 ? "short" : "big";
 
-const { title, body, label, agents = ALL_AGENTS } = Astro.props;
+const own = (await latestRelease()).dmgBytes ?? 24_900_000;
+const apps = visual.kind === "sizes" ? [...visual.apps].sort((a, b) => a.bytes - b.bytes) : [];
+const largest = apps.at(-1);
+const rows = [{ name: "Sikemux", bytes: own, own: true }, ...apps.map((app) => ({ ...app, own: false }))];
 ---
-
 
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta name="robots" content="noindex" />
-        <title>{title} · Sikemux share card</title>
+        <title>{headline} · Sikemux share card</title>
     </head>
     <body>
         <main class="card">
+            <header class="bar">
+                <img class="lockup" src="/brand/lockup-black.svg" alt="Sikemux" />
+                <span class="site mono">sikemux.com</span>
+            </header>
+
             <div class="copy">
-                <div class="brand">
-                    <span class="mark"><Logo size={34} /></span>
-                    <span class="word">SIKE<span>MUX</span></span>
-                </div>
-                {label && <p class="label">{label}</p>}
-                <h1>{title}</h1>
-                <p>{body}</p>
-                <ul>
-                    {
-                        agents.map((agent) => (
-                            <li style={`color: ${agent.color}`}>
-                                <AgentIcon agent={agent.id} size={22} />
-                            </li>
-                        ))
-                    }
-                </ul>
+                {label && <span class="tag">{label}</span>}
+                <h1 class:list={[size]}>
+                    {title}
+                    {chip && <br />}
+                    {chip && <span class="chip">{chip}</span>}
+                </h1>
+                <p class="fine mono">Free · MIT · Mac and Linux</p>
             </div>
-            <div class="shot">
-                <Image src={hero} alt="" width={1400} format="png" loading="eager" />
+
+            <div class:list={["block", `show-${visual.kind}`]}>
+                {
+                    visual.kind === "hero" && (
+                        <figure class="shot window">
+                            <span class="tag badge">storefront · 7 agents</span>
+                            <Image src={hero} alt="" width={2000} format="png" loading="eager" />
+                        </figure>
+                    )
+                }
+                {visual.kind === "phone" && <Notch />}
+                {
+                    visual.kind === "brand" && (
+                        <div class="tiles one">
+                            <span class="tile">
+                                <img src="/brand/mark-black.svg" alt="" />
+                            </span>
+                        </div>
+                    )
+                }
+                {
+                    visual.kind === "marks" && (
+                        <div class:list={["tiles", { one: visual.agents.length === 1 }]}>
+                            {visual.agents.map((agent) => (
+                                <span class="tile" style={`color: ${agent.color}`}>
+                                    <AgentIcon agent={agent.id} size={visual.agents.length === 1 ? 210 : 76} />
+                                </span>
+                            ))}
+                        </div>
+                    )
+                }
+                {
+                    visual.kind === "sizes" && largest && (
+                        <div class="sizes">
+                            <p class="times">
+                                <b>{Math.round(largest.bytes / own)}×</b> smaller than {largest.name}
+                            </p>
+                            <ol>
+                                {rows.map((row) => (
+                                    <li class:list={{ own: row.own }}>
+                                        <span class="name">{row.name}</span>
+                                        <span class="value mono">{formatSize(row.bytes)}</span>
+                                        <span class="track">
+                                            <span class="fill" style={`width: ${Math.max((row.bytes / largest.bytes) * 100, 1.2).toFixed(1)}%`} />
+                                        </span>
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+                    )
+                }
             </div>
+
+            <span class="nub" style="left: 34px; top: 79px"></span>
+            <span class="nub" style="left: 594px; top: 79px"></span>
+            <span class="nub" style="right: 34px; top: 79px"></span>
         </main>
     </body>
 </html>
@@ -74,110 +120,214 @@ const { title, body, label, agents = ALL_AGENTS } = Astro.props;
         width: 100vw;
         height: 100vh;
         overflow: hidden;
-        background:
-            radial-gradient(60% 80% at 0% 0%, color-mix(in oklab, var(--acc) 30%, transparent), transparent 65%),
-            radial-gradient(50% 70% at 100% 100%, color-mix(in oklab, var(--acc) 16%, transparent), transparent 70%),
-            var(--bg-dim);
-        isolation: isolate;
+        display: grid;
+        grid-template-columns: 560px minmax(0, 1fr);
+        grid-template-rows: 84px minmax(0, 1fr);
+        padding-inline: 38px;
+        background: var(--paper);
     }
 
     .card::before {
         content: "";
         position: absolute;
-        inset: 0;
-        z-index: -1;
-        background-image: radial-gradient(color-mix(in oklab, var(--ink) 16%, transparent) 1px, transparent 1.3px);
-        background-size: 8px 8px;
-        mask-image: radial-gradient(ellipse 55% 75% at 10% 0%, #000, transparent 75%);
-        opacity: 0.6;
+        inset: 0 38px;
+        border-inline: 1px solid var(--rule);
+        pointer-events: none;
+        z-index: 3;
+    }
+
+    .bar {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-inline: 28px;
+        border-bottom: 1px solid var(--rule);
+    }
+
+    .lockup {
+        height: 32px;
+        width: auto;
+    }
+
+    .site {
+        font-size: 18px;
+        color: var(--ink-2);
     }
 
     .copy {
-        position: absolute;
-        top: 64px;
-        left: 72px;
-        width: 520px;
-        display: grid;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
         gap: 26px;
+        padding: 46px 28px 36px;
+        border-right: 1px solid var(--rule);
     }
 
-    .label {
-        margin-top: 18px;
-        margin-bottom: -12px;
-        font-size: 15px;
-        color: var(--acc);
-    }
-
-    .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 14px;
-    }
-
-    .mark {
-        display: grid;
-        color: var(--acc);
-    }
-
-    .word {
-        font-size: 22px;
-        font-weight: 600;
-        letter-spacing: 0.18em;
-        color: var(--text-primary);
-    }
-
-    .word span {
-        color: var(--text-tertiary);
+    .copy .tag {
+        font-size: 17px;
+        padding: 8px 10px;
     }
 
     h1 {
-        margin-top: 18px;
-        font-size: 58px;
-        line-height: 1.02;
-        letter-spacing: -0.045em;
+        font-size: 74px;
+        line-height: 1.04;
+        letter-spacing: -0.05em;
     }
 
-    p {
-        max-width: 470px;
-        font-size: 23px;
-        line-height: 1.4;
-        color: var(--text-secondary);
+    h1.big {
+        font-size: 92px;
     }
 
-    ul {
+    h1.long {
+        font-size: 62px;
+    }
+
+    .fine {
+        margin-top: auto;
+        font-size: 18px;
+        color: var(--ink-2);
+    }
+
+    .block {
+        position: relative;
+        overflow: hidden;
+        background: var(--violet);
+    }
+
+    .block.show-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(to bottom, transparent 0 59px, color-mix(in srgb, var(--ink) 22%, transparent) 59px 60px);
+    }
+
+    .window {
+        position: absolute;
+        top: 64px;
+        left: 44px;
+        width: 1000px;
+        margin: 0;
+        box-shadow: 14px 14px 0 var(--cast);
+    }
+
+    .badge {
+        position: absolute;
+        left: -1px;
+        top: -27px;
+        font-size: 13px;
+    }
+
+    .tiles {
+        position: absolute;
+        inset: 0;
         display: flex;
-        gap: 10px;
-        margin: 6px 0 0;
+        flex-wrap: wrap;
+        align-content: center;
+        justify-content: center;
+        gap: 26px 22px;
+        padding: 40px 24px;
+    }
+
+    .tile {
+        display: grid;
+        place-items: center;
+        width: 106px;
+        height: 106px;
+        border: 1px solid var(--ink);
+        background: var(--paper);
+        box-shadow: 8px 8px 0 var(--ink);
+    }
+
+    .tiles.one .tile {
+        width: 320px;
+        height: 320px;
+        box-shadow: 14px 14px 0 var(--ink);
+    }
+
+    .tile img {
+        width: 210px;
+        height: 210px;
+    }
+
+    .sizes {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 30px;
+        padding: 40px 48px;
+        color: #120d1c;
+    }
+
+    .times {
+        font-size: 30px;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        line-height: 1;
+    }
+
+    .times b {
+        display: block;
+        font-size: 120px;
+        font-weight: 500;
+        letter-spacing: -0.06em;
+        margin-bottom: 6px;
+    }
+
+    .sizes ol {
+        display: grid;
+        gap: 14px;
+        margin: 0;
         padding: 0;
         list-style: none;
     }
 
-    li {
+    .sizes li {
         display: grid;
-        place-items: center;
-        width: 44px;
-        height: 44px;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        background: color-mix(in oklab, var(--surface) 80%, transparent);
+        grid-template-columns: 1fr auto;
+        gap: 6px 12px;
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.1;
     }
 
-    .shot {
-        position: absolute;
-        top: 92px;
-        left: 640px;
-        width: 900px;
-        overflow: hidden;
-        border: 1px solid var(--border-strong);
-        border-radius: 16px;
-        box-shadow:
-            0 30px 80px rgb(0 0 0 / 0.55),
-            0 0 0 1px rgb(255 255 255 / 0.04) inset;
+    .sizes .track {
+        grid-column: 1 / -1;
+        height: 18px;
+        border: 1px solid #120d1c;
+        background: color-mix(in srgb, var(--paper) 35%, transparent);
     }
 
-    .shot img {
+    .sizes .fill {
         display: block;
-        width: 900px;
-        height: auto;
+        height: 100%;
+        background: #120d1c;
+    }
+
+    .sizes .own .fill {
+        background: var(--paper);
+        box-shadow: 0 0 0 1px #120d1c;
+    }
+
+    .block.show-phone :global(.pair) {
+        position: absolute;
+        inset: 0;
+        max-width: none;
+        min-height: 0;
+    }
+
+    .block.show-phone :global(.laptop-crop) {
+        display: none;
+    }
+
+    .block.show-phone :global(.phone) {
+        --pw: 330;
+        right: auto;
+        bottom: auto;
+        left: 134px;
+        top: 44px;
+        box-shadow: 0 0 0 1px #2a2a30 inset, 14px 14px 0 var(--ink);
     }
 </style>
