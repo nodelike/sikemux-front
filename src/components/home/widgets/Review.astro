@@ -1,5 +1,6 @@
 ---
-import AgentIcon from "../../AgentIcon.astro";
+import AgentName from "../../AgentName.astro";
+import FileIcon from "../../FileIcon.astro";
 import "./app.css";
 
 const tests = [
@@ -36,8 +37,8 @@ const tests = [
         <div class="files">
             <p class="label">Changes</p>
             <ul>
-                <li class="chosen"><span class="mark" style="color: var(--brand-claude)"><AgentIcon agent="claude" size={13} /></span>cart.mjs <small>src</small><span class="who">@Wren</span><span class="m" data-step data-wait="100">M</span></li>
-                <li><span class="mark" style="color: var(--brand-claude)"><AgentIcon agent="claude" size={13} /></span>cart.test.mjs <small>test</small><span class="who">@Wren</span><span class="m" data-step data-wait="100">M</span></li>
+                <li class="chosen"><FileIcon name="cart.mjs" />cart.mjs <small>src</small><span class="who"><AgentName name="Wren" /></span><span class="m" data-step data-wait="100">M</span></li>
+                <li><FileIcon name="cart.test.mjs" />cart.test.mjs <small>test</small><span class="who"><AgentName name="Wren" /></span><span class="m" data-step data-wait="100">M</span></li>
             </ul>
         </div>
         <div class="term">
@@ -50,7 +51,7 @@ const tests = [
                 <p class="subject" data-step data-wait="500" data-stream="70">fix(cart): round tax once, on the whole cart</p>
                 <p class="body" data-step data-wait="100" data-stream="160">A cart of cheap items could come out a cent off the receipt. The discount can no longer push the total below zero.</p>
             </div>
-            <p class="by" data-step="ready" data-wait="200"><span class="mark" style="color: var(--brand-claude)"><AgentIcon agent="claude" size={13} /></span>@Wren wrote the message</p>
+            <p class="by" data-step="ready" data-wait="200"><AgentName name="Wren" /> wrote the message</p>
             <button type="button" class="commit" data-commit disabled>Commit</button>
         </div>
     </div>
@@ -137,9 +138,6 @@ const tests = [
         gap: 6px;
         font-size: 11.5px;
         color: var(--quiet);
-    }
-    .mark {
-        display: inline-flex;
     }
     .commit {
         height: 28px;

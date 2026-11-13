@@ -1,5 +1,6 @@
 ---
 import AgentIcon from "../../../AgentIcon.astro";
+import FileIcon from "../../../FileIcon.astro";
 import type { AgentIconId } from "../../../../lib/agents";
 
 export interface Call {
@@ -45,7 +46,7 @@ const total = calls.reduce((sum, call) => sum + call.took, 0);
                             {call.icon === "signoz" ? <img src="/signoz.svg" width="11" height="11" alt="" /> : <svg viewBox="0 0 24 24" set:html={glyph[call.icon]} />}
                         </span>
                         <span class="verb">{call.verb}</span>
-                        <span class:list={["target", { file: call.file }]} data-ext={call.file ? call.target.split(".").pop() : undefined}>{call.target}</span>
+                        <span class:list={["target", { file: call.file }]}>{call.file && <FileIcon name={call.target} size={12} />}{call.target}</span>
                         <span class="end">
                             {call.diff && (
                                 <span class="diff">

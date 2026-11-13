@@ -11,11 +11,11 @@
     --strong: #c7bdd6;
     --accent: #7450c7;
     --hover: rgba(33, 29, 43, 0.06);
-    --looked: #415c9f;
-    --changed: #7e5831;
-    --ran: #954071;
-    --called: #416c55;
-    --removed: #9a453c;
+    --looked: #2563eb;
+    --changed: #b45309;
+    --ran: #c2185b;
+    --called: #047857;
+    --removed: #c81e1e;
     --added: #087f63;
     --deleted: #c33149;
     --bubble: color-mix(in oklab, color-mix(in oklab, var(--accent) 75%, var(--ink)) 10%, var(--sunken));
@@ -45,11 +45,11 @@
     --strong: #34343d;
     --accent: #a277ff;
     --hover: rgba(231, 229, 239, 0.06);
-    --looked: #92a7da;
-    --changed: #cdb391;
-    --ran: #de77b5;
-    --called: #83bf9f;
-    --removed: #d78478;
+    --looked: #7aa7ff;
+    --changed: #ffb347;
+    --ran: #ff6bc1;
+    --called: #4ade9b;
+    --removed: #ff6b6b;
     --added: #54ffbe;
     --deleted: #ff6767;
 }
@@ -233,17 +233,6 @@
     align-items: center;
     gap: 5px;
     color: var(--accent);
-}
-.app .target.file::before {
-    content: "";
-    width: 9px;
-    height: 9px;
-    border-radius: 1.5px;
-    background: var(--quiet);
-}
-.app .target.file[data-ext="mjs"]::before,
-.app .target.file[data-ext="js"]::before {
-    background: #f0c43a;
 }
 .app .spine,
 .app .spine::after,

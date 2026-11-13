@@ -1,0 +1,19 @@
+---
+import { fileIcon } from "../lib/file-icons";
+
+interface Props {
+    name: string;
+    size?: number;
+}
+
+const { name, size = 13 } = Astro.props;
+---
+
+<img class="file-icon" src={fileIcon(name)} width={size} height={size} alt="" />
+
+<style>
+    .file-icon {
+        display: block;
+        flex: none;
+    }
+</style>
