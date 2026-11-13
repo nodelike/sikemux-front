@@ -1,0 +1,412 @@
+---
+import { Image } from "astro:assets";
+import icon from "../assets/apps/sikemux.png";
+import AgentIcon from "./AgentIcon.astro";
+
+const workers = [
+    { name: "Otter", agent: "claude", brand: "var(--brand-claude)", task: "Welcome checklist" },
+    { name: "Heron", agent: "codex", brand: "var(--brand-codex)", task: "Invite step, reviews Otter's diff" },
+    { name: "Wren", agent: "opencode", brand: "var(--brand-opencode)", task: "Empty states for new projects" },
+    { name: "Badger", agent: "pi", brand: "var(--brand-pi)", task: "Sign-up tests on iPhone" },
+    { name: "Finch", agent: "hermes", brand: "var(--brand-hermes)", task: "Docs for the new flow" },
+] as const;
+---
+
+<section class="chief" aria-labelledby="chief-title">
+    <div class="page">
+        <div class="head" data-reveal>
+            <Image class="mark" src={icon} alt="" width={56} densities={[2]} format="webp" />
+            <p class="label">@Chief</p>
+            <h2 id="chief-title" class="display">Every project<br /><em>gets a chief.</em></h2>
+            <p class="lede">
+                Tell @Chief what you want. It hands the work to Claude Code, Codex and your other agents, follows what they do, and brings you only the calls that need you. Back after an hour away? It tells you what landed and what was decided for you.
+            </p>
+        </div>
+
+        <div class="scene" data-chief role="img" aria-label="You ask @Chief to ship the new onboarding. @Chief starts five agents from different vendors, follows them to done, then shows what landed and asks you one question.">
+            <svg class="wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <line x1="12" y1="50" x2="88" y2="50" />
+            </svg>
+
+            <div class="card ask">
+                <div class="who"><span class="avatar"></span><span>you</span><span class="time mono">2:47 PM</span></div>
+                <p class="said">Ship the new onboarding by Friday.</p>
+                <div class="who"><Image class="tiny" src={icon} alt="" width={18} densities={[2]} format="webp" /><span>@Chief</span></div>
+                <ul class="steps">
+                    <li data-step="0"><span>Read</span> onboarding.md</li>
+                    <li data-step="1"><span>Split it into</span> 5 tasks</li>
+                    <li data-step="2"><span>Started</span> 5 agents</li>
+                </ul>
+            </div>
+
+            <div class="card crew">
+                <p class="title mono">Agents</p>
+                <ul>
+                    {
+                        workers.map((worker, index) => (
+                            <li data-worker={index} style={`--brand: ${worker.brand}`}>
+                                <AgentIcon agent={worker.agent} size={16} />
+                                <span class="name">@{worker.name}</span>
+                                <span class="task">{worker.task}</span>
+                                <span class="state mono">idle</span>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
+
+            <div class="card report">
+                <div class="who"><Image class="tiny" src={icon} alt="" width={18} densities={[2]} format="webp" /><span>@Chief</span><span class="time mono">while you were away</span></div>
+                <p class="line"><span><b>4 landed.</b></span><span class="action">Try it</span></p>
+                <p class="line"><span>@Heron kept the old copy on step 2.</span><span class="action">Overrule</span></p>
+                <div class="call">
+                    <p class="q">Sign-up: magic links or passwords?</p>
+                    <div class="choices">
+                        <span class="choice picked">Magic links <i>@Chief's pick</i></span>
+                        <span class="choice">Passwords</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    for (const scene of document.querySelectorAll<HTMLElement>("[data-chief]")) {
+        const steps = [...scene.querySelectorAll<HTMLElement>("[data-step]")];
+        const workers = [...scene.querySelectorAll<HTMLElement>("[data-worker]")];
+        const report = scene.querySelector<HTMLElement>(".report")!;
+        const setState = (worker: HTMLElement, state: string) => {
+            worker.dataset.state = state;
+            worker.querySelector(".state")!.textContent = state;
+        };
+        const finish = () => {
+            for (const step of steps) step.classList.add("on");
+            workers.forEach((worker, index) => setState(worker, index === 1 ? "needs you" : "done"));
+            report.classList.add("on");
+        };
+
+        if (still) {
+            finish();
+            continue;
+        }
+
+        let visible = false;
+        let running = false;
+        const run = async () => {
+            if (running) return;
+            running = true;
+            while (visible) {
+                for (const step of steps) step.classList.remove("on");
+                for (const worker of workers) setState(worker, "idle");
+                report.classList.remove("on");
+                await wait(700);
+                for (const step of steps) {
+                    step.classList.add("on");
+                    await wait(550);
+                }
+                for (const worker of workers) {
+                    setState(worker, "working");
+                    await wait(220);
+                }
+                await wait(900);
+                for (const index of [2, 0, 4, 3]) {
+                    setState(workers[index], "done");
+                    await wait(650);
+                }
+                setState(workers[1], "needs you");
+                await wait(500);
+                report.classList.add("on");
+                await wait(5200);
+            }
+            running = false;
+        };
+
+        new IntersectionObserver(([entry]) => {
+            visible = entry.isIntersecting;
+            if (visible) run();
+        }).observe(scene);
+    }
+</script>
+
+<style>
+    .chief {
+        padding-block: clamp(56px, 8vw, 112px) clamp(32px, 5vw, 64px);
+    }
+
+    .head {
+        display: grid;
+        justify-items: start;
+        gap: 14px;
+        max-width: 620px;
+    }
+
+    .head :global(.mark) {
+        width: 56px;
+        height: 56px;
+        filter: drop-shadow(0 0 28px color-mix(in oklab, var(--acc) 45%, transparent));
+    }
+
+    .label {
+        color: var(--acc-soft);
+        text-transform: none;
+        letter-spacing: 0.06em;
+        font-size: 13px;
+    }
+
+    .display {
+        font-size: clamp(42px, 5.4vw, 68px);
+    }
+
+    .lede {
+        max-width: 540px;
+        font-size: 17px;
+        line-height: 1.55;
+        color: color-mix(in oklab, var(--ink) 88%, transparent);
+    }
+
+    .scene {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1.25fr 1fr;
+        align-items: center;
+        gap: clamp(20px, 3vw, 44px);
+        margin-top: clamp(32px, 4vw, 56px);
+        padding: clamp(20px, 3vw, 40px);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background:
+            radial-gradient(ellipse at 50% 0%, color-mix(in oklab, var(--acc) 10%, transparent), transparent 60%),
+            var(--surface-sunken);
+    }
+
+    .wires {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .wires line {
+        stroke: var(--gray-700);
+        stroke-width: 2;
+        stroke-dasharray: 0.1 7;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
+    }
+
+    .card {
+        position: relative;
+        display: grid;
+        gap: 10px;
+        padding: 16px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-3);
+        background: var(--surface-raised);
+        font-size: 14px;
+        color: var(--text-primary);
+    }
+
+    .who {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+    .who :global(.tiny) {
+        width: 18px;
+        height: 18px;
+    }
+
+    .avatar {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--gray-500);
+    }
+
+    .time {
+        margin-left: auto;
+        font-weight: 400;
+        color: var(--text-tertiary);
+    }
+
+    .said {
+        padding: 10px 12px;
+        border-radius: var(--radius-2);
+        background: var(--gray-200);
+    }
+
+    .steps {
+        display: grid;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .steps li,
+    .report .line,
+    .report .call {
+        opacity: 0.25;
+        transition: opacity 0.3s var(--ease-out);
+    }
+
+    .steps li.on,
+    .report.on .line,
+    .report.on .call {
+        opacity: 1;
+    }
+
+    .steps span {
+        color: var(--text-tertiary);
+    }
+
+    .crew .title {
+        color: var(--text-tertiary);
+    }
+
+    .crew ul {
+        display: grid;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .crew li {
+        display: grid;
+        grid-template-columns: 16px auto 1fr auto;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 8px;
+        border-radius: var(--radius-2);
+        transition: background var(--dur-2) var(--ease-out);
+    }
+
+    .crew li :global(svg),
+    .crew li :global(img) {
+        color: var(--brand);
+    }
+
+    .crew .name {
+        font-weight: 500;
+    }
+
+    .crew .task {
+        overflow: hidden;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .crew .state {
+        color: var(--text-tertiary);
+    }
+
+    .crew li[data-state="working"] .state {
+        color: var(--acc-soft);
+    }
+
+    .crew li[data-state="done"] .state {
+        color: var(--live);
+    }
+
+    .crew li[data-state="needs you"] {
+        background: var(--surface-selected);
+    }
+
+    .crew li[data-state="needs you"] .state {
+        color: var(--acc-soft);
+    }
+
+    .report {
+        transition:
+            border-color 0.3s var(--ease-out),
+            box-shadow 0.3s var(--ease-out);
+    }
+
+    .report.on {
+        border-color: var(--border-selected);
+        box-shadow: 0 0 40px color-mix(in oklab, var(--acc) 18%, transparent);
+    }
+
+    .report .time {
+        font-size: 11px;
+    }
+
+    .line {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .action {
+        flex: none;
+        color: var(--acc-soft);
+    }
+
+    .call {
+        display: grid;
+        gap: 8px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2);
+        background: var(--surface-sunken);
+    }
+
+    .q {
+        font-weight: 500;
+    }
+
+    .choices {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .choice {
+        padding: 5px 10px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-pill);
+        font-size: 13px;
+    }
+
+    .choice.picked {
+        border-color: var(--border-selected);
+        background: var(--surface-selected);
+    }
+
+    .choice i {
+        margin-left: 4px;
+        font-style: normal;
+        font-size: 11px;
+        color: var(--acc-soft);
+    }
+
+    @media (max-width: 900px) {
+        .scene {
+            grid-template-columns: 1fr;
+        }
+
+        .wires line {
+            display: none;
+        }
+    }
+
+    @media (max-width: 720px) {
+        .lede {
+            font-size: 16px;
+        }
+
+        .display {
+            font-size: clamp(40px, 11vw, 52px);
+        }
+    }
+</style>

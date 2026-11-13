@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
+import Chief from "../components/Chief.astro";
 import Team from "../components/Team.astro";
 import Bento from "../components/Bento.astro";
 import Compare from "../components/Compare.astro";
@@ -80,6 +81,7 @@ const structuredData = [
     <Nav release={release} stars={stars} />
     <main>
         <Hero release={release} stars={stars} />
+        <Chief />
         <Team />
         <Bento />
         <Plugins />
