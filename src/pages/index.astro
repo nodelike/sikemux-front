@@ -7,6 +7,8 @@ import Features from "../components/home/Features.astro";
 import Beliefs from "../components/home/Beliefs.astro";
 import Numbers from "../components/home/Numbers.astro";
 import Closing from "../components/home/Closing.astro";
+import Faq from "../components/home/Faq.astro";
+import { FAQ, faqStructuredData } from "../lib/faq";
 import Footer from "../components/home/Footer.astro";
 import Play from "../components/home/Play.astro";
 import LiveRelease from "../components/LiveRelease.astro";
@@ -66,6 +68,7 @@ const structuredData = [
         author: { "@type": "Person", name: "nodelike", url: "https://github.com/nodelike" },
         sameAs: [REPO_URL],
     },
+    faqStructuredData(FAQ),
 ];
 ---
 
@@ -80,6 +83,7 @@ const structuredData = [
         <Features />
         <Beliefs />
         <Numbers release={release} />
+        <Faq />
     </main>
     <Closing release={release} />
     <Footer release={release} />

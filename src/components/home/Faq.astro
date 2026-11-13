@@ -1,0 +1,124 @@
+---
+import { FAQ } from "../../lib/faq";
+
+const opened = new Set(["Is it free?", "How does it stay alive?"]);
+---
+
+<section class="frame faq" id="faq" aria-labelledby="faq-title">
+    <div class="head">
+        <span class="tag">Questions</span>
+        <h2 id="faq-title">Asked<br /><span class="chip">often.</span></h2>
+    </div>
+    <div class="list">
+        {
+            FAQ.map((entry) => (
+                <details open={opened.has(entry.question)}>
+                    <summary>
+                        <span>{entry.question}</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12h14" />
+                            <path class="up" d="M12 5v14" />
+                        </svg>
+                    </summary>
+                    <p set:html={entry.answer} />
+                </details>
+            ))
+        }
+    </div>
+</section>
+
+<style>
+    .faq {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+        border-top: 1px solid var(--rule);
+    }
+    .head {
+        display: grid;
+        align-content: start;
+        justify-items: start;
+        gap: 22px;
+        padding: 56px 40px;
+        border-right: 1px solid var(--rule);
+    }
+    h2 {
+        font-size: clamp(40px, 5vw, 64px);
+    }
+    .list {
+        display: grid;
+    }
+    details + details {
+        border-top: 1px solid var(--rule);
+    }
+    summary {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 22px 40px;
+        cursor: pointer;
+        font-size: 19px;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        transition: background 160ms;
+    }
+    summary::-webkit-details-marker {
+        display: none;
+    }
+    summary:hover {
+        background: var(--paper-2);
+    }
+    summary:focus-visible {
+        outline: 2px solid var(--violet);
+        outline-offset: -2px;
+    }
+    svg {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+    }
+    .up {
+        transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        transform-origin: center;
+    }
+    details[open] .up {
+        transform: scaleY(0);
+    }
+    details p {
+        padding: 0 40px 24px;
+        max-width: 62ch;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink-2);
+    }
+    details p :global(a) {
+        color: var(--ink);
+        text-decoration: underline;
+        text-decoration-color: var(--violet);
+        text-underline-offset: 3px;
+    }
+    @media (max-width: 900px) {
+        .faq {
+            grid-template-columns: minmax(0, 1fr);
+        }
+        .head {
+            padding: 40px 20px 28px;
+            border-right: 0;
+            border-bottom: 1px solid var(--rule);
+        }
+        summary {
+            padding: 18px 20px;
+            font-size: 17px;
+        }
+        details p {
+            padding: 0 20px 20px;
+            font-size: 15px;
+        }
+    }
+</style>
