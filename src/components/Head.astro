@@ -12,7 +12,7 @@ const { title, description, structuredData = [], noindex = false } = Astro.props
 const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Astro.site);
 const card = CARDS.find((card) => card.path === canonical.pathname);
 const ogUrl = new URL(card ? cardImagePath(card.path) : "/og.png", Astro.site);
-const ogAlt = card ? `${cardHeadline(card)} ${card.body}` : "Sikemux: every coding agent you pay for, in one window. A Mac window with a coding agent, its browser tab and the project's other agents beside it.";
+const ogAlt = card ? `${cardHeadline(card)} ${card.body}` : "Sikemux: a whole team of AI coders, in one window. A Mac window with a coding agent, its browser tab and the project's other agents beside it.";
 ---
 
 <meta charset="utf-8" />
