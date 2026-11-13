@@ -1,6 +1,7 @@
 ---
 import Dither from "../Dither.astro";
 import Install from "./Install.astro";
+import { APPLE, LINUX, type Mark } from "../../lib/marks";
 import { APP_STORE_URL, RELEASES_URL, type Release } from "../../lib/release";
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
 }
 
 const { release } = Astro.props;
+const mark = (m: Mark) => `<svg viewBox="${m.viewBox}" fill="currentColor" aria-hidden="true"><path d="${m.path}" /></svg>`;
 ---
 
 <section class="closing">
@@ -17,9 +19,9 @@ const { release } = Astro.props;
         <div class="side">
             <p>Sikemux runs the agents you already pay for and gives them the rest of your tools, on a Mac or a Linux box.</p>
             <div class="actions">
-                <a class="btn solid" href={release.dmgUrl} data-release-dmg>Download for Mac</a>
-                <a class="btn" href={RELEASES_URL}>Linux builds</a>
-                <a class="btn" href={APP_STORE_URL}>iPhone app</a>
+                <a class="btn solid" href={release.dmgUrl} data-release-dmg><Fragment set:html={mark(APPLE)} />Download for Mac</a>
+                <a class="btn" href={RELEASES_URL}><Fragment set:html={mark(LINUX)} />Linux builds</a>
+                <a class="btn" href={APP_STORE_URL}><Fragment set:html={mark(APPLE)} />iPhone app</a>
             </div>
             <Install />
         </div>
