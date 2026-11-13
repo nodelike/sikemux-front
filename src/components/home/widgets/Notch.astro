@@ -97,7 +97,7 @@ const rows = [
         const scale = () => {
             const narrow = box.clientWidth < 680;
             const room = narrow ? box.clientWidth - 24 : box.clientWidth - 290;
-            laptop.style.setProperty("--s", String(Math.min(1, room / (narrow ? 760 : 1600))));
+            laptop.style.setProperty("--s", String(Math.min(narrow ? 1 : 0.58, room / (narrow ? 760 : 1368))));
             box.style.setProperty("--s", laptop.style.getPropertyValue("--s"));
         };
         new ResizeObserver(scale).observe(box);
@@ -232,7 +232,7 @@ const rows = [
         align-items: end;
     }
     .laptop {
-        width: 1544px;
+        width: 1312px;
         zoom: var(--s, 1);
         justify-self: start;
     }
@@ -244,8 +244,8 @@ const rows = [
     }
     .screen {
         position: relative;
-        width: 1512px;
-        aspect-ratio: 1512 / 982;
+        width: 1280px;
+        aspect-ratio: 1280 / 832;
         border-radius: 16px 16px 0 0;
         overflow: hidden;
         background:
@@ -994,7 +994,7 @@ const rows = [
             box-shadow: inset 0 0 0 1px #2a2a30;
         }
         .laptop-crop .laptop {
-            margin-left: -392px;
+            margin-left: -276px;
         }
         .laptop-crop .mac {
             border-radius: 0;
