@@ -14,7 +14,7 @@ interface Props {
 const { comparison } = Astro.props;
 const release = await latestRelease();
 const others = COMPARISONS.filter((other) => other !== comparison);
-const description = `Sikemux vs ${comparison.name}: how a free agentic IDE for Claude Code and Codex compares with ${comparison.name}, the ${comparison.kind}, and which one fits how you work.`;
+const description = `Sikemux vs ${comparison.name}: how a free, MIT-licensed native app for Claude Code and Codex compares with ${comparison.name}, the ${comparison.kind}, and which one fits how you work.`;
 ---
 
 <Article
@@ -51,7 +51,7 @@ const description = `Sikemux vs ${comparison.name}: how a free agentic IDE for C
             <section>
                 <h2>Download size</h2>
                 <p>
-                    Sikemux is <span data-release-size>{formatSize(release.dmgBytes)}</span> to download. {comparison.name}'s Apple Silicon installer was{" "}
+                    Sikemux is <span data-release-size>{formatSize(release.dmgBytes)}</span> to download. {comparison.name}'s Apple Silicon installer{comparison.measuredAs && `, then called ${comparison.measuredAs},`} was{" "}
                     {formatSize(comparison.bytes)} when we checked on 27 September 2026. Sikemux is drawn natively on the GPU, and its browser tabs use the
                     WebKit already built into macOS instead of shipping a browser of its own.
                 </p>

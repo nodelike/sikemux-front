@@ -1,0 +1,78 @@
+<form class="waitlist" data-waitlist>
+    <label for="waitlist-email">On Windows or an Intel Mac?</label>
+    <span class="field">
+        <input id="waitlist-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
+        <button class="btn" type="submit">Tell me when</button>
+    </span>
+    <p class="thanks" role="status" hidden>Thanks. We'll write once, when it runs there.</p>
+</form>
+
+<script>
+    import { capture } from "../lib/analytics";
+
+    const platform = () => (/windows/i.test(navigator.userAgent) ? "windows" : /macintosh/i.test(navigator.userAgent) ? "mac" : "other");
+
+    for (const form of document.querySelectorAll<HTMLFormElement>("[data-waitlist]")) {
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const email = new FormData(form).get("email");
+            capture("platform_waitlist", { email, platform: platform() });
+            form.querySelector(".field")?.remove();
+            form.querySelector<HTMLElement>(".thanks")!.hidden = false;
+        });
+    }
+</script>
+
+<style>
+    .waitlist {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 12px;
+        font-size: 13.5px;
+        color: var(--text-tertiary);
+    }
+
+    .field {
+        display: inline-flex;
+        gap: 6px;
+    }
+
+    input {
+        width: 200px;
+        height: 32px;
+        padding-inline: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-2);
+        background: color-mix(in oklab, var(--bg-dim) 70%, transparent);
+        font: inherit;
+        color: var(--text-primary);
+    }
+
+    input:focus-visible {
+        outline: none;
+        border-color: var(--border-selected);
+        box-shadow: var(--focus-ring);
+    }
+
+    .btn {
+        height: 32px;
+        padding-inline: 12px;
+        font-size: 13px;
+    }
+
+    .thanks {
+        color: var(--acc-soft);
+    }
+
+    @media (max-width: 520px) {
+        .field {
+            width: 100%;
+        }
+
+        input {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+</style>

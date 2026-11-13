@@ -20,7 +20,7 @@ export const CARDS: Card[] = [
         body: `Run ${agent.name} ${agent.chat ? "in a chat" : "in a terminal"} beside your code, with its own browser tab, Git review and your tools.`,
         agents: [{ id: agent.icon, color: agent.color }],
     })),
-    { path: "/vs", label: "Compared", title: "Sikemux and the tools you're weighing it against.", body: "Cursor, Zed, Warp, Superset, Conductor and cmux, and when each one is the better pick." },
+    { path: "/vs", label: "Compared", title: "Sikemux and the tools you're weighing it against.", body: "T3 Code, Orca, Conductor, Paradev, herdr, Paseo and more, and when each one is the better pick." },
     ...COMPARISONS.map((comparison) => ({
         path: comparisonPath(comparison),
         label: "Compared",

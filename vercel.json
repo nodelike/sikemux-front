@@ -12,6 +12,7 @@
     { "source": "/ingest/(.*)", "destination": "https://eu.i.posthog.com/$1" }
   ],
   "redirects": [
+    { "source": "/vs/superset", "destination": "/vs/paradev", "permanent": true },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.sikemux.com" }],

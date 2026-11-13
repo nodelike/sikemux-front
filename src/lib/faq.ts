@@ -18,11 +18,11 @@ export const FAQ: FaqEntry[] = [
     },
     {
         question: "Linux, Windows, Intel Macs?",
-        answer: "Apple Silicon Macs on macOS 11 or later, and x86_64 Linux as a .deb, .rpm or AppImage. Windows and Intel Macs can build it from source, but there's no download for them yet.",
+        answer: "Apple Silicon Macs on macOS 11 or later, and x86_64 Linux as a .deb, .rpm or AppImage. Windows and Intel Macs can build it from source, but there's no download for them yet. Leave your email at the top of this page and we'll write when there is.",
     },
     {
         question: "What does it cost?",
-        answer: "Nothing, at home or at work. You only pay for the agents' own plans, the ones you already have.",
+        answer: "Nothing, at home or at work, and the source is MIT. You only pay for the agents' own plans, the ones you already have.",
     },
 ];
 

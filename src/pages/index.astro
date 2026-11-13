@@ -20,7 +20,7 @@ import { DISCORD_URL, X_URL, formatSize, latestRelease, REPO_URL, starCount } fr
 const [release, stars] = await Promise.all([latestRelease(), starCount()]);
 
 const description =
-    "Sikemux is a free agentic IDE for Mac and Linux. Run Claude Code, Codex and other coding agents beside your editor, Git and a real browser, in one window.";
+    "Out of Claude? The chat carries on in Codex. Sikemux is a free, MIT-licensed native app for Mac and Linux that runs Claude Code, Codex and other coding agents on your own plans and shows which one needs you.";
 
 const screenshot = await getImage({ src: hero, width: 1560, format: "png" });
 const origin = Astro.site!.href.replace(/\/$/, "");
@@ -74,7 +74,7 @@ const structuredData = [
 ---
 
 <Base
-    title="Sikemux · the agentic IDE for Claude Code and Codex"
+    title="Sikemux · out of Claude? The chat carries on in Codex"
     description={description}
     structuredData={structuredData}>
     <Nav release={release} stars={stars} />

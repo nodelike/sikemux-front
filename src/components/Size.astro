@@ -9,7 +9,7 @@ import ghosttyIcon from "../assets/apps/ghostty.png";
 import zedIcon from "../assets/apps/zed.png";
 import cursorIcon from "../assets/apps/cursor.png";
 import warpIcon from "../assets/apps/warp.png";
-import supersetIcon from "../assets/apps/superset.png";
+import paradevIcon from "../assets/apps/paradev.png";
 
 interface Props {
     release: Release;
@@ -22,7 +22,7 @@ const others = [
     { name: "Zed", icon: zedIcon, bytes: 122_610_677 },
     { name: "Cursor", icon: cursorIcon, bytes: 291_841_306 },
     { name: "Warp", icon: warpIcon, bytes: 334_774_677 },
-    { name: "Superset", icon: supersetIcon, bytes: 453_107_779 },
+    { name: "Paradev", icon: paradevIcon, bytes: 453_107_779 },
 ];
 
 const versus = (name: string) => {
@@ -37,7 +37,7 @@ const facts =
     own === null
         ? []
         : [
-              { figure: `${Math.round(byName("Superset") / own)}×`, text: "smaller than Superset" },
+              { figure: `${Math.round(byName("Paradev") / own)}×`, text: "smaller than Paradev" },
               { figure: `${Math.round(byName("Cursor") / own)}×`, text: "smaller than Cursor" },
               { figure: `${Math.round((1 - own / byName("Ghostty")) * 100)}%`, text: "smaller than Ghostty, which is only a terminal" },
           ];
