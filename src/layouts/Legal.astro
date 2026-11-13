@@ -1,7 +1,5 @@
 ---
-import Base from "./Base.astro";
-import Logo from "../components/Logo.astro";
-import Footer from "../components/Footer.astro";
+import Site from "./Site.astro";
 
 interface Props {
     title: string;
@@ -10,129 +8,52 @@ interface Props {
 }
 
 const { title, description, updated } = Astro.props;
+const here = Astro.url.pathname;
 ---
 
-<Base title={`${title} · Sikemux`} description={description}>
-    <header class="top">
-        <div class="page bar">
-            <a class="brand" href="/" aria-label="Sikemux home">
-                <span class="mark"><Logo size={20} /></span>
-                <span class="word">SIKE<span>MUX</span></span>
-            </a>
-            <nav aria-label="Legal">
-                <a href="/privacy" aria-current={Astro.url.pathname.startsWith("/privacy") ? "page" : undefined}>Privacy</a>
-                <a href="/terms" aria-current={Astro.url.pathname.startsWith("/terms") ? "page" : undefined}>Terms</a>
-                <a href="/delete-account" aria-current={Astro.url.pathname.startsWith("/delete-account") ? "page" : undefined}>Delete account</a>
-            </nav>
-        </div>
-    </header>
-    <main class="page legal">
-        <p class="label">Updated {updated}</p>
+<Site title={`${title} · Sikemux`} description={description}>
+    <nav class="legal-nav" aria-label="Legal">
+        <a href="/privacy" aria-current={here.startsWith("/privacy") ? "page" : undefined}>Privacy</a>
+        <a href="/terms" aria-current={here.startsWith("/terms") ? "page" : undefined}>Terms</a>
+        <a href="/delete-account" aria-current={here.startsWith("/delete-account") ? "page" : undefined}>Delete account</a>
+    </nav>
+    <header class="page-head">
+        <span class="tag">Updated {updated}</span>
         <h1>{title}</h1>
-        <div class="prose">
-            <slot />
-        </div>
-    </main>
-    <Footer />
-</Base>
+    </header>
+    <div class="page-copy prose">
+        <slot />
+    </div>
+</Site>
 
 <style>
-    .top {
-        border-bottom: 1px solid var(--border);
-    }
-
-    .bar {
+    .legal-nav {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 64px;
-    }
-
-    .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        color: var(--text-primary);
-    }
-
-    .mark {
-        display: grid;
-        place-items: center;
-        color: var(--acc);
-    }
-
-    .word {
-        font-size: 14px;
-        font-weight: 600;
-        letter-spacing: 0.16em;
-    }
-
-    .word span {
-        color: var(--text-tertiary);
-    }
-
-    nav {
-        display: flex;
-        gap: 20px;
+        border-bottom: 1px solid var(--rule);
         font-size: 14px;
     }
-
-    nav a {
-        color: var(--text-secondary);
-        transition: color var(--dur-2) var(--ease-out);
+    .legal-nav a {
+        padding: 14px 20px;
+        border-right: 1px solid var(--rule);
+        text-decoration: none;
+        color: var(--ink-2);
     }
-
-    nav a:hover,
-    nav a[aria-current="page"] {
-        color: var(--text-primary);
+    .legal-nav a:hover {
+        color: var(--ink);
     }
-
-    .legal {
-        max-width: 720px;
-        padding-block: clamp(48px, 8vw, 96px);
+    .legal-nav a[aria-current="page"] {
+        background: var(--ink);
+        color: var(--paper);
     }
-
-    h1 {
-        margin: 14px 0 32px;
-        font-size: clamp(36px, 5vw, 52px);
-        line-height: 1.04;
-        letter-spacing: -0.04em;
+    .page-head .tag {
+        justify-self: start;
     }
-
     .prose {
-        display: grid;
+        max-width: 760px;
         gap: 16px;
-        font-size: 16px;
-        line-height: 1.7;
     }
-
     .prose :global(h2) {
-        margin-top: 32px;
-        font-size: 22px;
-        line-height: 1.25;
-        letter-spacing: -0.025em;
-    }
-
-    .prose :global(ul) {
-        display: grid;
-        gap: 8px;
-        margin: 0;
-        padding-left: 20px;
-    }
-
-    .prose :global(strong) {
-        color: var(--text-primary);
-        font-weight: 600;
-    }
-
-    .prose :global(a) {
-        color: var(--text-primary);
-        text-decoration: underline;
-        text-decoration-color: var(--border-strong);
-        text-underline-offset: 3px;
-    }
-
-    .prose :global(a:hover) {
-        text-decoration-color: var(--text-primary);
+        margin-top: 24px;
+        font-size: 24px;
     }
 </style>

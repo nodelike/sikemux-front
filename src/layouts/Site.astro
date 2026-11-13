@@ -1,0 +1,22 @@
+---
+import "../styles/pages.css";
+import Home from "./Home.astro";
+import Nav from "../components/home/Nav.astro";
+import Footer from "../components/home/Footer.astro";
+import LiveRelease from "../components/LiveRelease.astro";
+import { latestRelease } from "../lib/release";
+
+type Props = import("../components/Head.astro").Props;
+
+const release = await latestRelease();
+---
+
+<Home {...Astro.props}>
+    <Nav release={release} />
+    <main class="frame page-body">
+        <slot />
+    </main>
+    <slot name="after" />
+    <Footer release={release} />
+    <LiveRelease />
+</Home>

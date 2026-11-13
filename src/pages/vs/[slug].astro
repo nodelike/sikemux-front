@@ -26,7 +26,7 @@ const description = `Sikemux vs ${comparison.name}: how a free, MIT-licensed nat
     ]}>
     <header>
         <p class="label">Compared</p>
-        <h1>Sikemux vs {comparison.name}</h1>
+        <h1>Sikemux vs<br /><span class="chip">{comparison.name}</span></h1>
         <p class="lede">{comparison.what}</p>
     </header>
 
@@ -52,7 +52,7 @@ const description = `Sikemux vs ${comparison.name}: how a free, MIT-licensed nat
                 <h2>Download size</h2>
                 <p>
                     Sikemux is <span data-release-size>{formatSize(release.dmgBytes)}</span> to download. {comparison.name}'s Apple Silicon installer{comparison.measuredAs && `, then called ${comparison.measuredAs},`} was{" "}
-                    {formatSize(comparison.bytes)} when we checked on 27 September 2026. Sikemux is drawn natively on the GPU, and its browser tabs use the
+                    {formatSize(comparison.bytes)} when we checked on {comparison.checked}. Sikemux is drawn natively on the GPU, and its browser tabs use the
                     WebKit already built into macOS instead of shipping a browser of its own.
                 </p>
             </section>
@@ -82,22 +82,23 @@ const description = `Sikemux vs ${comparison.name}: how a free, MIT-licensed nat
 <style>
     .picks {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
+        gap: 0;
+        padding: 0;
     }
 
     .pick {
         display: grid;
         align-content: start;
         gap: 14px;
-        padding: 22px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-3);
-        background: var(--surface);
+        padding: 32px 20px 36px;
+    }
+
+    .pick + .pick {
+        border-left: 1px solid var(--rule);
     }
 
     .pick.own {
-        border-color: var(--border-strong);
-        background: var(--surface-raised);
+        background: var(--field);
     }
 
     .pick h2 {
@@ -107,6 +108,10 @@ const description = `Sikemux vs ${comparison.name}: how a free, MIT-licensed nat
     @media (max-width: 640px) {
         .picks {
             grid-template-columns: minmax(0, 1fr);
+        }
+        .pick + .pick {
+            border-left: 0;
+            border-top: 1px solid var(--rule);
         }
     }
 </style>

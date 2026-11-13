@@ -8,10 +8,10 @@ const description = "How Sikemux, a free, MIT-licensed native app for Claude Cod
 <Article title="Sikemux vs T3 Code, Orca, Conductor, Paradev, herdr and more" description={description} crumbs={[{ name: "Compare", path: "/vs" }]}>
     <header>
         <p class="label">Compared</p>
-        <h1>Sikemux and the tools you're weighing it against.</h1>
+        <h1>Sikemux and the tools<br /><span class="chip">you’re weighing it against.</span></h1>
         <p class="lede">
             Sikemux is built around one way of working: one window per project, with your agents in it. Here's how that differs from the agent apps,
-            editors and terminals people compare it with, and when each one is the better pick. Checked on 13 November 2026.
+            editors and terminals people compare it with, and when each one is the better pick. Each page says when its numbers were checked.
         </p>
     </header>
 
@@ -34,7 +34,9 @@ const description = "How Sikemux, a free, MIT-licensed native app for Claude Cod
 <style>
     .list {
         display: grid;
-        gap: 8px;
+        gap: 0;
+        max-width: 68ch;
+        border-top: 1px solid var(--rule);
         margin: 0;
         padding: 0;
         list-style: none;
@@ -46,15 +48,13 @@ const description = "How Sikemux, a free, MIT-licensed native app for Claude Cod
         justify-content: space-between;
         gap: 16px;
         padding: 16px 18px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-3);
-        background: var(--surface);
+        border-bottom: 1px solid var(--rule);
         text-decoration: none;
-        transition: border-color var(--dur-2) var(--ease-out);
+        transition: background-color var(--dur-2) var(--ease-out);
     }
 
     .list a:hover {
-        border-color: color-mix(in oklab, var(--acc) 45%, var(--border));
+        background: var(--field);
     }
 
     .name {

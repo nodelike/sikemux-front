@@ -1,46 +1,24 @@
 ---
-import Base from "../layouts/Base.astro";
-import Logo from "../components/Logo.astro";
+import Site from "../layouts/Site.astro";
 ---
 
-<Base title="Page not found · Sikemux" description="This page does not exist." noindex>
-    <main class="missing">
-        <span class="mark"><Logo size={44} /></span>
-        <p class="label">404</p>
-        <h1>Nothing lives here.</h1>
+<Site title="Page not found · Sikemux" description="This page does not exist." noindex>
+    <header class="page-head missing">
+        <span class="tag">404</span>
+        <h1>Nothing<br /><span class="chip">lives here.</span></h1>
         <p class="lede">The page you asked for doesn't exist. The rest of Sikemux does.</p>
-        <a class="btn" href="/">Back to sikemux.com</a>
-    </main>
-</Base>
+        <a class="btn solid" href="/">Back to sikemux.com</a>
+    </header>
+</Site>
 
 <style>
     .missing {
-        display: grid;
-        justify-items: center;
+        min-height: 56vh;
         align-content: center;
-        gap: 18px;
-        min-height: 100vh;
-        padding: 24px;
-        text-align: center;
+        border-bottom: 0;
     }
-
-    .mark {
-        color: var(--acc);
-    }
-
-    h1 {
-        font-size: clamp(36px, 6vw, 64px);
-        line-height: 1;
-        letter-spacing: -0.04em;
-    }
-
-    .lede {
-        font-size: 17px;
-    }
-
-    .btn {
-        margin-top: 8px;
-        height: 44px;
-        padding-inline: 18px;
+    .missing .tag,
+    .missing .btn {
+        justify-self: start;
     }
 </style>

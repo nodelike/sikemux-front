@@ -11,7 +11,7 @@ const description =
 <Article title="Coding agents that run in Sikemux · Claude Code, Codex and more" description={description} crumbs={[{ name: "Agents", path: "/agents" }]}>
     <header>
         <p class="label">Agents</p>
-        <h1>Bring the coding agent you already use.</h1>
+        <h1>Bring the coding agent<br /><span class="chip">you already use.</span></h1>
         <p class="lede">
             Sikemux doesn't sell AI. It runs the coding agent CLIs you already have, signed in with your own account, so your Claude or ChatGPT
             plan is the one doing the work. Run several on the same project and give each one its own task.
@@ -48,7 +48,9 @@ const description =
 <style>
     .agents {
         display: grid;
-        gap: 8px;
+        gap: 0;
+        max-width: 68ch;
+        border-top: 1px solid var(--rule);
         margin: 0;
         padding: 0;
         list-style: none;
@@ -60,15 +62,13 @@ const description =
         align-items: center;
         gap: 14px;
         padding: 12px 16px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-3);
-        background: var(--surface);
+        border-bottom: 1px solid var(--rule);
         text-decoration: none;
-        transition: border-color var(--dur-2) var(--ease-out);
+        transition: background-color var(--dur-2) var(--ease-out);
     }
 
     .agents a:hover {
-        border-color: color-mix(in oklab, var(--acc) 45%, var(--border));
+        background: var(--field);
     }
 
     .mark {

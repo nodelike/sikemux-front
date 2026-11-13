@@ -1,0 +1,124 @@
+:root {
+    --text-primary: var(--ink);
+    --text-secondary: var(--ink-2);
+    --text-tertiary: var(--ink-3);
+    --border: var(--rule);
+    --border-strong: var(--ink-3);
+    --surface: var(--paper);
+    --surface-raised: var(--paper);
+    --surface-sunken: var(--paper-2);
+    --surface-hover: var(--field);
+    --acc: var(--violet);
+    --on-accent: #120d1c;
+    --bg: var(--paper);
+    --bg-dim: var(--paper-2);
+    --live: #1f9d6b;
+    --radius-1: 0;
+    --radius-2: 0;
+    --radius-3: 0;
+    --radius-4: 0;
+    --dur-1: 90ms;
+    --dur-2: 140ms;
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+:root[data-theme="dark"] {
+    --live: #54ffbe;
+}
+
+.page-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+}
+.page-head {
+    display: grid;
+    gap: 20px;
+    padding: clamp(48px, 7vw, 96px) 20px clamp(32px, 4vw, 48px);
+    border-bottom: 1px solid var(--rule);
+}
+.page-head h1 {
+    font-size: clamp(40px, 5.6vw, 76px);
+    max-width: 18ch;
+}
+.page-head .lede {
+    max-width: 60ch;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-2);
+}
+.page-copy {
+    display: grid;
+    gap: 40px;
+    padding: clamp(40px, 5vw, 64px) 20px clamp(56px, 7vw, 96px);
+    color: var(--ink-2);
+}
+.page-copy h2 {
+    font-size: clamp(26px, 3vw, 36px);
+    color: var(--ink);
+}
+.page-copy h3 {
+    color: var(--ink);
+}
+.page-copy section {
+    display: grid;
+    gap: 16px;
+}
+.page-copy p,
+.page-copy li {
+    max-width: 68ch;
+    font-size: 16px;
+    line-height: 1.7;
+}
+.page-copy ul {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding-left: 20px;
+}
+.page-copy p a,
+.page-copy li a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--ink-3);
+    text-underline-offset: 3px;
+}
+.page-copy p a:hover,
+.page-copy li a:hover {
+    text-decoration-color: var(--violet);
+}
+.page-copy strong {
+    color: var(--ink);
+    font-weight: 600;
+}
+.page-copy pre {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    background: var(--paper-2);
+    font: 400 13px/1.6 var(--mono);
+    color: var(--ink);
+}
+.page-copy .label {
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+.page-copy .mono,
+.page-head .mono {
+    font-family: var(--mono);
+}
+.btn.pill {
+    height: 46px;
+}
+@media (max-width: 640px) {
+    .page-head,
+    .page-copy {
+        padding-inline: 16px;
+    }
+}
+
+.page-head > .tag,
+.page-head > .btn {
+    justify-self: start;
+}

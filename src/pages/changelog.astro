@@ -13,7 +13,7 @@ const date = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "
     noindex={entries.length === 0}>
     <header>
         <p class="label">Changelog</p>
-        <h1>What's new in Sikemux.</h1>
+        <h1>What’s new<br /><span class="chip">in Sikemux.</span></h1>
         <p class="lede">Every stable release, newest first. Sikemux updates itself, and nightlies with unreleased work are on <a href="https://github.com/nodelike/sikemux/releases">GitHub</a>.</p>
     </header>
 
@@ -32,7 +32,7 @@ const date = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "
             <section class="release" id={`v${entry.version}`}>
                 <div class="meta">
                     <h2>
-                        <a href={`#v${entry.version}`}>v{entry.version}</a>
+                        <a href={`#v${entry.version}`}>{entry.version.startsWith("mobile-") ? entry.version : `v${entry.version}`}</a>
                     </h2>
                     <time class="mono" datetime={entry.publishedAt}>
                         {date(entry.publishedAt)}

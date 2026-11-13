@@ -38,7 +38,7 @@ const colors = [
     crumbs={[{ name: "Brand", path: "/brand" }]}>
     <header>
         <p class="label">Brand</p>
-        <h1>Sikemux brand.</h1>
+        <h1>Sikemux<br /><span class="chip">brand.</span></h1>
         <p class="lede">The wordmark, the mark, the icon and the colours, for writing about Sikemux or linking to it.</p>
         <div>
             <a class="btn primary" href="/brand/sikemux-brand.zip" download>Download all assets</a>
@@ -159,7 +159,7 @@ const colors = [
             {
                 colors.map((color) => (
                     <li class="swatch">
-                        <span class="chip" style={`background: ${color.hex}`} />
+                        <span class="swatch-chip" style={`background: ${color.hex}`} />
                         <div class="swatch-text">
                             <span class="swatch-name">{color.name}</span>
                             <span class="mono values">
@@ -238,11 +238,11 @@ const colors = [
     }
 
     .stage.dark {
-        background: var(--bg);
+        background: #0f0f13;
     }
 
     .stage.light {
-        background: var(--ink);
+        background: #e7e5ef;
     }
 
     .meta {
@@ -294,7 +294,7 @@ const colors = [
         border-top: 1px solid var(--border);
     }
 
-    .chip {
+    .swatch-chip {
         width: 48px;
         height: 48px;
         border: 1px solid var(--border);
