@@ -18,11 +18,15 @@ export const FAQ: FaqEntry[] = [
     },
     {
         question: "Linux, Windows, Intel Macs?",
-        answer: "Apple Silicon Macs on macOS 11 or later, and x86_64 Linux as a .deb, .rpm or AppImage. Windows and Intel Macs can build it from source, but there's no download for them yet. Leave your email at the top of this page and we'll write when there is.",
+        answer: "Apple Silicon Macs on macOS 11 or later, and x86_64 Linux as a .deb, .rpm or AppImage. Windows and Intel Macs can build it from source, but there's no download for them yet. Join the Discord or watch the GitHub repository to hear when there is.",
     },
     {
-        question: "What does it cost?",
-        answer: "Nothing, at home or at work, and the source is MIT. You only pay for the agents' own plans, the ones you already have.",
+        question: "Is it free?",
+        answer: "Yes. Sikemux is free and MIT-licensed, and it needs no account on your own computer. It runs the Claude Code, Codex and other subscriptions you already pay for, or free models if you have none. We don't resell models or take a cut.",
+    },
+    {
+        question: "How does it stay alive?",
+        answer: "Nothing is for sale today. Sikemux is built by people who use it all day. If we charge later, it will be for things that cost us money to run, such as a machine we host for your agents, sync between your computers, and team features. The app you download stays free and MIT, and the licence means nobody can take that back, us included.",
     },
 ];
 

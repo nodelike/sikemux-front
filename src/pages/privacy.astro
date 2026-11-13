@@ -76,11 +76,16 @@ import Legal from "../layouts/Legal.astro";
 
     <h2>Usage statistics</h2>
     <p>
-        Official releases of the Sikemux app for your computer send one message a day while you use them. It contains a
-        random ID made for your install, the app version, its update channel, and your operating system, its version and
-        your processor type. It contains nothing about you or your work, and we use it to count how many people use
-        each version. PostHog, which receives it, sees the IP address it comes from, as any server does. You can turn it off with Share anonymous usage, under Privacy in Settings, About. Builds you make
-        yourself never send it.
+        Official releases of the Sikemux app for your computer send one message a day while you use them. It holds a
+        random ID made for your install, a one-way hash of your Sikemux account if you are signed in, the app version, its
+        update channel, and your operating system, its version and your processor type. It also holds the day before's
+        totals: tokens and their cost by agent and model, turns, chat and terminal sessions, commits, and how often each
+        feature was used. A new install also sends once when it reaches each step of first use: setup started, an agent
+        ready, the first message, and a second day. When the app crashes, it sends where in its code that happened and
+        what it had just logged, with no file paths. None of these hold your files, prompts, commands, project names or
+        code. We use them to count how many people use Sikemux and to find what breaks. PostHog and Sentry, which receive
+        them, see the IP address they come from, as any server does. All of it is on unless you turn it off with Share
+        anonymous usage, under Privacy in Settings, About. Builds you make yourself never send any of it.
     </p>
     <p>
         This website counts page views and clicks on the Download button without cookies and without identifying you.
@@ -130,6 +135,7 @@ import Legal from "../layouts/Legal.astro";
             with n0's lookup service, so your devices can find them.
         </li>
         <li><strong>PostHog</strong>, in the EU, counts the usage statistics and website visits described above.</li>
+        <li><strong>Sentry</strong>, in the EU, receives the crash reports described above.</li>
         <li><strong>Vercel</strong> hosts this website, and <strong>GitHub</strong> hosts the downloads.</li>
     </ul>
 
