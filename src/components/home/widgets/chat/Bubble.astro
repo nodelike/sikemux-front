@@ -1,0 +1,14 @@
+---
+interface Props {
+    when?: string;
+    step?: boolean;
+    wait?: number;
+}
+
+const { when, step = true, wait = 300 } = Astro.props;
+---
+
+<div class="you" data-step={step ? "" : undefined} data-wait={step ? String(wait) : undefined}>
+    <p class="bubble"><slot /></p>
+    {when && <span class="when">{when}</span>}
+</div>

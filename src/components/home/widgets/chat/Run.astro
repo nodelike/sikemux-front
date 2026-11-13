@@ -1,0 +1,106 @@
+---
+import AgentIcon from "../../../AgentIcon.astro";
+import type { AgentIconId } from "../../../../lib/agents";
+
+export interface Call {
+    verb: string;
+    kind: "looked" | "changed" | "ran" | "called" | "removed" | "plugin";
+    icon: "search" | "file" | "pencil" | "command" | "globe" | "pulse" | "square-plus" | "signoz";
+    target: string;
+    took: number;
+    diff?: [string, string];
+    file?: boolean;
+}
+
+interface Props {
+    calls: Call[];
+    agent?: AgentIconId;
+    worked?: string;
+    wait?: number;
+}
+
+const { calls, agent = "claude", worked, wait = 300 } = Astro.props;
+const glyph: Record<Exclude<Call["icon"], "signoz">, string> = {
+    search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+    file: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>',
+    pencil: '<path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
+    command: '<path d="m4 17 6-6-6-6"/><path d="M12 19h8"/>',
+    globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+    pulse: '<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+    "square-plus": '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/>',
+};
+const seconds = (took: number) => (took < 10 && !Number.isInteger(took) ? `${took}s` : `${Math.round(took)}s`);
+const total = calls.reduce((sum, call) => sum + call.took, 0);
+---
+
+<div class="turn" data-run-block data-step data-wait={String(wait)} style={`--verb: ${Math.min(Math.max(...calls.map((call) => call.verb.length), 4), 16) * 6.6 + 1}px`}>
+    <div class="run">
+        <p class="sum live waiting"><span class="label" data-calls>1 tool call</span><span class="time" data-spent>0s</span><svg class="chev open" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></svg></p>
+        <div class="rows">
+            {
+                calls.map((call, index) => (
+                    <div class:list={["row", call.kind, { last: index === calls.length - 1 }]} data-step={`call:${call.took}`} data-wait={index === 0 ? "250" : "450"} data-run={String(Math.min(call.took * 350, 1400))}>
+                        <span class="spine" />
+                        <span class="icon">
+                            {call.icon === "signoz" ? <img src="/signoz.svg" width="11" height="11" alt="" /> : <svg viewBox="0 0 24 24" set:html={glyph[call.icon]} />}
+                        </span>
+                        <span class="verb">{call.verb}</span>
+                        <span class:list={["target", { file: call.file }]} data-ext={call.file ? call.target.split(".").pop() : undefined}>{call.target}</span>
+                        <span class="end">
+                            {call.diff && (
+                                <span class="diff">
+                                    <i class="add">{call.diff[0]}</i>
+                                    <i class="del">{call.diff[1]}</i>
+                                </span>
+                            )}
+                            <span class="took">{seconds(call.took)}</span>
+                        </span>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+    {
+        worked && (
+            <p class="work" data-step="fold" data-wait="300">
+                <span class="mark" style={`color: var(--brand-${agent})`}>
+                    <AgentIcon agent={agent} size={17} />
+                </span>
+                {worked}
+                <span>· {calls.length === 1 ? "1 tool call" : `${calls.length} tool calls`}</span>
+                <svg class="chev" viewBox="0 0 24 24">
+                    <path d="m9 6 6 6-6 6" />
+                </svg>
+            </p>
+        )
+    }
+    <span hidden data-total={String(total)}></span>
+</div>
+
+<script>
+    for (const block of document.querySelectorAll<HTMLElement>("[data-run-block]")) {
+        const label = block.querySelector<HTMLElement>("[data-calls]")!;
+        const spent = block.querySelector<HTMLElement>("[data-spent]")!;
+        const sum = block.querySelector<HTMLElement>(".sum")!;
+        const total = block.querySelectorAll(".row").length;
+        let landed = 0;
+        let settled = 0;
+        let seconds = 0;
+        block.addEventListener("step", (event) => {
+            const step = (event as CustomEvent).detail as string | undefined;
+            if (step === "fold") return block.classList.add("folded");
+            if (!step?.startsWith("call:")) return;
+            landed += 1;
+            sum.classList.remove("waiting");
+            label.textContent = landed === 1 ? "1 tool call" : `${landed} tool calls`;
+        });
+        block.addEventListener("settled", (event) => {
+            const step = (event as CustomEvent).detail as string | undefined;
+            if (!step?.startsWith("call:")) return;
+            settled += 1;
+            seconds += Number(step.slice(5));
+            spent.textContent = `${Math.round(seconds)}s`;
+            if (settled === total) sum.classList.remove("live");
+        });
+    }
+</script>

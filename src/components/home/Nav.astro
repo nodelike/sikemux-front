@@ -1,0 +1,210 @@
+---
+import { REPO_URL, type Release } from "../../lib/release";
+
+interface Props {
+    release: Release;
+}
+
+const { release } = Astro.props;
+---
+
+<header class="nav">
+    <div class="frame bar">
+        <a class="home" href="/" aria-label="Sikemux home">
+            <img class="on-light" src="/brand/lockup-black.svg" alt="Sikemux" width="118" height="22" />
+            <img class="on-dark" src="/brand/lockup-white.svg" alt="" width="118" height="22" />
+        </a>
+        <nav aria-label="Main">
+            <a href="/#carry-on">Features</a>
+            <a href="/agents">Agents</a>
+            <a href="https://docs.sikemux.com">Docs</a>
+            <a href="/vs">Compare</a>
+            <a href="/changelog">Changelog</a>
+        </nav>
+        <div class="end">
+            <a class="link" href={REPO_URL}>GitHub</a>
+            <button class="theme" type="button" aria-label="Switch between light and dark">
+                <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+                <svg class="moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+            </button>
+            <a class="btn solid small" href={release.dmgUrl} data-release-dmg>Download</a>
+            <button class="menu" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Menu">
+                <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+            </button>
+        </div>
+    </div>
+    <nav class="sheet" id="nav-menu" aria-label="Menu" hidden>
+        <a href="/#carry-on">Features</a>
+        <a href="/agents">Agents</a>
+        <a href="https://docs.sikemux.com">Docs</a>
+        <a href="/vs">Compare</a>
+        <a href="/changelog">Changelog</a>
+        <a href={REPO_URL}>GitHub</a>
+    </nav>
+</header>
+
+<script>
+    const menu = document.querySelector<HTMLButtonElement>(".nav .menu");
+    const sheet = document.querySelector<HTMLElement>("#nav-menu");
+    const setMenu = (open: boolean) => {
+        if (!menu || !sheet) return;
+        menu.setAttribute("aria-expanded", String(open));
+        sheet.hidden = !open;
+        if (open) sheet.querySelector("a")?.focus();
+    };
+    menu?.addEventListener("click", () => setMenu(menu.getAttribute("aria-expanded") !== "true"));
+    sheet?.addEventListener("click", (event) => {
+        if ((event.target as HTMLElement).closest("a")) setMenu(false);
+    });
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && menu?.getAttribute("aria-expanded") === "true") {
+            setMenu(false);
+            menu.focus();
+        }
+    });
+    document.querySelector(".nav .theme")?.addEventListener("click", () => {
+        const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = next;
+        try {
+            localStorage.setItem("theme", next);
+        } catch {}
+    });
+</script>
+
+<style>
+    .nav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: color-mix(in srgb, var(--paper) 85%, transparent);
+        backdrop-filter: blur(12px) saturate(140%);
+        -webkit-backdrop-filter: blur(12px) saturate(140%);
+        border-bottom: 1px solid var(--rule);
+    }
+    .bar {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        height: 64px;
+        padding-inline: 20px;
+    }
+    .home img {
+        height: 22px;
+        width: auto;
+    }
+    .on-dark,
+    :global(:root[data-theme="dark"]) .on-light {
+        display: none;
+    }
+    :global(:root[data-theme="dark"]) .on-dark {
+        display: block;
+    }
+    .bar > nav {
+        display: flex;
+        gap: 26px;
+        font-size: 14.5px;
+    }
+    .bar > nav a,
+    .link {
+        text-decoration: none;
+        color: var(--ink-2);
+    }
+    .bar > nav a:hover,
+    .link:hover {
+        color: var(--ink);
+    }
+    .end {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 14.5px;
+    }
+    .theme {
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--rule);
+        background: none;
+        color: var(--ink);
+        cursor: pointer;
+    }
+    .theme svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .moon,
+    :global(:root[data-theme="dark"]) .sun {
+        display: none;
+    }
+    :global(:root[data-theme="dark"]) .moon {
+        display: block;
+    }
+    .menu {
+        display: none;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--rule);
+        background: none;
+        color: var(--ink);
+        cursor: pointer;
+    }
+    .menu svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+    }
+    .menu[aria-expanded="true"] {
+        background: var(--ink);
+        color: var(--paper);
+    }
+    .sheet {
+        display: grid;
+        border-top: 1px solid var(--rule);
+        background: var(--paper);
+    }
+    .sheet a {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--rule);
+        font-size: 15px;
+        text-decoration: none;
+        color: var(--ink);
+    }
+    .sheet a:last-child {
+        border-bottom: 0;
+    }
+    .sheet a:hover,
+    .sheet a:focus-visible {
+        background: var(--field);
+    }
+    .sheet[hidden] {
+        display: none;
+    }
+    @media (min-width: 861px) {
+        .sheet {
+            display: none;
+        }
+    }
+    @media (max-width: 860px) {
+        .bar > nav,
+        .link {
+            display: none;
+        }
+        .menu {
+            display: grid;
+        }
+        .end {
+            gap: 10px;
+        }
+    }
+</style>

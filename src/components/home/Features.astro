@@ -1,0 +1,110 @@
+---
+import Feature from "./Feature.astro";
+import Icon, { type IconName } from "../Icon.astro";
+import Chat from "./widgets/Chat.astro";
+import Chief from "./widgets/Chief.astro";
+import Team from "./widgets/Team.astro";
+import Buddies from "./widgets/Buddies.astro";
+import Sizes from "./widgets/Sizes.astro";
+import Notch from "./widgets/Notch.astro";
+import Review from "./widgets/Review.astro";
+import Answer from "./widgets/Answer.astro";
+import Query from "./widgets/Query.astro";
+
+const tools: { icon: IconName; name: string; does: string }[] = [
+    { icon: "database", name: "Databases", does: "Query next to the code that uses it." },
+    { icon: "github", name: "GitHub Actions", does: "Watch CI without opening GitHub." },
+    { icon: "jira", name: "Jira and Linear", does: "The issue beside the branch that fixes it." },
+    { icon: "rundeck", name: "Rundeck", does: "Deploy a branch, watch every step." },
+    { icon: "signoz", name: "SigNoz", does: "What production is doing right now." },
+    { icon: "aws", name: "AWS", does: "A service's logs, without the console." },
+    { icon: "bruno", name: "Bruno", does: "Requests from the collection in your repo." },
+];
+---
+
+<Feature tag="Carry on" id="carry-on">
+    <Fragment slot="title">Out of Claude?<br /><span class="chip">The chat carries on in Codex.</span></Fragment>
+    <p>Start an agent next to your code. It reads the project, edits files and runs commands while you watch. When one plan runs dry, the same chat carries on with another agent.</p>
+    <ul class="facts" slot="list">
+        <li><b>@ and #</b>Attach a file, or hand over an issue or pull request.</li>
+        <li><b>Limits</b>What's left on every account, per window.</li>
+        <li><b>Stash</b>Drop in what you saved from your phone.</li>
+    </ul>
+    <Chat slot="media" />
+</Feature>
+
+<Feature tag="Chief" ground="night" flip id="chief">
+    <Fragment slot="title">Every project<br /><span class="chip">gets a chief.</span></Fragment>
+    <p>Tell @Chief what you want. It hands the work to Claude Code, Codex and your other agents, answers what it can, and brings you only the calls that need you.</p>
+    <p>Back after an hour away? It tells you what landed and what was decided for you, and any of it can be overruled.</p>
+    <ul class="facts" slot="list">
+        <li><b>Calls</b>Only the questions that are yours, with @Chief’s pick.</li>
+        <li><b>Overrule</b>Any decision it made, undone in one click.</li>
+        <li><b>While you were away</b>What landed, what was decided, what waits.</li>
+    </ul>
+    <Chief slot="media" />
+</Feature>
+
+<Feature tag="Teammates" wide id="teammates">
+    <Fragment slot="title">Your agents<br /><span class="chip">talk to each other.</span></Fragment>
+    <p>They message each other, hand off work and start helpers beside them, across Claude Code, Codex, Pi, Hermes and Grok. In your chat it folds into one line you can open.</p>
+    <Team slot="media" />
+</Feature>
+
+<Feature tag="Buddies" ground="paper" flip id="buddies">
+    <Fragment slot="title">Spot each one<br /><span class="chip">at a glance.</span></Fragment>
+    <p>Each agent wears a buddy that shows what it’s doing: working, waiting on you or done. Pick a pack and a face for each agent.</p>
+    <Buddies slot="media" />
+</Feature>
+
+<Feature tag="Browser" ground="violet" id="browser">
+    <Fragment slot="title">Opens your app.<br /><span class="chip">Checks its own work.</span></Fragment>
+    <p>Every agent gets a real browser tab on the engine Safari uses. It opens your app, clicks, types and takes screenshots like a tester would.</p>
+    <p>Take the tab over any time. Try the widths yourself.</p>
+    <Sizes slot="media" />
+</Feature>
+
+<Feature tag="Notch and phone" wide id="notch">
+    <Fragment slot="title">It asks.<br /><span class="chip">You answer from anywhere.</span></Fragment>
+    <p>An island over the MacBook notch shows who's working and asks when an agent needs permission, even with Sikemux behind another app.</p>
+    <p>Close the laptop and they keep going. The iPhone app asks you instead; Android is in testing.</p>
+    <Notch slot="media" />
+</Feature>
+
+<Feature tag="Review and ship" ground="night" id="review">
+    <Fragment slot="title">See which agent<br /><span class="chip">wrote each change.</span></Fragment>
+    <p>Every file an agent touched, marked with who wrote it. It runs the tests, writes the commit message, and you commit from the same window.</p>
+    <p>Quit Sikemux, or let it update: terminals and agents keep running.</p>
+    <Review slot="media" />
+</Feature>
+
+<Feature tag="Answers you can see" ground="paper" flip id="answers">
+    <Fragment slot="title">When words aren’t enough,<br /><span class="chip">it draws.</span></Fragment>
+    <p>Ask how production is doing. It reads the traces and draws the answer as a chart, right in the chat.</p>
+    <ul class="facts" slot="list">
+        <li><b>Traces</b>Read from SigNoz, through your own sign-in.</li>
+        <li><b>Charts</b>Drawn in the chat, beside the answer.</li>
+        <li><b>Pages</b>Any page the agent builds shows in the reply.</li>
+    </ul>
+    <Answer slot="media" />
+</Feature>
+
+<Feature tag="Your tools" ground="field" id="tools">
+    <Fragment slot="title">CI, issues and production,<br /><span class="chip">without leaving <span class="nowrap">the window.</span></span></Fragment>
+    <p>Turn on what your team already runs. Anything you find, hand to an agent.</p>
+    <ul class="facts tools" slot="list">
+        {tools.map((tool) => <li><b><Icon name={tool.icon} size={16} />{tool.name}</b>{tool.does}</li>)}
+    </ul>
+    <Query slot="media" />
+</Feature>
+
+<style>
+    .tools li {
+        text-wrap: pretty;
+    }
+    .tools b {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+</style>

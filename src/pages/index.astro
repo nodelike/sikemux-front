@@ -1,24 +1,20 @@
 ---
-import Base from "../layouts/Base.astro";
-import Nav from "../components/Nav.astro";
-import Hero from "../components/Hero.astro";
-import Chief from "../components/Chief.astro";
-import Team from "../components/Team.astro";
-import Bento from "../components/Bento.astro";
-import Compare from "../components/Compare.astro";
-import Plugins from "../components/Plugins.astro";
-import Size from "../components/Size.astro";
-import Beliefs from "../components/Beliefs.astro";
-import Faq from "../components/Faq.astro";
-import Platforms from "../components/Platforms.astro";
-import Closing from "../components/Closing.astro";
+import Home from "../layouts/Home.astro";
+import Nav from "../components/home/Nav.astro";
+import Hero from "../components/home/Hero.astro";
+import Agents from "../components/home/Agents.astro";
+import Features from "../components/home/Features.astro";
+import Beliefs from "../components/home/Beliefs.astro";
+import Numbers from "../components/home/Numbers.astro";
+import Closing from "../components/home/Closing.astro";
+import Footer from "../components/home/Footer.astro";
+import Play from "../components/home/Play.astro";
 import LiveRelease from "../components/LiveRelease.astro";
 import { getImage } from "astro:assets";
 import hero from "../assets/hero/hero.png";
-import { FAQ, faqStructuredData } from "../lib/faq";
-import { DISCORD_URL, X_URL, formatSize, latestRelease, REPO_URL, starCount } from "../lib/release";
+import { DISCORD_URL, X_URL, formatSize, latestRelease, REPO_URL } from "../lib/release";
 
-const [release, stars] = await Promise.all([latestRelease(), starCount()]);
+const release = await latestRelease();
 
 const description =
     "Out of Claude? The chat carries on in Codex. Sikemux is a free, MIT-licensed native app for Mac and Linux that runs Claude Code, Codex and other coding agents on your own plans and shows which one needs you.";
@@ -70,41 +66,23 @@ const structuredData = [
         author: { "@type": "Person", name: "nodelike", url: "https://github.com/nodelike" },
         sameAs: [REPO_URL],
     },
-    faqStructuredData(FAQ),
 ];
 ---
 
-<Base
-    title="Sikemux · out of Claude? The chat carries on in Codex"
+<Home
+    title="Sikemux · every coding agent you pay for, in one window"
     description={description}
     structuredData={structuredData}>
-    <Nav release={release} stars={stars} />
+    <Nav release={release} />
     <main>
-        <Hero release={release} stars={stars} />
-        <Chief />
-        <Team />
-        <Bento />
-        <Plugins />
-        <Size release={release} />
-        <Compare />
+        <Hero release={release} />
+        <Agents />
+        <Features />
         <Beliefs />
-        <Faq />
-        <Platforms release={release} />
+        <Numbers release={release} />
     </main>
     <Closing release={release} />
+    <Footer release={release} />
     <LiveRelease />
-</Base>
-
-<script>
-    const reveal = new IntersectionObserver(
-        (entries) => {
-            for (const entry of entries) {
-                if (!entry.isIntersecting) continue;
-                entry.target.classList.add("shown");
-                reveal.unobserve(entry.target);
-            }
-        },
-        { rootMargin: "0px 0px -10% 0px" },
-    );
-    for (const node of document.querySelectorAll("[data-reveal]")) reveal.observe(node);
-</script>
+    <Play />
+</Home>

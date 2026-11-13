@@ -1,0 +1,141 @@
+---
+import { Image, getImage } from "astro:assets";
+import Dither from "../Dither.astro";
+import team from "../../assets/art/team-signals.jpg";
+import scholar from "../../assets/art/closing-dawn.jpg";
+import scales from "../../assets/art/size-plane.jpg";
+import door from "../../assets/art/features-control-room.jpg";
+
+const beliefs = [
+    { art: scholar, focus: "70% 50%", title: "Your AI, your login.", body: "We don’t sell models. Sikemux runs the plan you already pay for." },
+    { art: scales, focus: "45% 55%", title: "Native, or nothing.", body: "Typing and scrolling never get slower, even with twenty agents streaming." },
+    { art: team, focus: "72% 45%", title: "Agents are teammates.", body: "They get names, talk to each other and ask you only what’s yours to decide." },
+    { art: door, focus: "50% 60%", title: "If we don’t use it, it goes.", body: "Every feature here is one we reach for daily. The rest gets cut." },
+];
+const flat = await Promise.all(beliefs.map((belief) => getImage({ src: belief.art, width: 900, format: "webp", quality: 70 })));
+---
+
+<section class="frame beliefs" aria-labelledby="beliefs-title">
+    <div class="head">
+        <h2 id="beliefs-title">Built by people <br /><span class="chip">who use it all day.</span></h2>
+    </div>
+    <ul>
+        {
+            beliefs.map((belief, index) => (
+                <li>
+                    <Image src={belief.art} alt="" widths={[600, 1000]} sizes="(min-width: 900px) 600px, 100vw" format="webp" quality={72} style={`object-position: ${belief.focus}`} />
+                    <Dither class="tile-dither" image={flat[index].src} />
+                    <div class="words">
+                        <h3>{belief.title}</h3>
+                        <p>{belief.body}</p>
+                    </div>
+                </li>
+            ))
+        }
+    </ul>
+</section>
+
+<style>
+    .beliefs {
+        border-top: 1px solid var(--rule);
+    }
+    .head {
+        padding: clamp(56px, 7vw, 96px) 20px clamp(32px, 4vw, 48px);
+    }
+    h2 {
+        font-size: clamp(36px, 4.4vw, 64px);
+    }
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border-top: 1px solid var(--rule);
+    }
+    li {
+        position: relative;
+        aspect-ratio: 16 / 10;
+        overflow: hidden;
+        background: var(--night);
+        border-bottom: 1px solid var(--rule);
+    }
+    li:nth-child(odd) {
+        border-right: 1px solid var(--rule);
+    }
+    li:nth-last-child(-n + 2) {
+        border-bottom: 0;
+    }
+    li :global(img) {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    li:hover :global(img) {
+        transform: scale(1.03);
+    }
+    li :global(img) {
+        opacity: 0;
+        transition: opacity 0.5s, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    li:hover :global(img),
+    li:has(:global([data-failed])) :global(img) {
+        opacity: 1;
+    }
+    li :global(.tile-dither) {
+        inset: 0;
+        z-index: 0;
+        --dither-dot: #f4f3f7;
+        --dither-back: #5a2fd0;
+        --dither-size: 2;
+        transition: opacity 0.5s;
+    }
+    li:hover :global(.tile-dither) {
+        opacity: 0;
+    }
+    :global(:root[data-theme="dark"]) li :global(.tile-dither) {
+        --dither-dot: #a277ff;
+        --dither-back: #0f0d15;
+    }
+    li::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, #0c0a12e6 0%, #0c0a1200 55%);
+    }
+    .words {
+        position: absolute;
+        left: 24px;
+        right: 24px;
+        bottom: 22px;
+        z-index: 1;
+        color: #f4f3f7;
+        display: grid;
+        gap: 6px;
+    }
+    h3 {
+        font-size: clamp(24px, 2.2vw, 32px);
+    }
+    .words p {
+        min-height: 3em;
+        font-size: 14.5px;
+        color: #cfcadb;
+        max-width: 32em;
+    }
+    @media (max-width: 760px) {
+        ul {
+            grid-template-columns: 1fr;
+        }
+        li,
+        li:nth-last-child(-n + 2) {
+            border-right: 0;
+            border-bottom: 1px solid var(--rule);
+        }
+        li:last-child {
+            border-bottom: 0;
+        }
+    }
+</style>

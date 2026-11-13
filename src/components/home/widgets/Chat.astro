@@ -1,0 +1,77 @@
+---
+import Head from "./chat/Head.astro";
+import Bubble from "./chat/Bubble.astro";
+import Run, { type Call } from "./chat/Run.astro";
+import Prose from "./chat/Prose.astro";
+import Notice from "./chat/Notice.astro";
+import TurnLine from "./chat/TurnLine.astro";
+import Composer from "./chat/Composer.astro";
+import "./app.css";
+
+const calls: Call[] = [
+    { verb: "search", kind: "looked", icon: "search", target: 'grep "Math.round" src', took: 1.1 },
+    { verb: "read", kind: "looked", icon: "file", target: "cart.mjs", took: 0.9, file: true },
+    { verb: "edit", kind: "changed", icon: "pencil", target: "cart.mjs", took: 2.6, diff: ["+2", "−2"], file: true },
+    { verb: "run", kind: "ran", icon: "command", target: "node --test", took: 8 },
+];
+---
+
+<div class="app chat" data-play data-chat>
+    <Head title="Cart totals a cent off" who="@Wren" />
+    <div class="column">
+        <Bubble when="2:47 PM">Some orders come out a cent off at checkout. Find out why and fix it properly, with a test.</Bubble>
+        <Run calls={calls} worked="Worked for 13s" wait={400} />
+        <Prose stream={150}>
+            The total rounded the tax and the price together, so a cart of cheap items could come out a cent away from what the receipt adds up to. It now rounds the tax once, on the whole cart, and a discount can no longer push the total below zero. I added a test with three pencils that used to come out at 338 cents.
+        </Prose>
+        <Notice wait={900}>
+            <svg viewBox="0 0 24 24" width="12" height="12"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+            <span class="title">Codex has room to carry this chat on</span>
+            <span class="summary">Every Claude account it may use is out of usage. Handing it to Codex takes your words with Claude along.</span>
+        </Notice>
+        <TurnLine agent="claude" word="Failed" said="Claude's limit" wait={300}>
+            <span class="kit-btn" data-hand>Hand to Codex</span>
+            <span class="kit-btn ghost">Retry</span>
+        </TurnLine>
+        <span hidden data-step="moved" data-wait="1600"></span>
+    </div>
+    <Composer />
+</div>
+
+<script>
+    for (const box of document.querySelectorAll<HTMLElement>("[data-chat]")) {
+        const column = box.querySelector<HTMLElement>(".column")!;
+        box.addEventListener("step", (event) => {
+            const shown = event.target as HTMLElement;
+            if (column.contains(shown)) {
+                const bottom = shown.offsetTop - column.offsetTop + shown.offsetHeight + 12;
+                if (bottom > column.scrollTop + column.clientHeight) column.scrollTo({ top: bottom - column.clientHeight, behavior: "smooth" });
+            }
+            if ((event as CustomEvent).detail !== "moved") return;
+            const hand = box.querySelector<HTMLElement>("[data-hand]")!;
+            hand.classList.add("pressed");
+            setTimeout(() => {
+                hand.classList.remove("pressed");
+                const model = box.querySelector<HTMLElement>("[data-model]")!;
+                model.querySelector<HTMLElement>(".first")!.hidden = true;
+                model.querySelector<HTMLElement>(".then")!.hidden = false;
+                model.querySelector(".name")!.textContent = "Codex";
+            }, 450);
+        });
+        box.querySelector("form")!.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const input = box.querySelector("input")!;
+            const text = input.value.trim();
+            if (!text) return;
+            const you = document.createElement("div");
+            you.className = "you typed";
+            const bubble = document.createElement("p");
+            bubble.className = "bubble";
+            bubble.textContent = text;
+            you.append(bubble);
+            column.append(you);
+            column.scrollTop = column.scrollHeight;
+            input.value = "";
+        });
+    }
+</script>

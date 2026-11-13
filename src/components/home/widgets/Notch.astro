@@ -1,0 +1,1028 @@
+---
+import AgentIcon from "../../AgentIcon.astro";
+import Bubble from "./chat/Bubble.astro";
+import Prose from "./chat/Prose.astro";
+import "./app.css";
+
+const rows = [
+    { name: "Otter", agent: "claude", task: "Add dark mode to settings", ago: "2m", state: "asks" },
+    { name: "Maple", agent: "codex", task: "Fix the login form on small screens", ago: "4m", state: "working" },
+    { name: "Wren", agent: "claude", task: "Check the login form at every phone size", ago: "6m", state: "working" },
+] as const;
+---
+
+<div class="pair" data-notch aria-label="The notch asks to run pnpm test src/settings, Allow is pressed, and the phone shows the same request answered">
+    <div class="laptop-crop">
+    <div class="laptop" data-laptop>
+    <div class="mac">
+        <div class="screen">
+            <div class="menubar">
+                <span class="left"><svg width="14" height="16" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788 341c-6 4-108 62-108 190 0 149 130 201 134 203-1 3-21 72-69 142-43 62-88 123-156 123s-85-40-164-40c-76 0-104 41-166 41s-105-57-155-127C47 791 0 663 0 542c0-194 126-298 251-298 66 0 121 44 163 44 39 0 101-46 176-46 29 0 131 3 198 99zM554 159c31-37 53-88 53-139 0-7-1-14-2-20-51 2-111 34-147 76-29 32-55 84-55 135 0 8 1 15 2 18 3 0 8 1 13 1 46 0 103-31 136-71z"></path></svg><b>Figma</b><span>File</span><span>Edit</span><span>View</span></span>
+                <span class="right"><span class="clock">Thu 2:51 PM</span></span>
+            </div>
+            <div class="window" aria-hidden="true">
+                <div class="chrome"><i></i><i></i><i></i><span>Onboarding — Figma</span></div>
+                <div class="canvas"><span class="panel"></span><span class="frames"><span class="frame"></span><span class="frame"></span><span class="frame"></span></span><span class="panel r"></span></div>
+            </div>
+            <span class="island" aria-hidden="true">
+                <span class="shape">
+                    <span class="layer wings">
+                        <span class="wing l">
+                            {rows.map((row) => <span class="tile" style={`color: var(--brand-${row.agent})`}><AgentIcon agent={row.agent} size={20} /></span>)}
+                        </span>
+                        <span class="cam"></span>
+                        <span class="wing r">
+                            <span class="group ask-group"><span class="calls">1 call</span><span class="st blocked"><span class="dot"></span></span></span>
+                            <span class="group"><span class="count n-work">2</span><span class="st working"><span class="loader">{[0.9, 1.24, 1.58, 1.07, 1.41, 0.9, 1.24, 1.58, 1.07].map((p, i) => <i style={`--p:${p}s;--o:-${(i * 0.13).toFixed(2)}s`}></i>)}</span></span></span>
+                        </span>
+                    </span>
+                    <span class="layer peek">
+                        <span class="head">
+                            <span class="side"><span class="tile" style="color: var(--brand-claude)"><AgentIcon agent="claude" size={20} /></span><span class="lead">Otter</span></span>
+                            <span class="side r"><span class="trail">Needs you</span><span class="st blocked"><span class="ping"></span><span class="ping"></span><span class="dot"></span></span></span>
+                        </span>
+                        <span class="body">
+                            <span class="text"><span class="title">Add dark mode to settings</span><span class="sub"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg>acme-shop<span class="dotsep">·</span>Needs your permission</span></span>
+                            <span class="cmd"><span class="sign">$</span>pnpm test src/settings</span>
+                            <span class="actions"><span class="nbtn" data-answer="deny">Deny</span><span class="nbtn" data-answer="always">Always allow</span><span class="nbtn primary" data-answer="allow">Allow</span></span>
+                        </span>
+                    </span>
+                    <span class="layer done">
+                        <span class="side dl"><span class="tile" style="color: var(--brand-hermes)"><AgentIcon agent="hermes" size={20} /></span><span class="lead">Finished</span></span>
+                        <span class="cam"></span>
+                        <span class="side dr"><span class="what">Write the release notes</span><span class="st finished"><span class="dot"></span></span></span>
+                    </span>
+                </span>
+            </span>
+            <svg class="pointer away" width="18" height="24" viewBox="0 0 18 24" aria-hidden="true"><path d="M1 1v19l5-5 3.5 7.5 3-1.4L9 13.8h7z" fill="#000" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"></path></svg>
+        </div>
+    </div>
+    <div class="base"><span class="lip"></span></div>
+    </div>
+    </div>
+
+    <div class="phone">
+        <div class="glass app">
+            <div class="status"><span>9:41</span><span class="island-cut"></span><span class="sig"><i></i><i></i><i></i><i></i></span></div>
+            <p class="p-head"><svg viewBox="0 0 24 24" class="back"><path d="m15 18-6-6 6-6"></path></svg><span style="color: var(--brand-claude)"><AgentIcon agent="claude" size={14} /></span><span class="t">Add dark mode to settings</span></p>
+            <div class="feed">
+                <Bubble step={false}>Add a dark mode switch to the settings page. It should remember the choice.</Bubble>
+                <Prose step={false}>I added a <b>Dark mode</b> switch under Appearance. It saves the choice, so the page opens the same way next time.</Prose>
+                <p class="calls">2 tool calls ›</p>
+                <Prose step={false}>Now I want to run the settings tests to make sure nothing else broke.</Prose>
+            </div>
+            <div class="perm">
+                <p class="title"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span><b>Run a command?</b>Claude needs permission to continue</span></p>
+                <code class="mono"><b>$</b> pnpm test src/settings</code>
+                <div class="acts"><span class="pbtn" data-answer="deny">Deny</span><span class="pbtn" data-answer="always">Always allow</span><span class="pbtn go" data-answer="allow">Allow</span></div>
+            </div>
+            <p class="done-note mono" hidden></p>
+            <div class="composer">
+                <span class="ph">Send to queue behind the running turn</span>
+                <span class="tools"><span>+</span><span class="safe">SAFE</span><span class="model"><span style="color: var(--brand-claude)"><AgentIcon agent="claude" size={12} /></span>Opus 5.5</span><span>High</span><span class="stop"><i></i></span></span>
+            </div>
+            <span class="home"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const shape = (width: number, height: number, top: number, bottom: number) =>
+        `path("M 0 0 Q ${top} 0 ${top} ${top} L ${top} ${height - bottom} Q ${top} ${height} ${top + bottom} ${height} L ${width - top - bottom} ${height} Q ${width - top} ${height} ${width - top} ${height - bottom} L ${width - top} ${top} Q ${width - top} 0 ${width} 0 Z")`;
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const LOOP = 10000;
+
+    for (const box of document.querySelectorAll<HTMLElement>("[data-notch]")) {
+        const laptop = box.querySelector<HTMLElement>("[data-laptop]")!;
+        const scale = () => {
+            const narrow = box.clientWidth < 680;
+            const room = narrow ? box.clientWidth - 24 : box.clientWidth - 290;
+            laptop.style.setProperty("--s", String(Math.min(1, room / (narrow ? 760 : 1600))));
+            box.style.setProperty("--s", laptop.style.getPropertyValue("--s"));
+        };
+        new ResizeObserver(scale).observe(box);
+        scale();
+        const screen = box.querySelector<HTMLElement>(".screen")!;
+        const island = box.querySelector<HTMLElement>(".island")!;
+        const body = island.querySelector<HTMLElement>(".shape")!;
+        const left = island.querySelector<HTMLElement>(".wing.l")!;
+        const right = island.querySelector<HTMLElement>(".wing.r")!;
+        const pointer = box.querySelector<SVGElement>(".pointer")!;
+        const allow = island.querySelector<HTMLElement>(".nbtn.primary")!;
+        const phoneAllow = box.querySelector<HTMLElement>(".pbtn.go")!;
+        const calls = box.querySelector<HTMLElement>(".ask-group")!;
+        const working = box.querySelector<HTMLElement>(".n-work")!;
+        const note = box.querySelector<HTMLElement>(".done-note")!;
+
+        const menuItems = [...box.querySelectorAll<HTMLElement>(".menubar .left > *, .menubar .right > *")];
+        const clearMenu = (width: number) => {
+            const middle = screen.offsetWidth / 2;
+            const [from, to] = [middle - width / 2 - 8, middle + width / 2 + 8];
+            for (const item of menuItems) {
+                item.style.visibility = "";
+                const start = item.offsetLeft;
+                const end = start + item.offsetWidth;
+                item.style.visibility = end > from && start < to ? "hidden" : "";
+            }
+        };
+        const mode = (name: "closed" | "peek" | "done") => {
+            island.dataset.mode = name;
+            if (name === "peek") {
+                body.style.cssText = `width:460px;height:181px;clip-path:${shape(460, 181, 14, 22)}`;
+            } else if (name === "done") {
+                const dl = island.querySelector<HTMLElement>(".dl")!;
+                const dr = island.querySelector<HTMLElement>(".dr")!;
+                dl.style.width = dr.style.width = "";
+                const wing = Math.min(Math.max(dl.scrollWidth, dr.scrollWidth) + 2, 236);
+                dl.style.width = dr.style.width = `${wing}px`;
+                const width = wing * 2 + 200;
+                body.style.cssText = `width:${width}px;height:37px;clip-path:${shape(width, 37, 6, 14)}`;
+                clearMenu(width);
+            } else {
+                left.style.width = right.style.width = "";
+                const wing = Math.max(left.scrollWidth, right.scrollWidth);
+                left.style.width = right.style.width = `${wing}px`;
+                const width = wing * 2 + 200;
+                body.style.cssText = `width:${width}px;height:37px;clip-path:${shape(width, 37, 6, 14)}`;
+                clearMenu(width);
+            }
+            if (name === "peek") clearMenu(460);
+        };
+        const point = (to: "rest" | "allow") => {
+            const area = screen.getBoundingClientRect();
+            const target = to === "allow" ? allow.getBoundingClientRect() : { left: area.left + area.width * 0.42, top: area.top + 250, width: 0, height: 0 };
+            const ratio = area.width / screen.offsetWidth || 1;
+            pointer.style.translate = `${(target.left - area.left + target.width * 0.55) / ratio}px ${(target.top - area.top + target.height * 0.45) / ratio}px`;
+        };
+        const reset = () => {
+            box.classList.remove("answered", "pressing");
+            calls.hidden = false;
+            working.textContent = "2";
+            note.hidden = true;
+            pointer.classList.add("away");
+            point("rest");
+            mode("closed");
+        };
+
+        const beats: [number, () => void][] = [
+            [0, reset],
+            [1750, () => mode("peek")],
+            [2500, () => {
+                pointer.classList.remove("away");
+                point("rest");
+            }],
+            [2600, () => point("allow")],
+            [3600, () => box.classList.add("pressing")],
+            [3850, () => {
+                box.classList.remove("pressing");
+                box.classList.add("answered");
+                calls.hidden = true;
+                working.textContent = "3";
+                note.textContent = "Allowed · running pnpm test src/settings";
+                note.hidden = false;
+                mode("closed");
+                point("rest");
+            }],
+            [4400, () => pointer.classList.add("away")],
+            [5000, () => {
+                working.textContent = "2";
+                mode("done");
+            }],
+            [7600, () => mode("closed")],
+        ];
+
+        let timers: number[] = [];
+        let loop = 0;
+        const run = () => {
+            for (const [at, beat] of beats) timers.push(window.setTimeout(beat, at));
+        };
+        const start = () => {
+            if (loop) return;
+            run();
+            loop = window.setInterval(run, LOOP);
+        };
+        const stop = () => {
+            clearInterval(loop);
+            loop = 0;
+            for (const timer of timers) clearTimeout(timer);
+            timers = [];
+            reset();
+        };
+
+        document.fonts.ready.then(() => {
+            reset();
+            if (still) {
+                box.classList.add("still");
+                mode("peek");
+                return;
+            }
+            new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()), { threshold: 0.35 }).observe(box);
+        });
+        void phoneAllow;
+    }
+</script>
+
+<style>
+    .pair {
+        position: relative;
+        width: 100%;
+        max-width: 1100px;
+        min-height: 640px;
+        display: grid;
+        align-items: end;
+    }
+    .laptop {
+        width: 1544px;
+        zoom: var(--s, 1);
+        justify-self: start;
+    }
+    .mac {
+        padding: 16px 16px 22px;
+        background: #000;
+        border-radius: 30px 30px 6px 6px;
+        box-shadow: 0 0 0 2px #2a2a30 inset;
+    }
+    .screen {
+        position: relative;
+        width: 1512px;
+        aspect-ratio: 1512 / 982;
+        border-radius: 16px 16px 0 0;
+        overflow: hidden;
+        background:
+            radial-gradient(1200px 700px at 30% 120%, #c9b8ff 0%, transparent 60%),
+            radial-gradient(900px 600px at 85% 10%, #cfe0ff 0%, transparent 60%),
+            linear-gradient(160deg, #f1ecff, #e6eefc);
+    }
+    :global(:root[data-theme="dark"]) .screen {
+        background:
+            radial-gradient(1200px 700px at 30% 120%, #3b2a6e 0%, transparent 60%),
+            radial-gradient(900px 600px at 85% 10%, #1f3b6b 0%, transparent 60%),
+            radial-gradient(700px 500px at 55% 60%, #5a2f5c 0%, transparent 65%),
+            linear-gradient(160deg, #141024, #0d1424);
+    }
+    .base {
+        position: relative;
+        height: 26px;
+        margin: 0 -28px;
+        border-radius: 3px 3px 22px 22px;
+        background: linear-gradient(#d9d6df, #a9a5b2 70%, #8d8996);
+        box-shadow: 9px 9px 0 var(--ink);
+    }
+    .night .base,
+    :global(:root[data-theme="dark"]) .base {
+        box-shadow: 9px 9px 0 var(--violet);
+    }
+    .lip {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        translate: -50% 0;
+        width: 200px;
+        height: 10px;
+        border-radius: 0 0 12px 12px;
+        background: #8d8996;
+    }
+    .menubar {
+        position: absolute;
+        inset: 0 0 auto;
+        height: 37px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 14px 0 18px;
+        font: 400 13px -apple-system, "SF Pro Text", system-ui, sans-serif;
+        color: #1d1b22;
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+    :global(:root[data-theme="dark"]) .menubar {
+        color: #fff;
+        background: rgba(0, 0, 0, 0.2);
+        text-shadow: 0 0 6px rgba(0, 0, 0, 0.35);
+    }
+    .menubar .left {
+        display: flex;
+        align-items: center;
+        gap: 19px;
+    }
+    .menubar b {
+        font-weight: 700;
+    }
+
+    .window {
+        position: absolute;
+        left: 9%;
+        right: 9%;
+        top: 96px;
+        bottom: 64px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #f4f2f8;
+        box-shadow: 0 20px 50px -20px rgba(20, 10, 40, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.08);
+        opacity: 0.78;
+    }
+    :global(:root[data-theme="dark"]) .window {
+        background: #1a1820;
+        box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+        opacity: 0.7;
+    }
+    .chrome {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 30px;
+        padding: 0 12px;
+        font: 500 11.5px -apple-system, system-ui, sans-serif;
+        color: #8a8496;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+    }
+    .chrome i {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #d8d3e0;
+    }
+    :global(:root[data-theme="dark"]) .chrome i {
+        background: #3a3644;
+    }
+    .chrome span {
+        margin: 0 auto;
+        translate: -24px 0;
+    }
+    .canvas {
+        position: absolute;
+        inset: 30px 0 0;
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr) 240px;
+        background: radial-gradient(rgba(120, 110, 140, 0.18) 1px, transparent 1.4px) 0 0 / 16px 16px;
+    }
+    .panel {
+        background: rgba(255, 255, 255, 0.6);
+        border-right: 1px solid rgba(0, 0, 0, 0.06);
+    }
+    :global(:root[data-theme="dark"]) .panel {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+    .panel.r {
+        grid-column: 3;
+        grid-row: 1;
+        border-right: 0;
+        border-left: 1px solid rgba(0, 0, 0, 0.06);
+    }
+    .frames {
+        grid-column: 2;
+        grid-row: 1;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 28px;
+        padding-top: 56px;
+    }
+    .frame {
+        border-radius: 6px;
+        background: #fff;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.07);
+    }
+    :global(:root[data-theme="dark"]) .frame {
+        background: #26232e;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+    .frame {
+        width: 210px;
+        height: 380px;
+    }
+    .island {
+        position: absolute;
+        z-index: 2;
+        white-space: nowrap;
+        transform-origin: top center;
+        top: 0;
+        left: 50%;
+        translate: -50% 0;
+        font: 400 13px/1.25 "Figtree", var(--sans);
+        color: #e7e5ef;
+        --ink: #e7e5ef;
+        --ink-dim: #8b8898;
+        --ink-faint: #736f80;
+        --live: #61ffca;
+        --warn: #ffca85;
+        --acc: #a277ff;
+    }
+    .shape {
+        position: relative;
+        display: block;
+        background: #000;
+        overflow: hidden;
+        transition:
+            width 420ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            height 420ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            clip-path 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    [data-mode="peek"] .shape {
+        filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.7));
+    }
+    .layer {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        translate: -50% 0;
+        transform-origin: 50% 0;
+        transition:
+            opacity 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            filter 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .wings {
+        display: flex;
+        align-items: center;
+        height: 37px;
+        transition-duration: 160ms;
+    }
+    [data-mode="peek"] .wings,
+    [data-mode="done"] .wings {
+        opacity: 0;
+        filter: blur(6px);
+    }
+    .peek {
+        width: 416px;
+        opacity: 0;
+        filter: blur(20px);
+        transform: scale(0.8);
+        pointer-events: none;
+    }
+    [data-mode="peek"] .peek {
+        opacity: 1;
+        filter: none;
+        transform: scale(1);
+        pointer-events: auto;
+    }
+    .wing {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        white-space: nowrap;
+    }
+    .wing.l {
+        padding-left: 14px;
+    }
+    .wing.r {
+        justify-content: flex-end;
+        padding-right: 14px;
+        gap: 10px;
+    }
+    .cam {
+        width: 200px;
+        flex: none;
+    }
+    .group {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .tile {
+        width: 20px;
+        height: 20px;
+        display: grid;
+        place-items: center;
+    }
+    .tile + .tile {
+        margin-left: -3px;
+    }
+    .calls {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--warn);
+    }
+    .count {
+        font-size: 12px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+    .st {
+        position: relative;
+        width: 16px;
+        height: 16px;
+        display: inline-grid;
+        place-items: center;
+    }
+    .st.working {
+        color: var(--live);
+    }
+    .st.blocked {
+        color: var(--warn);
+    }
+    .st .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+    .st .ping {
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: 1.5px solid;
+        opacity: 0;
+    }
+    [data-mode="peek"] .st .ping {
+        animation: ping 520ms cubic-bezier(0.2, 0.6, 0.3, 1) both;
+    }
+    [data-mode="peek"] .st .ping + .ping {
+        animation-delay: 380ms;
+    }
+    @keyframes ping {
+        from {
+            transform: scale(0.6);
+            opacity: 0.9;
+        }
+        to {
+            transform: scale(2.4);
+            opacity: 0;
+        }
+    }
+    .loader {
+        display: grid;
+        grid-template-columns: repeat(3, 2.5px);
+        gap: 1.5px;
+    }
+    .loader i {
+        width: 2.5px;
+        height: 2.5px;
+        border-radius: 0.5px;
+        background: currentColor;
+        animation: twinkle var(--p) ease-in-out var(--o) infinite;
+    }
+    @keyframes twinkle {
+        0%,
+        100% {
+            opacity: 0.3;
+        }
+        50% {
+            opacity: 1;
+        }
+    }
+    .head {
+        display: flex;
+        align-items: center;
+        height: 37px;
+    }
+    .head .side {
+        flex: 1 1 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .head .side.r {
+        justify-content: flex-end;
+    }
+    .lead {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+    }
+    .trail {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--warn);
+    }
+    .body {
+        display: block;
+        padding: 8px 0 16px;
+    }
+    .text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .title {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+    }
+    .sub {
+        display: flex;
+        align-items: center;
+        font-size: 11.5px;
+        color: var(--ink-dim);
+    }
+    .sub svg {
+        margin-right: 4px;
+        color: var(--ink-faint);
+    }
+    .dotsep {
+        margin: 0 5px;
+        color: var(--ink-faint);
+    }
+    .cmd {
+        display: block;
+        margin-top: 10px;
+        padding: 9px 12px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.06);
+        font: 400 12px/1.5 var(--mono);
+        color: var(--ink);
+    }
+    .cmd .sign {
+        color: var(--ink-faint);
+        margin-right: 8px;
+    }
+    .actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+    }
+    .nbtn {
+        height: 32px;
+        padding: 0 14px;
+        border-radius: 16px;
+        font-size: 12.5px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+    }
+
+    .nbtn.primary {
+        background: var(--acc);
+        color: #100e16;
+    }
+    .pressing .nbtn.primary,
+    .pressing .pbtn.go {
+        filter: brightness(1.15);
+        transform: scale(0.96);
+    }
+    .nbtn.primary,
+    .pbtn.go {
+        transition: transform 120ms, filter 120ms;
+    }
+    .done {
+        height: 37px;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        filter: blur(12px);
+    }
+    [data-mode="done"] .done {
+        opacity: 1;
+        filter: none;
+    }
+    .done .side {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+    .dl {
+        padding-left: 14px;
+    }
+    .dr {
+        justify-content: flex-end;
+        padding-right: 14px;
+    }
+    .what {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink-dim);
+    }
+    .st.finished {
+        color: var(--acc);
+    }
+    .pointer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 3;
+        transition: translate 900ms cubic-bezier(0.45, 0, 0.2, 1), opacity 300ms;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+    }
+    .pointer.away {
+        opacity: 0;
+    }
+    .answered .perm {
+        display: none;
+    }
+
+    .phone {
+        --pw: 290;
+        --s: calc(var(--pw) * 0.944 / 402);
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        z-index: 2;
+        width: calc(var(--pw) * 1px);
+        aspect-ratio: 715 / 1496;
+        display: grid;
+        place-items: center;
+        border-radius: calc(var(--pw) * 0.17px);
+        background: #0b0b0e;
+        box-shadow: 0 0 0 1px #2a2a30 inset, 10px 10px 0 var(--ink);
+    }
+    .night .phone,
+    :global(:root[data-theme="dark"]) .phone {
+        box-shadow: 0 0 0 1px #2a2a30 inset, 10px 10px 0 var(--violet);
+    }
+    .phone .glass {
+        position: relative;
+        width: 402px;
+        height: 874px;
+        max-width: none;
+        zoom: var(--s);
+        border: 0;
+        box-shadow: none;
+        border-radius: 55px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        font-size: 16px;
+    }
+    .status {
+        position: relative;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 32px 0 48px;
+        font: 600 17px "Figtree", var(--sans);
+    }
+    .island-cut {
+        position: absolute;
+        top: 11px;
+        left: 50%;
+        translate: -50% 0;
+        width: 126px;
+        height: 37px;
+        border-radius: 19px;
+        background: #000;
+    }
+    .sig {
+        display: flex;
+        align-items: end;
+        gap: 2px;
+        height: 13px;
+    }
+    .sig i {
+        width: 3.9px;
+        background: currentColor;
+        border-radius: 1.3px;
+    }
+    .sig i:nth-child(1) {
+        height: 5.2px;
+    }
+    .sig i:nth-child(2) {
+        height: 7.8px;
+    }
+    .sig i:nth-child(3) {
+        height: 10.4px;
+    }
+    .sig i:nth-child(4) {
+        height: 13px;
+    }
+    .p-head {
+        display: flex;
+        align-items: center;
+        gap: 7.8px;
+        padding: 13px 18.2px 10.4px;
+        font-weight: 600;
+        font-size: 16.9px;
+    }
+    .back {
+        width: 20.8px;
+        height: 20.8px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+    }
+
+    .p-head .at {
+        color: var(--quiet);
+        font-weight: 400;
+    }
+    .feed :global(.you) {
+        justify-self: end;
+        max-width: 84%;
+    }
+    .feed :global(.prose) {
+        font-size: 16.9px;
+        line-height: 1.5;
+    }
+    .feed :global(.bubble) {
+        font-size: 16.9px;
+    }
+    .feed {
+        flex: 1;
+        display: grid;
+        align-content: end;
+        gap: 11.7px;
+        padding: 0 18.2px 13px;
+        overflow: hidden;
+    }
+    .you {
+        justify-self: end;
+        max-width: 88%;
+        padding: 10.4px 14.3px;
+        border-radius: 18.2px;
+        background: var(--raised);
+        border: 1.3px solid var(--line);
+    }
+    .calls {
+        color: var(--quiet);
+        font-size: 15px;
+    }
+    .say b {
+        font-weight: 600;
+    }
+    .perm {
+        display: grid;
+        gap: 10.4px;
+        margin: 0 13px 10.4px;
+        padding: 14.3px;
+        border-radius: 20.8px;
+        background: var(--raised);
+        border: 1.3px solid var(--line);
+    }
+    .perm .title {
+        display: flex;
+        gap: 10.4px;
+    }
+    .perm .title svg {
+        width: 19.5px;
+        height: 19.5px;
+        flex: none;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        margin-top: 1.3px;
+    }
+    .perm .title span {
+        display: grid;
+        color: var(--quiet);
+        font-size: 14.3px;
+    }
+    .perm .title b {
+        color: var(--ink);
+        font-size: 16.2px;
+        font-weight: 600;
+    }
+    .perm code {
+        font-size: 14.3px;
+        padding: 9.1px 11.7px;
+        border-radius: 10.4px;
+        background: var(--sunken);
+        border: 1.3px solid var(--line);
+    }
+    .perm .acts {
+        display: flex;
+        gap: 7.8px;
+    }
+    .pbtn {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 39px;
+        padding: 0 2.6px;
+        border-radius: 11.7px;
+        border: 1.3px solid var(--strong);
+        background: none;
+        color: var(--ink);
+        font: 500 14.3px "Figtree", var(--sans);
+        white-space: nowrap;
+    }
+    .pbtn.go {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--ground);
+    }
+    .done-note {
+        margin: 0 13px 10.4px;
+        padding: 11.7px 14.3px;
+        border-radius: 15.6px;
+        border: 1.3px solid var(--line);
+        color: var(--added);
+        font-size: 14.3px;
+    }
+    .composer {
+        display: grid;
+        gap: 10.4px;
+        margin: 0 13px 28.6px;
+        padding: 13px 15.6px;
+        border-radius: 20.8px;
+        background: var(--raised);
+        border: 1.3px solid var(--line);
+    }
+    .ph {
+        color: var(--quiet);
+    }
+    .composer .tools {
+        display: flex;
+        align-items: center;
+        gap: 11.7px;
+        color: var(--quiet);
+        font-size: 14.3px;
+    }
+    .safe {
+        letter-spacing: 0.08em;
+        font-size: 13px;
+    }
+    .model {
+        display: inline-flex;
+        align-items: center;
+        gap: 5.2px;
+        color: var(--accent);
+    }
+    .stop {
+        margin-left: auto;
+        width: 28.6px;
+        height: 28.6px;
+        border-radius: 50%;
+        background: var(--ink);
+        display: grid;
+        place-items: center;
+    }
+    .stop i {
+        width: 9.1px;
+        height: 9.1px;
+        border-radius: 2px;
+        background: var(--ground);
+    }
+    .home {
+        position: absolute;
+        left: 50%;
+        bottom: 8px;
+        translate: -50% 0;
+        width: 134px;
+        height: 5px;
+        border-radius: 3px;
+        background: var(--ink);
+    }
+    @media (max-width: 680px) {
+        .laptop-crop {
+            justify-self: center;
+            width: calc(760px * var(--s, 0.4));
+            height: calc(330px * var(--s, 0.4));
+            overflow: hidden;
+            border-radius: calc(30px * var(--s, 0.4)) calc(30px * var(--s, 0.4)) 0 0;
+            box-shadow: 10px 10px 0 var(--cast);
+            -webkit-mask-image: linear-gradient(#000 78%, transparent);
+            mask-image: linear-gradient(#000 78%, transparent);
+        }
+        .laptop-crop {
+            position: relative;
+        }
+        .laptop-crop::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            pointer-events: none;
+            border: calc(16px * var(--s, 0.4)) solid #000;
+            border-bottom: 0;
+            border-radius: inherit;
+            box-shadow: inset 0 0 0 1px #2a2a30;
+        }
+        .laptop-crop .laptop {
+            margin-left: -392px;
+        }
+        .laptop-crop .mac {
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .laptop-crop .screen {
+            border-radius: 0;
+        }
+        .laptop-crop .base {
+            display: none;
+        }
+        .pair {
+            min-height: 0;
+            justify-items: center;
+            gap: 28px;
+        }
+        .laptop {
+            justify-self: center;
+        }
+        .phone {
+            position: relative;
+            right: auto;
+            bottom: auto;
+        }
+    }
+    @media (max-width: 600px) {
+        .clock {
+            display: none;
+        }
+    }
+</style>

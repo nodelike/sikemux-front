@@ -1,0 +1,34 @@
+---
+import AgentIcon from "../../../AgentIcon.astro";
+import type { AgentIconId } from "../../../../lib/agents";
+
+export type RowState = "idle" | "working" | "asks" | "done";
+
+interface Props {
+    task: string;
+    name: string;
+    agent: AgentIconId;
+    age?: string;
+    project?: string;
+    state?: RowState;
+    face?: string;
+    id?: string;
+}
+
+const { task, name, agent, age, project, state = "idle", face, id } = Astro.props;
+---
+
+<div class="agent-row" data-row={id} data-state={state}>
+    <span class="row-mark" style={`color: var(--brand-${agent})`}>
+        {face ? <span class="buddy" set:html={face} /> : <AgentIcon agent={agent} size={20} />}
+    </span>
+    <span class="row-text">
+        <span class="row-task">{task}</span>
+        {(age || project) && <span class="row-sub">{[age, project].filter(Boolean).join(" · ")}</span>}
+    </span>
+    <span class="row-name">@{name}</span>
+    <span class="row-state" aria-label={state}>
+        <span class="loader">{Array.from({ length: 9 }, (_, i) => <i style={`--o:-${(i * 0.17).toFixed(2)}s`} />)}</span>
+        <span class="dot" />
+    </span>
+</div>

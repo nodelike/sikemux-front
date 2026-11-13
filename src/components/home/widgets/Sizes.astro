@@ -1,0 +1,197 @@
+---
+import Bubble from "./chat/Bubble.astro";
+import Run from "./chat/Run.astro";
+import Prose from "./chat/Prose.astro";
+import "./app.css";
+
+const widths = [320, 375, 430];
+---
+
+<div class="app sizes" data-play data-sizes style="--vw: 430px">
+    <div class="pane-head">
+        <svg class="globe" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg>
+        <span class="url">acme-shop <span class="at">/login</span></span>
+        <span class="end">
+            <span class="seg" role="group" aria-label="Page width">
+                {widths.map((width) => <button type="button" data-width={width} aria-pressed={width === 430 ? "true" : "false"}>{width}</button>)}
+            </span>
+        </span>
+    </div>
+    <div class="stage" data-stage>
+        <div class="device">
+        <div class="page">
+            <div class="brand"><i></i>acme</div>
+            <h4>Welcome back</h4>
+            <label>Email<span class="field">maya@northwind.io</span></label>
+            <label>Password<span class="field">••••••••••</span></label>
+            <div class="row">
+                <span class="signin">Sign in</span>
+                <span class="forgot">Forgot password</span>
+            </div>
+        </div>
+        </div>
+        <span class="ruler mono"><span data-width-label>430</span> px</span>
+    </div>
+    <div class="foot">
+        <Bubble when="2:52 PM">Open the login page at 320, 375 and 430 wide and tell me whether anything is cut off.</Bubble>
+        <Run calls={[{ verb: "open", kind: "looked", icon: "globe", target: "localhost:5173/login", took: 1.2 }]} wait={400} />
+        <Prose stream={120}>At 320px the button fits, but the "Forgot password" link wraps under it. Checking 375 and 430 next.</Prose>
+        <Run calls={[{ verb: "open", kind: "looked", icon: "globe", target: "localhost:5173/login", took: 0.9 }]} wait={500} />
+    </div>
+</div>
+
+<script>
+    for (const box of document.querySelectorAll<HTMLElement>("[data-sizes]")) {
+        const buttons = [...box.querySelectorAll<HTMLButtonElement>("[data-width]")];
+        const label = box.querySelector("[data-width-label]")!;
+        const show = (width: string) => {
+            box.style.setProperty("--vw", `${width}px`);
+            box.dataset.narrow = String(Number(width) < 360);
+            label.textContent = width;
+            for (const button of buttons) button.setAttribute("aria-pressed", String(button.dataset.width === width));
+        };
+        for (const button of buttons) button.addEventListener("click", () => show(button.dataset.width!));
+        const stage = box.querySelector<HTMLElement>("[data-stage]")!;
+        const fit = () => box.style.setProperty("--fit", String(Math.min(1, (stage.clientWidth - 32) / 430)));
+        new ResizeObserver(fit).observe(stage);
+        fit();
+        const widthOf: Record<string, string> = { "call:1.2": "320", "call:0.9": "375" };
+        box.addEventListener("step", (event) => {
+            const width = widthOf[(event as CustomEvent).detail];
+            if (width) show(width);
+        });
+    }
+</script>
+
+<style>
+    .sizes .pane-head .end {
+        margin-left: auto;
+    }
+    .url {
+        font-weight: 500;
+    }
+    .seg {
+        display: inline-flex;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .seg button {
+        font: 400 11px var(--mono);
+        color: var(--secondary);
+        background: none;
+        border: 0;
+        padding: 4px 8px;
+        cursor: pointer;
+    }
+    .seg button + button {
+        border-left: 1px solid var(--line);
+    }
+    .seg button[aria-pressed="true"] {
+        background: var(--ink);
+        color: var(--ground);
+    }
+    .stage {
+        position: relative;
+        height: 340px;
+        display: grid;
+        place-items: center;
+        padding: 22px 16px 30px;
+        background: repeating-linear-gradient(135deg, var(--sunken) 0 6px, var(--ground) 6px 12px);
+        border-bottom: 1px solid var(--line);
+        overflow: hidden;
+    }
+    .device {
+        width: calc(430px * var(--fit, 1));
+        display: grid;
+        justify-items: center;
+    }
+    .page {
+        width: var(--vw);
+        flex: none;
+        zoom: var(--fit, 1);
+        transition: width 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+        background: #fbfaf8;
+        color: #1c1a22;
+        border-radius: 8px;
+        padding: 20px 18px;
+        display: grid;
+        gap: 10px;
+        font-family: "Figtree", var(--sans);
+        box-shadow: 0 0 0 1px var(--line), 0 8px 24px -12px #0000003d;
+    }
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 700;
+        font-size: 13px;
+    }
+    .brand i {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        background: #1c1a22;
+    }
+    h4 {
+        margin: 2px 0 2px;
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+    label {
+        display: grid;
+        gap: 4px;
+        font-size: 11.5px;
+        color: #6b6776;
+    }
+    .field {
+        border: 1px solid #dedbe5;
+        border-radius: 6px;
+        padding: 7px 9px;
+        font-size: 12.5px;
+        color: #1c1a22;
+        background: #fff;
+    }
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 14px;
+        margin-top: 4px;
+    }
+    .signin {
+        flex: 1 0 190px;
+        text-align: center;
+        background: #1c1a22;
+        color: #fff;
+        border-radius: 6px;
+        padding: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+    .forgot {
+        font-size: 12px;
+        color: #5b3fd6;
+        text-decoration: underline;
+    }
+    [data-narrow="true"] .forgot {
+        outline: 1.5px dashed #e0a050;
+        outline-offset: 3px;
+        border-radius: 2px;
+    }
+    .ruler {
+        position: absolute;
+        bottom: 8px;
+        font-size: 10.5px;
+        color: var(--quiet);
+    }
+    .foot {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        height: 330px;
+        overflow: hidden;
+        padding: 14px 22px 16px;
+    }
+</style>

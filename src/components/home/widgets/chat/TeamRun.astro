@@ -1,0 +1,66 @@
+---
+import AgentIcon from "../../../AgentIcon.astro";
+import Letter from "./Letter.astro";
+import type { AgentIconId } from "../../../../lib/agents";
+
+interface Props {
+    messages: { from: string; name: string; agent: AgentIconId; to: string; text: string; when: string }[];
+    opens?: number;
+    took: string;
+}
+
+const { messages, opens = 4, took } = Astro.props;
+const agents = [...new Map(messages.map((message) => [message.agent + message.name, message])).values()];
+const earlier = messages.length - opens;
+---
+
+<div class="team-run" data-team-run data-messages={JSON.stringify(messages.map(({ name, text }) => ({ name, text })))}>
+    {messages.map((message, index) => <span hidden data-step={`team:${index}:${message.from}:${message.to}`} data-wait={index === 0 ? "500" : "1300"} />)}
+    <span hidden data-step="team:open" data-wait="900"></span>
+    <p class="team-line">
+        <svg class="chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></svg>
+        <span class="team-marks">
+            {agents.slice(0, 4).map((agent, index) => <span class="mark" data-mark={index} style={`color: var(--brand-${agent.agent})`}><AgentIcon agent={agent.agent} size={16} /></span>)}
+            {agents.length > 4 && <span class="more" data-more>+{agents.length - 4}</span>}
+        </span>
+        <b class="count" data-count>1 message</b>
+        <span class="words" data-words>@{messages[0].name}: {messages[0].text}</span>
+        <span class="took" data-took>{took}</span>
+    </p>
+    <div class="team-open">
+        <p class="earlier">Show {earlier} earlier</p>
+        {
+            messages.slice(earlier).map((message) => (
+                <Letter name={message.name} agent={message.agent} when={message.when}>
+                    {message.text}
+                </Letter>
+            ))
+        }
+    </div>
+</div>
+
+<script>
+    for (const run of document.querySelectorAll<HTMLElement>("[data-team-run]")) {
+        const messages = JSON.parse(run.dataset.messages ?? "[]") as { name: string; text: string }[];
+        const count = run.querySelector<HTMLElement>("[data-count]")!;
+        const words = run.querySelector<HTMLElement>("[data-words]")!;
+        const marks = [...run.querySelectorAll<HTMLElement>("[data-mark]")];
+        const more = run.querySelector<HTMLElement>("[data-more]");
+        const show = (landed: number) => {
+            const latest = messages[landed - 1];
+            count.textContent = landed === 1 ? "1 message" : `${landed} messages`;
+            words.textContent = `@${latest.name}: ${latest.text}`;
+            marks.forEach((mark, index) => (mark.hidden = index > landed));
+            if (more) more.hidden = landed < 5;
+        };
+        run.classList.add("waiting");
+        show(1);
+        run.addEventListener("step", (event) => {
+            const step = (event as CustomEvent).detail as string;
+            if (!step?.startsWith("team:")) return;
+            if (step === "team:open") return run.classList.add("open");
+            run.classList.remove("waiting");
+            show(Number(step.split(":")[1]) + 1);
+        });
+    }
+</script>

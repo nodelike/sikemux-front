@@ -1,0 +1,34 @@
+---
+import AgentIcon from "../../../AgentIcon.astro";
+import type { AgentIconId } from "../../../../lib/agents";
+
+interface Props {
+    agent?: AgentIconId;
+    project?: string;
+    placeholder?: string;
+}
+
+const { agent = "claude", project = "storefront", placeholder = "Ask about this project, or type / for commands" } = Astro.props;
+const names: Record<string, string> = { claude: "Claude", codex: "Codex", hermes: "Hermes", pi: "Pi", opencode: "OpenCode", omp: "OMP", grok: "Grok" };
+---
+
+<form class="composer">
+    <div class="box">
+        <input type="text" aria-label="Message the agent" placeholder={placeholder} maxlength="160" />
+        <div class="bar">
+            <span class="tool plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></span>
+            <span class="tool stash"><svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"></path><path d="m3 13 9 5 9-5"></path></svg>Stash</span>
+            <span class="tool safe"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>SAFE</span>
+            <span class="tool model" data-model><span class="first" style={`color: var(--brand-${agent})`}><AgentIcon agent={agent} size={13} /></span><span class="then" hidden><AgentIcon agent="codex" size={13} /></span><b class="name">{names[agent]}</b><svg class="down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span>
+            <span class="tool mic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></span>
+            <span class="send" role="button" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"></path></svg></span>
+        </div>
+    </div>
+    <div class="context">
+        <span class="ctx"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M2 20h20"></path></svg>This host</span>
+        <span class="slash">/</span>
+        <span class="ctx"><svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg>{project}</span>
+        <span class="slash">/</span>
+        <span class="branch"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"></circle><circle cx="6" cy="18" r="2.5"></circle><circle cx="18" cy="8" r="2.5"></circle><path d="M6 8.5v7M18 10.5c0 4-6 3-10 6"></path></svg>main</span>
+    </div>
+</form>

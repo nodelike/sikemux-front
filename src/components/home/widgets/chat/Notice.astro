@@ -1,0 +1,10 @@
+---
+interface Props {
+    step?: string;
+    wait?: number;
+}
+
+const { step = "", wait = 600 } = Astro.props;
+---
+
+<p class="notice" data-step={step} data-wait={String(wait)}><slot /></p>

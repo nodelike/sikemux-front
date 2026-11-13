@@ -1,0 +1,295 @@
+---
+import AgentIcon from "../../AgentIcon.astro";
+import "./app.css";
+
+const tests = [
+    "adds up every line",
+    "applies tax after the discount",
+    "never goes below zero",
+    "merges lines for the same variant",
+    "keeps different variants apart",
+    "rounds tax once, on the whole cart",
+    "an order moves from cart to shipped",
+    "a shipped order goes no further",
+];
+---
+
+<div class="app review" data-play data-review>
+    <div class="pane-head">
+        <svg width="15" height="15" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"></circle><circle cx="6" cy="18" r="2.5"></circle><circle cx="18" cy="8" r="2.5"></circle><path d="M6 8.5v7M18 10.5c0 4-6 3-10 6"></path></svg>
+        <span class="title">main</span>
+        <span class="who">storefront</span>
+    </div>
+    <div class="git">
+        <div class="diff">
+            <div class="code">
+                <p class="ln"><i>1</i><span><em>export function</em> <u>cartTotal</u>(lines, &#123; taxRate = 0, discountCents = 0 &#125; = &#123;&#125;) &#123;</span></p>
+                <p class="ln"><i>2</i><span>  <em>const</em> subtotal = lines.<u>reduce</u>((sum, line) =&gt; sum + line.priceCents * line.quantity, 0);</span></p>
+                <p class="ln del" data-step data-wait="500"><i>3</i><span>  <em>const</em> taxed = Math.<u>round</u>((subtotal - discountCents) * (1 + taxRate));</span></p>
+                <p class="ln del" data-step data-wait="150"><i>4</i><span>  <em>return</em> Math.<u>max</u>(taxed, 0);</span></p>
+                <p class="ln add" data-step data-wait="350"><i>3</i><span>  <em>const</em> discounted = Math.<u>max</u>(subtotal - Math.<u>min</u>(discountCents, subtotal), 0);</span></p>
+                <p class="ln add" data-step data-wait="150"><i>4</i><span>  <em>return</em> discounted + Math.<u>round</u>(discounted * taxRate);</span></p>
+                <p class="ln"><i>5</i><span>&#125;</span></p>
+            </div>
+            <p class="fh">src/cart.mjs <span class="counts" data-step="counted" data-wait="300"><i class="add">+2</i> <i class="del">−2</i></span></p>
+        </div>
+        <div class="files">
+            <p class="label">Changes</p>
+            <ul>
+                <li class="chosen"><span class="mark" style="color: var(--brand-claude)"><AgentIcon agent="claude" size={13} /></span>cart.mjs <small>src</small><span class="who">@Wren</span><span class="m" data-step data-wait="100">M</span></li>
+                <li><span class="mark" style="color: var(--brand-claude)"><AgentIcon agent="claude" size={13} /></span>cart.test.mjs <small>test</small><span class="who">@Wren</span><span class="m" data-step data-wait="100">M</span></li>
+            </ul>
+        </div>
+        <div class="term">
+            <p class="prompt">storefront % <span data-step data-wait="500" data-stream="40">node --test</span></p>
+            {tests.map((test) => <p class="ok" data-step data-wait="140">✔ {test}</p>)}
+            <p class="sum" data-step data-wait="250">ℹ tests 8 · pass 8 · fail 0</p>
+        </div>
+        <div class="message">
+            <div class="msg">
+                <p class="subject" data-step data-wait="500" data-stream="70">fix(cart): round tax once, on the whole cart</p>
+                <p class="body" data-step data-wait="100" data-stream="160">A cart of cheap items could come out a cent off the receipt. The discount can no longer push the total below zero.</p>
+            </div>
+            <p class="by" data-step="ready" data-wait="200"><span class="mark" style="color: var(--brand-claude)"><AgentIcon agent="claude" size={13} /></span>@Wren wrote the message</p>
+            <button type="button" class="commit" data-commit disabled>Commit</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    for (const box of document.querySelectorAll<HTMLElement>("[data-review]")) {
+        const commit = box.querySelector<HTMLButtonElement>("[data-commit]")!;
+        box.addEventListener("step", (event) => {
+            if ((event as CustomEvent).detail === "ready") commit.disabled = false;
+        });
+        commit.addEventListener("click", () => {
+            commit.textContent = "Committed as 4f1c2a7";
+            commit.disabled = true;
+            box.classList.add("committed");
+        });
+    }
+</script>
+
+<style>
+    .review {
+        max-width: 660px;
+    }
+    .review .pane-head svg {
+        fill: none;
+        stroke: var(--quiet);
+        stroke-width: 2;
+    }
+    .git {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        grid-template-areas: "message diff" "files diff" "term term";
+        border-top: 1px solid var(--line);
+    }
+    .message {
+        grid-area: message;
+        display: grid;
+        gap: 8px;
+        padding: 12px 12px 4px;
+        border-right: 1px solid var(--line);
+    }
+    .files {
+        grid-area: files;
+        padding: 6px 12px 12px;
+        border-right: 1px solid var(--line);
+    }
+    .diff {
+        grid-area: diff;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        font: 400 11.5px/1.75 var(--mono);
+    }
+    .term {
+        grid-area: term;
+        display: grid;
+        padding: 10px 14px 12px;
+        border-top: 1px solid var(--line);
+        background: var(--sunken);
+        font: 400 11px/1.65 var(--mono);
+    }
+    .msg {
+        min-height: 108px;
+        padding: 9px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: var(--raised);
+        display: grid;
+        align-content: start;
+        gap: 4px;
+    }
+    .subject {
+        font-weight: 500;
+        font-size: 12.5px;
+    }
+    .body {
+        color: var(--secondary);
+        font-size: 12px;
+        line-height: 1.45;
+    }
+    .by {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11.5px;
+        color: var(--quiet);
+    }
+    .mark {
+        display: inline-flex;
+    }
+    .commit {
+        height: 28px;
+        border-radius: 5px;
+        border: 1px solid var(--accent);
+        background: var(--accent);
+        color: var(--ground);
+        font: 500 12.5px "Figtree", var(--sans);
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+    .commit:disabled {
+        opacity: 0.4;
+        cursor: default;
+    }
+    .committed .commit {
+        opacity: 1;
+        background: none;
+        color: var(--added);
+        border-color: var(--added);
+    }
+    .label {
+        font-size: 10.5px;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--quiet);
+        margin-bottom: 4px;
+    }
+    .files ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 2px;
+    }
+    .files li {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 6px;
+        border-radius: 5px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    .files .chosen {
+        background: var(--hover);
+    }
+    .files small {
+        color: var(--quiet);
+    }
+    .files .who {
+        margin-left: auto;
+        color: var(--quiet);
+        font: 400 10.5px var(--mono);
+    }
+    .files .m {
+        color: #e0a050;
+        font: 500 10.5px var(--mono);
+    }
+    .fh {
+        order: -1;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        min-height: 36px;
+        padding: 0 12px;
+        border-bottom: 1px solid var(--line);
+        font: 400 12.5px "Figtree", var(--sans);
+    }
+    .counts {
+        font: 400 11px var(--mono);
+    }
+    .counts i {
+        font-style: normal;
+    }
+    .code {
+        padding: 6px 0 10px;
+        overflow: hidden;
+        -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent);
+        mask-image: linear-gradient(90deg, #000 88%, transparent);
+    }
+    .ln {
+        display: grid;
+        grid-template-columns: 34px max-content;
+        white-space: pre;
+        color: var(--ink);
+    }
+    .ln i {
+        font-style: normal;
+        text-align: right;
+        padding-right: 10px;
+        color: var(--quiet);
+    }
+    .ln em {
+        font-style: normal;
+        color: var(--accent);
+    }
+    .ln u {
+        text-decoration: none;
+        color: var(--looked);
+    }
+    .ln.del {
+        background: color-mix(in oklab, var(--deleted) 12%, transparent);
+    }
+    .ln.add {
+        background: color-mix(in oklab, var(--added) 12%, transparent);
+    }
+    .del i::after {
+        content: " −";
+        color: var(--deleted);
+    }
+    .add i::after {
+        content: " +";
+        color: var(--added);
+    }
+    .counts .add {
+        color: var(--added);
+    }
+    .counts .del {
+        color: var(--deleted);
+    }
+    .prompt {
+        color: var(--secondary);
+    }
+    .prompt span {
+        color: var(--ink);
+    }
+    .ok {
+        color: var(--added);
+    }
+    .sum {
+        color: var(--accent);
+        font-family: var(--mono);
+    }
+    @media (max-width: 640px) {
+        .git {
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-areas: "diff" "files" "term" "message";
+        }
+        .message,
+        .files {
+            border-right: 0;
+        }
+        .files {
+            border-top: 1px solid var(--line);
+        }
+        .message {
+            border-top: 1px solid var(--line);
+            padding-bottom: 12px;
+        }
+    }
+</style>

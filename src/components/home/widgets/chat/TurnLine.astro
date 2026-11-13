@@ -1,0 +1,20 @@
+---
+import AgentIcon from "../../../AgentIcon.astro";
+import type { AgentIconId } from "../../../../lib/agents";
+
+interface Props {
+    agent: AgentIconId;
+    word: string;
+    said: string;
+    step?: string;
+    wait?: number;
+}
+
+const { agent, word, said, step = "", wait = 500 } = Astro.props;
+---
+
+<div class="turn-line" data-step={step} data-wait={String(wait)}>
+    <span class="mark" style={`color: var(--brand-${agent})`}><AgentIcon agent={agent} size={21} /></span>
+    <p class="words"><b>{word}</b> · {said}</p>
+    <span class="buttons"><slot /></span>
+</div>

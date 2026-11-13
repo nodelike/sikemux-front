@@ -1,0 +1,69 @@
+---
+import AgentIcon from "../AgentIcon.astro";
+import { AGENTS, agentPath } from "../../lib/agents";
+---
+
+<section class="frame agents" aria-label="The agents Sikemux runs">
+    <ul>
+        {
+            AGENTS.map((agent) => (
+                <li style={`--brand: var(--brand-${agent.icon})`}>
+                    <a href={agentPath(agent)}>
+                        <AgentIcon agent={agent.icon} size={22} />
+                        {agent.name}
+                    </a>
+                </li>
+            ))
+        }
+    </ul>
+</section>
+
+<style>
+    .agents {
+        border-top: 1px solid var(--rule);
+    }
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+    li + li {
+        border-left: 1px solid var(--rule);
+    }
+    a {
+        height: 100%;
+        display: grid;
+        place-items: center;
+        align-content: center;
+        gap: 10px;
+        padding: 20px 6px;
+        font-size: 13.5px;
+        text-align: center;
+        text-decoration: none;
+        color: var(--ink);
+        transition: background-color 0.14s;
+    }
+    a:hover {
+        background: var(--paper-2);
+    }
+    a :global(svg),
+    a :global(img) {
+        color: var(--brand);
+    }
+    @media (max-width: 900px) {
+        ul {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        li:nth-child(5) {
+            border-left: 0;
+        }
+        li:nth-child(n + 5) {
+            border-top: 1px solid var(--rule);
+        }
+        li:last-child {
+            border-right: 1px solid var(--rule);
+        }
+    }
+</style>

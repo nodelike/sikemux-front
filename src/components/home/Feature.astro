@@ -1,0 +1,194 @@
+---
+interface Props {
+    tag: string;
+    ground?: "field" | "night" | "violet" | "paper";
+    flip?: boolean;
+    wide?: boolean;
+    id?: string;
+}
+
+const { tag, ground = "field", flip = false, wide = false, id } = Astro.props;
+---
+
+<section class:list={["frame feature", { flip, wide }]} id={id}>
+    <div class="copy">
+        <span class="tag">{tag}</span>
+        <h2><slot name="title" /></h2>
+        <div class="body"><slot /></div>
+        <slot name="list" />
+    </div>
+    <div class:list={["media", ground]}>
+        <span class="nub" style="left:-5px;top:-5px"></span>
+        <slot name="media" />
+        <span class="nub" style="right:-5px;bottom:-5px"></span>
+    </div>
+</section>
+
+<style>
+    .feature {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+        border-top: 1px solid var(--rule);
+    }
+    .flip {
+        grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
+    }
+    .wide {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .wide .copy {
+        position: static;
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+        grid-template-areas: "tag tag" "title body";
+        align-items: end;
+        gap: 22px 40px;
+        border-right: 0;
+        border-bottom: 1px solid var(--rule);
+    }
+    .wide .copy > .tag {
+        grid-area: tag;
+        justify-self: start;
+    }
+    .wide .copy > h2 {
+        grid-area: title;
+    }
+    .wide .copy > .body {
+        grid-area: body;
+    }
+    .wide .media {
+        padding-block: clamp(40px, 5vw, 72px);
+    }
+    .flip .copy {
+        order: 2;
+    }
+    .media {
+        border-left: 1px solid var(--rule);
+    }
+    .flip .media {
+        border-left: 0;
+        border-right: 1px solid var(--rule);
+    }
+    .wide .media {
+        border: 0;
+    }
+    .copy {
+        position: sticky;
+        top: 64px;
+        align-self: start;
+        padding: clamp(40px, 5vw, 72px) 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        align-items: flex-start;
+    }
+    h2 {
+        font-size: clamp(34px, 3.6vw, 52px);
+    }
+    .body {
+        display: grid;
+        gap: 12px;
+        font-size: 16.5px;
+        line-height: 1.55;
+        color: var(--ink-2);
+        max-width: 30em;
+    }
+    .copy :global(ul.facts) {
+        list-style: none;
+        margin: auto 0 0;
+        padding: 0;
+        width: 100%;
+        border-top: 1px solid var(--rule);
+    }
+    .copy :global(ul.facts li) {
+        display: grid;
+        grid-template-columns: 152px minmax(0, 1fr);
+        gap: 16px;
+        text-wrap: pretty;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--rule);
+        font-size: 14px;
+        color: var(--ink-2);
+    }
+    .copy :global(ul.facts b) {
+        font-weight: 500;
+        color: var(--ink);
+    }
+    .media {
+        position: relative;
+        display: grid;
+        place-items: center;
+        padding: clamp(28px, 4vw, 56px);
+        overflow: hidden;
+        min-height: 420px;
+    }
+    .media .nub {
+        z-index: 2;
+    }
+    .field {
+        background: var(--field);
+    }
+    .violet {
+        background: var(--violet);
+    }
+    .violet .nub {
+        background: var(--night);
+    }
+    .night {
+        background: var(--night);
+        background-image: radial-gradient(color-mix(in srgb, var(--violet) 32%, transparent) 1px, transparent 1.4px);
+        background-size: 14px 14px;
+    }
+    .night .nub {
+        background: var(--violet);
+    }
+    .paper {
+        background: var(--paper-2);
+    }
+    .media :global(.shot) {
+        box-shadow: 10px 10px 0 var(--cast);
+    }
+    .night :global(.shot) {
+        box-shadow: 10px 10px 0 var(--violet);
+        border-color: #ffffff30;
+    }
+    @media (max-width: 900px) {
+        .feature,
+        .flip {
+            grid-template-columns: minmax(0, 1fr);
+        }
+        .wide .copy {
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-areas: "tag" "title" "body";
+        }
+        .copy,
+        .flip .copy {
+            position: static;
+            order: 0;
+            border: 0;
+            border-bottom: 1px solid var(--rule);
+        }
+        .media,
+        .flip .media {
+            border: 0;
+        }
+        .media {
+            min-height: 0;
+        }
+    }
+    @media (max-width: 600px) {
+        .media {
+            padding: 12px 12px 20px;
+        }
+        .copy {
+            padding: 32px 16px;
+        }
+        .copy :global(ul.facts li) {
+            grid-template-columns: 104px minmax(0, 1fr);
+        }
+        .media :global(.app),
+        .media :global(.shot) {
+            box-shadow: 6px 6px 0 var(--cast);
+        }
+    }
+</style>

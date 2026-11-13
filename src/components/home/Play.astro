@@ -1,0 +1,73 @@
+<script>
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    function typed(node: HTMLElement, text: string, shown: number) {
+        const done = document.createElement("span");
+        done.textContent = text.slice(0, shown);
+        const rest = document.createElement("span");
+        rest.className = "w-ghost";
+        rest.textContent = text.slice(shown);
+        node.replaceChildren(done, rest);
+    }
+
+    async function stream(node: HTMLElement, text: string, perSecond: number) {
+        node.classList.add("w-caret");
+        const step = Math.max(1, Math.round(perSecond / 30));
+        for (let shown = 0; shown <= text.length; shown += step) {
+            typed(node, text, shown);
+            await wait(1000 / 30);
+        }
+        node.replaceChildren(text);
+        node.classList.remove("w-caret");
+    }
+
+    function reveal(step: HTMLElement) {
+        step.classList.add("on");
+        if (step.dataset.run !== undefined) step.classList.add("run");
+    }
+
+    async function play(box: HTMLElement) {
+        const steps = [...box.querySelectorAll<HTMLElement>("[data-step]")];
+        const texts = new Map<HTMLElement, string>();
+        for (const node of box.querySelectorAll<HTMLElement>("[data-stream]")) texts.set(node, node.textContent ?? "");
+        for (const step of steps) {
+            if (still) {
+                reveal(step);
+                step.classList.remove("run");
+                step.dispatchEvent(new CustomEvent("step", { detail: step.dataset.step, bubbles: true }));
+                step.dispatchEvent(new CustomEvent("settled", { detail: step.dataset.step, bubbles: true }));
+                continue;
+            }
+            await wait(Number(step.dataset.wait ?? 500));
+            for (const node of [step, ...step.querySelectorAll<HTMLElement>("[data-stream]")]) {
+                const text = texts.get(node);
+                if (text !== undefined) typed(node, text, 0);
+            }
+            reveal(step);
+            step.dispatchEvent(new CustomEvent("step", { detail: step.dataset.step, bubbles: true }));
+            for (const node of [step, ...step.querySelectorAll<HTMLElement>("[data-stream]")]) {
+                const text = texts.get(node);
+                if (text !== undefined) await stream(node, text, Number(node.dataset.stream || 90));
+            }
+            if (step.dataset.run !== undefined) {
+                await wait(Number(step.dataset.run || 900));
+                step.classList.remove("run");
+                step.dispatchEvent(new CustomEvent("settled", { detail: step.dataset.step, bubbles: true }));
+            }
+        }
+        box.dispatchEvent(new CustomEvent("end"));
+    }
+
+    const seen = new IntersectionObserver(
+        (entries) => {
+            for (const entry of entries) {
+                if (!entry.isIntersecting) continue;
+                seen.unobserve(entry.target);
+                play(entry.target as HTMLElement);
+            }
+        },
+        { rootMargin: "0px 0px -20% 0px" },
+    );
+    for (const box of document.querySelectorAll<HTMLElement>("[data-play]")) seen.observe(box);
+</script>

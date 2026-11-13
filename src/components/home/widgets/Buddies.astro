@@ -1,0 +1,251 @@
+---
+import "../../../styles/buddies.css";
+import packs from "../../../lib/buddies.generated.json";
+import { PICKED } from "../../../lib/showcase-buddies";
+import "./app.css";
+
+const pack = packs.find((candidate) => candidate.id === PICKED.pack)!;
+const shape = pack.shapes.find((candidate) => candidate.id === PICKED.shape)!;
+---
+
+<div class="app picker" data-buddies>
+    <div class="sheet-head">
+        <span class="title">Change buddy</span>
+        <svg class="close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+    </div>
+    <div class="sheet-body">
+        <div class="who">
+            <span class="buddy face" data-face></span>
+            <span class="names"><b>{PICKED.agent}</b><span>{pack.name} · {shape.name}</span><span class="state" data-face-state>idle</span></span>
+        </div>
+        <div class="choose">
+            <div class="pack-list">
+                {
+                    packs.map((candidate) => (
+                        <p class:list={["pack", { on: candidate.id === pack.id }]}>
+                            <span class="buddy" data-pack={candidate.id} />
+                            <span class="pack-name">{candidate.name}</span>
+                            {candidate.id === pack.id && (
+                                <svg class="check" viewBox="0 0 24 24">
+                                    <path d="M20 6 9 17l-5-5" />
+                                </svg>
+                            )}
+                        </p>
+                    ))
+                }
+            </div>
+            <div class="grid">
+                {
+                    pack.shapes.map((candidate) => (
+                        <span class:list={["tile", { on: candidate.id === shape.id }]} title={candidate.name}>
+                            <span class="buddy" data-shape={candidate.id} />
+                        </span>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+    <div class="sheet-foot">
+        <span class="hint">Picked for this agent</span>
+        <span class="btn">Use Default</span>
+        <span class="btn accent">Done</span>
+    </div>
+</div>
+
+<script>
+    type Pose = { motion: string; markup: string };
+    type Picker = { packs: { id: string; face: string }[]; shapes: { id: string; face: string }[]; face: Record<string, Pose> };
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const cycle = ["working", "waiting", "done", "idle"] as const;
+
+    for (const box of document.querySelectorAll<HTMLElement>("[data-buddies]")) {
+        const face = box.querySelector<HTMLElement>("[data-face]")!;
+        const label = box.querySelector<HTMLElement>("[data-face-state]")!;
+        let picker: Picker | null = null;
+        let timer = 0;
+        let turn = 0;
+        const wear = (state: string) => {
+            const pose = picker!.face[state];
+            face.innerHTML = pose.markup;
+            if (pose.motion) face.dataset.motion = pose.motion;
+            else delete face.dataset.motion;
+            label.textContent = state;
+        };
+        new IntersectionObserver(
+            async ([entry]) => {
+                if (entry.isIntersecting && !picker) {
+                    picker = (await (await fetch("/buddies.json")).json()).picker as Picker;
+                    for (const pack of picker.packs) box.querySelector<HTMLElement>(`[data-pack="${pack.id}"]`)!.innerHTML = pack.face;
+                    for (const shape of picker.shapes) box.querySelector<HTMLElement>(`[data-shape="${shape.id}"]`)!.innerHTML = shape.face;
+                    wear(still ? "working" : "idle");
+                }
+                clearInterval(timer);
+                if (entry.isIntersecting && picker && !still) {
+                    timer = window.setInterval(() => wear(cycle[turn++ % cycle.length]), 1800);
+                }
+            },
+            { rootMargin: "300px 0px" },
+        ).observe(box);
+    }
+</script>
+
+<style>
+    .picker {
+        max-width: 560px;
+    }
+    .sheet-head {
+        display: flex;
+        align-items: center;
+        height: 44px;
+        padding: 0 16px 0 20px;
+        border-bottom: 1px solid var(--line);
+    }
+    .title {
+        font-size: 13px;
+        font-weight: 600;
+    }
+    .close {
+        margin-left: auto;
+        width: 14px;
+        height: 14px;
+        color: var(--quiet);
+    }
+    .sheet-body {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding: 14px 20px;
+    }
+    .who {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .face {
+        width: 44px;
+        height: 44px;
+        flex: none;
+    }
+    .names {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    .names b {
+        font-size: 13px;
+        font-weight: 600;
+    }
+    .names span {
+        font-size: 11px;
+        color: var(--quiet);
+    }
+    .names .state {
+        font-family: var(--mono);
+        font-size: 10.5px;
+    }
+    .tile {
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+    }
+    .tile.on {
+        border-color: transparent;
+        background: color-mix(in oklab, var(--ink) 9%, transparent);
+    }
+    .choose {
+        display: flex;
+        gap: 12px;
+        height: 300px;
+    }
+    .pack-list {
+        width: 150px;
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        overflow: hidden;
+    }
+    .pack {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 28px;
+        flex: none;
+        padding: 0 8px;
+        border-radius: 5px;
+        font-size: 12px;
+        color: var(--secondary);
+    }
+    .pack.on {
+        color: var(--ink);
+        background: color-mix(in oklab, var(--ink) 9%, transparent);
+    }
+    .pack .buddy {
+        width: 18px;
+        height: 18px;
+        flex: none;
+    }
+    .pack-name {
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .check {
+        width: 12px;
+        height: 12px;
+        color: var(--secondary);
+    }
+    .grid {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        gap: 6px;
+        overflow: hidden;
+    }
+    .grid .tile {
+        width: 52px;
+        height: 52px;
+    }
+    .grid .buddy {
+        width: 40px;
+        height: 40px;
+    }
+    .sheet-foot {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-top: 1px solid var(--line);
+    }
+    .hint {
+        margin-right: auto;
+        font-size: 11.5px;
+        color: var(--quiet);
+    }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        height: 28px;
+        padding: 0 12px;
+        border-radius: 5px;
+        border: 1px solid var(--strong);
+        font-size: 12px;
+        font-weight: 500;
+    }
+    .btn.accent {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: var(--ground);
+    }
+    @media (max-width: 600px) {
+        .who {
+            flex-wrap: wrap;
+        }
+    }
+    </style>

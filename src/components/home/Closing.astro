@@ -1,0 +1,87 @@
+---
+import Dither from "../Dither.astro";
+import Install from "./Install.astro";
+import { APP_STORE_URL, RELEASES_URL, type Release } from "../../lib/release";
+
+interface Props {
+    release: Release;
+}
+
+const { release } = Astro.props;
+---
+
+<section class="closing">
+    <Dither class="closing-dither" />
+    <div class="frame inner">
+        <h2>Bring your agents. <br />Keep your plans.</h2>
+        <div class="side">
+            <p>Sikemux runs the agents you already pay for and gives them the rest of your tools, on a Mac or a Linux box.</p>
+            <div class="actions">
+                <a class="btn solid" href={release.dmgUrl} data-release-dmg>Download for Mac</a>
+                <a class="btn" href={RELEASES_URL}>Linux builds</a>
+                <a class="btn" href={APP_STORE_URL}>iPhone app</a>
+            </div>
+            <Install />
+        </div>
+    </div>
+</section>
+
+
+<style>
+    .closing {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        background: var(--violet);
+        color: #120d1c;
+        border-top: 1px solid var(--rule);
+    }
+    .closing :global(.closing-dither) {
+        inset: auto 0 0;
+        height: 20%;
+        --dither-dot: rgba(18, 13, 28, 0.34);
+        mask-image: linear-gradient(to top, #000 0, transparent 100%);
+        -webkit-mask-image: linear-gradient(to top, #000 0, transparent 100%);
+    }
+    .inner {
+        border-color: #120d1c;
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        gap: 40px;
+        align-items: end;
+        padding: clamp(72px, 9vw, 128px) 20px;
+    }
+    h2 {
+        font-size: clamp(52px, 7vw, 108px);
+    }
+    .side {
+        display: grid;
+        gap: 22px;
+    }
+    .side p {
+        font-size: 17px;
+        line-height: 1.5;
+    }
+    .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .closing .btn {
+        border-color: #120d1c;
+        color: #120d1c;
+    }
+    .closing .btn:hover,
+    .closing .btn.solid {
+        background: #120d1c;
+        color: #f4f3f7;
+    }
+    .closing .btn.solid::after {
+        background: #120d1c;
+    }
+    @media (max-width: 900px) {
+        .inner {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

@@ -1,0 +1,21 @@
+---
+interface Props {
+    wait?: number;
+    stream?: number;
+    step?: boolean;
+}
+
+const { wait = 250, stream = 140, step = true } = Astro.props;
+---
+
+{
+    step ? (
+        <p class="prose" data-step data-wait={String(wait)} data-stream={String(stream)}>
+            <slot />
+        </p>
+    ) : (
+        <p class="prose">
+            <slot />
+        </p>
+    )
+}

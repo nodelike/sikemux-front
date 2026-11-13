@@ -1,0 +1,87 @@
+---
+import { DISCORD_URL, REPO_URL, X_URL, type Release } from "../../lib/release";
+
+interface Props {
+    release: Release;
+}
+
+const { release } = Astro.props;
+---
+
+<footer class="footer">
+    <div class="frame cols">
+        <div>
+            <p class="mono">v<span data-release-version>{release.version}</span> · free and MIT</p>
+        </div>
+        <nav aria-label="Product">
+            <a href="/agents">Agents</a>
+            <a href="/vs">Compare</a>
+            <a href="/changelog">Changelog</a>
+            <a href="/phone">Phone app</a>
+        </nav>
+        <nav aria-label="Help">
+            <a href="https://docs.sikemux.com">Docs</a>
+            <a href={DISCORD_URL}>Discord</a>
+            <a href={REPO_URL}>GitHub</a>
+        </nav>
+        <nav aria-label="Company">
+            <a href="/brand">Brand</a>
+            <a href="/privacy">Privacy</a>
+            <a href="/terms">Terms</a>
+            <a href={X_URL}>X</a>
+        </nav>
+    </div>
+    <div class="frame mark">
+        <img class="on-light" src="/brand/lockup-black.svg" alt="Sikemux" />
+        <img class="on-dark" src="/brand/lockup-white.svg" alt="" />
+    </div>
+</footer>
+
+<style>
+    .footer {
+        border-top: 1px solid var(--rule);
+    }
+    .cols {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        padding: 36px 20px;
+        gap: 24px;
+        font-size: 14px;
+    }
+    .cols p {
+        color: var(--ink-3);
+        font-size: 12.5px;
+    }
+    .cols nav {
+        display: grid;
+        gap: 8px;
+        align-content: start;
+    }
+    .cols a {
+        text-decoration: none;
+        color: var(--ink-2);
+    }
+    .cols a:hover {
+        color: var(--ink);
+    }
+    .mark {
+        border-top: 1px solid var(--rule);
+        padding: 36px 20px 44px;
+    }
+    .mark img {
+        width: 100%;
+        height: auto;
+    }
+    .on-dark,
+    :global(:root[data-theme="dark"]) .mark .on-light {
+        display: none;
+    }
+    :global(:root[data-theme="dark"]) .mark .on-dark {
+        display: block;
+    }
+    @media (max-width: 900px) {
+        .cols {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>

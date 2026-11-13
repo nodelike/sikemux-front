@@ -1,0 +1,271 @@
+---
+import { Image } from "astro:assets";
+import hero from "../../assets/hero/hero.png";
+import Dither from "../Dither.astro";
+import Install from "./Install.astro";
+import { REPO_URL, formatSize, type Release } from "../../lib/release";
+
+interface Props {
+    release: Release;
+}
+
+const { release } = Astro.props;
+const size = release.dmgBytes === null ? "about 25 MB" : formatSize(release.dmgBytes);
+const points = [
+    { icon: "M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20", title: "Your plans.", body: "Claude Code, Codex and five more, on the logins you already pay for." },
+    { icon: "M13 2 3 14h9l-1 8 10-12h-9z", title: "Native, not Electron.", body: `Drawn on the GPU. The whole app downloads at ${size}.` },
+    { icon: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z", title: "Agents that talk.", body: "They message each other, hand off work and ask only what's yours to decide." },
+    { icon: "M5 2h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM10 18h4", title: "Answer from anywhere.", body: "The MacBook notch asks for you. Close the laptop and the phone does." },
+];
+---
+
+<section class="hero">
+    <div class="frame top">
+        <h1>
+            <span class="keep">Every coding agent</span> <span class="keep">you pay for,</span><br />
+            <span class="chip">in one window.</span>
+        </h1>
+        <div class="side">
+            <p class="lede">
+                Sikemux is a native app for Mac and Linux. Your agents, code, terminals, Git and a browser share one project, and you see at a glance which agent needs you.
+            </p>
+            <div class="diff mono" aria-label="When Claude runs out, the chat carries on in Codex">
+                <span class="del"><b>-</b> claude &nbsp;out of usage</span>
+                <span class="add"><b>+</b> codex &nbsp;&nbsp;carries on the chat</span>
+            </div>
+            <Install />
+            <div class="actions">
+                <a class="btn solid" href={release.dmgUrl} data-release-dmg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.1.1 2.3-.6 3.1-1.5z"></path></svg>
+                    Download for Mac
+                </a>
+                <a class="btn" href={REPO_URL}>Star on GitHub</a>
+            </div>
+            <p class="fine mono"><span>Apple Silicon Mac and Linux</span><span class="sep"> · </span><span><span data-release-size>{size}</span> · free, MIT</span></p>
+        </div>
+    </div>
+
+    <div class="stage">
+        <Dither class="stage-dither" />
+        <div class="lines" aria-hidden="true"></div>
+        <div class="frame window-frame">
+            <span class="badge tag">storefront · 7 agents</span>
+            <figure class="shot window">
+                <Image src={hero} alt="Sikemux with Claude Code fixing a checkout bug, its browser tab open on the shop's cart page and the project's other agents listed on the right" widths={[828, 1560, 2340, 3120]} sizes="(min-width: 1300px) 1200px, 100vw" format="avif" quality={72} loading="eager" fetchpriority="high" />
+            </figure>
+            <span class="nub" style="left:-5px;top:-5px"></span>
+            <span class="nub" style="right:-5px;bottom:-5px"></span>
+        </div>
+    </div>
+
+    <ul class="frame points">
+        {
+            points.map((point) => (
+                <li>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d={point.icon} /></svg>
+                    <p><b>{point.title}</b> {point.body}</p>
+                </li>
+            ))
+        }
+    </ul>
+</section>
+
+
+<style>
+    .top {
+        display: grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+        gap: 48px;
+        padding: clamp(48px, 6vw, 88px) 20px clamp(56px, 6vw, 88px);
+        align-items: start;
+    }
+    h1 {
+        font-size: clamp(46px, 6vw, 88px);
+    }
+    .side {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+        min-width: 0;
+    }
+    .lede {
+        font-size: 17px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        max-width: 34em;
+    }
+    .diff {
+        --del-ground: #fde4e4;
+        --del-sign: #d1242f;
+        --add-ground: #dcf5e3;
+        --add-sign: #1a7f37;
+        display: grid;
+        width: fit-content;
+        font-size: 13.5px;
+        line-height: 1.75;
+        color: var(--ink);
+    }
+    :global(:root[data-theme="dark"]) .diff {
+        --del-ground: rgba(255, 64, 96, 0.3);
+        --del-sign: #ff8a9a;
+        --add-ground: rgba(34, 214, 104, 0.24);
+        --add-sign: #5cf08f;
+    }
+    .diff span {
+        padding: 0 10px 0 8px;
+    }
+    .diff b {
+        font-weight: 400;
+        margin-right: 4px;
+    }
+    .del {
+        background: var(--del-ground);
+    }
+    .del b {
+        color: var(--del-sign);
+    }
+    .add {
+        background: var(--add-ground);
+    }
+    .add b {
+        color: var(--add-sign);
+    }
+    .keep {
+        white-space: nowrap;
+    }
+    .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .fine {
+        font-size: 12px;
+        color: var(--ink-3);
+    }
+
+    .stage {
+        position: relative;
+        border-block: 1px solid var(--rule);
+        background: var(--field);
+        padding-block: clamp(32px, 5vw, 64px);
+    }
+    .stage {
+        isolation: isolate;
+    }
+    .stage :global(.stage-dither) {
+        inset: 0;
+        --dither-dot: rgba(124, 77, 255, 0.55);
+        mask-image: linear-gradient(90deg, #000 0, transparent 22%, transparent 78%, #000 100%);
+        -webkit-mask-image: linear-gradient(90deg, #000 0, transparent 22%, transparent 78%, #000 100%);
+    }
+    :global(:root[data-theme="dark"]) .stage :global(.stage-dither) {
+        --dither-dot: rgba(162, 119, 255, 0.45);
+    }
+    .lines {
+        position: absolute;
+        inset: 0;
+        background:
+            repeating-linear-gradient(to bottom, transparent 0 59px, color-mix(in srgb, var(--ink) 22%, transparent) 59px 60px);
+        mask-image: linear-gradient(90deg, #000 0, transparent 30%, transparent 70%, #000 100%);
+        -webkit-mask-image: linear-gradient(90deg, #000 0, transparent 30%, transparent 70%, #000 100%);
+    }
+    .window-frame {
+        border: 0;
+        width: min(1200px, 100% - 48px);
+    }
+    .window {
+        margin: 0;
+        box-shadow: 14px 14px 0 var(--cast);
+    }
+    .badge {
+        position: absolute;
+        right: 0;
+        top: -27px;
+        z-index: 2;
+    }
+
+    .points {
+        list-style: none;
+        margin: 0 auto;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .points li {
+        padding: 28px 20px 34px;
+        border-right: 1px solid var(--rule);
+        display: grid;
+        gap: 16px;
+        align-content: start;
+    }
+    .points li:last-child {
+        border-right: 0;
+    }
+    .points svg {
+        width: 22px;
+        height: 22px;
+        fill: none;
+        stroke: var(--ink);
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .points p {
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--ink-2);
+    }
+    .points b {
+        color: var(--ink);
+        font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+        h1 {
+            font-size: clamp(30px, 8.4vw, 56px);
+        }
+        .narrow {
+            display: inline;
+        }
+    }
+    @media (max-width: 900px) {
+        .top {
+            grid-template-columns: minmax(0, 1fr);
+            align-items: start;
+        }
+        .points {
+            grid-template-columns: 1fr 1fr;
+        }
+        .points li:nth-child(2) {
+            border-right: 0;
+        }
+        .points li:nth-child(-n + 2) {
+            border-bottom: 1px solid var(--rule);
+        }
+        .window {
+            box-shadow: 8px 8px 0 var(--cast);
+        }
+    }
+    @media (max-width: 520px) {
+        .points {
+            grid-template-columns: 1fr;
+        }
+        .points li {
+            border-right: 0;
+            border-bottom: 1px solid var(--rule);
+        }
+    }
+</style>
+
+<style>
+    .fine span {
+        white-space: nowrap;
+    }
+    @media (max-width: 600px) {
+        .fine .sep {
+            display: block;
+            height: 0;
+            overflow: hidden;
+        }
+    }
+</style>

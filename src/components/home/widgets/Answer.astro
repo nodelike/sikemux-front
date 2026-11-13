@@ -1,0 +1,155 @@
+---
+import Head from "./chat/Head.astro";
+import Bubble from "./chat/Bubble.astro";
+import Run from "./chat/Run.astro";
+import Prose from "./chat/Prose.astro";
+import "./app.css";
+
+const line = "0.0,177.3 11.7,178.1 23.3,175.8 35.0,178.5 46.7,176.3 58.3,177.1 70.0,178.6 81.7,176.4 93.3,178.6 105.0,22.0 116.7,26.7 128.3,26.5 140.0,22.2 151.7,16.9 163.3,26.0 175.0,24.8 186.7,19.5 198.3,15.4 210.0,20.2 221.7,22.5 233.3,15.0 245.0,27.0 256.7,16.5 268.3,23.9 280.0,25.8 291.7,26.1 303.3,23.7 315.0,17.1 326.7,25.3 338.3,20.1 350.0,19.4 361.7,22.8 373.3,20.6 385.0,26.8 396.7,26.9 408.3,25.0 420.0,18.8 431.7,22.1 443.3,23.6 455.0,176.8 466.7,177.2 478.3,177.8 490.0,176.0 501.7,176.4 513.3,178.0 525.0,176.8 536.7,177.0 548.3,175.7 560.0,176.2";
+const fixAt = 445.2;
+---
+
+<div class="app answer" data-play data-answer>
+    <Head title="Checkout latency after the fix" who="@Kaito" />
+    <div class="column">
+        <Bubble when="12:41 PM">did the payments fix bring checkout p95 back down?</Bubble>
+        <Run calls={[{ verb: "traces", kind: "plugin", icon: "signoz", target: "checkout-api", took: 0.5 }]} worked="Worked for 1s" wait={400} />
+        <Prose stream={120}>Yes. p95 dropped from 3.1 s to 390 ms right after the 12:05 deploy, and no checkout has failed since.</Prose>
+        <figure class="drawn" data-step="chart" data-wait="300">
+            <div class="figures">
+                <p><span>p95 before</span><b class="was">3.1 s</b></p>
+                <svg class="arrow" viewBox="0 0 40 12" aria-hidden="true"><path d="M0 6h36M31 1l5 5-5 5"></path></svg>
+                <p><span>p95 now</span><b>390 ms</b></p>
+                <p class="failed"><span>failed checkouts</span><b>212 → 0</b></p>
+            </div>
+            <svg class="chart" viewBox="0 0 560 230" role="img" aria-label="p95 latency sits near 3 seconds overnight, then drops to about 390 milliseconds at the 12:05 deploy">
+                <line class="base" x1="0" x2="560" y1="200" y2="200"></line>
+                <polygon class="fill" points={`0,200 ${line} 560,200`}></polygon>
+                <polyline class="path" points={line} pathLength="1"></polyline>
+                <line class="fix" x1={fixAt} x2={fixAt} y1="0" y2="200"></line>
+                <circle class="dot" cx={fixAt} cy="0" r="4"></circle>
+                {[0, 6, 12].map((hours, index) => <text x={(hours / 24) * 560} y="222" class="axis" text-anchor={index === 0 ? "start" : "middle"}>{["17:00", "23:00", "05:00"][index]}</text>)}
+                <text x={fixAt} y="222" class="axis fixed" text-anchor="middle">12:05 fix</text>
+                <text x="560" y="222" class="axis" text-anchor="end">now</text>
+            </svg>
+        </figure>
+    </div>
+</div>
+
+<script>
+    for (const box of document.querySelectorAll<HTMLElement>("[data-answer]")) {
+        box.addEventListener("step", (event) => {
+            if ((event as CustomEvent).detail === "chart") requestAnimationFrame(() => box.classList.add("drawing"));
+        });
+    }
+</script>
+
+<style>
+    .answer .column {
+        height: 560px;
+    }
+    .drawn {
+        margin: 6px 0 0;
+        display: grid;
+        gap: 18px;
+    }
+    .figures {
+        display: flex;
+        align-items: end;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+    .figures p {
+        display: grid;
+        gap: 2px;
+    }
+    .figures span {
+        font-size: 12px;
+        color: var(--quiet);
+    }
+    .figures b {
+        font: 500 34px/1 "Figtree", var(--sans);
+        letter-spacing: -0.02em;
+        color: var(--ink);
+    }
+    .figures .was {
+        color: var(--secondary);
+        text-decoration: line-through;
+        text-decoration-thickness: 2px;
+        text-decoration-color: var(--deleted);
+    }
+    .arrow {
+        width: 34px;
+        margin-bottom: 12px;
+        fill: none;
+        stroke: var(--quiet);
+        stroke-width: 1.5;
+    }
+    .failed {
+        margin-left: auto;
+        text-align: right;
+    }
+    .failed b {
+        font-size: 20px;
+        color: var(--added);
+    }
+    .chart {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+    }
+    .base {
+        stroke: var(--line);
+    }
+    .fill {
+        fill: color-mix(in oklab, var(--accent) 12%, transparent);
+    }
+    .path {
+        fill: none;
+        stroke: var(--violet);
+        stroke-width: 2.5;
+        stroke-linejoin: round;
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+    }
+    .drawing .path {
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 1.8s cubic-bezier(0.45, 0, 0.2, 1);
+    }
+    .fix {
+        stroke: var(--added);
+        stroke-dasharray: 3 4;
+    }
+    .dot {
+        fill: var(--added);
+    }
+    .chart text,
+    .chart .fill,
+    .chart .dot {
+        stroke: none;
+    }
+    .axis {
+        font: 400 11px var(--mono);
+        fill: var(--quiet);
+    }
+    .fixed {
+        fill: var(--added);
+    }
+    @media (max-width: 520px) {
+        .figures {
+            gap: 12px;
+        }
+        .figures b {
+            font-size: 24px;
+        }
+        .arrow {
+            width: 24px;
+            margin-bottom: 8px;
+        }
+        .failed {
+            flex-basis: 100%;
+            margin-left: 0;
+            text-align: left;
+        }
+    }
+</style>

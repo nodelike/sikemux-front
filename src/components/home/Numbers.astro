@@ -1,0 +1,164 @@
+---
+import { formatSize, type Release } from "../../lib/release";
+
+interface Props {
+    release: Release;
+}
+
+const { release } = Astro.props;
+const own = release.dmgBytes ?? 24_900_000;
+const others = [
+    { name: "Ghostty", bytes: 34_084_491 },
+    { name: "Zed", bytes: 88_653_699 },
+    { name: "Paradev", bytes: 250_250_275 },
+    { name: "Cursor", bytes: 302_990_563 },
+];
+const largest = others[others.length - 1].bytes;
+const rows = [{ name: "Sikemux", bytes: own, own: true }, ...others.map((app) => ({ ...app, own: false }))];
+const ghostty = others[0].bytes;
+---
+
+<section class="frame numbers" aria-labelledby="numbers-title">
+    <div class="cells">
+        <div class="cell lit">
+            <p class="big" data-release-size>{formatSize(own)}</p>
+            <p id="numbers-title">The whole app, Mac or Linux.</p>
+        </div>
+        <div class="cell">
+            <p class="big">{Math.round(largest / own)}×</p>
+            <p>smaller than Cursor.</p>
+        </div>
+        <div class="cell">
+            <p class="big">{Math.round((1 - own / ghostty) * 100)}%</p>
+            <p>smaller than Ghostty.</p>
+        </div>
+        <div class="cell">
+            <p class="big">$0</p>
+            <p>Free and MIT-licensed.</p>
+        </div>
+    </div>
+    <div class="chart">
+        <div class="why"><p>Drawn natively on the GPU. Browser tabs use the WebKit already in macOS instead of shipping a browser of their own.</p>
+<p class="note mono">Apple Silicon installers from each project’s own download link, checked 13 November 2026.</p>
+        </div>
+        <ol>
+            {
+                rows.map((row) => (
+                    <li class:list={{ own: row.own }}>
+                        <span class="name">{row.name}</span>
+                        <span class="track"><span class="fill" style={`width: ${Math.max((row.bytes / largest) * 100, 0.6).toFixed(1)}%`} /></span>
+                        <span class="value mono">{formatSize(row.bytes)}</span>
+                    </li>
+                ))
+            }
+        </ol>
+
+    </div>
+</section>
+
+<style>
+    .numbers {
+        border-top: 1px solid var(--rule);
+    }
+    .cells {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    }
+    .cell {
+        padding: 32px 20px 26px;
+        display: grid;
+        gap: 10px;
+        align-content: end;
+        min-height: 230px;
+        border-right: 1px solid var(--rule);
+        font-size: 14.5px;
+        color: var(--ink-2);
+    }
+    .cell:last-child {
+        border-right: 0;
+    }
+    .big {
+        font: 500 clamp(48px, 5.4vw, 80px) / 0.9 var(--sans);
+        letter-spacing: -0.05em;
+        color: var(--ink);
+    }
+    .lit {
+        background: var(--violet);
+        color: #1a1426;
+    }
+    .lit .big {
+        color: #120d1c;
+    }
+    .chart {
+        border-top: 1px solid var(--rule);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+        gap: 0 40px;
+        padding: 32px 20px;
+    }
+    .why {
+        display: grid;
+        align-content: start;
+        gap: 16px;
+        font-size: 15px;
+        color: var(--ink-2);
+        max-width: 26em;
+    }
+    ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 10px;
+    }
+    li {
+        display: grid;
+        grid-template-columns: 90px minmax(0, 1fr) 84px;
+        gap: 14px;
+        align-items: center;
+        font-size: 14px;
+    }
+    .track {
+        height: 10px;
+        border: 1px solid var(--rule);
+    }
+    .fill {
+        display: block;
+        height: 100%;
+        background: var(--ink-3);
+    }
+    .own .fill {
+        background: var(--violet);
+    }
+    .own .name {
+        font-weight: 500;
+    }
+    .value {
+        font-size: 12.5px;
+        text-align: right;
+        color: var(--ink-2);
+    }
+    .note {
+        margin-top: 18px;
+        font-size: 11.5px;
+        color: var(--ink-3);
+    }
+    @media (max-width: 900px) {
+        .cells {
+            grid-template-columns: 1fr 1fr;
+        }
+        .cell {
+            min-height: 170px;
+        }
+        .cell:nth-child(2) {
+            border-right: 0;
+        }
+        .cell:nth-child(-n + 2) {
+            border-bottom: 1px solid var(--rule);
+        }
+        .chart {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+    }
+</style>

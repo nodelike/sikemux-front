@@ -1,0 +1,87 @@
+---
+import { INSTALL_COMMAND } from "../../lib/release";
+
+const installs = [
+    { id: "brew", command: "brew install --cask nodelike/tap/sikemux" },
+    { id: "curl", command: INSTALL_COMMAND },
+];
+---
+
+<div class="install" data-install>
+    <div class="tabs" role="tablist" aria-label="Install with">
+        {installs.map((install, index) => <button type="button" role="tab" aria-selected={index === 0 ? "true" : "false"} data-command={install.command}>{install.id}</button>)}
+        <button type="button" class="copy" aria-label="Copy the install command">Copy</button>
+    </div>
+    <code class="mono">{installs[0].command}</code>
+    <span class="nub" style="right:-5px;bottom:-5px"></span>
+</div>
+
+<script>
+    for (const box of document.querySelectorAll<HTMLElement>("[data-install]")) {
+        const code = box.querySelector("code")!;
+        const tabs = [...box.querySelectorAll<HTMLButtonElement>("[data-command]")];
+        for (const tab of tabs) {
+            tab.addEventListener("click", () => {
+                for (const other of tabs) other.setAttribute("aria-selected", String(other === tab));
+                code.textContent = tab.dataset.command!;
+            });
+        }
+        const copy = box.querySelector<HTMLButtonElement>(".copy")!;
+        copy.addEventListener("click", async () => {
+            await navigator.clipboard.writeText(code.textContent ?? "");
+            copy.textContent = "Copied";
+            setTimeout(() => (copy.textContent = "Copy"), 1400);
+        });
+    }
+</script>
+
+<style>
+    .install {
+        position: relative;
+        min-width: 0;
+        background: var(--night);
+        color: var(--on-night);
+        border: 1px solid var(--night);
+    }
+    .tabs {
+        display: flex;
+        border-bottom: 1px solid #ffffff1f;
+    }
+    .tabs button {
+        font: 400 12px/1 var(--mono);
+        color: #a7a2b6;
+        background: none;
+        border: 0;
+        border-right: 1px solid #ffffff1f;
+        padding: 10px 14px;
+        cursor: pointer;
+    }
+    .tabs button[aria-selected="true"] {
+        color: #fff;
+        box-shadow: inset 0 -2px 0 var(--violet);
+    }
+    .tabs .copy {
+        margin-left: auto;
+        border-right: 0;
+        border-left: 1px solid #ffffff1f;
+    }
+    .tabs .copy:hover {
+        color: #fff;
+    }
+    code {
+        display: block;
+        padding: 14px;
+        font-size: 13.5px;
+        white-space: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        mask-image: linear-gradient(90deg, #000 85%, transparent);
+        -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+    }
+    .nub {
+        position: absolute;
+        width: 9px;
+        height: 9px;
+        background: var(--violet);
+    }
+</style>

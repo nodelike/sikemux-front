@@ -1,23 +1,29 @@
 ---
 interface Props {
     class?: string;
+    image?: string;
 }
 
-const { class: className } = Astro.props;
+const { class: className, image } = Astro.props;
 ---
 
-<div class:list={["dither", className]} data-dither aria-hidden="true"></div>
+<div class:list={["dither", className]} data-dither data-image={image} aria-hidden="true"></div>
 
 <script>
     const FRAMES_PER_SECOND = 30;
     const STILL_FRAME = 2500;
     const SPEED = 0.5;
 
-    type Mount = { setFrame(frame: number): void; setMaxPixelCount(count: number): void; dispose(): void };
+    type Mount = {
+        setFrame(frame: number): void;
+        setMaxPixelCount(count: number): void;
+        setUniforms(uniforms: Record<string, unknown>): void;
+    };
 
     const hosts = [...document.querySelectorAll<HTMLElement>("[data-dither]")];
     const visible = new Set<HTMLElement>();
     const mounts = new Map<HTMLElement, Mount>();
+    const moving = new Set<HTMLElement>();
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const epoch = performance.now();
     let timer: number | null = null;
@@ -30,50 +36,93 @@ const { class: className } = Astro.props;
     function tick() {
         timer = null;
         const frame = (performance.now() - epoch) * SPEED;
-        for (const host of visible) mounts.get(host)?.setFrame(frame);
+        for (const host of visible) if (moving.has(host)) mounts.get(host)?.setFrame(frame);
         schedule();
     }
 
     function schedule() {
-        if (still || timer !== null || document.hidden || visible.size === 0) return;
+        if (still || timer !== null || document.hidden || ![...visible].some((host) => moving.has(host))) return;
         timer = window.setTimeout(tick, 1000 / FRAMES_PER_SECOND);
     }
 
     async function start() {
         if (hosts.length === 0 || typeof WebGL2RenderingContext === "undefined") return;
-        const { ShaderMount, ditheringFragmentShader, DitheringShapes, DitheringTypes, ShaderFitOptions, getShaderColorFromString } =
-            await import("@paper-design/shaders");
+        const shaders = await import("@paper-design/shaders");
+        const { ShaderMount, DitheringShapes, DitheringTypes, ShaderFitOptions, getShaderColorFromString } = shaders;
+        const color = (host: HTMLElement, name: string, fallback: string) =>
+            getShaderColorFromString(getComputedStyle(host).getPropertyValue(name).trim() || fallback);
+        const colors = (host: HTMLElement) =>
+            host.dataset.image
+                ? {
+                      u_colorFront: color(host, "--dither-dot", "#a277ff"),
+                      u_colorBack: color(host, "--dither-back", "#121017"),
+                      u_colorHighlight: color(host, "--dither-dot", "#a277ff"),
+                  }
+                : { u_colorFront: color(host, "--dither-dot", "#19191e") };
+        const sizing = {
+            u_rotation: 0,
+            u_offsetX: 0,
+            u_offsetY: 0,
+            u_originX: 0.5,
+            u_originY: 0.5,
+            u_worldWidth: 0,
+            u_worldHeight: 0,
+        };
         for (const host of hosts) {
-            const dot = getComputedStyle(host).getPropertyValue("--dither-dot").trim() || "#19191e";
             try {
-                const mount = new ShaderMount(
-                    host,
-                    ditheringFragmentShader,
-                    {
-                        u_colorBack: [0, 0, 0, 0],
-                        u_colorFront: getShaderColorFromString(dot),
-                        u_shape: DitheringShapes.simplex,
-                        u_type: DitheringTypes["8x8"],
-                        u_pxSize: 3,
-                        u_fit: ShaderFitOptions.none,
-                        u_scale: 2.4,
-                        u_rotation: 0,
-                        u_offsetX: 0,
-                        u_offsetY: 0,
-                        u_originX: 0.5,
-                        u_originY: 0.5,
-                        u_worldWidth: 0,
-                        u_worldHeight: 0,
-                    },
-                    { antialias: false },
-                    0,
-                    still ? STILL_FRAME : (performance.now() - epoch) * SPEED,
-                    1,
-                    pixelCap(host),
-                ) as unknown as Mount;
+                let mount: Mount;
+                if (host.dataset.image) {
+                    const picture = new Image();
+                    picture.src = host.dataset.image;
+                    await picture.decode();
+                    mount = new ShaderMount(
+                        host,
+                        shaders.imageDitheringFragmentShader,
+                        {
+                            ...sizing,
+                            ...colors(host),
+                            u_image: picture,
+                            u_type: DitheringTypes["4x4"],
+                            u_pxSize: Number(getComputedStyle(host).getPropertyValue("--dither-size")) || 2,
+                            u_colorSteps: 2,
+                            u_originalColors: false,
+                            u_inverted: false,
+                            u_fit: ShaderFitOptions.cover,
+                            u_scale: 1,
+                        },
+                        { antialias: false },
+                        0,
+                        0,
+                        1,
+                        pixelCap(host),
+                    ) as unknown as Mount;
+                } else {
+                    mount = new ShaderMount(
+                        host,
+                        shaders.ditheringFragmentShader,
+                        {
+                            ...sizing,
+                            ...colors(host),
+                            u_colorBack: [0, 0, 0, 0],
+                            u_shape: DitheringShapes.simplex,
+                            u_type: DitheringTypes["8x8"],
+                            u_pxSize: 3,
+                            u_fit: ShaderFitOptions.none,
+                            u_scale: 2.4,
+                        },
+                        { antialias: false },
+                        0,
+                        still ? STILL_FRAME : (performance.now() - epoch) * SPEED,
+                        1,
+                        pixelCap(host),
+                    ) as unknown as Mount;
+                    moving.add(host);
+                }
                 mounts.set(host, mount);
+                host.dataset.drawn = "";
                 new ResizeObserver(() => mount.setMaxPixelCount(pixelCap(host))).observe(host);
             } catch {
+                host.dataset.failed = "";
                 continue;
             }
         }
@@ -87,6 +136,13 @@ const { class: className } = Astro.props;
         });
         for (const host of mounts.keys()) watcher.observe(host);
         document.addEventListener("visibilitychange", schedule);
+        new MutationObserver(() => {
+            const frame = still ? STILL_FRAME : (performance.now() - epoch) * SPEED;
+            for (const [host, mount] of mounts) {
+                mount.setUniforms(colors(host));
+                mount.setFrame(moving.has(host) ? frame : 0);
+            }
+        }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     }
 
     if ("requestIdleCallback" in window) requestIdleCallback(() => void start());
