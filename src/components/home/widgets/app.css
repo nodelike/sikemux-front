@@ -623,6 +623,10 @@
         width: 100%;
         zoom: 1;
     }
+    .app .column {
+        height: auto;
+        overflow: visible;
+    }
     .app .bar .safe,
     .app .bar .stash {
         display: none;
