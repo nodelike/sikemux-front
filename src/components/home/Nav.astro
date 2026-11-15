@@ -101,6 +101,14 @@ const { release, overArt = false } = Astro.props;
     .nav[data-over-art] .bar > nav a,
     .nav[data-over-art] .link {
         color: var(--ink);
+        font-weight: 500;
+        text-shadow:
+            0 0 3px var(--ground),
+            0 0 10px var(--ground),
+            0 0 18px var(--ground);
+    }
+    .nav[data-over-art] .home img {
+        filter: drop-shadow(0 0 4px var(--ground)) drop-shadow(0 0 10px var(--ground));
     }
     .bar {
         display: flex;
