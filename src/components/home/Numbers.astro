@@ -1,5 +1,8 @@
 ---
 import { formatSize, type Release } from "../../lib/release";
+import Painting from "./Painting.astro";
+import scalesDay from "../../assets/art/size-plane-day.jpg";
+import scalesNight from "../../assets/art/size-plane.jpg";
 
 interface Props {
     release: Release;
@@ -21,10 +24,14 @@ const ghostty = others[0].bytes;
 ---
 
 <section class="frame numbers" aria-labelledby="numbers-title">
+    <Painting art={{ day: scalesDay, night: scalesNight, focus: "60% 35%" }}>
+        <h2 id="numbers-title">Light as<br /><span class="chip">a feather.</span></h2>
+        <p class="lede">Everything in one window, and still lighter than a terminal.</p>
+    </Painting>
     <div class="cells">
         <div class="cell lit">
             <p class="big" data-release-size>{formatSize(own)}</p>
-            <p id="numbers-title">The whole app, Mac or Linux.</p>
+            <p>The whole app, Mac or Linux.</p>
         </div>
         <div class="cell">
             <p class="big">{Math.round(largest / own)}×</p>
@@ -62,7 +69,16 @@ const ghostty = others[0].bytes;
     .numbers {
         border-top: 1px solid var(--rule);
     }
+    h2 {
+        font-size: clamp(36px, 4.4vw, 64px);
+    }
+    .lede {
+        font-size: 16px;
+        line-height: 1.5;
+        max-width: 26em;
+    }
     .cells {
+        border-top: 1px solid var(--rule);
         display: grid;
         grid-template-columns: 1.5fr 1fr 1fr 1fr;
     }

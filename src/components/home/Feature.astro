@@ -1,22 +1,43 @@
 ---
+import Painting, { type Art } from "./Painting.astro";
+
 interface Props {
     tag: string;
     ground?: "field" | "night" | "violet" | "paper";
     flip?: boolean;
     wide?: boolean;
     id?: string;
+    art?: Art;
 }
 
-const { tag, ground = "field", flip = false, wide = false, id } = Astro.props;
+const { tag, ground = "field", flip = false, wide = false, id, art } = Astro.props;
 ---
 
 <section class:list={["frame feature", { flip, wide }]} id={id}>
-    <div class="copy">
-        <span class="tag">{tag}</span>
-        <h2><slot name="title" /></h2>
-        <div class="body"><slot /></div>
-        <slot name="list" />
-    </div>
+    {
+        art ? (
+            <Painting art={art} class="art">
+                <span class="tag">{tag}</span>
+                <h2>
+                    <slot name="title" />
+                </h2>
+                <div class="body">
+                    <slot />
+                </div>
+            </Painting>
+        ) : (
+            <div class="copy">
+                <span class="tag">{tag}</span>
+                <h2>
+                    <slot name="title" />
+                </h2>
+                <div class="body">
+                    <slot />
+                </div>
+                <slot name="list" />
+            </div>
+        )
+    }
     <div class:list={["media", ground]}>
         <span class="nub" style="left:-5px;top:-5px"></span>
         <slot name="media" />
@@ -61,6 +82,12 @@ const { tag, ground = "field", flip = false, wide = false, id } = Astro.props;
     }
     .flip .copy {
         order: 2;
+    }
+    .feature > :global(.art) {
+        border-bottom: 1px solid var(--rule);
+    }
+    .feature > :global(.art .body) {
+        color: var(--ink-2);
     }
     .media {
         border-left: 1px solid var(--rule);

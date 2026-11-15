@@ -1,5 +1,4 @@
 ---
-import Dither from "../Dither.astro";
 import Install from "./Install.astro";
 import { APPLE, LINUX, type Mark } from "../../lib/marks";
 import { APP_STORE_URL, RELEASES_URL, type Release } from "../../lib/release";
@@ -13,7 +12,6 @@ const mark = (m: Mark) => `<svg viewBox="${m.viewBox}" fill="currentColor" aria-
 ---
 
 <section class="closing">
-    <Dither class="closing-dither" />
     <div class="frame inner">
         <h2>Bring your agents. <br />Keep your plans.</h2>
         <div class="side">
@@ -37,13 +35,6 @@ const mark = (m: Mark) => `<svg viewBox="${m.viewBox}" fill="currentColor" aria-
         background: var(--violet);
         color: #120d1c;
         border-top: 1px solid var(--rule);
-    }
-    .closing :global(.closing-dither) {
-        inset: auto 0 0;
-        height: 20%;
-        --dither-dot: rgba(18, 13, 28, 0.34);
-        mask-image: linear-gradient(to top, #000 0, transparent 100%);
-        -webkit-mask-image: linear-gradient(to top, #000 0, transparent 100%);
     }
     .inner {
         border-color: #120d1c;

@@ -1,14 +1,17 @@
 ---
 import { FAQ } from "../../lib/faq";
+import Painting from "./Painting.astro";
+import scholarDay from "../../assets/art/closing-dawn-day.jpg";
+import scholarNight from "../../assets/art/closing-dawn.jpg";
 
 const opened = new Set(["Is it free?", "How does it stay alive?"]);
 ---
 
 <section class="frame faq" id="faq" aria-labelledby="faq-title">
-    <div class="head">
+    <Painting art={{ day: scholarDay, night: scholarNight, focus: "80% 40%" }} class="head">
         <span class="tag">Questions</span>
         <h2 id="faq-title">Asked<br /><span class="chip">often.</span></h2>
-    </div>
+    </Painting>
     <div class="list">
         {
             FAQ.map((entry) => (
@@ -29,17 +32,10 @@ const opened = new Set(["Is it free?", "How does it stay alive?"]);
 
 <style>
     .faq {
-        display: grid;
-        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
         border-top: 1px solid var(--rule);
     }
-    .head {
-        display: grid;
-        align-content: start;
-        justify-items: start;
-        gap: 22px;
-        padding: 56px 40px;
-        border-right: 1px solid var(--rule);
+    .faq > :global(.head) {
+        border-bottom: 1px solid var(--rule);
     }
     h2 {
         font-size: clamp(40px, 5vw, 64px);
@@ -104,14 +100,6 @@ const opened = new Set(["Is it free?", "How does it stay alive?"]);
         text-underline-offset: 3px;
     }
     @media (max-width: 900px) {
-        .faq {
-            grid-template-columns: minmax(0, 1fr);
-        }
-        .head {
-            padding: 40px 20px 28px;
-            border-right: 0;
-            border-bottom: 1px solid var(--rule);
-        }
         summary {
             padding: 18px 20px;
             font-size: 17px;

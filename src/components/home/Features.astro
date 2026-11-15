@@ -11,6 +11,8 @@ import Notch from "./widgets/Notch.astro";
 import Review from "./widgets/Review.astro";
 import Answer from "./widgets/Answer.astro";
 import Query from "./widgets/Query.astro";
+import monksDay from "../../assets/art/team-signals-day.jpg";
+import monksNight from "../../assets/art/team-signals.jpg";
 
 const tools: { icon: IconName; name: string; does: string }[] = [
     { icon: "database", name: "Databases", does: "Query next to the code that uses it." },
@@ -46,7 +48,7 @@ const tools: { icon: IconName; name: string; does: string }[] = [
     <Chief slot="media" />
 </Feature>
 
-<Feature tag="Teammates" wide id="teammates">
+<Feature tag="Teammates" wide id="teammates" art={{ day: monksDay, night: monksNight, focus: "70% 50%" }}>
     <Fragment slot="title">Your agents<br /><span class="chip">talk to each other.</span></Fragment>
     <p>They message each other, hand off work and start helpers beside them, across Claude Code, Codex, Pi, Hermes and Grok. In your chat it folds into one line you can open.</p>
     <Team slot="media" />

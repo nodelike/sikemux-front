@@ -1,0 +1,79 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+export interface Art {
+    day: ImageMetadata;
+    night: ImageMetadata;
+    focus: string;
+}
+
+interface Props {
+    art: Art;
+    class?: string;
+}
+
+const { art, class: className } = Astro.props;
+const focus = `object-position: ${art.focus}`;
+const widths = [800, 1400, 1600];
+const sizes = "(min-width: 1440px) 1440px, 100vw";
+---
+
+<div class:list={["painting", className]}>
+    <Image class="day" src={art.day} alt="" widths={widths} sizes={sizes} format="webp" quality={78} style={focus} />
+    <Image class="night" src={art.night} alt="" widths={widths} sizes={sizes} format="webp" quality={78} style={focus} />
+    <div class="words"><slot /></div>
+</div>
+
+<style>
+    .painting {
+        position: relative;
+        aspect-ratio: 21 / 8;
+        min-height: 360px;
+        overflow: hidden;
+        background: var(--paper);
+    }
+    .painting > :global(img) {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .night,
+    :global(:root[data-theme="dark"]) .day {
+        display: none;
+    }
+    :global(:root[data-theme="dark"]) .night {
+        display: block;
+    }
+    .words {
+        position: absolute;
+        left: clamp(20px, 3vw, 40px);
+        bottom: clamp(24px, 3vw, 40px);
+        max-width: min(46%, 34em);
+        display: grid;
+        justify-items: start;
+        gap: 16px;
+        color: var(--ink);
+    }
+    .words :global(p) {
+        color: var(--ink-2);
+    }
+    @media (max-width: 760px) {
+        .painting {
+            aspect-ratio: auto;
+            min-height: 0;
+            display: grid;
+        }
+        .painting > :global(img) {
+            position: static;
+            aspect-ratio: 16 / 10;
+        }
+        .words {
+            position: static;
+            max-width: none;
+            padding: 24px 20px 28px;
+        }
+    }
+</style>
