@@ -33,6 +33,7 @@
     --brand-omp: #f97316;
     --brand-grok: var(--ink);
     --page: min(1240px, 100% - 48px);
+    --nav: 65px;
     --cast: #121017;
     --cast-edge: #121017;
     color-scheme: light;

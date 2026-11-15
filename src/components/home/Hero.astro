@@ -1,7 +1,11 @@
 ---
-import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { Image, getImage } from "astro:assets";
 import hero from "../../assets/hero/hero.png";
-import Dither from "../Dither.astro";
+import day from "../../assets/hero/day.jpg";
+import dayTall from "../../assets/hero/day-tall.jpg";
+import night from "../../assets/hero/night.jpg";
+import nightTall from "../../assets/hero/night-tall.jpg";
 import Install from "./Install.astro";
 import Icon from "../Icon.astro";
 import { REPO_URL, formatSize, type Release } from "../../lib/release";
@@ -18,44 +22,46 @@ const points = [
     { icon: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z", title: "Agents that talk.", body: "They message each other, hand off work and ask only what's yours to decide." },
     { icon: "M5 2h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM10 18h4", title: "Answer from anywhere.", body: "The MacBook notch asks for you. Away from the desk, your phone does." },
 ];
+
+const painting = async (wide: ImageMetadata, tall: ImageMetadata) => ({
+    wide: await getImage({ src: wide, format: "avif", quality: 55 }),
+    tall: await getImage({ src: tall, format: "avif", quality: 55 }),
+});
+const skies = [
+    { theme: "day", shownFirst: true, ...(await painting(day, dayTall)) },
+    { theme: "night", shownFirst: false, ...(await painting(night, nightTall)) },
+];
 ---
 
 <section class="hero">
-    <div class="frame top">
-        <h1>
-            <span class="keep">A whole team</span> <span class="keep">of AI coders,</span><br />
-            <span class="chip">in one window.</span>
-        </h1>
-        <div class="side">
-            <p class="lede">
-                Other tools give you one AI assistant. Sikemux gives you a team: Claude Code, Codex and more, side by side in one native app, where you see who’s working, who’s stuck and who needs you.
-            </p>
-            <div class="diff mono" aria-label="When Claude runs out, the chat carries on in Codex">
-                <span class="del"><b>-</b> claude &nbsp;out of usage</span>
-                <span class="add"><b>+</b> codex &nbsp;&nbsp;carries on the chat</span>
+    <div class="art">
+        {
+            skies.map((sky) => (
+                <picture class:list={["sky", sky.theme]}>
+                    <source media="(max-width: 999px)" srcset={sky.tall.src} />
+                    <img src={sky.wide.src} alt="" decoding="async" loading={sky.shownFirst ? "eager" : "lazy"} fetchpriority={sky.shownFirst ? "high" : "auto"} />
+                </picture>
+            ))
+        }
+        <div class="stage">
+            <div class="copy">
+                <h1><span class="line">A whole team of AI</span> <span class="line">coders, <span class="chip">in one window.</span></span></h1>
+                <p class="lede">
+                    Claude Code, Codex and more, side by side in one native app. See who’s working, who’s stuck and who needs you.
+                </p>
+                <div class="row">
+                    <Install />
+                    <a class="btn solid" href={release.dmgUrl} data-release-dmg>
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.1.1 2.3-.6 3.1-1.5z"></path></svg>
+                        Download for Mac
+                    </a>
+                    <a class="btn ghost" href={REPO_URL}><Icon name="github" size={18} />Star</a>
+                </div>
+                <p class="fine mono"><span>Apple Silicon Mac and Linux</span><span class="sep"> · </span><span><span data-release-size>{size}</span> · free, MIT</span></p>
             </div>
-            <Install />
-            <div class="actions">
-                <a class="btn solid" href={release.dmgUrl} data-release-dmg>
-                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.1.1 2.3-.6 3.1-1.5z"></path></svg>
-                    Download for Mac
-                </a>
-                <a class="btn" href={REPO_URL}><Icon name="github" size={18} />Star on GitHub</a>
-            </div>
-            <p class="fine mono"><span>Apple Silicon Mac and Linux</span><span class="sep"> · </span><span><span data-release-size>{size}</span> · free, MIT</span></p>
-        </div>
-    </div>
-
-    <div class="stage">
-        <Dither class="stage-dither" />
-        <div class="lines" aria-hidden="true"></div>
-        <div class="frame window-frame">
-            <span class="badge tag">storefront · 7 agents</span>
             <figure class="shot window">
-                <Image src={hero} alt="Sikemux with Claude Code fixing a checkout bug, its browser tab open on the shop's cart page and the project's other agents listed on the right" widths={[828, 1560, 2340, 3120]} sizes="(min-width: 1300px) 1200px, 100vw" format="avif" quality={72} loading="eager" fetchpriority="high" />
+                <Image src={hero} alt="Sikemux with Claude Code fixing a checkout bug, its browser tab open on the shop's cart page and the project's other agents listed on the right" widths={[828, 1560, 2340, 3120]} sizes="(min-width: 1000px) 50vw, 100vw" format="avif" quality={72} loading="eager" />
             </figure>
-            <span class="nub" style="left:-5px;top:-5px"></span>
-            <span class="nub" style="right:-5px;bottom:-5px"></span>
         </div>
     </div>
 
@@ -71,118 +77,97 @@ const points = [
     </ul>
 </section>
 
-
 <style>
-    .top {
+    .art {
+        --side: max(24px, (100% - 1240px) / 2);
+        position: relative;
+        isolation: isolate;
+        overflow: clip;
+        margin-top: calc(-1 * var(--nav));
+        border-bottom: 1px solid var(--rule);
+        background: var(--paper);
+    }
+    .sky {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+    }
+    .sky img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 100% 100%;
+    }
+    .night,
+    :global(:root[data-theme="dark"]) .day {
+        display: none;
+    }
+    :global(:root[data-theme="dark"]) .night {
+        display: block;
+    }
+    .stage {
         display: grid;
-        grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-        gap: 48px;
-        padding: clamp(48px, 6vw, 88px) 20px clamp(56px, 6vw, 88px);
-        align-items: start;
+        grid-template-columns: min-content minmax(0, 1fr);
+        column-gap: 40px;
+        min-height: clamp(600px, 100svh, min(62vw, 1040px));
+        margin-left: calc(var(--side) + 20px);
+        margin-right: max(32px, var(--side) - 200px);
+        padding: calc(var(--nav) + 28px) 0 48px;
+    }
+    .copy {
+        grid-area: 1 / 1;
+        align-self: end;
+        display: grid;
+        gap: 18px;
+        justify-items: start;
+    }
+    .window {
+        --lift: clamp(8px, 0.8vw, 12px);
+        grid-area: 1 / 2;
+        align-self: start;
+        justify-self: end;
+        width: min(100%, 1000px);
+        margin: 0;
+        border-color: var(--cast-edge);
+        box-shadow: var(--lift) var(--lift) 0 var(--violet);
     }
     h1 {
-        font-size: clamp(46px, 6vw, 88px);
+        font-size: clamp(34px, 3.45vw, 56px);
     }
-    .side {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        gap: 18px;
-        min-width: 0;
-    }
-    .lede {
-        font-size: 17px;
-        line-height: 1.5;
-        color: var(--ink-2);
-        max-width: 34em;
-    }
-    .diff {
-        --del-ground: #fde4e4;
-        --del-sign: #d1242f;
-        --add-ground: #dcf5e3;
-        --add-sign: #1a7f37;
-        display: grid;
-        width: fit-content;
-        font-size: 13.5px;
-        line-height: 1.75;
-        color: var(--ink);
-    }
-    :global(:root[data-theme="dark"]) .diff {
-        --del-ground: rgba(255, 64, 96, 0.3);
-        --del-sign: #ff8a9a;
-        --add-ground: rgba(34, 214, 104, 0.24);
-        --add-sign: #5cf08f;
-    }
-    .diff span {
-        padding: 0 10px 0 8px;
-    }
-    .diff b {
-        font-weight: 400;
-        margin-right: 4px;
-    }
-    .del {
-        background: var(--del-ground);
-    }
-    .del b {
-        color: var(--del-sign);
-    }
-    .add {
-        background: var(--add-ground);
-    }
-    .add b {
-        color: var(--add-sign);
-    }
-    .keep {
+    .line {
+        display: block;
         white-space: nowrap;
     }
-    .actions {
+    .lede {
+        font-size: 18px;
+        line-height: 1.5;
+        color: var(--ink-2);
+        max-width: 30em;
+    }
+    .row {
         display: flex;
-        gap: 12px;
         flex-wrap: wrap;
+        gap: 12px;
+        width: 100%;
+        min-width: 0;
+    }
+    .row :global(.install) {
+        flex: 1 1 100%;
+    }
+    .row .btn.ghost {
+        background: color-mix(in srgb, var(--paper) 50%, transparent);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+    .row .btn.ghost:hover {
+        background: var(--ink);
     }
     .fine {
         font-size: 12px;
-        color: var(--ink-3);
+        color: var(--ink-2);
     }
-
-    .stage {
-        position: relative;
-        border-block: 1px solid var(--rule);
-        background: var(--field);
-        padding-block: clamp(32px, 5vw, 64px);
-    }
-    .stage {
-        isolation: isolate;
-    }
-    .stage :global(.stage-dither) {
-        inset: 0;
-        --dither-dot: rgba(124, 77, 255, 0.55);
-        mask-image: linear-gradient(90deg, #000 0, transparent 22%, transparent 78%, #000 100%);
-        -webkit-mask-image: linear-gradient(90deg, #000 0, transparent 22%, transparent 78%, #000 100%);
-    }
-    :global(:root[data-theme="dark"]) .stage :global(.stage-dither) {
-        --dither-dot: rgba(162, 119, 255, 0.45);
-    }
-    .lines {
-        position: absolute;
-        inset: 0;
-        background:
-            repeating-linear-gradient(to bottom, transparent 0 59px, color-mix(in srgb, var(--ink) 22%, transparent) 59px 60px);
-        mask-image: linear-gradient(90deg, #000 0, transparent 30%, transparent 70%, #000 100%);
-        -webkit-mask-image: linear-gradient(90deg, #000 0, transparent 30%, transparent 70%, #000 100%);
-    }
-    .window-frame {
-        border: 0;
-        width: min(1200px, 100% - 48px);
-    }
-    .window {
-        margin: 0;
-        box-shadow: 14px 14px 0 var(--cast);
-    }
-    .badge {
-        position: absolute;
-        right: 0;
-        top: -27px;
-        z-index: 2;
+    .fine span {
+        white-space: nowrap;
     }
 
     .points {
@@ -221,19 +206,36 @@ const points = [
         font-weight: 500;
     }
 
-    @media (max-width: 600px) {
-        h1 {
-            font-size: clamp(30px, 8.4vw, 56px);
+    @media (max-width: 999px) {
+        .sky img {
+            object-position: 30% 100%;
         }
-        .narrow {
+        .stage {
+            grid-template-columns: minmax(0, 1fr);
+            row-gap: clamp(28px, 6vw, 44px);
+            min-height: 0;
+            margin-inline: var(--side);
+            padding: calc(var(--nav) + clamp(48px, 13vw, 96px)) 0 max(250px, 48vw);
+        }
+        .copy,
+        .window {
+            grid-area: auto;
+        }
+        .copy {
+            max-width: 560px;
+        }
+        .window {
+            width: 100%;
+        }
+        h1 {
+            font-size: clamp(30px, 8.4vw, 52px);
+        }
+        .line {
             display: inline;
+            white-space: normal;
         }
     }
     @media (max-width: 900px) {
-        .top {
-            grid-template-columns: minmax(0, 1fr);
-            align-items: start;
-        }
         .points {
             grid-template-columns: 1fr 1fr;
         }
@@ -243,8 +245,15 @@ const points = [
         .points li:nth-child(-n + 2) {
             border-bottom: 1px solid var(--rule);
         }
-        .window {
-            box-shadow: 8px 8px 0 var(--cast);
+    }
+    @media (max-width: 600px) {
+        .lede {
+            font-size: 16px;
+        }
+        .fine .sep {
+            display: block;
+            height: 0;
+            overflow: hidden;
         }
     }
     @media (max-width: 520px) {
@@ -254,19 +263,6 @@ const points = [
         .points li {
             border-right: 0;
             border-bottom: 1px solid var(--rule);
-        }
-    }
-</style>
-
-<style>
-    .fine span {
-        white-space: nowrap;
-    }
-    @media (max-width: 600px) {
-        .fine .sep {
-            display: block;
-            height: 0;
-            overflow: hidden;
         }
     }
 </style>

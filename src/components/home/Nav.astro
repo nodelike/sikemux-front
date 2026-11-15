@@ -3,12 +3,13 @@ import { REPO_URL, type Release } from "../../lib/release";
 
 interface Props {
     release: Release;
+    overArt?: boolean;
 }
 
-const { release } = Astro.props;
+const { release, overArt = false } = Astro.props;
 ---
 
-<header class="nav">
+<header class="nav" data-over-art={overArt || undefined}>
     <div class="frame bar">
         <a class="home" href="/" aria-label="Sikemux home">
             <img class="on-light" src="/brand/lockup-black.svg" alt="Sikemux" width="118" height="22" />
@@ -62,6 +63,12 @@ const { release } = Astro.props;
             menu.focus();
         }
     });
+    const overArt = document.querySelector<HTMLElement>(".nav[data-over-art]");
+    if (overArt) {
+        const update = () => overArt.toggleAttribute("data-over-art", scrollY < 8);
+        addEventListener("scroll", update, { passive: true });
+        update();
+    }
     document.querySelector(".nav .theme")?.addEventListener("click", () => {
         const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
         document.documentElement.dataset.theme = next;
@@ -80,12 +87,26 @@ const { release } = Astro.props;
         backdrop-filter: blur(12px) saturate(140%);
         -webkit-backdrop-filter: blur(12px) saturate(140%);
         border-bottom: 1px solid var(--rule);
+        transition: background-color 0.25s, border-color 0.25s;
+    }
+    .nav[data-over-art] {
+        background-color: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border-bottom-color: transparent;
+    }
+    .nav[data-over-art] .bar {
+        border-color: transparent;
+    }
+    .nav[data-over-art] .bar > nav a,
+    .nav[data-over-art] .link {
+        color: var(--ink);
     }
     .bar {
         display: flex;
         align-items: center;
         gap: 32px;
-        height: 64px;
+        height: calc(var(--nav) - 1px);
         padding-inline: 20px;
     }
     .home img {
