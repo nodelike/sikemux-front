@@ -1,0 +1,30 @@
+---
+import Drawing from "./Drawing.astro";
+import "../widgets/app.css";
+---
+
+<div class="sketch">
+    <div class="app part ask"><p class="bubble">How does an order get from checkout to the warehouse?</p></div>
+    <div class="app part page"><Drawing /></div>
+</div>
+
+<style>
+    .sketch {
+        display: grid;
+        gap: 18px;
+        width: min(100%, 380px);
+    }
+    .ask {
+        justify-self: end;
+        max-width: 86%;
+        background: none;
+        border: 0;
+        box-shadow: none;
+    }
+    .ask .bubble {
+        box-shadow: 0 16px 26px -20px color-mix(in srgb, var(--violet-ink) 70%, transparent);
+    }
+    .page {
+        padding: 24px 10px 20px;
+    }
+</style>

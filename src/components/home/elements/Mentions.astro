@@ -1,0 +1,67 @@
+---
+import AgentIcon from "../../AgentIcon.astro";
+import "../widgets/app.css";
+---
+
+<div class="app part mentions">
+    <p class="line">
+        Fix
+        <span class="ref"
+            ><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="1.5"></circle></svg>#412 Cart totals a cent off</span
+        >
+        in
+        <span class="ref file"
+            ><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path></svg>cart.mjs</span
+        >
+    </p>
+    <div class="bar">
+        <span class="tool plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></span>
+        <span class="tool model"><span style="color: var(--brand-claude)"><AgentIcon agent="claude" size={13} /></span><b>Claude</b></span>
+        <span class="send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"></path></svg></span>
+    </div>
+</div>
+
+<style>
+    .mentions {
+        width: min(100%, 330px);
+        padding: 8px;
+        background: var(--raised);
+    }
+    .line {
+        margin: 0;
+        padding: 6px 8px 2px;
+        font-size: 14px;
+        line-height: 1.95;
+        text-align: left;
+    }
+    .ref {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0 7px;
+        border-radius: 7px;
+        background: var(--bubble);
+        box-shadow: 0 0 0 1px var(--line);
+        font-size: 12.5px;
+        line-height: 1.7;
+        white-space: nowrap;
+        vertical-align: baseline;
+    }
+    .ref svg {
+        width: 12px;
+        height: 12px;
+        color: var(--added);
+    }
+    .file {
+        font-family: var(--mono);
+        font-size: 11.5px;
+    }
+    .file svg {
+        color: var(--quiet);
+    }
+    .bar .send {
+        margin-left: auto;
+        background: var(--ink);
+        color: var(--ground);
+    }
+</style>

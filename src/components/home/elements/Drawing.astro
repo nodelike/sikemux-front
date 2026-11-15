@@ -1,0 +1,52 @@
+---
+import Flow from "../Flow.astro";
+
+const stops = [
+    { id: "checkout", name: "Checkout", does: "saves the order", icon: `<circle cx="9" cy="20" r="1.3" /><circle cx="18" cy="20" r="1.3" /><path d="M2.5 4h2.6l2.3 11.5h10.4L19.5 8H6.2" />` },
+    { id: "queue", name: "Orders queue", does: "hands it on", icon: `<path d="m12 3 9 4.5-9 4.5-9-4.5z" /><path d="m3 12 9 4.5 9-4.5" /><path d="m3 16.5 9 4.5 9-4.5" />` },
+    { id: "warehouse", name: "Warehouse", does: "prints the label", icon: `<path d="M21 8 12 3 3 8v8l9 5 9-5z" /><path d="m3 8 9 5 9-5M12 13v8" />` },
+];
+const hops = stops.slice(1).map((stop, index) => ({ from: stops[index].id, to: stop.id }));
+---
+
+<Flow class="drawing" wires={hops} beats={[hops.map((hop) => `${hop.from}>${hop.to}`)]} pause={1300}>
+    {
+        stops.map((stop) => (
+            <p class="spot">
+                <span class="pin" data-node={stop.id}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true" set:html={stop.icon} />
+                </span>
+                <span class="words">
+                    <b>{stop.name}</b>
+                    <small class="mono">{stop.does}</small>
+                </span>
+            </p>
+        ))
+    }
+</Flow>
+
+<style>
+    :global(.drawing) {
+        --pin-size: 52px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: start;
+        width: 100%;
+    }
+    .pin svg {
+        width: 22px;
+        height: 22px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .spot b {
+        font-size: 13px;
+    }
+    .spot small {
+        font-size: 9.5px;
+        letter-spacing: 0.04em;
+    }
+</style>

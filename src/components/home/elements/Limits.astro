@@ -1,0 +1,87 @@
+---
+import AgentIcon from "../../AgentIcon.astro";
+import "../widgets/app.css";
+
+const accounts = [
+    { agent: "claude", name: "Claude", session: 100, week: 64 },
+    { agent: "codex", name: "Codex", session: 12, week: 9 },
+] as const;
+---
+
+<div class="app part limits">
+    <p class="label">LIMITS</p>
+    {
+        accounts.map((account) => (
+            <div class="account">
+                <span class="mark" style={`color: var(--brand-${account.agent})`}>
+                    <AgentIcon agent={account.agent} size={16} />
+                </span>
+                <b>{account.name}</b>
+                {[
+                    { window: "Session", used: account.session },
+                    { window: "Week", used: account.week },
+                ].map((meter) => (
+                    <p class:list={["meter", { spent: meter.used >= 100 }]}>
+                        <span>{meter.window}</span>
+                        <i style={`--used: ${meter.used}%`} />
+                        <span class="mono">{meter.used}%</span>
+                    </p>
+                ))}
+            </div>
+        ))
+    }
+</div>
+
+<style>
+    .limits {
+        display: grid;
+        gap: 12px;
+        width: min(100%, 290px);
+        padding: 12px 14px 14px;
+        text-align: left;
+    }
+    p {
+        margin: 0;
+    }
+    .label {
+        font-size: 10.5px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        color: var(--quiet);
+    }
+    .account {
+        display: grid;
+        grid-template-columns: 16px minmax(0, 1fr);
+        align-items: center;
+        gap: 5px 9px;
+    }
+    .account b {
+        font-size: 13px;
+        font-weight: 500;
+    }
+    .meter {
+        grid-column: 2;
+        display: grid;
+        grid-template-columns: 52px minmax(0, 1fr) 34px;
+        align-items: center;
+        gap: 8px;
+        font-size: 11.5px;
+        color: var(--secondary);
+    }
+    .meter i {
+        height: 4px;
+        border-radius: 2px;
+        background: linear-gradient(to right, var(--accent) var(--used), var(--line) 0);
+    }
+    .meter .mono {
+        font-size: 10.5px;
+        text-align: right;
+        color: var(--quiet);
+    }
+    .spent i {
+        background: var(--removed);
+    }
+    .spent .mono {
+        color: var(--removed);
+    }
+</style>

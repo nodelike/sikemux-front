@@ -1,0 +1,89 @@
+---
+interface Props {
+    tag: string;
+    id?: string;
+    ground?: "paper" | "violet";
+    small?: boolean;
+}
+
+const { tag, id, ground = "paper", small = false } = Astro.props;
+---
+
+<article class:list={["cell", { small }]} id={id}>
+    <div class:list={["board", ground]}><slot name="board" /></div>
+    <div class="copy">
+        <span class="tag">{tag}</span>
+        {Astro.slots.has("title") && <h2><slot name="title" /></h2>}
+        <div class="body"><slot /></div>
+    </div>
+</article>
+
+<style>
+    .cell {
+        display: grid;
+        grid-template-rows: subgrid;
+        grid-row: span 2;
+        min-width: 0;
+        background: var(--paper);
+        scroll-margin-top: var(--nav);
+    }
+    .board {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 330px;
+        padding: 40px 24px;
+        border-bottom: 1px solid var(--rule);
+        background:
+            radial-gradient(62% 72% at 50% 46%, color-mix(in srgb, var(--violet) 20%, transparent), transparent),
+            var(--paper-2);
+        overflow: hidden;
+    }
+    .violet {
+        background: var(--violet);
+        color: var(--night);
+    }
+    .copy {
+        display: grid;
+        gap: 16px;
+        justify-items: start;
+        align-content: start;
+        padding: 26px 20px 40px;
+    }
+    h2 {
+        font-size: clamp(25px, 2.3vw, 31px);
+    }
+    .body {
+        display: grid;
+        gap: 10px;
+        max-width: 35em;
+        font-size: 15.5px;
+        line-height: 1.55;
+        color: var(--ink-2);
+    }
+    .small .board {
+        min-height: 212px;
+        padding: 32px 24px;
+    }
+    .small .copy {
+        gap: 12px;
+        padding: 20px 20px 28px;
+    }
+    .small .body {
+        font-size: 14.5px;
+        line-height: 1.5;
+    }
+    @media (max-width: 900px) {
+        .board,
+        .small .board {
+            min-height: 0;
+            padding: 32px 16px;
+        }
+        .copy {
+            padding: 24px 16px 36px;
+        }
+        .small .copy {
+            padding: 18px 16px 26px;
+        }
+    }
+</style>

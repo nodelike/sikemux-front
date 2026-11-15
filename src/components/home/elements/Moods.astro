@@ -1,0 +1,62 @@
+---
+import "../../../styles/buddies.css";
+import { buddy, type BuddyState } from "../../../lib/buddies";
+import { TEAM } from "../../../lib/showcase-buddies";
+
+const showing: { id: string; state: BuddyState; says: string }[] = [
+    { id: "otter", state: "working", says: "working" },
+    { id: "heron", state: "waiting", says: "waiting on you" },
+    { id: "lynx", state: "done", says: "done" },
+];
+const cast = showing.map((entry) => {
+    const agent = TEAM.find((candidate) => candidate.id === entry.id)!;
+    return { ...entry, name: agent.name, pose: buddy(agent.pack, agent.shape, entry.state) };
+});
+---
+
+<ul class="moods">
+    {
+        cast.map((agent) => (
+            <li class="spot">
+                <span class="pin">
+                    <span class="buddy" data-motion={agent.pose.motion || undefined} set:html={agent.pose.markup} />
+                </span>
+                <span class="words">
+                    <b>@{agent.name}</b>
+                    <small class="mono">{agent.says}</small>
+                </span>
+            </li>
+        ))
+    }
+</ul>
+
+<style>
+    .moods {
+        --pin-size: 84px;
+        --pin: #fbfaff;
+        --pin-edge: rgba(18, 16, 23, 0.5);
+        --pin-cast: rgba(18, 16, 23, 0.55);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        width: min(100%, 360px);
+    }
+    .buddy {
+        width: 50px;
+        height: 50px;
+    }
+    .spot b {
+        color: var(--night);
+    }
+    .spot small {
+        color: color-mix(in srgb, var(--night) 78%, transparent);
+    }
+    @media (max-width: 420px) {
+        .moods {
+            --pin-size: 72px;
+        }
+    }
+</style>
