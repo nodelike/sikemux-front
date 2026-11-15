@@ -1,0 +1,182 @@
+---
+import "../../styles/buddies.css";
+import Icon, { type IconName } from "../Icon.astro";
+import Flow, { type Wire } from "./Flow.astro";
+import { buddy } from "../../lib/buddies";
+import { faceOf } from "../../lib/showcase-buddies";
+
+const tools: { id: string; icon: IconName; name: string }[] = [
+    { id: "databases", icon: "database", name: "Databases" },
+    { id: "actions", icon: "github", name: "GitHub Actions" },
+    { id: "issues", icon: "jira", name: "Jira and Linear" },
+    { id: "rundeck", icon: "rundeck", name: "Rundeck" },
+    { id: "signoz", icon: "signoz", name: "SigNoz" },
+    { id: "aws", icon: "aws", name: "AWS" },
+    { id: "bruno", icon: "bruno", name: "Bruno" },
+];
+const wires: Wire[] = tools.map((tool) => ({ from: tool.id, to: "agent", gather: "to" as const }));
+const beats = tools.map((_, turn) => [`${tools[(turn * 3) % tools.length].id}>agent`]);
+
+const face = faceOf("Wren")!;
+const working = buddy(face.pack, face.shape, "working");
+---
+
+<section class="frame tools" id="tools">
+    <div class="copy">
+        <span class="tag">Your tools</span>
+        <h2>CI, issues and production,<br /><span class="chip">without leaving <span class="nowrap">the window.</span></span></h2>
+        <p>Turn on what your team already runs. Anything you find, hand to an agent.</p>
+    </div>
+    <div class="board">
+        <span class="nub" style="left:-5px;top:-5px"></span>
+        <Flow class="toolbox" wires={wires} beats={beats} pause={900}>
+            <ul>
+                {
+                    tools.map((tool) => (
+                        <li>
+                            <b>{tool.name}</b>
+                            <span class="pin" data-node={tool.id}>
+                                <Icon name={tool.icon} size={26} />
+                            </span>
+                        </li>
+                    ))
+                }
+            </ul>
+            <p class="hand">
+                <span class="pin" data-node="agent">
+                    <span class="buddy" data-motion={working.motion || undefined} set:html={working.markup} />
+                </span>
+                <span class="words"><b>@Wren</b><small class="mono">takes it from there</small></span>
+            </p>
+        </Flow>
+    </div>
+</section>
+
+<style>
+    .tools {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+        border-top: 1px solid var(--rule);
+        scroll-margin-top: var(--nav);
+    }
+    .copy {
+        display: grid;
+        gap: 20px;
+        justify-items: start;
+        align-content: center;
+        padding: clamp(40px, 5vw, 64px) 20px;
+    }
+    h2 {
+        font-size: clamp(34px, 3.6vw, 52px);
+    }
+    .copy p {
+        max-width: 26em;
+        font-size: 16.5px;
+        line-height: 1.55;
+        color: var(--ink-2);
+    }
+    .board {
+        position: relative;
+        display: grid;
+        place-items: center;
+        padding: 48px clamp(12px, 2.4vw, 32px);
+        border-left: 1px solid var(--rule);
+        background:
+            radial-gradient(62% 72% at 50% 46%, color-mix(in srgb, var(--violet) 20%, transparent), transparent),
+            var(--paper-2);
+    }
+    .board :global(.toolbox) {
+        --pin-size: 58px;
+        display: grid;
+        justify-items: center;
+        row-gap: 92px;
+        width: 100%;
+    }
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+        align-items: end;
+        width: 100%;
+    }
+    li {
+        display: grid;
+        justify-items: center;
+        gap: 12px;
+    }
+    li b {
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.2;
+        text-align: center;
+        text-wrap: balance;
+    }
+    .hand {
+        position: relative;
+        margin: 0;
+    }
+    .hand .buddy {
+        width: 36px;
+        height: 36px;
+    }
+    .hand .words {
+        position: absolute;
+        left: calc(100% + 14px);
+        top: 50%;
+        translate: 0 -50%;
+        display: grid;
+        gap: 4px;
+        white-space: nowrap;
+    }
+    .hand b {
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .hand small {
+        font-size: 10px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+    }
+    @media (max-width: 900px) {
+        .tools {
+            grid-template-columns: minmax(0, 1fr);
+        }
+        .copy {
+            padding: 32px 16px;
+        }
+        .board {
+            padding: 36px 4px 40px;
+            border-left: 0;
+            border-top: 1px solid var(--rule);
+        }
+    }
+    @media (max-width: 760px) {
+        .board :global(.toolbox) {
+            --pin-size: 40px;
+            row-gap: 84px;
+        }
+        li {
+            gap: 8px;
+        }
+        li b {
+            font-size: 9px;
+            letter-spacing: -0.01em;
+        }
+        li .pin :global(svg),
+        li .pin :global(img) {
+            width: 19px;
+            height: 19px;
+        }
+        .hand .pin {
+            --pin-size: 52px;
+        }
+        .hand .words {
+            width: 88px;
+            white-space: normal;
+        }
+    }
+</style>
