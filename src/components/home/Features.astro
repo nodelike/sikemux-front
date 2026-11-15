@@ -1,113 +1,96 @@
 ---
-import Feature from "./Feature.astro";
+import Scene from "./Scene.astro";
+import Bento from "./Bento.astro";
+import Cell from "./Cell.astro";
+import Tools from "./Tools.astro";
 import AgentName from "../AgentName.astro";
-import Icon, { type IconName } from "../Icon.astro";
 import Chat from "./widgets/Chat.astro";
 import Chief from "./widgets/Chief.astro";
 import Team from "./widgets/Team.astro";
-import Buddies from "./widgets/Buddies.astro";
 import Sizes from "./widgets/Sizes.astro";
 import Notch from "./widgets/Notch.astro";
 import Review from "./widgets/Review.astro";
-import Answer from "./widgets/Answer.astro";
-import Query from "./widgets/Query.astro";
-import monksDay from "../../assets/art/team-signals-day.jpg";
-import monksNight from "../../assets/art/team-signals.jpg";
-
-const tools: { icon: IconName; name: string; does: string }[] = [
-    { icon: "database", name: "Databases", does: "Query next to the code that uses it." },
-    { icon: "github", name: "GitHub Actions", does: "Watch CI without opening GitHub." },
-    { icon: "jira", name: "Jira and Linear", does: "The issue beside the branch that fixes it." },
-    { icon: "rundeck", name: "Rundeck", does: "Deploy a branch, watch every step." },
-    { icon: "signoz", name: "SigNoz", does: "What production is doing right now." },
-    { icon: "aws", name: "AWS", does: "A service's logs, without the console." },
-    { icon: "bruno", name: "Bruno", does: "Requests from the collection in your repo." },
-];
+import Mentions from "./elements/Mentions.astro";
+import Limits from "./elements/Limits.astro";
+import Stash from "./elements/Stash.astro";
+import Moods from "./elements/Moods.astro";
+import Sketch from "./elements/Sketch.astro";
+import handoffDay from "../../assets/art/handoff-day.jpg";
+import handoffNight from "../../assets/art/handoff-night.jpg";
+import chiefDay from "../../assets/art/chief-day.jpg";
+import chiefNight from "../../assets/art/chief-night.jpg";
+import signalsDay from "../../assets/art/signals-day.jpg";
+import signalsNight from "../../assets/art/signals-night.jpg";
+import jettyDay from "../../assets/art/jetty-day.jpg";
+import jettyNight from "../../assets/art/jetty-night.jpg";
+import doveDay from "../../assets/art/dove-day.jpg";
+import doveNight from "../../assets/art/dove-night.jpg";
 ---
 
-<Feature tag="Carry on" id="carry-on">
+<Scene tag="Carry on" id="carry-on" art={{ day: handoffDay, night: handoffNight, subject: 0.2 }}>
     <Fragment slot="title">Out of Claude?<br /><span class="chip">The chat carries on in Codex.</span></Fragment>
     <p>Start an agent next to your code. It reads the project, edits files and runs commands while you watch. When one plan runs dry, the same chat carries on with another agent.</p>
-    <ul class="facts" slot="list">
-        <li><b>@ and #</b>Attach a file, or hand over an issue or pull request.</li>
-        <li><b>Limits</b>What's left on every account, per window.</li>
-        <li><b>Stash</b>Drop in what you saved from your phone.</li>
-    </ul>
     <Chat slot="media" />
-</Feature>
+</Scene>
 
-<Feature tag="Chief" ground="night" flip id="chief">
+<Bento label="More in every chat">
+    <Cell tag="@ and #" small>
+        <Mentions slot="board" />
+        <p>Attach a file, or hand over an issue or pull request.</p>
+    </Cell>
+    <Cell tag="Limits" small>
+        <Limits slot="board" />
+        <p>What's left on every account, per window.</p>
+    </Cell>
+    <Cell tag="Stash" small>
+        <Stash slot="board" />
+        <p>Drop in what you saved from your phone.</p>
+    </Cell>
+</Bento>
+
+<Scene tag="Chief" id="chief" flip stacked={0.36} art={{ day: chiefDay, night: chiefNight, subject: 0.68 }}>
     <Fragment slot="title">Every project<br /><span class="chip">gets a chief.</span></Fragment>
     <p>Tell <AgentName name="Chief" /> what you want. It hands the work to Claude Code, Codex and your other agents, answers what it can, and brings you only the calls that need you.</p>
     <p>Back after an hour away? It tells you what landed and what was decided for you, and any of it can be overruled.</p>
-    <ul class="facts" slot="list">
-        <li><b>Calls</b>Only the questions that are yours, with <AgentName name="Chief" />’s pick.</li>
-        <li><b>Overrule</b>Any decision it made, undone in one click.</li>
-        <li><b>While you were away</b>What landed, what was decided, what waits.</li>
-    </ul>
     <Chief slot="media" />
-</Feature>
+</Scene>
 
-<Feature tag="Teammates" wide id="teammates" art={{ day: monksDay, night: monksNight, focus: "70% 50%" }}>
+<Scene tag="Teammates" id="teammates" wide ground={0.19} art={{ day: signalsDay, night: signalsNight }}>
     <Fragment slot="title">Your agents<br /><span class="chip">talk to each other.</span></Fragment>
     <p>They message each other, hand off work and start helpers beside them, across Claude Code, Codex, Pi, Hermes and Grok. In your chat it folds into one line you can open.</p>
     <Team slot="media" />
-</Feature>
+</Scene>
 
-<Feature tag="Buddies" ground="paper" flip id="buddies">
-    <Fragment slot="title">Spot each one<br /><span class="chip">at a glance.</span></Fragment>
-    <p>Each agent wears a buddy that shows what it’s doing: working, waiting on you or done. Pick a pack and a face for each agent.</p>
-    <Buddies slot="media" />
-</Feature>
+<Bento label="Buddies, the browser and drawn answers">
+    <Cell tag="Buddies" id="buddies" ground="violet">
+        <Moods slot="board" />
+        <Fragment slot="title">Spot each one<br /><span class="chip">at a glance.</span></Fragment>
+        <p>Each agent wears a buddy that shows what it’s doing: working, waiting on you or done. Pick a pack and a face for each agent.</p>
+    </Cell>
+    <Cell tag="Browser" id="browser">
+        <Sizes slot="board" />
+        <Fragment slot="title">Opens your app.<br /><span class="chip">Checks its own work.</span></Fragment>
+        <p>Every agent gets a real browser tab on the engine Safari uses. It opens your app, clicks, types and takes screenshots like a tester would. Take the tab over any time.</p>
+    </Cell>
+    <Cell tag="Answers you can see" id="answers">
+        <Sketch slot="board" />
+        <Fragment slot="title">When words aren’t enough,<br /><span class="chip">it draws.</span></Fragment>
+        <p>Ask how something works. It reads the code and draws the answer in the chat. Any page it builds shows in the reply too.</p>
+    </Cell>
+</Bento>
 
-<Feature tag="Browser" ground="violet" id="browser">
-    <Fragment slot="title">Opens your app.<br /><span class="chip">Checks its own work.</span></Fragment>
-    <p>Every agent gets a real browser tab on the engine Safari uses. It opens your app, clicks, types and takes screenshots like a tester would.</p>
-    <p>Take the tab over any time. Try the widths yourself.</p>
-    <Sizes slot="media" />
-</Feature>
-
-<Feature tag="Notch and phone" wide id="notch">
-    <Fragment slot="title">It asks.<br /><span class="chip">You answer from anywhere.</span></Fragment>
-    <p>An island over the MacBook notch shows who's working and asks when an agent needs permission, even with Sikemux behind another app.</p>
-    <p>Away from the desk, the iPhone app asks you instead; Android is in testing.</p>
-    <Notch slot="media" />
-</Feature>
-
-<Feature tag="Review and ship" ground="night" id="review" wide>
+<Scene tag="Review and ship" id="review" wide ground={0.3} art={{ day: jettyDay, night: jettyNight, subject: 0.42 }}>
     <Fragment slot="title">See which agent<br /><span class="chip">wrote each change.</span></Fragment>
     <p>Every file an agent touched, marked with who wrote it. It runs the tests, writes the commit message, and you commit from the same window.</p>
     <p>Quit Sikemux, or let it update: terminals and agents keep running.</p>
     <Review slot="media" />
-</Feature>
+</Scene>
 
-<Feature tag="Answers you can see" ground="paper" flip id="answers">
-    <Fragment slot="title">When words aren’t enough,<br /><span class="chip">it draws.</span></Fragment>
-    <p>Ask how production is doing. It reads the traces and draws the answer as a chart, right in the chat.</p>
-    <ul class="facts" slot="list">
-        <li><b>Traces</b>Read from SigNoz, through your own sign-in.</li>
-        <li><b>Charts</b>Drawn in the chat, beside the answer.</li>
-        <li><b>Pages</b>Any page the agent builds shows in the reply.</li>
-    </ul>
-    <Answer slot="media" />
-</Feature>
+<Tools />
 
-<Feature tag="Your tools" ground="field" id="tools">
-    <Fragment slot="title">CI, issues and production,<br /><span class="chip">without leaving <span class="nowrap">the window.</span></span></Fragment>
-    <p>Turn on what your team already runs. Anything you find, hand to an agent.</p>
-    <ul class="facts tools" slot="list">
-        {tools.map((tool) => <li><b><Icon name={tool.icon} size={16} />{tool.name}</b>{tool.does}</li>)}
-    </ul>
-    <Query slot="media" />
-</Feature>
-
-<style>
-    .tools li {
-        text-wrap: pretty;
-    }
-    .tools b {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-</style>
+<Scene tag="Notch and phone" id="notch" wide ground={0.29} art={{ day: doveDay, night: doveNight, subject: 0.76 }}>
+    <Fragment slot="title">It asks.<br /><span class="chip">You answer from anywhere.</span></Fragment>
+    <p>An island over the MacBook notch shows who's working and asks when an agent needs permission, even with Sikemux behind another app.</p>
+    <p>Away from the desk, the iPhone app asks you instead; Android is in testing.</p>
+    <Notch slot="media" />
+</Scene>

@@ -2,10 +2,11 @@
 import Home from "../layouts/Home.astro";
 import Nav from "../components/home/Nav.astro";
 import Hero from "../components/home/Hero.astro";
-import Agents from "../components/home/Agents.astro";
+import Hub from "../components/home/Hub.astro";
 import Features from "../components/home/Features.astro";
 import Beliefs from "../components/home/Beliefs.astro";
 import Numbers from "../components/home/Numbers.astro";
+import Downloads from "../components/home/Downloads.astro";
 import Closing from "../components/home/Closing.astro";
 import Faq from "../components/home/Faq.astro";
 import { FAQ, faqStructuredData } from "../lib/faq";
@@ -79,10 +80,11 @@ const structuredData = [
     <Nav release={release} overArt />
     <main>
         <Hero release={release} />
-        <Agents />
+        <Hub />
         <Features />
-        <Beliefs />
         <Numbers release={release} />
+        <Beliefs />
+        <Downloads release={release} />
         <Faq />
     </main>
     <Closing release={release} />

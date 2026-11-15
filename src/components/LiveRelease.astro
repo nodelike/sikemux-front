@@ -27,6 +27,11 @@
             link.dataset.dmg = release.dmgUrl;
             link.dataset.appimage = release.appImageUrl;
         }
+        for (const build of release.builds) {
+            for (const link of document.querySelectorAll<HTMLAnchorElement>(`a[data-release-build="${build.suffix}"]`)) link.href = build.url;
+            if (build.bytes === null) continue;
+            for (const node of document.querySelectorAll(`[data-release-build-size="${build.suffix}"]`)) node.textContent = formatSize(build.bytes);
+        }
         pointDownloads();
         if (release.dmgBytes === null) return;
         for (const node of document.querySelectorAll("[data-release-size]")) node.textContent = formatSize(release.dmgBytes);

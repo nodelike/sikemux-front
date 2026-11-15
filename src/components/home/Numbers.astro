@@ -1,8 +1,8 @@
 ---
 import { formatSize, type Release } from "../../lib/release";
-import Painting from "./Painting.astro";
-import scalesDay from "../../assets/art/size-plane-day.jpg";
-import scalesNight from "../../assets/art/size-plane.jpg";
+import Backdrop from "./Backdrop.astro";
+import featherDay from "../../assets/art/feather-day.jpg";
+import featherNight from "../../assets/art/feather-night.jpg";
 
 interface Props {
     release: Release;
@@ -24,10 +24,14 @@ const ghostty = others[0].bytes;
 ---
 
 <section class="frame numbers" aria-labelledby="numbers-title">
-    <Painting art={{ day: scalesDay, night: scalesNight, focus: "60% 35%" }}>
-        <h2 id="numbers-title">Light as<br /><span class="chip">a feather.</span></h2>
-        <p class="lede">Everything in one window, and still lighter than a terminal.</p>
-    </Painting>
+    <div class="head">
+        <div class="art"><Backdrop art={{ day: featherDay, night: featherNight }} cover="100% 22%" /></div>
+        <div class="words">
+            <span class="tag">Size</span>
+            <h2 id="numbers-title">Light as<br /><span class="chip">a feather.</span></h2>
+            <p class="lede">Everything in one window, and still lighter than a terminal.</p>
+        </div>
+    </div>
     <div class="cells">
         <div class="cell lit">
             <p class="big" data-release-size>{formatSize(own)}</p>
@@ -69,13 +73,32 @@ const ghostty = others[0].bytes;
     .numbers {
         border-top: 1px solid var(--rule);
     }
+    .head {
+        position: relative;
+        isolation: isolate;
+        display: grid;
+        align-content: end;
+        min-height: clamp(380px, 42vw, 520px);
+    }
+    .art {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+    }
+    .words {
+        display: grid;
+        gap: 18px;
+        justify-items: start;
+        padding: clamp(40px, 5vw, 64px) 20px clamp(28px, 3.4vw, 44px);
+    }
     h2 {
         font-size: clamp(36px, 4.4vw, 64px);
     }
     .lede {
-        font-size: 16px;
+        font-size: 16.5px;
         line-height: 1.5;
-        max-width: 26em;
+        max-width: 24em;
+        color: var(--ink-2);
     }
     .cells {
         border-top: 1px solid var(--rule);
@@ -160,6 +183,19 @@ const ghostty = others[0].bytes;
         margin-top: 18px;
         font-size: 11.5px;
         color: var(--ink-3);
+    }
+    @media (max-width: 760px) {
+        .head {
+            min-height: 0;
+        }
+        .art {
+            position: relative;
+            aspect-ratio: 16 / 11;
+            border-bottom: 1px solid var(--rule);
+        }
+        .words {
+            padding: 28px 16px 32px;
+        }
     }
     @media (max-width: 900px) {
         .cells {

@@ -1,0 +1,183 @@
+---
+import Install from "./Install.astro";
+import { APP_STORE_URL, INSTALL_COMMAND, formatSize, type Release } from "../../lib/release";
+
+interface Props {
+    release: Release;
+}
+
+const { release } = Astro.props;
+---
+
+<section class="frame downloads" id="download" aria-labelledby="download-title">
+    <div class="head">
+        <span class="tag">Download</span>
+        <h2 id="download-title">Get <span class="chip">Sikemux.</span></h2>
+        <p>Free and MIT-licensed. No account needed on your own computer.</p>
+        <Install />
+    </div>
+    <div class="table">
+        <h3>On your computer</h3>
+        <ul>
+            {
+                release.builds.map((build) => (
+                    <li>
+                        <b>{build.system}</b>
+                        <span class="mono">
+                            {build.kind}
+                            {build.bytes !== null && (
+                                <>
+                                    {" · "}
+                                    <span data-release-build-size={build.suffix}>{formatSize(build.bytes)}</span>
+                                </>
+                            )}
+                        </span>
+                        <a class="btn small" href={build.url} data-release-build={build.suffix}>
+                            Download
+                        </a>
+                    </li>
+                ))
+            }
+            <li class="host">
+                <b>Any server</b>
+                <span class="mono">core only · x86_64 and arm64</span>
+                <code>{INSTALL_COMMAND} -s -- --host</code>
+            </li>
+        </ul>
+        <h3>On your phone</h3>
+        <ul>
+            <li>
+                <b>iPhone</b>
+                <span class="mono">iOS 17 or later</span>
+                <a class="btn small" href={APP_STORE_URL}>App Store</a>
+            </li>
+            <li>
+                <b>Android</b>
+                <span class="mono">in testing</span>
+                <a class="btn small" href="/phone">Join the test</a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<style>
+    .downloads {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+        border-top: 1px solid var(--rule);
+    }
+    .head {
+        display: grid;
+        gap: 20px;
+        justify-items: start;
+        align-content: start;
+        padding: clamp(40px, 5vw, 64px) 20px;
+    }
+    .head :global(.install) {
+        width: 100%;
+        margin-top: 8px;
+    }
+    h2 {
+        font-size: clamp(36px, 4.4vw, 64px);
+    }
+    .head p {
+        font-size: 16.5px;
+        line-height: 1.55;
+        color: var(--ink-2);
+        max-width: 26em;
+    }
+    .table {
+        border-left: 1px solid var(--rule);
+    }
+    h3 {
+        padding: 14px 20px;
+        font: 500 11.5px/1 var(--mono);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        background: var(--paper-2);
+        border-bottom: 1px solid var(--rule);
+    }
+    ul + h3 {
+        border-top: 1px solid var(--rule);
+    }
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    li {
+        display: grid;
+        grid-template-columns: 110px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 16px;
+        min-height: 60px;
+        padding: 11px 20px;
+    }
+    li + li {
+        border-top: 1px solid var(--rule);
+    }
+    b {
+        font-size: 16px;
+        font-weight: 500;
+    }
+    li > .mono {
+        font-size: 12.5px;
+        color: var(--ink-2);
+    }
+    .host {
+        grid-template-columns: 110px minmax(0, 1fr);
+        padding-bottom: 16px;
+    }
+    code {
+        grid-column: 1 / -1;
+        font: 400 12.5px/1.4 var(--mono);
+        padding: 11px 14px;
+        background: var(--night);
+        color: var(--on-night);
+        white-space: nowrap;
+        overflow-x: auto;
+        max-width: 100%;
+        scrollbar-width: none;
+    }
+    @media (max-width: 900px) {
+        .downloads {
+            grid-template-columns: minmax(0, 1fr);
+        }
+        .table {
+            border-left: 0;
+            border-top: 1px solid var(--rule);
+        }
+    }
+    @media (max-width: 600px) {
+        .head {
+            padding: 32px 16px;
+        }
+        h3 {
+            padding-inline: 16px;
+        }
+        li {
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 4px 12px;
+            padding: 12px 16px;
+        }
+        li > b {
+            grid-column: 1;
+        }
+        li > .mono {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        li > .btn {
+            grid-row: 1 / span 2;
+            grid-column: 2;
+        }
+        .host {
+            grid-template-columns: minmax(0, 1fr);
+        }
+        li > code {
+            grid-row: 3;
+            margin-top: 6px;
+        }
+    }
+</style>

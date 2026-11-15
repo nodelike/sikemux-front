@@ -1,80 +1,84 @@
 ---
 import Install from "./Install.astro";
-import { APPLE, LINUX, type Mark } from "../../lib/marks";
-import { APP_STORE_URL, RELEASES_URL, type Release } from "../../lib/release";
+import Backdrop from "./Backdrop.astro";
+import Icon from "../Icon.astro";
+import { APPLE } from "../../lib/marks";
+import { REPO_URL, type Release } from "../../lib/release";
+import tableDay from "../../assets/art/table-day.jpg";
+import tableNight from "../../assets/art/table-night.jpg";
 
 interface Props {
     release: Release;
 }
 
 const { release } = Astro.props;
-const mark = (m: Mark) => `<svg viewBox="${m.viewBox}" fill="currentColor" aria-hidden="true"><path d="${m.path}" /></svg>`;
 ---
 
 <section class="closing">
-    <div class="frame inner">
-        <h2>Bring your agents. <br />Keep your plans.</h2>
-        <div class="side">
-            <p>Sikemux runs the agents you already pay for and gives them the rest of your tools, on a Mac or a Linux box.</p>
-            <div class="actions">
-                <a class="btn solid" href={release.dmgUrl} data-release-dmg><Fragment set:html={mark(APPLE)} />Download for Mac</a>
-                <a class="btn" href={RELEASES_URL}><Fragment set:html={mark(LINUX)} />Linux builds</a>
-                <a class="btn" href={APP_STORE_URL}><Fragment set:html={mark(APPLE)} />iPhone app</a>
-            </div>
-            <Install />
+    <Backdrop art={{ day: tableDay, night: tableNight, subject: 0.72 }} sizes="100vw" />
+    <div class="inner">
+        <h2>Bring your agents.<br /><span class="chip">Keep your plans.</span></h2>
+        <p>Sikemux runs the agents you already pay for and gives them the rest of your tools, on a Mac or a Linux box.</p>
+        <div class="actions">
+            <a class="btn solid" href={release.dmgUrl} data-release-dmg>
+                <svg viewBox={APPLE.viewBox} fill="currentColor" aria-hidden="true"><path d={APPLE.path}></path></svg>
+                Download for Mac
+            </a>
+            <a class="btn ghost" href="#download">All downloads</a>
+            <a class="btn ghost" href={REPO_URL}><Icon name="github" size={18} />Star</a>
         </div>
+        <Install />
     </div>
 </section>
 
-
 <style>
     .closing {
+        --side: max(24px, (100% - 1240px) / 2);
         position: relative;
         isolation: isolate;
-        overflow: hidden;
-        background: var(--violet);
-        color: #120d1c;
+        overflow: clip;
+        min-height: clamp(560px, 52.2vw, 940px);
         border-top: 1px solid var(--rule);
+        padding: clamp(56px, 7vw, 104px) calc(var(--side) + 20px) 0;
     }
     .inner {
-        border-color: #120d1c;
-        display: grid;
-        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-        gap: 40px;
-        align-items: end;
-        padding: clamp(72px, 9vw, 128px) 20px;
-    }
-    h2 {
-        font-size: clamp(52px, 7vw, 108px);
-    }
-    .side {
         display: grid;
         gap: 22px;
+        justify-items: start;
+        max-width: 620px;
     }
-    .side p {
-        font-size: 17px;
+    h2 {
+        font-size: clamp(40px, 5vw, 76px);
+    }
+    p {
+        font-size: 18px;
         line-height: 1.5;
+        color: var(--ink-2);
+        max-width: 28em;
     }
     .actions {
         display: flex;
-        gap: 10px;
         flex-wrap: wrap;
+        gap: 12px;
     }
-    .closing .btn {
-        border-color: #120d1c;
-        color: #120d1c;
+    .btn.ghost {
+        background: color-mix(in srgb, var(--paper) 50%, transparent);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
     }
-    .closing .btn:hover,
-    .closing .btn.solid {
-        background: #120d1c;
-        color: #f4f3f7;
+    .btn.ghost:hover {
+        background: var(--ink);
     }
-    .closing .btn.solid::after {
-        background: #120d1c;
+    .inner :global(.install) {
+        width: min(100%, 510px);
     }
-    @media (max-width: 900px) {
-        .inner {
-            grid-template-columns: 1fr;
+    @media (max-width: 760px) {
+        .closing {
+            min-height: 0;
+            padding: 40px 16px 72vw;
+        }
+        p {
+            font-size: 16px;
         }
     }
 </style>

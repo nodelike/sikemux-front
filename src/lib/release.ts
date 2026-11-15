@@ -5,13 +5,29 @@ export const X_URL = "https://x.com/sikemux";
 export const RELEASES_URL = `${REPO_URL}/releases/latest`;
 export const INSTALL_COMMAND = "curl -fsSL https://sikemux.com/install | sh";
 
+export interface Build {
+    system: string;
+    kind: string;
+    suffix: string;
+    url: string;
+    bytes: number | null;
+}
+
 export interface Release {
     version: string;
     dmgUrl: string;
     dmgBytes: number | null;
     appImageUrl: string;
+    builds: Build[];
     publishedAt: string | null;
 }
+
+const BUILDS = [
+    { system: "macOS", kind: "Apple Silicon · .dmg", suffix: "_aarch64.dmg" },
+    { system: "Linux", kind: "x86_64 · .deb", suffix: "_amd64.deb" },
+    { system: "Linux", kind: "x86_64 · .rpm", suffix: ".x86_64.rpm" },
+    { system: "Linux", kind: "x86_64 · AppImage", suffix: "_amd64.AppImage" },
+];
 
 interface GithubAsset {
     name: string;
@@ -116,7 +132,14 @@ export async function starCount(): Promise<number | null> {
     }
 }
 
-const FALLBACK: Release = { version: "0.6.0", dmgUrl: RELEASES_URL, dmgBytes: 24_872_033, appImageUrl: RELEASES_URL, publishedAt: null };
+const FALLBACK: Release = {
+    version: "0.6.0",
+    dmgUrl: RELEASES_URL,
+    dmgBytes: 24_872_033,
+    appImageUrl: RELEASES_URL,
+    builds: BUILDS.map((build) => ({ ...build, url: RELEASES_URL, bytes: null })),
+    publishedAt: null,
+};
 
 export const LATEST_RELEASE_API = "https://api.github.com/repos/nodelike/sikemux/releases/latest";
 
@@ -132,6 +155,10 @@ export function toRelease(release: GithubRelease): Release {
         dmgUrl: dmg?.browser_download_url ?? RELEASES_URL,
         dmgBytes: dmg?.size ?? null,
         appImageUrl: appImage?.browser_download_url ?? RELEASES_URL,
+        builds: BUILDS.map((build) => {
+            const asset = release.assets.find((candidate) => candidate.name.endsWith(build.suffix));
+            return { ...build, url: asset?.browser_download_url ?? RELEASES_URL, bytes: asset?.size ?? null };
+        }),
         publishedAt: release.published_at,
     };
 }

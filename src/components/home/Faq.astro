@@ -1,17 +1,16 @@
 ---
 import { FAQ } from "../../lib/faq";
-import Painting from "./Painting.astro";
-import scholarDay from "../../assets/art/closing-dawn-day.jpg";
-import scholarNight from "../../assets/art/closing-dawn.jpg";
+import { DISCORD_URL } from "../../lib/release";
 
 const opened = new Set(["Is it free?", "How does it stay alive?"]);
 ---
 
 <section class="frame faq" id="faq" aria-labelledby="faq-title">
-    <Painting art={{ day: scholarDay, night: scholarNight, focus: "80% 40%" }} class="head">
+    <div class="head">
         <span class="tag">Questions</span>
         <h2 id="faq-title">Asked<br /><span class="chip">often.</span></h2>
-    </Painting>
+        <p>Something else? <a href={DISCORD_URL}>Ask on Discord.</a></p>
+    </div>
     <div class="list">
         {
             FAQ.map((entry) => (
@@ -32,16 +31,36 @@ const opened = new Set(["Is it free?", "How does it stay alive?"]);
 
 <style>
     .faq {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
         border-top: 1px solid var(--rule);
     }
-    .faq > :global(.head) {
-        border-bottom: 1px solid var(--rule);
+    .head {
+        position: sticky;
+        top: var(--nav);
+        align-self: start;
+        display: grid;
+        gap: 20px;
+        justify-items: start;
+        padding: clamp(40px, 5vw, 64px) 20px;
     }
     h2 {
-        font-size: clamp(40px, 5vw, 64px);
+        font-size: clamp(36px, 4.4vw, 64px);
+    }
+    .head p {
+        font-size: 16px;
+        color: var(--ink-2);
+    }
+    .head a {
+        color: var(--ink);
+        text-decoration: underline;
+        text-decoration-color: var(--violet);
+        text-underline-offset: 3px;
     }
     .list {
         display: grid;
+        align-content: start;
+        border-left: 1px solid var(--rule);
     }
     details + details {
         border-top: 1px solid var(--rule);
@@ -52,7 +71,7 @@ const opened = new Set(["Is it free?", "How does it stay alive?"]);
         align-items: center;
         justify-content: space-between;
         gap: 24px;
-        padding: 22px 40px;
+        padding: 22px 20px;
         cursor: pointer;
         font-size: 19px;
         font-weight: 500;
@@ -87,7 +106,7 @@ const opened = new Set(["Is it free?", "How does it stay alive?"]);
         transform: scaleY(0);
     }
     details p {
-        padding: 0 40px 24px;
+        padding: 0 20px 24px;
         max-width: 62ch;
         font-size: 16px;
         line-height: 1.6;
@@ -100,12 +119,23 @@ const opened = new Set(["Is it free?", "How does it stay alive?"]);
         text-underline-offset: 3px;
     }
     @media (max-width: 900px) {
+        .faq {
+            grid-template-columns: minmax(0, 1fr);
+        }
+        .head {
+            position: static;
+            padding: 32px 16px;
+        }
+        .list {
+            border-left: 0;
+            border-top: 1px solid var(--rule);
+        }
         summary {
-            padding: 18px 20px;
+            padding: 18px 16px;
             font-size: 17px;
         }
         details p {
-            padding: 0 20px 20px;
+            padding: 0 16px 20px;
             font-size: 15px;
         }
     }
