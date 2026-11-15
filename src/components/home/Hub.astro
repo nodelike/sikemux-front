@@ -1,0 +1,305 @@
+---
+import AgentIcon from "../AgentIcon.astro";
+import Flow, { type Wire } from "./Flow.astro";
+import { AGENTS, agentPath } from "../../lib/agents";
+import { ANDROID } from "../../lib/marks";
+
+const LINE = {
+    laptop: `<path d="M4 5h16v11H4z" /><path d="M2 19.5h20" />`,
+    notch: `<path d="M3 5h18v14H3z" /><path d="M9 5v3h6V5" />`,
+    phone: `<path d="M7 2h10v20H7z" /><path d="M11 18.5h2" />`,
+    server: `<path d="M3 4h18v7H3z" /><path d="M3 13h18v7H3z" /><path d="M7 7.5h.01M7 16.5h.01" />`,
+};
+const places = [
+    { id: "app", name: "Mac or Linux app", icon: LINE.laptop },
+    { id: "notch", name: "Notch island", icon: LINE.notch },
+    { id: "iphone", name: "iPhone", icon: LINE.phone },
+    { id: "android", name: "Android", note: "in testing", mark: ANDROID },
+    { id: "hosts", name: "Linked hosts", icon: LINE.server },
+];
+
+const wires: Wire[] = [
+    ...places.map((place) => ({ from: place.id, to: "core", gather: "to" as const })),
+    ...AGENTS.map((agent) => ({ from: "core", to: agent.slug, gather: "from" as const })),
+];
+const beats = Array.from({ length: places.length * AGENTS.length }, (_, turn) => [
+    `${places[(turn * 2) % places.length].id}>core`,
+    `core>${AGENTS[(turn * 3) % AGENTS.length].slug}`,
+]);
+---
+
+<section class="frame hub" id="how" aria-labelledby="hub-title">
+    <div class="head">
+        <span class="tag">How it fits</span>
+        <h2 id="hub-title">No AI of its own.<br /><span class="chip">It runs yours.</span></h2>
+        <div class="body">
+            <p>Install an agent the usual way and sign in. Sikemux finds it and starts it with your login, on this computer or any host you link.</p>
+            <p>Watch and answer from the app, the notch or your phone.</p>
+        </div>
+    </div>
+    <Flow class="map" wires={wires} beats={beats}>
+        <span class="nub" style="left:-5px;top:-5px"></span>
+        <ul class="places">
+            {
+                places.map((place) => (
+                    <li>
+                        <span class="name">
+                            {place.name}
+                            {place.note && <small class="mono">{place.note}</small>}
+                        </span>
+                        <span class="pin" data-node={place.id}>
+                            {place.mark ? (
+                                <svg viewBox={place.mark.viewBox} fill="currentColor" aria-hidden="true">
+                                    <path d={place.mark.path} />
+                                </svg>
+                            ) : (
+                                <svg class="line" viewBox="0 0 24 24" aria-hidden="true" set:html={place.icon} />
+                            )}
+                        </span>
+                    </li>
+                ))
+            }
+        </ul>
+        <p class="core">
+            <b>Sikemux core</b>
+            <span class="icon" data-node="core"><img src="/brand/icon-dark-rounded.svg" alt="" width="124" height="124" /></span>
+            <span class="mono">keeps agents running after you quit the app</span>
+        </p>
+        <ul class="agents">
+            {
+                AGENTS.map((agent) => (
+                    <li>
+                        <a href={agentPath(agent)} style={`--brand: var(--brand-${agent.icon})`}>
+                            <span class="pin" data-node={agent.slug}>
+                                <AgentIcon agent={agent.icon} size={28} />
+                            </span>
+                            <span class="name">{agent.name}</span>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </Flow>
+</section>
+
+<style>
+    .hub {
+        border-top: 1px solid var(--rule);
+    }
+    .head {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        grid-template-areas: "tag tag" "title body";
+        align-items: end;
+        gap: 20px 40px;
+        padding: clamp(40px, 5vw, 64px) 20px clamp(32px, 4vw, 44px);
+    }
+    .tag {
+        grid-area: tag;
+        justify-self: start;
+    }
+    h2 {
+        grid-area: title;
+        font-size: clamp(34px, 3.6vw, 52px);
+    }
+    .body {
+        grid-area: body;
+        display: grid;
+        gap: 12px;
+        max-width: 30em;
+        font-size: 16.5px;
+        line-height: 1.55;
+        color: var(--ink-2);
+    }
+    .hub :global(.map) {
+        display: grid;
+        row-gap: clamp(76px, 8.4vw, 108px);
+        padding: 44px clamp(8px, 3vw, 40px) 48px;
+        border-top: 1px solid var(--rule);
+        background: var(--paper-2);
+        overflow: hidden;
+    }
+    .hub :global(.map)::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        background: radial-gradient(color-mix(in srgb, var(--violet-ink) 34%, transparent) 1px, transparent 1.5px) center / 18px 18px;
+        -webkit-mask-image: radial-gradient(ellipse 44% 62% at 50% 50%, #000, transparent);
+        mask-image: radial-gradient(ellipse 44% 62% at 50% 50%, #000, transparent);
+    }
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+    }
+    li,
+    a {
+        display: grid;
+        justify-items: center;
+        gap: 12px;
+    }
+    .places {
+        align-items: end;
+    }
+    .agents {
+        align-items: start;
+    }
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+    a:hover .pin {
+        translate: 0 -3px;
+        border-color: var(--signal);
+    }
+    .name {
+        display: grid;
+        justify-items: center;
+        gap: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.2;
+        text-align: center;
+    }
+    .name small {
+        font-size: 10px;
+        font-weight: 400;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+    }
+    .pin > svg {
+        width: 24px;
+        height: 24px;
+    }
+    .pin .line {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+    }
+    .agents .pin :global(svg),
+    .agents .pin :global(img) {
+        color: var(--brand);
+    }
+    .core {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        align-items: center;
+        gap: clamp(14px, 2.4vw, 30px);
+        margin: 0;
+    }
+    .core b {
+        justify-self: end;
+        font-size: 17px;
+        font-weight: 500;
+        text-align: right;
+    }
+    .core .mono {
+        max-width: 17em;
+        font-size: 11px;
+        line-height: 1.5;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--ink-2);
+    }
+    .icon {
+        position: relative;
+        display: block;
+        width: clamp(88px, 10vw, 124px);
+        border-radius: 22.5%;
+    }
+    .icon img {
+        width: 100%;
+        height: auto;
+        filter: drop-shadow(0 16px 22px color-mix(in srgb, var(--violet-ink) 42%, transparent));
+    }
+    :global([data-theme="dark"]) .icon {
+        box-shadow: 0 0 0 1px rgba(241, 239, 247, 0.16);
+    }
+    .icon::before,
+    .icon::after {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .icon::before {
+        inset: -110%;
+        background: radial-gradient(closest-side, color-mix(in srgb, var(--violet) 44%, transparent), color-mix(in srgb, var(--violet) 12%, transparent) 55%, transparent);
+    }
+    .icon::after {
+        inset: -6px;
+        border-radius: 26%;
+        border: 2px solid var(--violet);
+        opacity: 0;
+    }
+    .icon:global(.lit)::after {
+        animation: ring 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    @keyframes ring {
+        from {
+            opacity: 0.9;
+            scale: 1;
+        }
+        to {
+            opacity: 0;
+            scale: 1.34;
+        }
+    }
+    @media (max-width: 900px) {
+        .head {
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-areas: "tag" "title" "body";
+            padding: 32px 16px 28px;
+        }
+    }
+    @media (max-width: 760px) {
+        .hub :global(.map) {
+            --pin-size: 44px;
+            padding-block: 28px 32px;
+        }
+        li,
+        a {
+            gap: 8px;
+        }
+        .name {
+            font-size: 11px;
+        }
+        .name small {
+            font-size: 8.5px;
+        }
+        .agents .name {
+            font-size: 10px;
+        }
+        .pin > svg,
+        .agents .pin :global(svg),
+        .agents .pin :global(img) {
+            width: 20px;
+            height: 20px;
+        }
+        .core b {
+            font-size: 14px;
+        }
+        .core .mono {
+            font-size: 9.5px;
+        }
+    }
+    @media (max-width: 420px) {
+        .hub :global(.map) {
+            --pin-size: 38px;
+        }
+        .name {
+            font-size: 10px;
+        }
+        .agents .name {
+            font-size: 9px;
+        }
+    }
+</style>
