@@ -1,0 +1,200 @@
+---
+import "../../styles/flow.css";
+
+export interface Wire {
+    from: string;
+    to: string;
+    /** Wires that gather at the same end fan into it side by side, like a ribbon cable. */
+    gather?: "from" | "to";
+    /** A wire nothing travels on any more. */
+    dead?: boolean;
+}
+
+interface Props {
+    wires: Wire[];
+    /** Each beat names the wires one signal travels, in order, as "from>to". */
+    beats?: string[][];
+    /** Milliseconds between one signal's first wire and the next signal setting off. */
+    pause?: number;
+    class?: string;
+}
+
+const { wires, beats = [], pause = 420, class: name } = Astro.props;
+---
+
+<div class:list={["flow", name]} data-flow data-wires={JSON.stringify(wires)} data-beats={JSON.stringify(beats)} data-pause={String(pause)}>
+    <svg class="flow-wires" aria-hidden="true"></svg>
+    <slot />
+</div>
+
+<script>
+    type Wire = { from: string; to: string; gather?: "from" | "to"; dead?: boolean };
+    type Lane = { slot: number; bus: number };
+    type Point = [number, number];
+    type Drawn = { rail: SVGPathElement; tail: SVGPathElement; head: SVGPathElement; length: number };
+
+    const SVG = "http://www.w3.org/2000/svg";
+    const LANE = 12;
+    const FIRST_TURN = 34;
+    const CORNER = 12;
+    const HEAD = 22;
+    const TAIL = 84;
+    const SPEED = 0.42;
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    const middle = (box: DOMRect) => box.left + box.width / 2;
+
+    function rounded(points: Point[]) {
+        let path = `M${points[0][0]} ${points[0][1]}`;
+        for (let index = 1; index < points.length - 1; index++) {
+            const [beforeX, beforeY] = points[index - 1];
+            const [x, y] = points[index];
+            const [afterX, afterY] = points[index + 1];
+            const radius = Math.min(CORNER, Math.hypot(x - beforeX, y - beforeY) / 2, Math.hypot(afterX - x, afterY - y) / 2);
+            const enterX = x - Math.sign(x - beforeX) * radius;
+            const enterY = y - Math.sign(y - beforeY) * radius;
+            const leaveX = x + Math.sign(afterX - x) * radius;
+            const leaveY = y + Math.sign(afterY - y) * radius;
+            path += ` L${enterX} ${enterY} Q${x} ${y} ${leaveX} ${leaveY}`;
+        }
+        const [endX, endY] = points[points.length - 1];
+        return `${path} L${endX} ${endY}`;
+    }
+
+    function route(from: DOMRect, to: DOMRect, wire: Wire, lane?: Lane): Point[] {
+        const apartDown = Math.max(to.top - from.bottom, from.top - to.bottom);
+        const apartAcross = Math.max(to.left - from.right, from.left - to.right);
+        if (lane || apartDown >= apartAcross) {
+            const down = to.top >= from.bottom;
+            const startX = middle(from) + (wire.gather === "from" ? (lane?.slot ?? 0) : 0);
+            const endX = middle(to) + (wire.gather === "to" ? (lane?.slot ?? 0) : 0);
+            const startY = down ? from.bottom : from.top;
+            const endY = down ? to.top : to.bottom;
+            if (Math.abs(startX - endX) < 2) return [[endX, startY], [endX, endY]];
+            const turn = lane?.bus ?? (startY + endY) / 2;
+            return [[startX, startY], [startX, turn], [endX, turn], [endX, endY]];
+        }
+        const right = to.left >= from.right;
+        const startX = right ? from.right : from.left;
+        const endX = right ? to.left : to.right;
+        const startY = from.top + from.height / 2;
+        const endY = to.top + to.height / 2;
+        if (Math.abs(startY - endY) < 2) return [[startX, endY], [endX, endY]];
+        const turn = (startX + endX) / 2;
+        return [[startX, startY], [turn, startY], [turn, endY], [endX, endY]];
+    }
+
+    /** Wires that share an end leave or arrive side by side. The outermost turns nearest that end, so none cross. */
+    function lanes(wires: Wire[], box: (id: string) => DOMRect | null) {
+        const groups = new Map<string, Wire[]>();
+        for (const wire of wires) {
+            if (!wire.gather) continue;
+            const key = `${wire.gather}:${wire[wire.gather]}`;
+            groups.set(key, [...(groups.get(key) ?? []), wire]);
+        }
+        const planned = new Map<string, Lane>();
+        for (const group of groups.values()) {
+            const end = group[0].gather!;
+            const hub = box(group[0][end]);
+            if (!hub) continue;
+            const spread = group
+                .map((wire) => ({ wire, far: box(end === "to" ? wire.from : wire.to) }))
+                .filter((entry): entry is { wire: Wire; far: DOMRect } => entry.far !== null)
+                .sort((one, other) => middle(one.far) - middle(other.far));
+            spread.forEach(({ wire, far }, index) => {
+                const fromEdge = middle(far) < middle(hub) ? index : spread.length - 1 - index;
+                const reach = FIRST_TURN + fromEdge * LANE;
+                planned.set(`${wire.from}>${wire.to}`, {
+                    slot: (index - (spread.length - 1) / 2) * LANE,
+                    bus: far.top < hub.top ? hub.top - reach : hub.bottom + reach,
+                });
+            });
+        }
+        return planned;
+    }
+
+    for (const flow of document.querySelectorAll<HTMLElement>("[data-flow]")) {
+        const svg = flow.querySelector<SVGSVGElement>(":scope > .flow-wires")!;
+        const wires = JSON.parse(flow.dataset.wires ?? "[]") as Wire[];
+        const beats = JSON.parse(flow.dataset.beats ?? "[]") as string[][];
+        const pause = Number(flow.dataset.pause);
+        const node = (id: string) => flow.querySelector<HTMLElement>(`[data-node="${id}"]`);
+        const drawn = new Map<string, Drawn>();
+
+        const stroke = (kind: string) => {
+            const path = document.createElementNS(SVG, "path");
+            path.setAttribute("class", kind);
+            return path;
+        };
+        for (const wire of wires) {
+            const parts = { rail: stroke(wire.dead ? "rail dead" : "rail"), tail: stroke("comet tail"), head: stroke("comet"), length: 0 };
+            drawn.set(`${wire.from}>${wire.to}`, parts);
+            svg.append(parts.rail);
+        }
+        for (const parts of drawn.values()) svg.append(parts.tail, parts.head);
+
+        const draw = () => {
+            const frame = flow.getBoundingClientRect();
+            svg.setAttribute("viewBox", `0 0 ${frame.width} ${frame.height}`);
+            const box = (id: string) => {
+                const place = node(id)?.getBoundingClientRect();
+                return place?.width ? new DOMRect(place.left - frame.left, place.top - frame.top, place.width, place.height) : null;
+            };
+            const planned = lanes(wires, box);
+            for (const wire of wires) {
+                const key = `${wire.from}>${wire.to}`;
+                const parts = drawn.get(key)!;
+                const from = box(wire.from);
+                const to = box(wire.to);
+                const path = from && to ? rounded(route(from, to, wire, planned.get(key))) : "";
+                for (const part of [parts.rail, parts.tail, parts.head]) part.setAttribute("d", path);
+                parts.length = path ? parts.rail.getTotalLength() : 0;
+            }
+        };
+        new ResizeObserver(draw).observe(flow);
+        document.fonts?.ready.then(draw);
+        draw();
+
+        const arrive = (id: string) => {
+            const target = node(id);
+            if (!target) return;
+            target.classList.add("lit");
+            target.dispatchEvent(new CustomEvent("signal", { bubbles: true }));
+            setTimeout(() => target.classList.remove("lit"), 900);
+        };
+        const travel = async (key: string) => {
+            const parts = drawn.get(key);
+            if (!parts?.length) return;
+            const { length } = parts;
+            const run = (path: SVGPathElement, dash: number) => {
+                path.style.strokeDasharray = `${dash} ${length + dash + HEAD}`;
+                return path.animate([{ strokeDashoffset: dash, opacity: 1 }, { strokeDashoffset: dash - length - HEAD, opacity: 1 }], { duration: (length + HEAD) / SPEED, easing: "cubic-bezier(0.5, 0.1, 0.5, 0.9)" }).finished;
+            };
+            await Promise.all([run(parts.head, HEAD), run(parts.tail, Math.min(TAIL, length * 0.6))]);
+            arrive(key.split(">")[1]);
+        };
+
+        if (still || !beats.length) continue;
+        let showing = false;
+        let playing = false;
+        const loop = async () => {
+            playing = true;
+            for (let turn = 0; showing; turn++) {
+                const [first, ...rest] = beats[turn % beats.length];
+                await travel(first);
+                const after = (async () => {
+                    for (const key of rest) await travel(key);
+                })();
+                await (rest.length ? wait(pause) : after.then(() => wait(pause)));
+            }
+            playing = false;
+        };
+        new IntersectionObserver(
+            ([entry]) => {
+                showing = entry.isIntersecting;
+                if (showing && !playing) loop();
+            },
+            { threshold: 0.25 },
+        ).observe(flow);
+    }
+</script>
