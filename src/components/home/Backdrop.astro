@@ -1,0 +1,84 @@
+---
+import { Image, getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+export interface Art {
+    day: ImageMetadata;
+    night: ImageMetadata;
+    /** How far across the painting its subject sits, 0 to 1. Phones zoom in on that point. */
+    subject?: number;
+}
+
+interface Props {
+    art: Art;
+    sizes?: string;
+    /** Fill the block instead of standing on its floor, keeping this point of the painting in view. */
+    cover?: string;
+    /** How much phones enlarge a painting that stands on the floor, so its figures stay readable. */
+    zoom?: number;
+}
+
+const { art, sizes = "(min-width: 1288px) 1240px, 100vw", cover, zoom = 1.7 } = Astro.props;
+const widths = [640, 960, 1280, 1600];
+const smear = async (src: ImageMetadata) => `url(${(await getImage({ src, width: 48, format: "webp", quality: 60 })).src})`;
+const style = cover ? `--focus: ${cover}` : `--smear-day: ${await smear(art.day)}; --smear-night: ${await smear(art.night)}; --subject: ${art.subject ?? 0.5}; --zoom: ${zoom}`;
+---
+
+<div class:list={["backdrop", { cover }]} style={style} aria-hidden="true">
+    <Image class="day" src={art.day} alt="" widths={widths} sizes={sizes} format="webp" quality={76} />
+    <Image class="night" src={art.night} alt="" widths={widths} sizes={sizes} format="webp" quality={76} />
+</div>
+
+<style>
+    /* The painting sits on the floor of its block at full width. Above it, the top quarter of a
+       48px copy of the same painting is stretched over the block, so the sky carries on in its own colours. */
+    .backdrop {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        overflow: hidden;
+    }
+    .backdrop::before {
+        content: "";
+        position: absolute;
+        inset: -96px;
+        background: var(--smear-day) top / 100% 400% no-repeat;
+        filter: blur(48px);
+    }
+    :global(:root[data-theme="dark"]) .backdrop::before {
+        background-image: var(--smear-night);
+    }
+    .cover::before {
+        content: none;
+    }
+    .backdrop :global(img) {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: auto;
+        max-width: none;
+        -webkit-mask-image: linear-gradient(to bottom, transparent, #000 34%);
+        mask-image: linear-gradient(to bottom, transparent, #000 34%);
+    }
+    .cover :global(img) {
+        height: 100%;
+        object-fit: cover;
+        object-position: var(--focus);
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+    .night,
+    :global(:root[data-theme="dark"]) .day {
+        display: none;
+    }
+    :global(:root[data-theme="dark"]) .night {
+        display: block;
+    }
+    @media (max-width: 760px) {
+        .backdrop:not(.cover) :global(img) {
+            width: calc(100% * var(--zoom));
+            left: calc(100% * (1 - var(--zoom)) * var(--subject));
+        }
+    }
+</style>

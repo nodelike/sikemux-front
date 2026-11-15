@@ -1,0 +1,128 @@
+---
+import Backdrop, { type Art } from "./Backdrop.astro";
+
+interface Props {
+    tag: string;
+    id: string;
+    art: Art;
+    wide?: boolean;
+    flip?: boolean;
+    /** How much of the painting's floor stays clear under the widget, as a share of the block's width. */
+    ground?: number;
+    /** The same, once the copy and the widget stack on a narrow screen. */
+    stacked?: number;
+}
+
+const { tag, id, art, wide = false, flip = false, ground = 0.08, stacked = wide ? ground : 0.28 } = Astro.props;
+---
+
+<section class:list={["frame scene", { wide, flip }]} id={id}>
+    <div class="stage" style={`--ground: ${ground}; --stacked: ${stacked}`}>
+        <Backdrop art={art} />
+        <div class="copy">
+            <span class="tag">{tag}</span>
+            <h2><slot name="title" /></h2>
+            <div class="body"><slot /></div>
+        </div>
+        <div class="media"><slot name="media" /></div>
+    </div>
+</section>
+
+<style>
+    .scene {
+        border-top: 1px solid var(--rule);
+    }
+    .stage {
+        --cast: var(--violet);
+        position: relative;
+        isolation: isolate;
+        display: grid;
+        grid-template-columns: minmax(0, 0.86fr) minmax(0, 1fr);
+        column-gap: 40px;
+        padding: clamp(40px, 5vw, 64px) clamp(20px, 3.4vw, 44px) calc(var(--ground) * 100%) 20px;
+    }
+    .copy {
+        display: grid;
+        gap: 20px;
+        justify-items: start;
+        align-content: start;
+    }
+    h2 {
+        font-size: clamp(34px, 3.6vw, 52px);
+        max-width: 9.4em;
+    }
+    .body {
+        display: grid;
+        gap: 12px;
+        max-width: 30em;
+        font-size: 16.5px;
+        line-height: 1.55;
+        color: var(--ink-2);
+    }
+    .media {
+        display: grid;
+        justify-items: end;
+        align-content: start;
+    }
+    .flip .stage {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+        padding-inline: clamp(20px, 3.4vw, 44px) 20px;
+    }
+    .flip .copy {
+        order: 2;
+    }
+    .flip .media {
+        justify-items: start;
+    }
+    .wide .stage {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: clamp(32px, 4vw, 48px);
+        padding-inline: 20px;
+    }
+    .wide .copy {
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        grid-template-areas: "tag tag" "title body";
+        align-items: end;
+        gap: 20px 40px;
+    }
+    .wide .tag {
+        grid-area: tag;
+    }
+    .wide h2 {
+        grid-area: title;
+        max-width: none;
+    }
+    .wide .body {
+        grid-area: body;
+    }
+    .wide .media {
+        justify-items: center;
+    }
+    @media (max-width: 900px) {
+        .stage,
+        .flip .stage,
+        .wide .stage {
+            grid-template-columns: minmax(0, 1fr);
+            row-gap: 28px;
+            padding: 32px 16px calc(var(--stacked) * 100% + 24px);
+        }
+        .wide .copy {
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-areas: "tag" "title" "body";
+        }
+        .flip .copy {
+            order: 0;
+        }
+        .media,
+        .flip .media {
+            justify-items: center;
+        }
+    }
+    @media (max-width: 760px) {
+        .stage,
+        .flip .stage,
+        .wide .stage {
+            padding-bottom: calc(var(--stacked) * 170% + 24px);
+        }
+    }
+</style>
