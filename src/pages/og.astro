@@ -1,5 +1,104 @@
 ---
-import ShareCard from "../components/ShareCard.astro";
+import { Image } from "astro:assets";
+import "../styles/home.css";
+import hero from "../assets/hero/hero.png";
+import night from "../assets/hero/night.jpg";
 ---
 
-<ShareCard title="A whole team of AI coders," chip="in one window." visual={{ kind: "hero" }} />
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="robots" content="noindex" />
+        <title>A whole team of AI coders, in one window · Sikemux share card</title>
+    </head>
+    <body>
+        <main class="card">
+            <Image class="art" src={night} alt="" width={1792} format="jpg" quality={90} loading="eager" />
+            <figure class="window">
+                <Image src={hero} alt="" width={1400} format="png" loading="eager" />
+            </figure>
+            <div class="copy">
+                <img class="lockup" src="/brand/lockup-white.svg" alt="Sikemux" />
+                <h1>A whole team of AI<br />coders, <span class="chip">in one window.</span></h1>
+                <p class="fine mono">Free · MIT · Mac and Linux · sikemux.com</p>
+            </div>
+        </main>
+    </body>
+</html>
+
+<style>
+    html,
+    body {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: #0f0d15;
+    }
+
+    .card {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        color: #f1eff7;
+    }
+
+    .art {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 60%;
+    }
+
+    .window {
+        position: absolute;
+        top: 6%;
+        right: 4.5%;
+        width: 46%;
+        margin: 0;
+        box-shadow: 12px 12px 0 var(--violet);
+    }
+
+    .window img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .copy {
+        position: absolute;
+        left: 5%;
+        bottom: 7%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .lockup {
+        height: 30px;
+        width: auto;
+    }
+
+    h1 {
+        font-size: 60px;
+        line-height: 1.04;
+        letter-spacing: -0.05em;
+        text-shadow: 0 0 24px rgba(15, 13, 21, 0.6);
+    }
+
+    .chip {
+        --band: var(--violet);
+        color: #0f0d15;
+        white-space: nowrap;
+        text-shadow: none;
+    }
+
+    .fine {
+        font-size: 17px;
+        color: #c9c4d8;
+    }
+</style>
