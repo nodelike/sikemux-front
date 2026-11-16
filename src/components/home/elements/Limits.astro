@@ -2,86 +2,455 @@
 import AgentIcon from "../../AgentIcon.astro";
 import "../widgets/app.css";
 
+const MARBLE_PALETTES = [
+    ["#00686c", "#32c2b9", "#edecb3", "#fad928", "#ff9915"],
+    ["#002c2b", "#ff3d00", "#ffbc11", "#0a837f", "#076461"],
+    ["#244242", "#51bd9c", "#a3e3b1", "#ffe8b3", "#ff2121"],
+    ["#a8ab9b", "#172a38", "#ec4b5d", "#f48773", "#e0c590"],
+];
+
+function hash(name: string): number {
+    let sum = 0;
+    for (let at = 0; at < name.length; at += 1) sum = ((sum << 5) - sum + name.charCodeAt(at)) | 0;
+    return Math.abs(sum);
+}
+
+const digit = (number: number, place: number) => Math.floor(number / 10 ** place) % 10;
+
+function unit(number: number, range: number, place: number): number {
+    const value = number % range;
+    return place !== 0 && digit(number, place) % 2 === 0 ? -value : value;
+}
+
+/** The marble the app draws for an account with no photo, from its id and its place among the agent's accounts. */
+function marble(id: string, place: number, where: string): string {
+    const colors = MARBLE_PALETTES[place % MARBLE_PALETTES.length];
+    const number = hash(id);
+    const parts = [0, 1, 2].map((at) => {
+        const seed = number * (at + 1);
+        return {
+            color: colors[(number + at) % colors.length],
+            x: unit(seed, 8, 1),
+            y: unit(seed, 8, 2),
+            scale: 1.2 + unit(seed, 4, 0) / 10,
+            rotate: unit(seed, 360, 1),
+        };
+    });
+    const placed = (part: (typeof parts)[number]) => `translate(${part.x} ${part.y}) rotate(${part.rotate} 40 40) scale(${parts[2].scale})`;
+    const uid = `marble-${where}-${place}`;
+    return `<svg viewBox="0 0 80 80" fill="none" aria-hidden="true"><mask id="${uid}-m" maskUnits="userSpaceOnUse" x="0" y="0" width="80" height="80"><rect width="80" height="80" rx="160" fill="#FFFFFF"/></mask><g mask="url(#${uid}-m)"><rect width="80" height="80" fill="${parts[0].color}"/><path filter="url(#${uid}-f)" d="M32.414 59.35L50.376 70.5H72.5v-71H33.728L26.5 13.381l19.057 27.08L32.414 59.35z" fill="${parts[1].color}" transform="${placed(parts[1])}"/><path filter="url(#${uid}-f)" style="mix-blend-mode:overlay" d="M22.216 24L0 46.75l14.108 38.129L78 86l-3.081-59.276-22.378 4.005 12.972 20.186-23.35 27.395L22.215 24z" fill="${parts[2].color}" transform="${placed(parts[2])}"/></g><defs><filter id="${uid}-f" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur stdDeviation="7" result="effect1_foregroundBlur"/></filter></defs></svg>`;
+}
+
+const signal = (used: number) => (used >= 90 ? "spent" : used >= 70 ? "low" : "calm");
+
 const accounts = [
-    { agent: "claude", name: "Claude", session: 100, week: 64 },
-    { agent: "codex", name: "Codex", session: 12, week: 9 },
-] as const;
+    {
+        id: "sam-rivera",
+        name: "Sam Rivera",
+        tier: "Max",
+        windows: [
+            { label: "Session", used: 64, resets: "2h 33m" },
+            { label: "Week", used: 31, resets: "3d 4h" },
+        ],
+        banked: null,
+    },
+    {
+        id: "sam-work",
+        name: "Sam (work)",
+        tier: "Max",
+        windows: [
+            { label: "Session", used: 92, resets: "41m" },
+            { label: "Week", used: 78, resets: "1d 6h" },
+        ],
+        banked: { kind: "Weekly", left: 1, until: "Nov 30" },
+    },
+];
+const banked = accounts.reduce((sum, account) => sum + (account.banked?.left ?? 0), 0);
+
+const REFRESH = `<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>`;
 ---
 
-<div class="app part limits">
-    <p class="label">LIMITS</p>
-    {
-        accounts.map((account) => (
-            <div class="account">
-                <span class="mark" style={`color: var(--brand-${account.agent})`}>
-                    <AgentIcon agent={account.agent} size={16} />
-                </span>
-                <b>{account.name}</b>
-                {[
-                    { window: "Session", used: account.session },
-                    { window: "Week", used: account.week },
-                ].map((meter) => (
-                    <p class:list={["meter", { spent: meter.used >= 100 }]}>
-                        <span>{meter.window}</span>
-                        <i style={`--used: ${meter.used}%`} />
-                        <span class="mono">{meter.used}%</span>
-                    </p>
-                ))}
-            </div>
-        ))
-    }
+<div class="app part unframed lm">
+    <div class="lm-card">
+        <div class="lm-agent">
+            <span class="lm-brand"><AgentIcon agent="claude" size={13} /></span>
+            <b>Claude</b>
+            <span class="lm-button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+            </span>
+        </div>
+        {
+            accounts.map((account, place) => (
+                <div class="lm-account">
+                    <div class="lm-who">
+                        <span class="lm-avatar" set:html={marble(account.id, place, "card")} />
+                        <b>{account.name}</b>
+                        <span class="lm-tier">{account.tier}</span>
+                    </div>
+                    {account.windows.map((window) => (
+                        <div class:list={["lm-window", signal(window.used)]}>
+                            <span class="lm-label">{window.label}</span>
+                            <i class="lm-ruler" style={`--used: ${window.used}`} />
+                            <span class="lm-used">{window.used}% used</span>
+                            <span class="lm-countdown">{window.resets}</span>
+                        </div>
+                    ))}
+                    {account.banked && (
+                        <>
+                            <div class="lm-resets">
+                                <span class="lm-caps">RESETS</span>
+                                <i class="lm-hairline" />
+                                <span>{account.banked.left} left</span>
+                            </div>
+                            <div class="lm-reset">
+                                <span class="lm-kind">
+                                    <b>{account.banked.kind}</b> ×{account.banked.left}
+                                </span>
+                                <span class="lm-by">until {account.banked.until}</span>
+                                <span class="lm-use">Use</span>
+                            </div>
+                        </>
+                    )}
+                </div>
+            ))
+        }
+    </div>
+    <div class="lm-rail">
+        <div class="lm-head">
+            <span class="lm-caps">LIMITS</span>
+            <i class="lm-hairline"></i>
+            {
+                banked > 0 && (
+                    <span class="lm-banked">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" set:html={REFRESH} />
+                        {banked}
+                    </span>
+                )
+            }
+            <span class="lm-button">
+                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={REFRESH} />
+            </span>
+        </div>
+        <div class="lm-rest">
+            {
+                accounts.map((account, place) => (
+                    <div class="lm-row">
+                        <span class="lm-face">
+                            <span class="lm-avatar" set:html={marble(account.id, place, "rail")} />
+                            <span class="lm-badge">
+                                <AgentIcon agent="claude" size={8} />
+                            </span>
+                        </span>
+                        <span class="lm-name">{account.name}</span>
+                        <span class="lm-rulers">
+                            {account.windows.map((window) => (
+                                <i class:list={["lm-ruler", signal(window.used)]} style={`--used: ${window.used}`} />
+                            ))}
+                        </span>
+                        <span class="lm-figures">
+                            {account.windows.map((window) => (
+                                <span class={signal(window.used)}>{window.used}%</span>
+                            ))}
+                        </span>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
 </div>
 
 <style>
-    .limits {
-        display: grid;
-        gap: 12px;
-        width: min(100%, 290px);
-        padding: 12px 14px 14px;
-        text-align: left;
-    }
-    p {
-        margin: 0;
-    }
-    .label {
-        font-size: 10.5px;
-        font-weight: 500;
-        letter-spacing: 0.08em;
-        color: var(--quiet);
-    }
-    .account {
-        display: grid;
-        grid-template-columns: 16px minmax(0, 1fr);
+    .lm {
+        display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 5px 9px;
+        width: min(100%, 300px);
+        text-align: left;
+        color: var(--text-primary);
     }
-    .account b {
-        font-size: 13px;
+    .lm b {
+        font-weight: inherit;
+    }
+    .lm svg {
+        display: block;
+        flex: none;
+    }
+    .lm-card {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--surface-overlay);
+        box-shadow: var(--float);
+    }
+    .lm-agent {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 34px;
+        padding: 0 10px;
+        font-size: 11px;
         font-weight: 500;
     }
-    .meter {
-        grid-column: 2;
+    .lm-agent b {
+        flex: 1;
+    }
+    .lm-brand {
+        display: flex;
+        color: var(--brand-claude);
+    }
+    .lm-button {
         display: grid;
-        grid-template-columns: 52px minmax(0, 1fr) 34px;
+        place-items: center;
+        flex: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
+        color: var(--text-tertiary);
+    }
+    .lm-button svg {
+        width: 13px;
+        height: 13px;
+    }
+    .lm-account {
+        padding: 8px 10px;
+        border-top: 1px solid var(--border);
+    }
+    .lm-who {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 20px;
+        margin-bottom: 5px;
+    }
+    .lm-who b {
+        overflow: hidden;
+        font-size: 11.5px;
+        font-weight: 600;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .lm-avatar {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        margin-right: 2px;
+        overflow: hidden;
+        border-radius: 50%;
+    }
+    .lm-avatar :global(svg) {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+    .lm-tier {
+        flex: none;
+        height: 16px;
+        padding: 0 5px;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        background: var(--surface-hover);
+        font-size: 10px;
+        font-weight: 500;
+        line-height: 14px;
+        color: var(--text-secondary);
+    }
+    .lm-window {
+        --lit: color-mix(in srgb, var(--text-primary) 62%, transparent);
+        display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 11.5px;
-        color: var(--secondary);
+        height: 17px;
+        font-variant-numeric: tabular-nums;
     }
-    .meter i {
-        height: 4px;
-        border-radius: 2px;
-        background: linear-gradient(to right, var(--accent) var(--used), var(--line) 0);
+    .low {
+        --lit: var(--warn);
     }
-    .meter .mono {
-        font-size: 10.5px;
+    .spent {
+        --lit: var(--danger);
+    }
+    .lm-label {
+        flex: none;
+        width: 44px;
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--text-tertiary);
+    }
+    .lm-ruler {
+        flex: 1;
+        min-width: 0;
+        height: 8px;
+        background: linear-gradient(to right, var(--lit) round(up, calc(var(--used) * 1%), 4px), color-mix(in srgb, var(--text-primary) 10%, transparent) 0);
+        mask: repeating-linear-gradient(to right, #000 0 1.5px, transparent 1.5px 4px);
+    }
+    .lm-used {
+        flex: none;
+        min-width: 50px;
+        font-size: 11px;
         text-align: right;
-        color: var(--quiet);
     }
-    .spent i {
-        background: var(--removed);
+    .low .lm-used,
+    .spent .lm-used {
+        color: var(--lit);
     }
-    .spent .mono {
-        color: var(--removed);
+    .lm-countdown {
+        flex: none;
+        min-width: 40px;
+        font-size: 10px;
+        text-align: right;
+        color: var(--text-tertiary);
+    }
+    .lm-caps {
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        color: var(--text-tertiary);
+    }
+    .lm-hairline {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+    .lm-resets {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 22px;
+        font-size: 10px;
+        color: var(--text-tertiary);
+    }
+    .lm-reset {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 24px;
+        font-size: 11px;
+    }
+    .lm-kind {
+        flex: 1;
+        color: var(--text-tertiary);
+    }
+    .lm-kind b {
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+    .lm-by {
+        font-size: 10.5px;
+        color: var(--warn);
+    }
+    .lm-use {
+        padding: 0 2px;
+        font-weight: 500;
+        color: var(--accent);
+    }
+    .lm-rail {
+        width: min(100% - 12px, 288px);
+        margin-top: -18px;
+        padding: 24px 10px 12px;
+        border: 1px solid var(--border);
+        border-top: 0;
+        border-radius: 0 0 10px 10px;
+        background: var(--surface);
+    }
+    .lm-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 20px;
+        margin-bottom: 4px;
+        padding: 0 6px;
+        font-size: 11px;
+    }
+    .lm-banked {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 4px;
+        background: var(--surface-hover);
+        font-size: 10.5px;
+        font-weight: 500;
+        color: var(--text-secondary);
+    }
+    .lm-banked svg {
+        width: 10px;
+        height: 10px;
+    }
+    .lm-rest {
+        display: grid;
+        gap: 2px;
+    }
+    .lm-row {
+        --lit: color-mix(in srgb, var(--text-primary) 62%, transparent);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 30px;
+        padding: 0 6px;
+        border-radius: 5px;
+    }
+    .lm-face {
+        position: relative;
+        flex: none;
+        width: 16px;
+        height: 16px;
+    }
+    .lm-face .lm-avatar {
+        display: block;
+        width: 16px;
+        height: 16px;
+        margin: 0;
+    }
+    .lm-badge {
+        position: absolute;
+        right: -3px;
+        bottom: -3px;
+        display: grid;
+        place-items: center;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--surface);
+        color: var(--brand-claude);
+    }
+    .lm-name {
+        flex: none;
+        width: 76px;
+        overflow: hidden;
+        font-size: 11px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        color: var(--text-secondary);
+    }
+    .lm-rulers {
+        flex: 1;
+        display: grid;
+        gap: 2px;
+        min-width: 0;
+    }
+    .lm-rulers .lm-ruler + .lm-ruler {
+        height: 3px;
+    }
+    .lm-figures {
+        flex: none;
+        display: flex;
+        justify-content: flex-end;
+        align-items: baseline;
+        gap: 4px;
+        width: 66px;
+        font-size: 11px;
+        font-variant-numeric: tabular-nums;
+    }
+    .lm-figures span:first-child {
+        font-weight: 500;
+    }
+    .lm-figures span + span {
+        color: var(--text-tertiary);
+    }
+    .lm-figures .low,
+    .lm-figures .spent {
+        color: var(--lit);
     }
 </style>
