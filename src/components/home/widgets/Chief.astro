@@ -1,170 +1,118 @@
 ---
-import AgentName from "../../AgentName.astro";
 import Head from "./chat/Head.astro";
 import Bubble from "./chat/Bubble.astro";
-import Run, { type Call } from "./chat/Run.astro";
+import Run, { type Call as ToolCall } from "./chat/Run.astro";
+import TurnLine from "./chat/TurnLine.astro";
+import Composer from "./chat/Composer.astro";
+import Now from "./chief/Now.astro";
+import Away from "./chief/Away.astro";
+import Call from "./chief/Call.astro";
 import "./app.css";
 
-const plan: Call[] = [
+const workers = [
+    { name: "Otter", title: "Setup checklist", model: "Opus 5.5", took: 1.2 },
+    { name: "Heron", title: "Invite step", model: "GPT-5.5", took: 1.1 },
+    { name: "Wren", title: "Empty states", model: "Opus 5.5", took: 1 },
+    { name: "Badger", title: "Sign-up tests", model: "Sonnet 5.5", took: 1.3 },
+    { name: "Finch", title: "New flow docs", model: "Sonnet 5.5", took: 1.1 },
+];
+const plan: ToolCall[] = [
     { verb: "read", kind: "looked", icon: "file", target: "onboarding.md", took: 0.4, file: true },
-    { verb: "start", kind: "ran", icon: "square-plus", target: "claude agent", took: 1.2 },
-    { verb: "start", kind: "ran", icon: "square-plus", target: "codex agent", took: 1.1 },
-    { verb: "start", kind: "ran", icon: "square-plus", target: "claude agent", took: 1 },
-    { verb: "start", kind: "ran", icon: "square-plus", target: "pi agent", took: 1.3 },
-    { verb: "start", kind: "ran", icon: "square-plus", target: "hermes agent", took: 1.1 },
+    ...workers.map(({ name, title, model, took }): ToolCall => ({ verb: "start", kind: "ran", icon: "square-plus", target: title, took, starts: { name, title, model } })),
+];
+const moving = workers.map(({ name }) => ({ name, fact: "working", age: "4m" }));
+const decided = [
+    { decision: "Kept the old copy", after: "@Heron" },
+    { decision: "No tour on first run", after: "@Otter" },
+];
+const landed = [
+    { name: "Otter", title: "Setup checklist", change: "five first steps", dels: 12, adds: 148 },
+    { name: "Wren", title: "Empty states", change: "three screens", dels: 4, adds: 96, tryIt: true },
 ];
 ---
 
-<div class="app chief" data-play>
-    <Head title="New onboarding" who="Chief" agent="chief" />
-    <div class="beats">
-        <div class="beat ask">
-            <Bubble when="2:47 PM">Ship the new onboarding by Friday.</Bubble>
-            <Run calls={plan} wait={400} />
+<div class="app chief" data-play data-chief>
+    <Head title="@Chief" agent="chief" fact="acme-shop" />
+    <div class="pane">
+        <div class="said">
+            <Bubble>Ship the new onboarding by Friday.</Bubble>
+            <Run calls={plan} wait={400} folds />
         </div>
-
-        <div class="beat away" data-step="away" data-wait="3600">
-            <p class="by"><b><AgentName name="Chief" /></b><span>while you were away</span></p>
-            <div class="report">
-                <p class="line"><span><b>4 landed.</b> Checklist, invite step, empty states and docs are on main.</span><span class="btn">Try it</span></p>
-                <p class="line"><span><AgentName name="Heron" /> kept the old copy on step 2.</span><span class="btn">Overrule</span></p>
-                <div class="call">
-                    <p class="q">Sign-up: magic links or passwords?</p>
-                    <div class="opts">
-                        <p class="opt picked"><i class="radio"></i>Magic links<span class="pick"><img src="/brand/mark-purple.svg" alt="" width="11" height="11" />pick</span></p>
-                        <p class="opt"><i class="radio"></i>Passwords</p>
-                    </div>
-                    <p class="go"><span class="btn primary">Go with this</span></p>
-                </div>
-            </div>
+        <Now moving={moving} later={{ you: 0, ready: 2, moving: 3, unsure: 0 }} />
+        <div class="waits first">
+            <TurnLine agent="chief" word="Waiting on" tint="cmd" waitingOn={["Otter", "Heron"]} more={3} said="4 min" wait={300} />
+        </div>
+        <div class="calls" data-step="away" data-wait="3600">
+            <Away gone="1 h" needs={1} decided={decided} landed={landed}>
+                <Call asker="Chief" age="38m" question="Sign-up: magic links or passwords?" options={["Magic links", "Passwords"]} pick="Magic links" />
+            </Away>
+        </div>
+        <div class="waits then">
+            <TurnLine agent="chief" word="Waiting on" tint="cmd" waitingOn={["Heron", "Badger"]} more={1} said="64 min" wait={0} />
         </div>
     </div>
+    <Composer model="Opus 5.5" project="acme-shop" placeholder="Tell @Chief what you want, or type / for commands" />
 </div>
 
+<script>
+    for (const box of document.querySelectorAll<HTMLElement>("[data-chief]")) {
+        const room = box.parentElement!;
+        const style = getComputedStyle(box);
+        const size = (name: string) => Number(style.getPropertyValue(name));
+        const fit = () => box.style.setProperty("--fit", String(Math.min(1, room.clientWidth / (size("--least") * size("--scale")))));
+        new ResizeObserver(fit).observe(room);
+        fit();
+    }
+</script>
+
 <style>
-    .beats {
+    /* The app's one-line rows cut their text in a window narrower than --least, so a smaller one is the same picture scaled down. */
+    .chief {
+        --scale: 1.12;
+        --least: 484;
+        width: max(calc(100% / var(--scale)), calc(var(--least) * 1px));
+        zoom: calc(var(--scale) * var(--fit, 1));
+    }
+    @media (max-width: 600px) {
+        .chief {
+            --scale: 1;
+            --least: 400;
+        }
+    }
+    .pane {
+        position: relative;
         display: flex;
         flex-direction: column;
-        gap: 14px;
-        padding: 6px 22px 18px;
+        padding-top: 52px;
     }
-    .ask {
+    /* The window keeps one height through the play: the away card holds its room until it shows, and the open run rises into that room from a folded run's height. */
+    .said {
+        order: 1;
         display: flex;
         flex-direction: column;
-        gap: 10px;
-    }
-    .away {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        border-top: 1px solid var(--line);
-        padding-top: 12px;
-    }
-    .by {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        height: 22px;
-        font-size: 12.5px;
-        color: var(--quiet);
-    }
-    .by b {
-        font-weight: 600;
-        color: var(--ink);
-    }
-    .by span {
-        margin-left: auto;
-        font-size: 11.5px;
-        color: var(--faint);
-    }
-    .report {
-        display: flex;
-        flex-direction: column;
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        background: var(--raised);
-        overflow: hidden;
-    }
-    .line {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 10px 14px;
-        border-bottom: 1px solid var(--line);
-        font-size: 13.5px;
-        line-height: 1.45;
-    }
-    .line > span:first-child {
-        flex: 1;
-    }
-    .line b {
-        font-weight: 600;
-    }
-    .btn {
-        flex: none;
-        display: inline-flex;
-        align-items: center;
-        height: 26px;
-        padding: 0 10px;
-        border-radius: 5px;
-        border: 1px solid var(--strong);
-        font-size: 12px;
-        font-weight: 500;
-        color: var(--ink);
-    }
-    .btn.primary {
-        border-color: var(--accent);
-        background: var(--accent);
-        color: var(--ground);
-    }
-    .call {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        padding: 12px 14px 14px;
-    }
-    .q {
-        font-size: 13.5px;
-        font-weight: 600;
-    }
-    .opts {
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-    .opt {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        height: 32px;
-        padding: 0 12px;
-        font-size: 13px;
-    }
-    .opt + .opt {
-        border-top: 1px solid var(--line);
-    }
-    .picked {
-        background: var(--hover);
-    }
-    .radio {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        border: 1.5px solid var(--quiet);
-    }
-    .picked .radio {
-        border: 3.5px solid var(--accent);
-    }
-    .pick {
-        margin-left: auto;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 11.5px;
-        color: var(--quiet);
-    }
-    .go {
-        display: flex;
         justify-content: flex-end;
+        gap: 14px;
+        height: 79px;
+        padding: 0 22px;
+    }
+    .calls {
+        padding: 8px 22px;
+    }
+    .calls.on {
+        order: 1;
+    }
+    .waits {
+        order: 2;
+        padding: 12px 22px 26px;
+    }
+    .waits :global(.buttons:empty) {
+        display: none;
+    }
+    .then,
+    .chief:has(.calls.on) .first {
+        display: none;
+    }
+    .chief:has(.calls.on) .then {
+        display: block;
     }
 </style>
