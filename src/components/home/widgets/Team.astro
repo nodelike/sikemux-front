@@ -200,6 +200,11 @@ const messages = relay.map((line) => ({ ...line, name: rows.find((row) => row.id
             display: none;
         }
     }
+    @media (max-width: 480px) {
+        .team :global(.pane-head > .agent-chip) {
+            display: none;
+        }
+    }
     @media (max-width: 1220px) and (prefers-reduced-motion: reduce) {
         .team .column {
             height: auto;
