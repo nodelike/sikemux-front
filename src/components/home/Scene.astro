@@ -99,6 +99,11 @@ const { tag, id, art, wide = false, flip = false, ground = 0.08, stacked = wide 
     .wide .media {
         justify-items: center;
     }
+    @media (min-width: 901px) {
+        .scene:not(.wide) .media :global(.app) {
+            width: 100%;
+        }
+    }
     @media (max-width: 900px) {
         .stage,
         .flip .stage,
