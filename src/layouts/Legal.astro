@@ -15,6 +15,7 @@ const here = Astro.url.pathname;
     <nav class="legal-nav" aria-label="Legal">
         <a href="/privacy" aria-current={here.startsWith("/privacy") ? "page" : undefined}>Privacy</a>
         <a href="/terms" aria-current={here.startsWith("/terms") ? "page" : undefined}>Terms</a>
+        <a href="/refunds" aria-current={here.startsWith("/refunds") ? "page" : undefined}>Refunds</a>
         <a href="/delete-account" aria-current={here.startsWith("/delete-account") ? "page" : undefined}>Delete account</a>
     </nav>
     <header class="page-head">
@@ -44,6 +45,18 @@ const here = Astro.url.pathname;
     .legal-nav a[aria-current="page"] {
         background: var(--ink);
         color: var(--paper);
+    }
+    @media (max-width: 520px) {
+        .legal-nav {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        .legal-nav a:nth-child(2n) {
+            border-right: 0;
+        }
+        .legal-nav a:nth-child(n + 3) {
+            border-top: 1px solid var(--rule);
+        }
     }
     .page-head .tag {
         justify-self: start;

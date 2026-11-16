@@ -56,6 +56,7 @@ export const CARDS: Card[] = [
     { path: "/brand", label: "Brand", title: "Sikemux", chip: "brand.", body: "The wordmark, the mark, the icon and the colours, to download.", visual: { kind: "brand" } },
     { path: "/privacy", label: "Legal", title: "Privacy policy", body: "What Sikemux collects, why, who handles it, and how to have it deleted.", visual: HERO },
     { path: "/terms", label: "Legal", title: "Terms of use", body: "The terms for using Sikemux, its phone app and Sikemux accounts.", visual: HERO },
+    { path: "/refunds", label: "Legal", title: "Refund policy", body: "What is refunded on a Sikemux paid plan, what is not, and how to ask.", visual: HERO },
     { path: "/delete-account", label: "Account", title: "Delete your account", body: "How to delete your Sikemux account, and what is deleted when you do.", visual: HERO },
 ];
 
