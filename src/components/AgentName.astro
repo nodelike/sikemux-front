@@ -5,13 +5,14 @@ import { faceOf } from "../lib/showcase-buddies";
 
 interface Props {
     name: string;
+    chip?: boolean;
 }
 
-const { name } = Astro.props;
+const { name, chip = false } = Astro.props;
 const face = faceOf(name);
 ---
 
-<span class="agent-name">{face ? <span class="buddy" set:html={buddy(face.pack, face.shape, "idle").markup} /> : <img src="/brand/mark-purple.svg" alt="" />}@{name}</span>
+<span class:list={["agent-name", { "agent-chip": chip }]}>{face ? <span class="buddy" set:html={buddy(face.pack, face.shape, "idle").markup} /> : <img src="/brand/mark-purple.svg" alt="" />}@{name}</span>
 
 <style>
     .agent-name {
@@ -25,5 +26,22 @@ const face = faceOf(name);
         width: 1.2em;
         height: 1.2em;
         flex: none;
+    }
+    .agent-chip {
+        flex: none;
+        gap: 5px;
+        padding: 0 6px 0 4px;
+        border-radius: 5px;
+        background: var(--surface-raised);
+        color: var(--text-primary);
+        line-height: 1.618;
+    }
+    .agent-chip > :first-child {
+        width: calc(1em + 1px);
+        height: calc(1em + 1px);
+        margin: 0 calc((14px - 1em) / 2);
+    }
+    .agent-chip > img {
+        scale: 1.2;
     }
 </style>

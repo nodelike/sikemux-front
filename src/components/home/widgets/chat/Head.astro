@@ -1,22 +1,46 @@
 ---
-import AgentIcon from "../../../AgentIcon.astro";
 import AgentName from "../../../AgentName.astro";
+import Mark from "./Mark.astro";
 import type { AgentIconId } from "../../../../lib/agents";
 
 interface Props {
     title: string;
-    who: string;
+    who?: string;
+    fact?: string;
+    crumbs?: string[];
     agent?: AgentIconId | "chief";
 }
 
-const { title, who, agent = "claude" } = Astro.props;
+const { title, who, fact, crumbs = [], agent = "claude" } = Astro.props;
 ---
 
 <div class="pane-head">
-    <span class="mark" style={agent === "chief" ? undefined : `color: var(--brand-${agent})`}>
-        {agent === "chief" ? <img src="/brand/mark-purple.svg" alt="" width="15" height="15" /> : <AgentIcon agent={agent} size={15} />}
-    </span>
+    {
+        crumbs.length > 0 && (
+            <span class="crumbs">
+                {crumbs.map((name) => (
+                    <span class="crumb">
+                        <AgentName name={name} chip />
+                        <svg viewBox="0 0 24 24">
+                            <path d="m9 18 6-6-6-6" />
+                        </svg>
+                    </span>
+                ))}
+            </span>
+        )
+    }
+    <span class="head-mark"><Mark agent={agent} who={who} size={16} /></span>
     <span class="title">{title}</span>
-    <span class="who"><AgentName name={who} /></span>
-    <span class="seg"><span class="on">GUI</span><span>TUI</span></span>
+    {who && <AgentName name={who} chip />}
+    {fact && <span class="fact">{fact}</span>}
+    <span class="grow"></span>
+    <span class="segmented">
+        <i class="thumb"></i>
+        <span class="on"><svg viewBox="0 0 24 24"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path></svg>GUI</span>
+        <span><svg viewBox="0 0 24 24"><path d="m7 11 2-2-2-2"></path><path d="M11 13h4"></path><rect x="3" y="3" width="18" height="18" rx="2"></rect></svg>TUI</span>
+    </span>
+    <i class="head-rule"></i>
+    <span class="icon-btn action"><svg viewBox="0 0 24 24"><path d="M12 2v13"></path><path d="m16 6-4-4-4 4"></path><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path></svg></span>
+    <span class="icon-btn action more"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span>
+    <span class="icon-btn side"><svg viewBox="0 0 24 24"><path d="M15 3v18"></path><rect x="3" y="3" width="18" height="18" rx="2"></rect></svg></span>
 </div>

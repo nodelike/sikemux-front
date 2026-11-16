@@ -19,28 +19,30 @@ const calls: Call[] = [
 <div class="app chat" data-play data-chat>
     <Head title="Cart totals a cent off" who="Wren" />
     <div class="column">
-        <Bubble when="2:47 PM">Some orders come out a cent off at checkout. Find out why and fix it properly, with a test.</Bubble>
-        <Run calls={calls} worked="Worked for 13s" wait={400} />
+        <Bubble when="14:47">Some orders come out a cent off at checkout. Find out why and fix it properly, with a test.</Bubble>
+        <Run calls={calls} who="Wren" worked="Worked for 13s" wait={400} />
         <Prose stream={150}>
             The total rounded the tax and the price together, so a cart of cheap items could come out a cent away from what the receipt adds up to. It now rounds the tax once, on the whole cart, and a discount can no longer push the total below zero. I added a test with three pencils that used to come out at 338 cents.
         </Prose>
         <Notice wait={900}>
-            <svg viewBox="0 0 24 24" width="12" height="12"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+            <svg viewBox="0 0 24 24" width="12" height="12"><path d="M22 12L16 12L14 15L10 15L8 12L2 12"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
             <span class="title">Codex has room to carry this chat on</span>
             <span class="summary">Every Claude account it may use is out of usage. Handing it to Codex takes your words with Claude along.</span>
         </Notice>
-        <TurnLine agent="claude" word="Failed" said="Claude's limit" wait={300}>
+        <TurnLine agent="claude" who="Wren" word="Failed" tint="danger" said="Claude's limit" wait={300}>
             <span class="kit-btn" data-hand>Hand to Codex</span>
             <span class="kit-btn ghost">Retry</span>
         </TurnLine>
         <span hidden data-step="moved" data-wait="1600"></span>
     </div>
-    <Composer />
+    <Composer model="Opus 5.5" handsTo="codex" />
 </div>
 
 <script>
     for (const box of document.querySelectorAll<HTMLElement>("[data-chat]")) {
         const column = box.querySelector<HTMLElement>(".column")!;
+        const form = box.querySelector("form")!;
+        const draft = form.querySelector("textarea")!;
         box.addEventListener("step", (event) => {
             const shown = event.target as HTMLElement;
             if (column.contains(shown)) {
@@ -52,26 +54,31 @@ const calls: Call[] = [
             hand.classList.add("pressed");
             setTimeout(() => {
                 hand.classList.remove("pressed");
-                const model = box.querySelector<HTMLElement>("[data-model]")!;
-                model.querySelector<HTMLElement>(".first")!.hidden = true;
-                model.querySelector<HTMLElement>(".then")!.hidden = false;
-                model.querySelector(".name")!.textContent = "Codex";
+                form.classList.add("handed");
             }, 450);
         });
-        box.querySelector("form")!.addEventListener("submit", (event) => {
+        draft.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter" || event.shiftKey || event.isComposing) return;
             event.preventDefault();
-            const input = box.querySelector("input")!;
-            const text = input.value.trim();
+            form.requestSubmit();
+        });
+        form.querySelector(".send")!.addEventListener("click", () => form.requestSubmit());
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const text = draft.value.trim();
             if (!text) return;
             const you = document.createElement("div");
             you.className = "you typed";
             const bubble = document.createElement("p");
             bubble.className = "bubble";
             bubble.textContent = text;
-            you.append(bubble);
+            const when = document.createElement("span");
+            when.className = "when";
+            when.textContent = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+            you.append(bubble, when);
             column.append(you);
             column.scrollTop = column.scrollHeight;
-            input.value = "";
+            draft.value = "";
         });
     }
 </script>

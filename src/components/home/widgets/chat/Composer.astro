@@ -4,31 +4,76 @@ import type { AgentIconId } from "../../../../lib/agents";
 
 interface Props {
     agent?: AgentIconId;
+    model?: string;
+    handsTo?: AgentIconId;
+    used?: number;
     project?: string;
     placeholder?: string;
 }
 
-const { agent = "claude", project = "storefront", placeholder = "Ask about this project, or type / for commands" } = Astro.props;
+const { agent = "claude", model, handsTo, used = 18, project = "storefront", placeholder = "Ask about this project, or type / for commands" } = Astro.props;
 const names: Record<string, string> = { claude: "Claude", codex: "Codex", hermes: "Hermes", pi: "Pi", opencode: "OpenCode", omp: "OMP", grok: "Grok" };
+const chevron = '<path d="m9 18 6-6-6-6"/>';
 ---
 
 <form class="composer">
     <div class="box">
-        <input type="text" aria-label="Message the agent" placeholder={placeholder} maxlength="160" />
+        <div class="draft"><textarea aria-label="Message the agent" placeholder={placeholder} maxlength="160"></textarea></div>
         <div class="bar">
-            <span class="tool plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></span>
-            <span class="tool stash"><svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"></path><path d="m3 13 9 5 9-5"></path></svg>Stash</span>
-            <span class="tool safe"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>SAFE</span>
-            <span class="tool model" data-model><span class="first" style={`color: var(--brand-${agent})`}><AgentIcon agent={agent} size={13} /></span><span class="then" hidden><AgentIcon agent="codex" size={13} /></span><b class="name">{names[agent]}</b><svg class="down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span>
-            <span class="tool mic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></span>
-            <span class="send" role="button" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"></path></svg></span>
+            <span class="attach"><svg viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span>
+            <span class="stash-btn"
+                ><svg viewBox="0 0 24 24"
+                    ><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path
+                        d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg
+                ></span
+            >
+            <span class="tool mode"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span class="word">SAFE</span></span>
+            <span class="tool model">
+                <span class="provider pre" style={`color: var(--brand-${agent})`}><AgentIcon agent={agent} size={17} /></span>
+                <b class="name pre">{model ?? names[agent]}</b>
+                {
+                    model && (
+                        <span class="effort pre">
+                            <i>·</i>
+                            <svg viewBox="0 0 24 24">
+                                <path d="m12 14 4-4" />
+                                <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+                            </svg>
+                        </span>
+                    )
+                }
+                {
+                    handsTo && (
+                        <>
+                            <span class="provider post" style={`color: var(--brand-${handsTo})`}>
+                                <AgentIcon agent={handsTo} size={17} />
+                            </span>
+                            <b class="name post">{names[handsTo]}</b>
+                        </>
+                    )
+                }
+                <svg class="down" viewBox="0 0 24 24" set:html={chevron} />
+            </span>
+            <span class="ring pre" style={`color: var(--brand-${agent})`}>
+                <svg viewBox="0 0 14 14"><circle class="track" cx="7" cy="7" r="6.05"></circle><circle class="arc" cx="7" cy="7" r="6.05" pathLength="100" stroke-dasharray={`${used} 100`}></circle></svg>
+            </span>
+            <span class="grow"></span>
+            <span class="snap"
+                ><svg viewBox="0 0 24 24"
+                    ><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"></path><circle cx="12" cy="13" r="3"></circle></svg
+                ></span
+            >
+            <span class="mic"><svg viewBox="0 0 24 24"><path d="M12 19v3"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><rect x="9" y="2" width="6" height="13" rx="3"></rect></svg></span>
+            <span class="send" role="button" aria-label="Send"><svg viewBox="0 0 24 24"><path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path></svg></span>
         </div>
     </div>
     <div class="context">
-        <span class="ctx"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M2 20h20"></path></svg>This host</span>
+        <span class="ctx"
+            ><svg viewBox="0 0 24 24"><path d="M18 5a2 2 0 0 1 2 2v8.526a2 2 0 0 0 .212.897l1.068 2.127a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45l1.068-2.127A2 2 0 0 0 4 15.526V7a2 2 0 0 1 2-2z"></path><path d="M20.054 15.987H3.946"></path></svg>This host</span
+        >
         <span class="slash">/</span>
-        <span class="ctx"><svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg>{project}</span>
+        <span class="ctx project"><svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg><span>{project}</span></span>
         <span class="slash">/</span>
-        <span class="branch"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"></circle><circle cx="6" cy="18" r="2.5"></circle><circle cx="18" cy="8" r="2.5"></circle><path d="M6 8.5v7M18 10.5c0 4-6 3-10 6"></path></svg>main</span>
+        <span class="branch"><svg viewBox="0 0 24 24"><path d="M15 6a9 9 0 0 0-9 9V3"></path><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle></svg>main</span>
     </div>
 </form>

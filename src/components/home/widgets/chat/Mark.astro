@@ -1,0 +1,31 @@
+---
+import "../../../../styles/buddies.css";
+import AgentIcon from "../../../AgentIcon.astro";
+import { buddy } from "../../../../lib/buddies";
+import { faceOf } from "../../../../lib/showcase-buddies";
+import type { AgentIconId } from "../../../../lib/agents";
+
+interface Props {
+    size: number;
+    agent?: AgentIconId | "chief";
+    who?: string;
+}
+
+const { size, agent = "claude", who } = Astro.props;
+const face = who ? faceOf(who) : undefined;
+const box = `width: ${size}px; height: ${size}px`;
+---
+
+{
+    agent === "chief" ? (
+        <span class="mark" style={box}>
+            <img src="/brand/mark-purple.svg" alt="" width={size * 1.2} height={size * 1.2} />
+        </span>
+    ) : face ? (
+        <span class="mark buddy" style={box} set:html={buddy(face.pack, face.shape, "idle").markup} />
+    ) : (
+        <span class="mark" style={`${box}; color: var(--brand-${agent})`}>
+            <AgentIcon agent={agent} size={size} />
+        </span>
+    )
+}

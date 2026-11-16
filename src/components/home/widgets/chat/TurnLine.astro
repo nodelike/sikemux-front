@@ -1,20 +1,33 @@
 ---
-import AgentIcon from "../../../AgentIcon.astro";
+import AgentName from "../../../AgentName.astro";
+import Mark from "./Mark.astro";
 import type { AgentIconId } from "../../../../lib/agents";
 
 interface Props {
-    agent: AgentIconId;
+    agent: AgentIconId | "chief";
+    who?: string;
     word: string;
+    tint: "accent" | "cmd" | "warn" | "danger";
+    waitingOn?: string[];
+    more?: number;
     said: string;
     step?: string;
     wait?: number;
 }
 
-const { agent, word, said, step = "", wait = 500 } = Astro.props;
+const { agent, who, word, tint, waitingOn = [], more, said, step = "", wait = 500 } = Astro.props;
 ---
 
 <div class="turn-line" data-step={step} data-wait={String(wait)}>
-    <span class="mark" style={`color: var(--brand-${agent})`}><AgentIcon agent={agent} size={21} /></span>
-    <p class="words"><b>{word}</b> · {said}</p>
+    <Mark agent={agent} who={who} size={21} />
+    <p class="words">
+        <b style={`color: var(--${tint})`}>
+            {word}
+            {waitingOn.map((name) => <AgentName name={name} chip />)}
+            {more && <span class="more-chip">+{more}</span>}
+        </b>
+        <i>·</i>
+        <span>{said}</span>
+    </p>
     <span class="buttons"><slot /></span>
 </div>
