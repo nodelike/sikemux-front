@@ -16,7 +16,7 @@ const names: Record<string, string> = { claude: "Claude", codex: "Codex", hermes
 const chevron = '<path d="m9 18 6-6-6-6"/>';
 ---
 
-<form class="composer">
+<form class="composer" data-composer>
     <div class="box">
         <div class="draft"><textarea aria-label="Message the agent" placeholder={placeholder} maxlength="160"></textarea></div>
         <div class="bar">
@@ -77,3 +77,21 @@ const chevron = '<path d="m9 18 6-6-6-6"/>';
         <span class="branch"><svg viewBox="0 0 24 24"><path d="M15 6a9 9 0 0 0-9 9V3"></path><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle></svg>main</span>
     </div>
 </form>
+
+<script>
+    const CONTROL = 36;
+    const roomAt = (width: number) => (width >= 550 ? "full" : width >= 465 ? "compact" : width >= 425 ? "tight" : "bare");
+    for (const form of document.querySelectorAll<HTMLElement>("[data-composer]")) {
+        const box = form.querySelector<HTMLElement>(".box")!;
+        const bar = form.querySelector<HTMLElement>(".bar")!;
+        const shown = (part: string) => Boolean(bar.querySelector(part)?.getClientRects().length);
+        // The Mac app sizes its rooms for a bar with Stash, the mode, the ring and the mic, and no camera.
+        const fit = () => {
+            const missing = [".stash-btn", ".mode", ".ring", ".mic"].filter((part) => !shown(part)).length;
+            const crowd = (Number(shown(".snap")) - missing) * CONTROL;
+            form.dataset.room = roomAt(parseFloat(getComputedStyle(box).width) - crowd);
+        };
+        new ResizeObserver(fit).observe(box);
+        new MutationObserver(fit).observe(form, { attributes: true, attributeFilter: ["class"] });
+    }
+</script>

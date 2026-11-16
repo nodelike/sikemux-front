@@ -674,8 +674,16 @@
     opacity: 0.28;
 }
 .app .composer:not(.handed) .post,
-.app .composer.handed .pre {
+.app .composer.handed .pre,
+.app .composer[data-room="tight"] .mode .word,
+.app .composer[data-room="bare"] .mode .word,
+.app .composer[data-room="bare"] .model .name,
+.app .composer[data-room="bare"] .model .effort {
     display: none;
+}
+.app .composer[data-room="tight"] .tool.mode,
+.app .composer[data-room="bare"] .tool {
+    padding: 0 9.5px;
 }
 .app .context {
     display: flex;
