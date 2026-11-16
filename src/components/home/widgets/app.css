@@ -7,6 +7,7 @@
     --quiet: #91899e;
     --faint: #b3abbe;
     --line: #dcd5e6;
+    --line-soft: #ffffff;
     --edge: #d3cbe0;
     --strong: #c7bdd6;
     --accent: #7450c7;
@@ -80,6 +81,7 @@
     --quiet: #736f80;
     --faint: #6d6979;
     --line: #24242b;
+    --line-soft: #19191e;
     --edge: #2c2c34;
     --strong: #34343d;
     --accent: #a277ff;
