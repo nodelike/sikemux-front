@@ -3,16 +3,8 @@ import AgentName from "../../AgentName.astro";
 import Head from "./chat/Head.astro";
 import Bubble from "./chat/Bubble.astro";
 import Run, { type Call } from "./chat/Run.astro";
-import AgentRow from "./chat/AgentRow.astro";
 import "./app.css";
 
-const workers = [
-    { name: "Otter", agent: "claude", task: "Welcome checklist", age: "1m" },
-    { name: "Heron", agent: "codex", task: "Invite step, and a review of Otter's diff", age: "1m" },
-    { name: "Wren", agent: "claude", task: "Empty states for new projects", age: "1m" },
-    { name: "Badger", agent: "pi", task: "Sign-up tests on iPhone", age: "1m" },
-    { name: "Finch", agent: "hermes", task: "Docs for the new flow", age: "1m" },
-] as const;
 const plan: Call[] = [
     { verb: "read", kind: "looked", icon: "file", target: "onboarding.md", took: 0.4, file: true },
     { verb: "start", kind: "ran", icon: "square-plus", target: "claude agent", took: 1.2 },
@@ -23,17 +15,12 @@ const plan: Call[] = [
 ];
 ---
 
-<div class="app chief" data-play data-chief>
+<div class="app chief" data-play>
     <Head title="New onboarding" who="Chief" agent="chief" />
     <div class="beats">
         <div class="beat ask">
             <Bubble when="2:47 PM">Ship the new onboarding by Friday.</Bubble>
             <Run calls={plan} wait={400} />
-        </div>
-
-        <div class="beat crew" data-step="crew" data-wait="300">
-            <p class="label">Agents</p>
-            {workers.map((worker, index) => <AgentRow id={String(index)} task={worker.task} age={worker.age} project="acme-shop" name={worker.name} agent={worker.agent} state="working" />)}
         </div>
 
         <div class="beat away" data-step="away" data-wait="3600">
@@ -54,19 +41,6 @@ const plan: Call[] = [
     </div>
 </div>
 
-<script>
-    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    for (const box of document.querySelectorAll<HTMLElement>("[data-chief]")) {
-        const agents = [...box.querySelectorAll<HTMLElement>("[data-row]")];
-        const finish = (agent: HTMLElement) => (agent.dataset.state = "done");
-        box.addEventListener("step", (event) => {
-            if ((event as CustomEvent).detail !== "crew") return;
-            if (still) return agents.forEach(finish);
-            agents.forEach((agent, index) => setTimeout(() => finish(agent), 1300 + index * 480));
-        });
-    }
-</script>
-
 <style>
     .beats {
         display: flex;
@@ -78,27 +52,6 @@ const plan: Call[] = [
         display: flex;
         flex-direction: column;
         gap: 10px;
-    }
-    .crew {
-        border-top: 1px solid var(--line);
-        padding-top: 12px;
-    }
-    .label {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 4px;
-        font-size: 10.5px;
-        font-weight: 500;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--quiet);
-    }
-    .label::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: var(--line);
     }
     .away {
         display: flex;
