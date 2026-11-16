@@ -1,22 +1,56 @@
 ---
+import "../../../styles/buddies.css";
 import AgentIcon from "../../AgentIcon.astro";
-import AgentName from "../../AgentName.astro";
-import Bubble from "./chat/Bubble.astro";
-import Prose from "./chat/Prose.astro";
+import { buddy, type BuddyState } from "../../../lib/buddies";
+import { faceOf } from "../../../lib/showcase-buddies";
 import "./app.css";
 
-const rows = [
-    { name: "Otter", agent: "claude", task: "Add dark mode to settings", ago: "2m", state: "asks" },
-    { name: "Maple", agent: "codex", task: "Fix the login form on small screens", ago: "4m", state: "working" },
-    { name: "Wren", agent: "claude", task: "Check the login form at every phone size", ago: "6m", state: "working" },
-] as const;
+const task = "Add dark mode to settings";
+const command = "pnpm test src/settings";
+const project = "acme-shop";
+const finished = "Fix the login form";
+
+const face = (name: string, state: BuddyState, more = "") => {
+    const { pack, shape } = faceOf(name)!;
+    const { motion, markup } = buddy(pack, shape, state);
+    return `<span class="${["buddy", more].filter(Boolean).join(" ")}"${motion ? ` data-motion="${motion}"` : ""}>${markup}</span>`;
+};
+
+const shield = "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z";
+const drawings = {
+    chevron: `<path d="m9 18 6-6-6-6"/>`,
+    more: `<circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>`,
+    shield: `<path d="${shield}"/>`,
+    shieldBolt: `<path d="${shield}"/><path d="M13 7.5 9 13h3l-1 4.5 4-5.5h-3z" fill="currentColor" stroke="none"/>`,
+    stack: `<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>`,
+    plus: `<path d="M5 12h14"/><path d="M12 5v14"/>`,
+    gauge: `<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>`,
+    folder: `<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>`,
+    git: `<path d="M15 6a9 9 0 0 0-9 9V3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>`,
+    command: `<path d="M12 19h8"/><path d="m4 17 6-6-6-6"/>`,
+};
+const icon = (name: keyof typeof drawings, size: number) =>
+    `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${drawings[name]}</svg>`;
+
+const twinkles = [
+    [0.9, 0],
+    [1.24, -0.52],
+    [1.58, -1.04],
+    [1.07, -0.39],
+    [1.41, -0.91],
+    [0.9, -0.26],
+    [1.24, -0.78],
+    [1.58, -0.13],
+    [1.07, -0.65],
+];
 ---
 
-<div class="pair" data-notch aria-label="The notch asks to run pnpm test src/settings, Allow is pressed, and the phone shows the same request answered">
+<div class="pair" data-notch data-phase="working" aria-label={`The island over the notch asks to run ${command} and Allow is pressed, while the phone shows the same request as a permission card`}>
     <div class="laptop-crop">
     <div class="laptop" data-laptop>
     <div class="mac">
         <div class="screen">
+            <div class="desk">
             <div class="menubar">
                 <span class="left"><svg width="14" height="16" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788 341c-6 4-108 62-108 190 0 149 130 201 134 203-1 3-21 72-69 142-43 62-88 123-156 123s-85-40-164-40c-76 0-104 41-166 41s-105-57-155-127C47 791 0 663 0 542c0-194 126-298 251-298 66 0 121 44 163 44 39 0 101-46 176-46 29 0 131 3 198 99zM554 159c31-37 53-88 53-139 0-7-1-14-2-20-51 2-111 34-147 76-29 32-55 84-55 135 0 8 1 15 2 18 3 0 8 1 13 1 46 0 103-31 136-71z"></path></svg><b>Figma</b><span>File</span><span>Edit</span><span>View</span></span>
                 <span class="right"><span class="clock">Thu 2:51 PM</span></span>
@@ -27,35 +61,36 @@ const rows = [
             </div>
             <span class="island" aria-hidden="true">
                 <span class="shape">
-                    <span class="layer wings">
+                    <span class="band wings">
                         <span class="wing l">
-                            {rows.map((row) => <span class="tile" style={`color: var(--brand-${row.agent})`}><AgentIcon agent={row.agent} size={20} /></span>)}
+                            <Fragment set:html={face("Otter", "working")} />
+                            <Fragment set:html={face("Heron", "working")} />
+                            <Fragment set:html={face("Wren", "working", "as-working")} />
+                            <Fragment set:html={face("Wren", "done", "as-done")} />
                         </span>
-                        <span class="cam"></span>
                         <span class="wing r">
-                            <span class="group ask-group"><span class="calls">1 call</span><span class="st blocked"><span class="dot"></span></span></span>
-                            <span class="group"><span class="count n-work">2</span><span class="st working"><span class="loader">{[0.9, 1.24, 1.58, 1.07, 1.41, 0.9, 1.24, 1.58, 1.07].map((p, i) => <i style={`--p:${p}s;--o:-${(i * 0.13).toFixed(2)}s`}></i>)}</span></span></span>
+                            <span class="group"><span class="count"><span class="as-working">3</span><span class="as-done">2</span></span><span class="st"><span class="grid">{twinkles.map(([period, offset]) => <i style={`--p:${period}s;--o:${offset}s`}></i>)}</span></span></span>
+                            <span class="group as-done"><span class="st finished"><span class="dot"></span></span></span>
                         </span>
                     </span>
-                    <span class="layer peek">
-                        <span class="head">
-                            <span class="side"><span class="tile" style="color: var(--brand-claude)"><AgentIcon agent="claude" size={20} /></span><span class="lead"><AgentName name="Otter" /></span></span>
-                            <span class="side r"><span class="trail">Needs you</span><span class="st blocked"><span class="ping"></span><span class="ping"></span><span class="dot"></span></span></span>
-                        </span>
-                        <span class="body">
-                            <span class="text"><span class="title">Add dark mode to settings</span><span class="sub"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg>acme-shop<span class="dotsep">·</span>Needs your permission</span></span>
-                            <span class="cmd"><span class="sign">$</span>pnpm test src/settings</span>
-                            <span class="actions"><span class="nbtn" data-answer="deny">Deny</span><span class="nbtn" data-answer="always">Always allow</span><span class="nbtn primary" data-answer="allow">Allow</span></span>
-                        </span>
+                    <span class="band head">
+                        <span class="side"><Fragment set:html={face("Otter", "waiting")} /><span class="lead">Otter</span></span>
+                        <span class="side r"><span class="trail">Needs you</span><span class="st blocked"><span class="ping"></span><span class="ping"></span><span class="dot"></span></span></span>
                     </span>
-                    <span class="layer done">
-                        <span class="side dl"><span class="tile" style="color: var(--brand-hermes)"><AgentIcon agent="hermes" size={20} /></span><span class="lead">Finished</span></span>
-                        <span class="cam"></span>
-                        <span class="side dr"><span class="what">Write the release notes</span><span class="st finished"><span class="dot"></span></span></span>
+                    <span class="body">
+                        <span class="title">{task}</span>
+                        <span class="sub"><span class="faint" set:html={icon("folder", 11)} /><span>{project}</span><span class="faint">·</span><span>Needs your permission</span></span>
+                        <span class="cmd"><span class="faint">$</span><span>{command}</span></span>
+                        <span class="actions"><span class="nbtn">Deny</span><span class="nbtn">Always allow</span><span class="nbtn primary">Allow</span></span>
+                    </span>
+                    <span class="band done">
+                        <span class="side dl"><Fragment set:html={face("Wren", "done")} /><span class="lead small">Finished</span></span>
+                        <span class="side dr"><span class="what">{finished}</span><span class="st finished"><span class="dot"></span></span></span>
                     </span>
                 </span>
             </span>
             <svg class="pointer away" width="18" height="24" viewBox="0 0 18 24" aria-hidden="true"><path d="M1 1v19l5-5 3.5 7.5 3-1.4L9 13.8h7z" fill="#000" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"></path></svg>
+            </div>
         </div>
     </div>
     <div class="base"><span class="lip"></span></div>
@@ -64,34 +99,102 @@ const rows = [
 
     <div class="phone">
         <div class="glass app">
-            <div class="status"><span>9:41</span><span class="island-cut"></span><span class="sig"><i></i><i></i><i></i><i></i></span></div>
-            <p class="p-head"><svg viewBox="0 0 24 24" class="back"><path d="m15 18-6-6 6-6"></path></svg><span style="color: var(--brand-claude)"><AgentIcon agent="claude" size={14} /></span><span class="t">Add dark mode to settings</span></p>
-            <div class="feed">
-                <Bubble step={false}>Add a dark mode switch to the settings page. It should remember the choice.</Bubble>
-                <Prose step={false}>I added a <b>Dark mode</b> switch under Appearance. It saves the choice, so the page opens the same way next time.</Prose>
-                <p class="calls">2 tool calls ›</p>
-                <Prose step={false}>Now I want to run the settings tests to make sure nothing else broke.</Prose>
+            <div class="p-screen">
+            <div class="status"><span>2:51</span><span class="island-cut"></span><span class="sig"><i></i><i></i><i></i><i></i></span></div>
+            <div class="p-nav">
+                <span class="p-back" set:html={icon("chevron", 18)} />
+                <span class="p-heading">
+                    <Fragment set:html={face("Otter", "working", "p-turn-working")} />
+                    <Fragment set:html={face("Otter", "waiting", "p-turn-asking")} />
+                    <span class="p-title">{task}</span>
+                    <span class="p-at">@Otter</span>
+                </span>
+                <span class="p-more" set:html={icon("more", 16)} />
             </div>
-            <div class="perm">
-                <p class="title"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span><b>Run a command?</b>Claude needs permission to continue</span></p>
-                <code class="mono"><b>$</b> pnpm test src/settings</code>
-                <div class="acts"><span class="pbtn" data-answer="deny">Deny</span><span class="pbtn" data-answer="always">Always allow</span><span class="pbtn go" data-answer="allow">Allow</span></div>
+            <div class="p-feed">
+                <div class="p-rows">
+                    <div class="p-mine">
+                        <p class="p-bubble">Add a dark mode switch to the settings page. It should remember the choice.</p>
+                        <span class="p-sent">14:50</span>
+                    </div>
+                    <p class="p-reply">I added a <b>Dark mode</b> switch under Appearance. It saves the choice, so the page opens the same way next time.</p>
+                    <div class="p-group">
+                        <p class="p-group-head"><span>2 tool calls</span><span class="p-took">3s</span><span class="p-fold" set:html={icon("chevron", 11)} /></p>
+                    </div>
+                    <p class="p-reply">Now I want to run the settings tests to make sure nothing else broke.</p>
+                    <div class="p-group p-asked">
+                        <p class="p-group-head"><span class="p-said p-shimmer">Run the settings tests</span><span class="p-took" data-call-time>2s</span><span class="p-fold open" set:html={icon("chevron", 11)} /></p>
+                        <p class="p-call">
+                            <svg class="p-spine" width="10" height="22" viewBox="0 0 10 22" fill="none" aria-hidden="true"><path d="M0.5 0V7Q0.5 11 4.5 11H10"></path></svg>
+                            <span class="p-kind-icon" set:html={icon("command", 12)} />
+                            <span class="p-kind">run</span>
+                            <span class="p-target"><span class="p-shimmer">{command}</span></span>
+                            <span class="p-call-end"><span data-call-time>2s</span><span class="p-open" set:html={icon("chevron", 10)} /></span>
+                        </p>
+                    </div>
+                    <div class="p-foot">
+                        <p class="p-doing">
+                            <Fragment set:html={face("Otter", "idle")} />
+                            <span class="p-verb p-shimmer p-when-thinking">Thinking</span>
+                            <span class="p-verb p-shimmer p-when-running">Running</span>
+                            <span class="p-what p-when-running">{command}</span>
+                            <span class="p-since" data-turn-time>38s</span>
+                        </p>
+                        <p class="p-needs">
+                            <Fragment set:html={face("Otter", "waiting")} />
+                            <span class="p-words"><span class="p-needs-you">Needs you</span><span class="p-sep">·</span><span class="p-question">{command}</span><span class="p-sep">·</span><span class="p-age">1 min</span></span>
+                            <span class="p-look">Look</span>
+                        </p>
+                    </div>
+                </div>
             </div>
-            <p class="done-note mono" hidden></p>
-            <div class="composer">
-                <span class="ph">Send to queue behind the running turn</span>
-                <span class="tools"><span>+</span><span class="safe">SAFE</span><span class="model"><span style="color: var(--brand-claude)"><AgentIcon agent="claude" size={12} /></span>Opus 5.5</span><span>High</span><span class="stop"><i></i></span></span>
+            <div class="p-dock">
+                <div class="p-perm">
+                    <div class="p-perm-top">
+                        <Fragment set:html={icon("shieldBolt", 16)} />
+                        <p><b>Run a command?</b><span>Claude needs permission to continue</span></p>
+                    </div>
+                    <p class="p-perm-cmd"><span>$ </span>{command}</p>
+                    <div class="p-answers"><span class="p-answer no">No</span><span class="p-answer">Yes, and don't ask again for `pnpm test` commands</span><span class="p-answer go">Yes</span></div>
+                </div>
+                <div class="p-box">
+                    <p class="p-input">Send to steer this turn</p>
+                    <div class="p-bar">
+                        <span class="p-plus" set:html={icon("plus", 17)} />
+                        <span class="p-stash" set:html={icon("stack", 16)} />
+                        <span class="p-safe"><Fragment set:html={icon("shield", 13)} />SAFE</span>
+                        <span class="p-model">
+                            <span class="p-brand"><AgentIcon agent="claude" size={16} /></span>
+                            <span class="p-model-name">Opus 5.5</span>
+                            <span class="p-quiet">·</span>
+                            <span class="p-quiet" set:html={icon("gauge", 13)} />
+                            <span class="p-quiet">High</span>
+                            <span class="p-down" set:html={icon("chevron", 10)} />
+                        </span>
+                        <span class="p-ring"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle class="p-ring-track" cx="7" cy="7" r="6.1"></circle><circle class="p-ring-used" cx="7" cy="7" r="6.1" pathLength="100" stroke-dasharray="18 100" transform="rotate(-90 7 7)"></circle></svg></span>
+                        <span class="p-stop"><i></i></span>
+                    </div>
+                </div>
+                <p class="p-place">
+                    <span class="p-place-part"><span class="p-live" set:html={icon("folder", 12)} /><span class="p-project">{project}</span></span>
+                    <span class="p-slash">/</span>
+                    <span class="p-place-part"><span class="p-branch-icon" set:html={icon("git", 11)} /><span class="p-branch">main</span></span>
+                </p>
             </div>
             <span class="home"></span>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    const shape = (width: number, height: number, top: number, bottom: number) =>
-        `path("M 0 0 Q ${top} 0 ${top} ${top} L ${top} ${height - bottom} Q ${top} ${height} ${top + bottom} ${height} L ${width - top - bottom} ${height} Q ${width - top} ${height} ${width - top} ${height - bottom} L ${width - top} ${top} Q ${width - top} 0 ${width} 0 Z")`;
+    const outline = (from: number, to: number, height: number, top: number, bottom: number) =>
+        `path("M ${from} 0 Q ${from + top} 0 ${from + top} ${top} L ${from + top} ${height - bottom} Q ${from + top} ${height} ${from + top + bottom} ${height} L ${to - top - bottom} ${height} Q ${to - top} ${height} ${to - top} ${height - bottom} L ${to - top} ${top} Q ${to - top} 0 ${to} 0 Z")`;
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const LOOP = 10000;
+    const LOOP = 11000;
+    const MIDDLE = 260;
+    const CAMERA = 100;
+    const BAND = 37;
 
     for (const box of document.querySelectorAll<HTMLElement>("[data-notch]")) {
         const laptop = box.querySelector<HTMLElement>("[data-laptop]")!;
@@ -105,49 +208,28 @@ const rows = [
         scale();
         const screen = box.querySelector<HTMLElement>(".screen")!;
         const island = box.querySelector<HTMLElement>(".island")!;
-        const body = island.querySelector<HTMLElement>(".shape")!;
+        const shape = island.querySelector<HTMLElement>(".shape")!;
         const left = island.querySelector<HTMLElement>(".wing.l")!;
         const right = island.querySelector<HTMLElement>(".wing.r")!;
+        const ask = island.querySelector<HTMLElement>(".body")!;
         const pointer = box.querySelector<SVGElement>(".pointer")!;
         const allow = island.querySelector<HTMLElement>(".nbtn.primary")!;
-        const phoneAllow = box.querySelector<HTMLElement>(".pbtn.go")!;
-        const calls = box.querySelector<HTMLElement>(".ask-group")!;
-        const working = box.querySelector<HTMLElement>(".n-work")!;
-        const note = box.querySelector<HTMLElement>(".done-note")!;
+        const turnTimes = [...box.querySelectorAll<HTMLElement>("[data-turn-time]")];
+        const callTimes = [...box.querySelectorAll<HTMLElement>("[data-call-time]")];
 
-        const menuItems = [...box.querySelectorAll<HTMLElement>(".menubar .left > *, .menubar .right > *")];
-        const clearMenu = (width: number) => {
-            const middle = screen.offsetWidth / 2;
-            const [from, to] = [middle - width / 2 - 8, middle + width / 2 + 8];
-            for (const item of menuItems) {
-                item.style.visibility = "";
-                const start = item.offsetLeft;
-                const end = start + item.offsetWidth;
-                item.style.visibility = end > from && start < to ? "hidden" : "";
-            }
-        };
-        const mode = (name: "closed" | "peek" | "done") => {
+        const zoomed = () => screen.getBoundingClientRect().width / screen.offsetWidth || 1;
+        const mode = (name: "closed" | "ask" | "done") => {
             island.dataset.mode = name;
-            if (name === "peek") {
-                body.style.cssText = `width:460px;height:181px;clip-path:${shape(460, 181, 14, 22)}`;
+            if (name === "ask") {
+                shape.style.clipPath = outline(MIDDLE - 230, MIDDLE + 230, BAND + ask.offsetHeight, 14, 22);
             } else if (name === "done") {
-                const dl = island.querySelector<HTMLElement>(".dl")!;
-                const dr = island.querySelector<HTMLElement>(".dr")!;
-                dl.style.width = dr.style.width = "";
-                const wing = Math.min(Math.max(dl.scrollWidth, dr.scrollWidth) + 2, 236);
-                dl.style.width = dr.style.width = `${wing}px`;
-                const width = wing * 2 + 200;
-                body.style.cssText = `width:${width}px;height:37px;clip-path:${shape(width, 37, 6, 14)}`;
-                clearMenu(width);
+                shape.style.clipPath = outline(MIDDLE - CAMERA - 150, MIDDLE + CAMERA + 150, BAND, 6, 14);
             } else {
-                left.style.width = right.style.width = "";
-                const wing = Math.max(left.scrollWidth, right.scrollWidth);
-                left.style.width = right.style.width = `${wing}px`;
-                const width = wing * 2 + 200;
-                body.style.cssText = `width:${width}px;height:37px;clip-path:${shape(width, 37, 6, 14)}`;
-                clearMenu(width);
+                const by = zoomed();
+                const from = MIDDLE - CAMERA - left.getBoundingClientRect().width / by;
+                const to = MIDDLE + CAMERA + right.getBoundingClientRect().width / by;
+                shape.style.clipPath = outline(from, to, BAND, 6, 14);
             }
-            if (name === "peek") clearMenu(460);
         };
         const point = (to: "rest" | "allow") => {
             const area = screen.getBoundingClientRect();
@@ -155,45 +237,53 @@ const rows = [
             const ratio = area.width / screen.offsetWidth || 1;
             pointer.style.translate = `${(target.left - area.left + target.width * 0.55) / ratio}px ${(target.top - area.top + target.height * 0.45) / ratio}px`;
         };
+        const phase = (name: "working" | "asking" | "running") => (box.dataset.phase = name);
+
+        let began = 0;
+        const tell = () => {
+            const seconds = (performance.now() - began) / 1000;
+            for (const time of turnTimes) time.textContent = `${38 + Math.floor(seconds)}s`;
+            for (const time of callTimes) time.textContent = `${Math.max(0, Math.floor(seconds - 1.5))}s`;
+        };
         const reset = () => {
-            box.classList.remove("answered", "pressing");
-            calls.hidden = false;
-            working.textContent = "2";
-            note.hidden = true;
+            box.classList.remove("pressing", "wren-done");
+            phase("working");
             pointer.classList.add("away");
             point("rest");
             mode("closed");
+            began = performance.now();
+            tell();
         };
 
         const beats: [number, () => void][] = [
             [0, reset],
-            [1750, () => mode("peek")],
-            [2500, () => {
+            [1500, () => {
+                phase("asking");
+                mode("ask");
+            }],
+            [2600, () => {
                 pointer.classList.remove("away");
                 point("rest");
             }],
-            [2600, () => point("allow")],
-            [3600, () => box.classList.add("pressing")],
-            [3850, () => {
+            [2700, () => point("allow")],
+            [3800, () => box.classList.add("pressing")],
+            [4050, () => {
                 box.classList.remove("pressing");
-                box.classList.add("answered");
-                calls.hidden = true;
-                working.textContent = "3";
-                note.textContent = "Allowed · running pnpm test src/settings";
-                note.hidden = false;
+                phase("running");
                 mode("closed");
                 point("rest");
             }],
-            [4400, () => pointer.classList.add("away")],
-            [5000, () => {
-                working.textContent = "2";
+            [4600, () => pointer.classList.add("away")],
+            [5600, () => {
+                box.classList.add("wren-done");
                 mode("done");
             }],
-            [7600, () => mode("closed")],
+            [8600, () => mode("closed")],
         ];
 
         let timers: number[] = [];
         let loop = 0;
+        let clock = 0;
         const run = () => {
             for (const [at, beat] of beats) timers.push(window.setTimeout(beat, at));
         };
@@ -201,9 +291,11 @@ const rows = [
             if (loop) return;
             run();
             loop = window.setInterval(run, LOOP);
+            clock = window.setInterval(tell, 250);
         };
         const stop = () => {
             clearInterval(loop);
+            clearInterval(clock);
             loop = 0;
             for (const timer of timers) clearTimeout(timer);
             timers = [];
@@ -211,15 +303,14 @@ const rows = [
         };
 
         document.fonts.ready.then(() => {
-            reset();
             if (still) {
-                box.classList.add("still");
-                mode("peek");
+                phase("asking");
+                mode("ask");
                 return;
             }
+            reset();
             new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()), { threshold: 0.35 }).observe(box);
         });
-        void phoneAllow;
     }
 </script>
 
@@ -231,6 +322,8 @@ const rows = [
         min-height: 640px;
         display: grid;
         align-items: end;
+        --open: linear(0, 0.103, 0.311, 0.526, 0.705, 0.836, 0.922, 0.974, 1.001, 1.012, 1.015, 1.014, 1.01, 1.007, 1.004, 1.002, 1.001, 1, 1, 1, 1);
+        --settle: linear(0, 0.078, 0.235, 0.401, 0.549, 0.669, 0.762, 0.831, 0.882, 0.918, 0.944, 0.962, 0.974, 0.982, 0.988, 0.992, 0.995, 0.996, 0.998, 0.998, 1);
     }
     .laptop {
         width: 1312px;
@@ -260,17 +353,23 @@ const rows = [
             radial-gradient(900px 600px at 85% 10%, #33307a 0%, transparent 60%),
             linear-gradient(160deg, #1d1736, #151229);
     }
+    .desk {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1280px;
+        height: 832px;
+        zoom: calc(1 / var(--s, 1));
+        transform: scale(var(--s, 1));
+        transform-origin: 0 0;
+    }
     .base {
         position: relative;
         height: 26px;
         margin: 0 -28px;
         border-radius: 3px 3px 22px 22px;
         background: linear-gradient(#d9d6df, #a9a5b2 70%, #8d8996);
-        box-shadow: 9px 9px 0 var(--ink);
-    }
-    .night .base,
-    :global(:root[data-theme="dark"]) .base {
-        box-shadow: 9px 9px 0 var(--violet);
+        box-shadow: 9px 9px 0 var(--cast);
     }
     .lip {
         position: absolute;
@@ -380,6 +479,8 @@ const rows = [
         padding-top: 56px;
     }
     .frame {
+        width: 210px;
+        height: 380px;
         border-radius: 6px;
         background: #fff;
         box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.07);
@@ -388,138 +489,129 @@ const rows = [
         background: #231f3a;
         box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07);
     }
-    .frame {
-        width: 210px;
-        height: 380px;
-    }
+
     .island {
+        --n-ink: #e7e5ef;
+        --n-dim: #8b8898;
+        --n-faint: #736f80;
+        --n-live: #61ffca;
+        --n-warn: #ffca85;
+        --n-accent: #a277ff;
+        --n-on-accent: #100e16;
+        --run: 660ms;
+        --curve: var(--settle);
         position: absolute;
         z-index: 2;
-        white-space: nowrap;
-        transform-origin: top center;
         top: 0;
         left: 50%;
-        translate: -50% 0;
-        font: 400 13px/1.25 "Figtree", var(--sans);
-        color: #e7e5ef;
-        --ink: #e7e5ef;
-        --ink-dim: #8b8898;
-        --ink-faint: #736f80;
-        --live: #61ffca;
-        --warn: #ffca85;
-        --acc: #a277ff;
+        width: 520px;
+        height: 240px;
+        margin-left: -260px;
+        white-space: nowrap;
+        font: 400 13px/1.2 "Figtree", var(--sans);
+        color: var(--n-ink);
+        pointer-events: none;
+        filter: drop-shadow(0 0 12px rgb(0 0 0 / 0));
+        transition: filter var(--run) var(--curve);
+    }
+    .island:not([data-mode]) {
+        visibility: hidden;
+    }
+    .island[data-mode="ask"],
+    .island[data-mode="done"] {
+        --run: 700ms;
+        --curve: var(--open);
+        filter: drop-shadow(0 0 12px rgb(0 0 0 / 0.7));
     }
     .shape {
-        position: relative;
-        display: block;
+        position: absolute;
+        inset: 0;
         background: #000;
-        overflow: hidden;
-        transition:
-            width 420ms cubic-bezier(0.2, 0.8, 0.2, 1),
-            height 420ms cubic-bezier(0.2, 0.8, 0.2, 1),
-            clip-path 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        transition: clip-path var(--run) var(--curve);
     }
-    [data-mode="peek"] .shape {
-        filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.7));
+    .island :global(.buddy) {
+        width: 20px;
+        height: 20px;
     }
-    .layer {
+    .band {
         position: absolute;
         top: 0;
-        left: 50%;
-        translate: -50% 0;
-        transform-origin: 50% 0;
+        left: 0;
+        right: 0;
+        height: 37px;
+        align-items: center;
+        opacity: 0;
+        filter: blur(20px);
         transition:
-            opacity 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
-            transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
-            filter 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
+            opacity var(--run) var(--curve),
+            filter var(--run) var(--curve);
+    }
+    [data-mode="closed"] .wings,
+    [data-mode="ask"] .head,
+    [data-mode="done"] .done {
+        opacity: 1;
+        filter: blur(0);
     }
     .wings {
+        display: grid;
+        grid-template-columns: 1fr 200px 1fr;
+    }
+    .wing {
         display: flex;
         align-items: center;
         height: 37px;
-        transition-duration: 160ms;
-    }
-    [data-mode="peek"] .wings,
-    [data-mode="done"] .wings {
-        opacity: 0;
-        filter: blur(6px);
-    }
-    .peek {
-        width: 416px;
-        opacity: 0;
-        filter: blur(20px);
-        transform: scale(0.8);
-        pointer-events: none;
-    }
-    [data-mode="peek"] .peek {
-        opacity: 1;
-        filter: none;
-        transform: scale(1);
-        pointer-events: auto;
-    }
-    .wing {
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        height: 100%;
-        white-space: nowrap;
     }
     .wing.l {
-        padding-left: 14px;
+        grid-column: 1;
+        justify-self: end;
+        padding: 0 10px 0 14px;
     }
-    .wing.r {
-        justify-content: flex-end;
-        padding-right: 14px;
-        gap: 10px;
-    }
-    .cam {
-        width: 200px;
-        flex: none;
-    }
-    .group {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .tile {
-        width: 20px;
-        height: 20px;
-        display: grid;
-        place-items: center;
-    }
-    .tile + .tile {
+    .wing.l :global(.buddy + .buddy) {
         margin-left: -3px;
     }
-    .calls {
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--warn);
+    .wing.r {
+        grid-column: 3;
+        justify-self: start;
+        gap: 12px;
+        padding: 0 14px 0 10px;
+    }
+    .pair:not(.wren-done) :global(.as-done),
+    .pair.wren-done :global(.as-working) {
+        display: none;
+    }
+    .group {
+        display: flex;
+        align-items: center;
+        gap: 3px;
     }
     .count {
+        width: 7.5px;
+        text-align: center;
         font-size: 12px;
         font-weight: 600;
         font-variant-numeric: tabular-nums;
     }
     .st {
         position: relative;
+        flex: none;
         width: 16px;
         height: 16px;
-        display: inline-grid;
+        display: grid;
         place-items: center;
     }
-    .st.working {
-        color: var(--live);
-    }
     .st.blocked {
-        color: var(--warn);
+        color: var(--n-warn);
     }
-    .st .dot {
+    .st.finished {
+        color: var(--n-accent);
+    }
+    .dot {
         width: 7px;
         height: 7px;
         border-radius: 50%;
         background: currentColor;
     }
-    .st .ping {
+    .ping {
         position: absolute;
         width: 7px;
         height: 7px;
@@ -527,10 +619,10 @@ const rows = [
         border: 1.5px solid;
         opacity: 0;
     }
-    [data-mode="peek"] .st .ping {
+    [data-mode="ask"] .ping {
         animation: ping 520ms cubic-bezier(0.2, 0.6, 0.3, 1) both;
     }
-    [data-mode="peek"] .st .ping + .ping {
+    [data-mode="ask"] .ping + .ping {
         animation-delay: 380ms;
     }
     @keyframes ping {
@@ -543,91 +635,99 @@ const rows = [
             opacity: 0;
         }
     }
-    .loader {
+    .grid {
         display: grid;
         grid-template-columns: repeat(3, 2.5px);
         gap: 1.5px;
     }
-    .loader i {
+    .grid i {
         width: 2.5px;
         height: 2.5px;
         border-radius: 0.5px;
-        background: currentColor;
+        background: var(--n-live);
         animation: twinkle var(--p) ease-in-out var(--o) infinite;
     }
     @keyframes twinkle {
         0%,
         100% {
-            opacity: 0.3;
+            opacity: 0.2;
         }
-        50% {
+        40% {
             opacity: 1;
         }
     }
     .head {
+        left: 52px;
+        right: 52px;
         display: flex;
-        align-items: center;
-        height: 37px;
+        justify-content: space-between;
     }
-    .head .side {
-        flex: 1 1 0;
+    .side {
         display: flex;
         align-items: center;
         gap: 8px;
     }
-    .head .side.r {
-        justify-content: flex-end;
+    .side.r,
+    .side.dr {
+        gap: 6px;
     }
     .lead {
         font-size: 13px;
         font-weight: 600;
-        letter-spacing: -0.005em;
+    }
+    .lead.small {
+        font-size: 12.5px;
     }
     .trail {
         font-size: 12px;
         font-weight: 600;
-        color: var(--warn);
+        color: var(--n-warn);
     }
     .body {
-        display: block;
+        position: absolute;
+        top: 37px;
+        left: 52px;
+        width: 416px;
         padding: 8px 0 16px;
+        transform-origin: 50% 0;
+        opacity: 0;
+        transform: scale(0.8);
+        transition:
+            opacity 235ms var(--settle),
+            transform 0s 235ms;
     }
-    .text {
+    [data-mode="ask"] .body {
+        opacity: 1;
+        transform: scale(1);
+        transition:
+            opacity 510ms var(--settle),
+            transform 510ms var(--settle);
+    }
+    .faint {
         display: flex;
-        flex-direction: column;
-        gap: 2px;
+        color: var(--n-faint);
     }
     .title {
+        display: block;
         font-size: 13px;
         font-weight: 600;
-        letter-spacing: -0.005em;
     }
     .sub {
         display: flex;
         align-items: center;
+        gap: 4px;
+        margin-top: 2px;
         font-size: 11.5px;
-        color: var(--ink-dim);
-    }
-    .sub svg {
-        margin-right: 4px;
-        color: var(--ink-faint);
-    }
-    .dotsep {
-        margin: 0 5px;
-        color: var(--ink-faint);
+        color: var(--n-dim);
     }
     .cmd {
-        display: block;
+        display: flex;
+        gap: 8px;
         margin-top: 10px;
         padding: 9px 12px;
         border-radius: 10px;
-        background: rgba(255, 255, 255, 0.06);
-        font: 400 12px/1.5 var(--mono);
-        color: var(--ink);
-    }
-    .cmd .sign {
-        color: var(--ink-faint);
-        margin-right: 8px;
+        background: rgb(255 255 255 / 0.06);
+        font: 400 12px/1.2 ui-monospace, "SF Mono", Menlo, monospace;
     }
     .actions {
         display: grid;
@@ -637,53 +737,37 @@ const rows = [
     }
     .nbtn {
         height: 32px;
-        padding: 0 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 16px;
         font-size: 12.5px;
         font-weight: 600;
-        background: rgba(255, 255, 255, 0.1);
-        color: var(--ink);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        white-space: nowrap;
+        background: rgb(255 255 255 / 0.1);
     }
-
     .nbtn.primary {
-        background: var(--acc);
-        color: #100e16;
+        background: var(--n-accent);
+        color: var(--n-on-accent);
+        transition:
+            transform 120ms,
+            filter 120ms;
     }
-    .pressing .nbtn.primary,
-    .pressing .pbtn.go {
+    .pressing .nbtn.primary {
         filter: brightness(1.15);
         transform: scale(0.96);
     }
-    .nbtn.primary,
-    .pbtn.go {
-        transition: transform 120ms, filter 120ms;
-    }
     .done {
-        height: 37px;
-        display: flex;
-        align-items: center;
-        opacity: 0;
-        filter: blur(12px);
-    }
-    [data-mode="done"] .done {
-        opacity: 1;
-        filter: none;
-    }
-    .done .side {
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        white-space: nowrap;
+        display: grid;
+        grid-template-columns: 150px 200px 150px;
+        justify-content: center;
     }
     .dl {
+        grid-column: 1;
         padding-left: 14px;
     }
     .dr {
+        grid-column: 3;
+        min-width: 0;
         justify-content: flex-end;
         padding-right: 14px;
     }
@@ -691,12 +775,9 @@ const rows = [
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
-        font-size: 13px;
+        font-size: 12.5px;
         font-weight: 500;
-        color: var(--ink-dim);
-    }
-    .st.finished {
-        color: var(--acc);
+        color: var(--n-dim);
     }
     .pointer {
         position: absolute;
@@ -708,9 +789,6 @@ const rows = [
     }
     .pointer.away {
         opacity: 0;
-    }
-    .answered .perm {
-        display: none;
     }
 
     .phone {
@@ -726,28 +804,40 @@ const rows = [
         place-items: center;
         border-radius: calc(var(--pw) * 0.154px);
         background: #0b0b0e;
-        box-shadow: 0 0 0 1px #2a2a30 inset, 10px 10px 0 var(--ink);
-    }
-    .night .phone,
-    :global(:root[data-theme="dark"]) .phone {
-        box-shadow: 0 0 0 1px #2a2a30 inset, 10px 10px 0 var(--violet);
+        box-shadow: 0 0 0 1px #2a2a30 inset, 10px 10px 0 var(--cast);
     }
     .phone .glass {
         position: relative;
-        width: 402px;
-        height: 874px;
+        width: calc(402px * var(--s));
+        height: calc(874px * var(--s));
         max-width: none;
-        zoom: var(--s);
+        zoom: 1;
         border: 0;
         box-shadow: none;
-        border-radius: 55px;
+        border-radius: calc(55px * var(--s));
         overflow: hidden;
+        background: var(--surface);
+        color: var(--text-primary);
+    }
+    .p-screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 402px;
+        height: 874px;
+        transform: scale(var(--s));
+        transform-origin: 0 0;
         display: flex;
         flex-direction: column;
         font-size: 16px;
+        line-height: 1.2;
+    }
+    .p-screen :global(svg) {
+        flex: none;
     }
     .status {
         position: relative;
+        flex: none;
         height: 54px;
         display: flex;
         align-items: center;
@@ -788,174 +878,515 @@ const rows = [
     .sig i:nth-child(4) {
         height: 13px;
     }
-    .p-head {
+
+    .p-nav {
+        flex: none;
         display: flex;
         align-items: center;
-        gap: 7.8px;
-        padding: 13px 18.2px 10.4px;
-        font-weight: 600;
-        font-size: 16.9px;
+        min-height: 46px;
+        padding: 0 6px;
     }
-    .back {
-        width: 20.8px;
-        height: 20.8px;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 2;
-        stroke-linecap: round;
-    }
-
-    .p-head .at {
-        color: var(--quiet);
-        font-weight: 400;
-    }
-    .feed :global(.you) {
-        justify-self: end;
-        max-width: 84%;
-    }
-    .feed :global(.prose) {
-        font-size: 16.9px;
-        line-height: 1.5;
-    }
-    .feed :global(.bubble) {
-        font-size: 16.9px;
-    }
-    .feed {
-        flex: 1;
-        display: grid;
-        align-content: end;
-        gap: 11.7px;
-        padding: 0 18.2px 13px;
-        overflow: hidden;
-    }
-    .you {
-        justify-self: end;
-        max-width: 88%;
-        padding: 10.4px 14.3px;
-        border-radius: 18.2px;
-        background: var(--raised);
-        border: 1.3px solid var(--line);
-    }
-    .calls {
-        color: var(--quiet);
-        font-size: 15px;
-    }
-    .say b {
-        font-weight: 600;
-    }
-    .perm {
-        display: grid;
-        gap: 10.4px;
-        margin: 0 13px 10.4px;
-        padding: 14.3px;
-        border-radius: 20.8px;
-        background: var(--raised);
-        border: 1.3px solid var(--line);
-    }
-    .perm .title {
-        display: flex;
-        gap: 10.4px;
-    }
-    .perm .title svg {
-        width: 19.5px;
-        height: 19.5px;
+    .p-back {
         flex: none;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 2;
-        margin-top: 1.3px;
-    }
-    .perm .title span {
-        display: grid;
-        color: var(--quiet);
-        font-size: 14.3px;
-    }
-    .perm .title b {
-        color: var(--ink);
-        font-size: 16.2px;
-        font-weight: 600;
-    }
-    .perm code {
-        font-size: 14.3px;
-        padding: 9.1px 11.7px;
-        border-radius: 10.4px;
-        background: var(--sunken);
-        border: 1.3px solid var(--line);
-    }
-    .perm .acts {
+        min-width: 44px;
+        min-height: 44px;
         display: flex;
-        gap: 7.8px;
+        align-items: center;
+        padding: 0 8px 0 4px;
+        color: var(--text-secondary);
     }
-    .pbtn {
+    .p-back :global(svg) {
+        rotate: 180deg;
+    }
+    .p-heading {
         flex: 1;
-        display: inline-flex;
+        min-width: 0;
+        display: flex;
         align-items: center;
         justify-content: center;
-        height: 39px;
-        padding: 0 2.6px;
-        border-radius: 11.7px;
-        border: 1.3px solid var(--strong);
-        background: none;
-        color: var(--ink);
-        font: 500 14.3px "Figtree", var(--sans);
+        gap: 6px;
+    }
+    .p-heading :global(.buddy) {
+        width: 17px;
+        height: 17px;
+    }
+    .pair:not([data-phase="asking"]) .p-heading :global(.p-turn-asking),
+    .pair[data-phase="asking"] .p-heading :global(.p-turn-working) {
+        display: none;
+    }
+    .p-title {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
         white-space: nowrap;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.25px;
     }
-    .pbtn.go {
-        background: var(--ink);
-        border-color: var(--ink);
-        color: var(--ground);
+    .p-at {
+        flex: none;
+        font-size: 12px;
+        color: var(--text-tertiary);
     }
-    .done-note {
-        margin: 0 13px 10.4px;
-        padding: 11.7px 14.3px;
-        border-radius: 15.6px;
-        border: 1.3px solid var(--line);
-        color: var(--added);
-        font-size: 14.3px;
-    }
-    .composer {
+    .p-more {
+        flex: none;
+        width: 40px;
+        height: 40px;
         display: grid;
-        gap: 10.4px;
-        margin: 0 13px 28.6px;
-        padding: 13px 15.6px;
-        border-radius: 20.8px;
-        background: var(--raised);
-        border: 1.3px solid var(--line);
+        place-items: center;
+        color: var(--text-tertiary);
     }
-    .ph {
-        color: var(--quiet);
+
+    .p-feed {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 0 18px;
     }
-    .composer .tools {
+    .p-rows {
+        flex: none;
+        margin-bottom: auto;
+    }
+    .p-mine {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        padding: 20px 0 10px;
+    }
+    .p-bubble {
+        max-width: 84%;
+        margin: 0;
+        padding: 10px 14px;
+        border-radius: 16px 16px 6px 16px;
+        font-size: 14px;
+        line-height: 22px;
+        background: color-mix(in srgb, color-mix(in srgb, var(--accent) 25%, var(--text-primary)) 10%, var(--surface-sunken));
+    }
+    .p-sent {
+        height: 24px;
         display: flex;
         align-items: center;
-        gap: 11.7px;
-        color: var(--quiet);
-        font-size: 14.3px;
+        font-size: 11px;
+        font-variant-numeric: tabular-nums;
+        color: var(--text-tertiary);
     }
-    .safe {
-        letter-spacing: 0.08em;
-        font-size: 13px;
+    .p-reply {
+        margin: 0;
+        font-size: 14.5px;
+        line-height: 24.5px;
     }
-    .model {
-        display: inline-flex;
+    .p-group + .p-reply {
+        margin-top: 10px;
+    }
+    .p-reply b {
+        font-weight: 600;
+    }
+    .p-group {
+        padding: 6px 0;
+    }
+    .pair[data-phase="working"] .p-asked,
+    .pair[data-phase="asking"] .p-doing,
+    .pair:not([data-phase="asking"]) .p-needs,
+    .pair:not([data-phase="asking"]) .p-perm,
+    .pair[data-phase="running"] .p-when-thinking,
+    .pair:not([data-phase="running"]) .p-when-running {
+        display: none;
+    }
+    .p-asked,
+    .p-doing,
+    .p-needs,
+    .p-perm {
+        animation: arrive 260ms ease-out both;
+    }
+    @keyframes arrive {
+        from {
+            opacity: 0;
+            translate: 0 6px;
+        }
+    }
+    .p-group-head {
+        margin: 0;
+        min-height: 24px;
+        display: flex;
         align-items: center;
-        gap: 5.2px;
-        color: var(--accent);
+        gap: 8px;
+        font-size: 12.5px;
+        color: var(--text-tertiary);
     }
-    .stop {
-        margin-left: auto;
-        width: 28.6px;
-        height: 28.6px;
-        border-radius: 50%;
-        background: var(--ink);
+    .p-said {
+        color: var(--text-secondary);
+    }
+    .p-took {
+        font: 400 11px var(--mono);
+        font-variant-numeric: tabular-nums;
+        color: var(--text-tertiary);
+    }
+    .p-fold {
+        display: flex;
+        opacity: 0.7;
+    }
+    .p-fold.open {
+        rotate: 90deg;
+    }
+    .p-call {
+        position: relative;
+        margin: 0 0 0 6px;
+        min-height: 22px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-left: 18px;
+        font: 400 11.5px var(--mono);
+    }
+    .p-call .p-spine {
+        position: absolute;
+        left: 0;
+        top: 0;
+        stroke: var(--tree-spine);
+        stroke-width: 1px;
+    }
+    .p-kind-icon {
+        display: flex;
+        color: var(--tool-run);
+    }
+    .p-kind {
+        min-width: 28.6px;
+        color: var(--tool-run);
+    }
+    .p-target {
+        flex: 1;
+        min-width: 0;
+        color: var(--text-tertiary);
+    }
+    .p-call-end {
+        flex: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10.5px;
+        font-variant-numeric: tabular-nums;
+        color: var(--text-tertiary);
+    }
+    .p-open {
+        display: flex;
+        opacity: 0.55;
+    }
+    .p-shimmer {
+        background-color: currentColor;
+        background-image: linear-gradient(90deg, transparent, color-mix(in srgb, var(--text-primary) 90%, transparent), transparent);
+        background-repeat: no-repeat;
+        background-size: var(--band, 50%) 100%;
+        background-position: var(--from, -100%) 0;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 2.2s linear infinite;
+    }
+    @keyframes shimmer {
+        to {
+            background-position: var(--to, 200%) 0;
+        }
+    }
+    .p-foot {
+        padding-bottom: 28px;
+    }
+    .p-doing {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 0 6px;
+    }
+    .p-doing :global(.buddy) {
+        width: 20px;
+        height: 20px;
+        animation: breathe 750ms ease-in-out infinite alternate;
+    }
+    @keyframes breathe {
+        to {
+            opacity: 0.5;
+        }
+    }
+    .p-verb {
+        --band: 48px;
+        --from: -48px;
+        --to: calc(100% + 48px);
+        flex: none;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-tertiary);
+    }
+    .p-what {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font: 400 12px var(--mono);
+        color: var(--text-secondary);
+    }
+    .p-since {
+        flex: none;
+        font: 400 10.5px var(--mono);
+        font-variant-numeric: tabular-nums;
+        color: var(--text-tertiary);
+    }
+    .p-needs {
+        margin: 10px 0 0;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .p-needs :global(.buddy) {
+        width: 18px;
+        height: 18px;
+    }
+    .p-words {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        white-space: nowrap;
+    }
+    .p-needs-you {
+        flex: none;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--warn);
+    }
+    .p-sep,
+    .p-age {
+        flex: none;
+        color: var(--text-tertiary);
+    }
+    .p-question {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--text-secondary);
+    }
+    .p-look {
+        flex: none;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        border: 1px solid var(--text-primary);
+        border-radius: 10px;
+        background: var(--text-primary);
+        color: var(--surface);
+        font-size: 13.5px;
+        font-weight: 500;
+    }
+
+    .p-dock {
+        flex: none;
+        margin-bottom: 34px;
+        padding: 8px 10px 6px;
+    }
+    .p-perm {
+        margin-bottom: 8px;
+        padding: 12px;
+        border: 1px solid var(--border-strong);
+        border-radius: 16px;
+        background: var(--surface-overlay);
+    }
+    .p-perm-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .p-perm-top p {
+        margin: 0;
+        display: grid;
+        gap: 1px;
+    }
+    .p-perm-top b {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.2px;
+    }
+    .p-perm-top p span {
+        font-size: 12.5px;
+        color: var(--text-tertiary);
+    }
+    .p-perm-cmd {
+        margin: 10px 0 0;
+        padding: 9px 11px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-sunken);
+        font: 400 12.5px/18px var(--mono);
+        white-space: pre-wrap;
+    }
+    .p-perm-cmd span {
+        color: var(--tool-run);
+    }
+    .p-answers {
+        display: flex;
+        gap: 6px;
+        margin-top: 10px;
+    }
+    .p-answer {
+        flex: 1 1 0;
+        min-width: 0;
+        height: 38px;
+        padding: 0 6px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+        border: 1px solid var(--border-strong);
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 36px;
+    }
+    .p-answer.no {
+        color: var(--text-secondary);
+    }
+    .p-answer.go {
+        border-color: var(--text-primary);
+        background: var(--text-primary);
+        color: var(--surface);
+        font-weight: 600;
+    }
+    .p-box {
+        padding: 6px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: color-mix(in oklab, var(--text-primary) 5%, var(--surface));
+    }
+    .p-input {
+        margin: 0;
+        min-height: 44px;
+        padding: 9px 10px 4px;
+        font-size: 14.5px;
+        line-height: 20px;
+        color: var(--text-tertiary);
+    }
+    .p-bar {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        padding-top: 6px;
+        color: var(--text-tertiary);
+    }
+    .p-plus,
+    .p-stash,
+    .p-ring {
+        flex: none;
+        min-width: 34px;
+        height: 34px;
         display: grid;
         place-items: center;
     }
-    .stop i {
-        width: 9.1px;
-        height: 9.1px;
+    .p-stash {
+        padding: 0 8px;
+    }
+    .p-safe {
+        flex: none;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0 8px;
+        opacity: 0.55;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.9px;
+    }
+    .p-model {
+        min-width: 0;
+        max-width: 240px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0 7px;
+        font-size: 12.5px;
+        white-space: nowrap;
+    }
+    .p-brand {
+        display: flex;
+        color: var(--brand-claude);
+    }
+    .p-model-name {
+        color: var(--accent);
+    }
+    .p-quiet {
+        display: flex;
+    }
+    .p-down {
+        display: flex;
+        rotate: 90deg;
+        color: color-mix(in srgb, var(--accent) 60%, transparent);
+    }
+    .p-ring-track,
+    .p-ring-used {
+        stroke-width: 1.8px;
+    }
+    .p-ring-track {
+        stroke: var(--border);
+    }
+    .p-ring-used {
+        stroke: var(--brand-claude);
+        stroke-linecap: round;
+    }
+    .p-stop {
+        flex: none;
+        width: 34px;
+        height: 34px;
+        margin-left: auto;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--text-primary);
+    }
+    .p-stop i {
+        width: 10px;
+        height: 10px;
         border-radius: 2px;
-        background: var(--ground);
+        background: var(--surface);
+    }
+    .p-place {
+        margin: 6px 0 0;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0 8px;
+    }
+    .p-place-part {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0 4px;
+    }
+    .p-live {
+        display: flex;
+        color: var(--live);
+    }
+    .p-project {
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+    .p-slash {
+        font-size: 13px;
+        color: var(--border-strong);
+    }
+    .p-branch-icon {
+        display: flex;
+        color: var(--text-tertiary);
+    }
+    .p-branch {
+        font: 400 10.5px var(--mono);
+        color: var(--text-tertiary);
     }
     .home {
         position: absolute;
@@ -965,10 +1396,11 @@ const rows = [
         width: 134px;
         height: 5px;
         border-radius: 3px;
-        background: var(--ink);
+        background: var(--text-primary);
     }
     @media (max-width: 680px) {
         .laptop-crop {
+            position: relative;
             justify-self: center;
             width: calc(760px * var(--s, 0.4));
             height: calc(420px * var(--s, 0.4));
@@ -977,9 +1409,6 @@ const rows = [
             box-shadow: 10px 10px 0 var(--cast);
             -webkit-mask-image: linear-gradient(#000 84%, transparent);
             mask-image: linear-gradient(#000 84%, transparent);
-        }
-        .laptop-crop {
-            position: relative;
         }
         .laptop-crop::after {
             content: "";
