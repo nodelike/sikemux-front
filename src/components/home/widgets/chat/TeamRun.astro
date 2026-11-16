@@ -1,36 +1,51 @@
 ---
-import AgentIcon from "../../../AgentIcon.astro";
-import Letter from "./Letter.astro";
 import AgentName from "../../../AgentName.astro";
-import type { AgentIconId } from "../../../../lib/agents";
+import Letter from "./Letter.astro";
 
 interface Props {
-    messages: { from: string; name: string; agent: AgentIconId; to: string; text: string; when: string }[];
-    took: string;
+    messages: { from: string; to: string; name: string; face: string; text: string; when: string }[];
 }
 
-const { messages, took } = Astro.props;
-const agents = [...new Map(messages.map((message) => [message.agent + message.name, message])).values()];
-const last = messages[messages.length - 1];
+const SHOWN = 4;
+
+const { messages } = Astro.props;
+const minute = (when: string) => {
+    const [hours, minutes] = when.split(":").map(Number);
+    return hours * 60 + minutes;
+};
+const steps = messages.map(({ from, to, when }) => ({ from, to, took: `${minute(when) - minute(messages[0].when)}m` }));
+const senders = [...new Map(messages.map((message) => [message.from, message])).values()];
+const last = messages.length - 1;
 ---
 
-<div class="team-run" data-team-run data-relay={JSON.stringify(messages.map(({ from, to }) => `${from}:${to}`))}>
+<div class="team-run" data-team-run data-steps={JSON.stringify(steps)}>
     <p class="team-line">
-        <svg class="chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></svg>
-        <span class="team-marks">
-            {agents.slice(0, 4).map((agent) => <span class="mark" style={`color: var(--brand-${agent.agent})`}><AgentIcon agent={agent.agent} size={16} /></span>)}
-            {agents.length > 4 && <span class="more">+{agents.length - 4}</span>}
+        <svg class="chev" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
+        <span class="team-marks" data-marks hidden={senders.length < 2}>
+            {senders.slice(0, SHOWN).map((sender) => <span class="buddy" data-face={sender.from} set:html={sender.face} />)}
+            <span class="more" data-more hidden={senders.length <= SHOWN}>+{senders.length - SHOWN}</span>
         </span>
-        <b class="count">{messages.length} messages</b>
-        <span class="words"><span class="said-by"><AgentName name={last.name} /></span><span class="said">{last.text}</span></span>
-        <span class="took">{took}</span>
+        <b class="count" data-count>{messages.length === 1 ? "1 message" : `${messages.length} messages`}</b>
+        {
+            messages.map((message, index) => (
+                <>
+                    <span class="said-by" data-said={index} hidden={index !== last}>
+                        <AgentName name={message.name} />
+                    </span>
+                    <span class="said" data-said={index} hidden={index !== last}>
+                        {message.text}
+                    </span>
+                </>
+            ))
+        }
+        <span class="took" data-took hidden={messages.length < 2}>{steps[last].took}</span>
     </p>
     <div class="team-open">
         <div class="team-letters">
             {
                 messages.map((message) => (
-                    <div class="team-letter" data-letter>
-                        <Letter name={message.name} agent={message.agent} when={message.when}>
+                    <div class="team-letter landed" data-letter>
+                        <Letter name={message.name} when={message.when}>
                             {message.text}
                         </Letter>
                     </div>
@@ -41,24 +56,40 @@ const last = messages[messages.length - 1];
 </div>
 
 <script>
+    const SHOWN = 4;
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     for (const run of document.querySelectorAll<HTMLElement>("[data-team-run]")) {
-        const relay = JSON.parse(run.dataset.relay ?? "[]") as string[];
+        if (still) continue;
+
+        const steps = JSON.parse(run.dataset.steps ?? "[]") as { from: string; to: string; took: string }[];
         const letters = [...run.querySelectorAll<HTMLElement>("[data-letter]")];
         const column = run.closest<HTMLElement>(".column");
+        const marks = run.querySelector<HTMLElement>("[data-marks]")!;
+        const more = run.querySelector<HTMLElement>("[data-more]")!;
+        const count = run.querySelector<HTMLElement>("[data-count]")!;
+        const took = run.querySelector<HTMLElement>("[data-took]")!;
         const say = (detail: string) => run.dispatchEvent(new CustomEvent("step", { detail, bubbles: true }));
-        const land = (index: number) => {
-            letters[index].classList.add("landed");
-            say(`team:${index}:${relay[index]}`);
-            column?.scrollTo({ top: column.scrollHeight, behavior: still ? "auto" : "smooth" });
-        };
 
-        if (still) {
-            letters.forEach((_, index) => land(index));
-            continue;
-        }
+        const sum = (index: number) => {
+            const senders = [...new Set(steps.slice(0, index + 1).map((step) => step.from))];
+            marks.hidden = senders.length < 2;
+            for (const face of marks.querySelectorAll<HTMLElement>("[data-face]")) face.hidden = !senders.includes(face.dataset.face!);
+            more.hidden = senders.length <= SHOWN;
+            more.textContent = `+${senders.length - SHOWN}`;
+            count.textContent = index === 0 ? "1 message" : `${index + 1} messages`;
+            for (const said of run.querySelectorAll<HTMLElement>("[data-said]")) said.hidden = said.dataset.said !== String(index);
+            took.hidden = index === 0;
+            took.textContent = steps[index].took;
+        };
+        const land = (index: number) => {
+            run.classList.remove("empty");
+            letters[index].classList.add("landed");
+            sum(index);
+            say(`team:${index}:${steps[index].from}:${steps[index].to}`);
+            column?.scrollTo({ top: column.scrollHeight, behavior: "smooth" });
+        };
 
         let showing = false;
         let playing = false;
@@ -66,6 +97,7 @@ const last = messages[messages.length - 1];
             playing = true;
             while (showing) {
                 run.classList.remove("folded");
+                run.classList.add("empty");
                 letters.forEach((letter) => letter.classList.remove("landed"));
                 column?.scrollTo({ top: 0 });
                 say("team:reset");

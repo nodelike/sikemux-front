@@ -1,34 +1,63 @@
 ---
 import "../../../styles/buddies.css";
 import Head from "./chat/Head.astro";
-import AgentRow from "./chat/AgentRow.astro";
+import AgentRow, { type TreeLine } from "./chat/AgentRow.astro";
 import TeamRun from "./chat/TeamRun.astro";
 import { buddy } from "../../../lib/buddies";
 import { TEAM as cast } from "../../../lib/showcase-buddies";
+import type { AgentIconId } from "../../../lib/agents";
 import "./app.css";
 
 const relay = [
-    { from: "otter", to: "heron", text: "The sign-in test fails in Safari. Heron, can you take it?", when: "2:31 PM" },
-    { from: "heron", to: "wren", text: "Fixed in session.ts. Wren, can you check it in your browser tab?", when: "2:38 PM" },
-    { from: "wren", to: "badger", text: "Works at phone size too. Badger, can you try it in the Simulator?", when: "2:41 PM" },
-    { from: "badger", to: "finch", text: "Taps through fine on iPhone. Finch, the release notes are yours.", when: "2:46 PM" },
-    { from: "finch", to: "lynx", text: "Written. Lynx, can you watch CI?", when: "2:49 PM" },
-    { from: "lynx", to: "otter", text: "CI is green. Otter, it's ready for your review.", when: "2:55 PM" },
+    { from: "otter", to: "heron", text: "The sign-in test fails in Safari. Heron, can you take it?", when: "14:31" },
+    { from: "heron", to: "wren", text: "Fixed in session.ts. Wren, can you check it in your browser tab?", when: "14:38" },
+    { from: "wren", to: "badger", text: "Works at phone size too. Badger, can you try it in the Simulator?", when: "14:41" },
+    { from: "badger", to: "finch", text: "Taps through fine on iPhone. Finch, the release notes are yours.", when: "14:46" },
+    { from: "finch", to: "lynx", text: "Written. Lynx, can you watch CI?", when: "14:49" },
+    { from: "lynx", to: "otter", text: "CI is green. Otter, it's ready for your review.", when: "14:55" },
 ];
-const named = Object.fromEntries(cast.map((agent) => [agent.id, agent]));
-const messages = relay.map((line) => ({ ...line, name: named[line.from].name, agent: named[line.from].agent }));
-const faces = cast.map((agent) => ({ ...agent, idle: buddy(agent.pack, agent.shape, "idle").markup }));
+const open = "otter";
+const depths: Record<string, number> = { otter: 1, heron: 2, wren: 2, badger: 1, finch: 0, lynx: 0 };
+const recent: { title: string; agent: AgentIconId; age: string }[] = [
+    { title: "Cart total rounds the wrong way", agent: "codex", age: "3h" },
+    { title: "Speed up the product page", agent: "claude", age: "1d" },
+    { title: "Tidy the README", agent: "pi", age: "4d" },
+];
+
+const levels = cast.map((agent) => depths[agent.id]);
+const rows = cast.map((agent, index) => {
+    const later = levels.slice(index + 1);
+    const lines = Array.from({ length: levels[index] }, (_, level): TreeLine => {
+        const sibling = later.find((depth) => depth <= level + 1) === level + 1;
+        if (level + 1 === levels[index]) return sibling ? "tick" : "corner";
+        return sibling ? "through" : "blank";
+    });
+    const state = agent.id === open ? "working" : "done";
+    return { ...agent, lines, state, leads: (levels[index + 1] ?? 0) > levels[index], face: buddy(agent.pack, agent.shape, state) } as const;
+});
+const faces = Object.fromEntries(rows.map((row) => [row.id, row.face.markup]));
+const messages = relay.map((line) => ({ ...line, name: rows.find((row) => row.id === line.from)!.name, face: faces[line.from] }));
 ---
 
 <div class="app team" data-play data-team>
-    <Head title="Sign-in test fails in Safari" who="Otter" />
     <div class="split">
-        <div class="rail">
-            <p class="label">Agents</p>
-            {faces.map((agent, index) => <AgentRow id={agent.id} task={agent.task} age={`${24 - index * 4}m`} project="storefront" name={agent.name} agent={agent.agent} face={agent.idle} state={index === 0 ? "working" : "idle"} />)}
+        <div class="stage">
+            <Head title="Sign-in test fails in Safari" who="Otter" />
+            <div class="column">
+                <TeamRun messages={messages} />
+            </div>
         </div>
-        <div class="column">
-            <TeamRun messages={messages} took="24m" />
+        <div class="rail">
+            <div class="rows">
+                <AgentRow title="@Chief" detail="Chief of staff" open />
+                {rows.map((row) => <AgentRow id={row.id} title={row.task} name={row.name} face={row.face.markup} motion={row.face.motion} state={row.state} chosen={row.id === open} lines={row.lines} open={row.leads} />)}
+            </div>
+            <div class="group">
+                <p class="heading"><span class="caps">Recent</span><i></i><svg viewBox="0 0 24 24" width="11" height="11"><path d="m9 18 6-6-6-6"></path></svg></p>
+                <div class="rows">
+                    {recent.map((chat) => <AgentRow title={chat.title} agent={chat.agent} age={chat.age} />)}
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -47,32 +76,38 @@ const faces = cast.map((agent) => ({ ...agent, idle: buddy(agent.pack, agent.sha
             },
             { rootMargin: "800px 0px" },
         ).observe(box);
-        const pose = async (id: string, state: "working" | "done") => {
-            const row = box.querySelector<HTMLElement>(`[data-row="${id}"]`);
-            if (!row) return;
-            row.dataset.state = state;
-            const drawn = (await load())[id][state];
-            const face = row.querySelector<HTMLElement>(".buddy")!;
-            face.innerHTML = drawn.markup;
-            if (drawn.motion) face.dataset.motion = drawn.motion;
-            else delete face.dataset.motion;
+        const draw = (id: string, pose: Pose) => {
+            for (const face of box.querySelectorAll<HTMLElement>(`[data-face="${id}"]`)) {
+                face.innerHTML = pose.markup;
+                if (pose.motion) face.dataset.motion = pose.motion;
+                else delete face.dataset.motion;
+            }
         };
         const rows = [...box.querySelectorAll<HTMLElement>("[data-row]")];
-        const first = rows.map((row) => ({ state: row.dataset.state, face: row.querySelector<HTMLElement>(".buddy")!.innerHTML }));
-        const reset = () =>
-            rows.forEach((row, index) => {
-                row.dataset.state = first[index].state;
-                const face = row.querySelector<HTMLElement>(".buddy")!;
-                face.innerHTML = first[index].face;
-                delete face.dataset.motion;
-            });
+        const idle: Record<string, Pose> = {};
+        for (const face of box.querySelectorAll<HTMLElement>(".agent-name .buddy")) {
+            const id = face.closest(".agent-name")!.textContent!.trim().slice(1).toLowerCase();
+            face.dataset.face = id;
+            idle[id] ??= { motion: "", markup: face.innerHTML };
+        }
+        const become = async (id: string, turn: "idle" | "working" | "done") => {
+            const row = rows.find((candidate) => candidate.dataset.row === id);
+            if (!row) return;
+            // The app shows a finished turn as idle once it is seen, and the open chat's is seen at once.
+            const state = turn === "done" && "chosen" in row.dataset ? "idle" : turn;
+            row.dataset.state = state;
+            draw(id, state === "idle" ? idle[id] : (await load())[id][state]);
+        };
         box.addEventListener("step", (event) => {
             const step = (event as CustomEvent).detail as string;
             if (!step?.startsWith("team:")) return;
-            if (step === "team:reset") return reset();
+            if (step === "team:reset") {
+                for (const row of rows) become(row.dataset.row!, "chosen" in row.dataset ? "working" : "idle");
+                return;
+            }
             const [, , from, to] = step.split(":");
-            pose(from, "done");
-            pose(to, "working");
+            become(from, "done");
+            become(to, "working");
         });
     }
 </script>
@@ -83,60 +118,74 @@ const faces = cast.map((agent) => ({ ...agent, idle: buddy(agent.pack, agent.sha
     }
     .split {
         display: grid;
-        grid-template-columns: 260px minmax(0, 1fr);
-        border-top: 1px solid var(--line);
+        grid-template-columns: minmax(0, 1fr) 288px;
+    }
+    .stage {
+        min-width: 0;
+    }
+    .team .column {
+        height: 546px;
+        overflow: hidden;
     }
     .rail {
-        padding: 10px 8px;
-        border-right: 1px solid var(--line);
+        padding: 14px 10px;
+        border-left: 1px solid var(--line);
+        overflow: hidden;
+    }
+    .rows {
         display: flex;
         flex-direction: column;
         gap: 2px;
     }
-    .label {
+    .group {
+        margin-top: 16px;
+    }
+    .heading {
         display: flex;
         align-items: center;
         gap: 8px;
-        margin: 0 6px 6px;
-        font-size: 10.5px;
-        font-weight: 500;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--quiet);
+        padding: 4px 6px 6px 8px;
+        border-radius: 5px;
+        color: var(--text-tertiary);
     }
-    .label::after {
-        content: "";
+    .heading:hover {
+        background: var(--surface-hover);
+    }
+    .caps {
+        flex: none;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 16px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+    }
+    .heading i {
         flex: 1;
         height: 1px;
-        background: var(--line);
+        background: var(--border);
     }
-    .team .column {
-        height: 520px;
-        overflow: hidden;
+    .heading svg {
+        flex: none;
+        rotate: 90deg;
     }
-    @media (max-width: 760px) {
+    @media (max-width: 900px) {
         .split {
             grid-template-columns: minmax(0, 1fr);
         }
-        .rail {
-            flex-direction: row;
-            gap: 4px;
-            overflow: hidden;
-            border-right: 0;
-            border-bottom: 1px solid var(--line);
+        .team .column {
+            height: 460px;
         }
-        .rail .label,
-        .rail :global(.row-text),
-        .rail :global(.row-name) {
+        .rail {
+            border-left: 0;
+            border-top: 1px solid var(--line);
+        }
+        .group {
             display: none;
         }
-        .rail :global(.agent-row) {
-            grid-template-columns: 22px 16px;
-            gap: 2px;
-            padding: 4px;
-        }
+    }
+    @media (max-width: 900px) and (prefers-reduced-motion: reduce) {
         .team .column {
-            height: 640px;
+            height: auto;
         }
     }
 </style>

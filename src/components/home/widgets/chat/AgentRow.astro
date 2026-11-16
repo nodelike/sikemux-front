@@ -1,35 +1,91 @@
 ---
 import AgentIcon from "../../../AgentIcon.astro";
-import AgentName from "../../../AgentName.astro";
 import type { AgentIconId } from "../../../../lib/agents";
 
-export type RowState = "idle" | "working" | "asks" | "done";
+export type RowState = "idle" | "working" | "done";
+export type TreeLine = "blank" | "through" | "tick" | "corner";
 
 interface Props {
-    task: string;
-    name: string;
-    agent: AgentIconId;
-    age?: string;
-    project?: string;
-    state?: RowState;
-    face?: string;
+    title: string;
     id?: string;
+    face?: string;
+    motion?: string;
+    agent?: AgentIconId;
+    detail?: string;
+    name?: string;
+    age?: string;
+    state?: RowState;
+    chosen?: boolean;
+    lines?: TreeLine[];
+    open?: boolean;
 }
 
-const { task, name, agent, age, project, state = "idle", face, id } = Astro.props;
+const BEATS = [
+    [0.9, 0],
+    [1.24, 0.52],
+    [1.58, 1.04],
+    [1.07, 0.39],
+    [1.41, 0.91],
+    [0.9, 0.26],
+    [1.24, 0.78],
+    [1.58, 0.13],
+    [1.07, 0.65],
+];
+
+const { title, id, face, motion, agent, detail, name, age, state = "idle", chosen = false, lines = [], open = false } = Astro.props;
 ---
 
-<div class="agent-row" data-row={id} data-state={state}>
-    <span class="row-mark" style={`color: var(--brand-${agent})`}>
-        {face ? <span class="buddy" set:html={face} /> : <AgentIcon agent={agent} size={20} />}
+<div class="agent-row" data-row={id} data-state={state} data-chosen={chosen ? "" : undefined} style={`--depth: ${lines.length}`}>
+    {lines.map((line, level) => line !== "blank" && <i class={`tree ${line}`} style={`--level: ${level}`} />)}
+    {open && <i class="tree open" />}
+    <span class="row-mark" style={agent && `color: var(--brand-${agent})`}>
+        {face ? <span class="buddy" data-face={id} data-motion={motion || undefined} set:html={face} /> : agent ? <AgentIcon agent={agent} size={20} /> : <img src="/brand/mark-purple.svg" alt="" width="15" height="15" />}
     </span>
-    <span class="row-text">
-        <span class="row-task">{task}</span>
-        {(age || project) && <span class="row-sub">{[age, project].filter(Boolean).join(" · ")}</span>}
-    </span>
-    <span class="row-name">{face ? `@${name}` : <AgentName name={name} />}</span>
-    <span class="row-state" aria-label={state}>
-        <span class="loader">{Array.from({ length: 9 }, (_, i) => <i style={`--o:-${(i * 0.17).toFixed(2)}s`} />)}</span>
-        <span class="dot" />
+    <span class="row-task">{title}</span>
+    {detail && <span class="row-sub">{detail}</span>}
+    {name && <span class="row-name">@{name}</span>}
+    {age && <span class="row-age">{age}</span>}
+    <span class="row-state">
+        <span class="loader">{BEATS.map(([beat, ahead]) => <i style={`--beat: ${beat}s; --ahead: -${ahead}s`} />)}</span>
+        <span class="dot"></span>
     </span>
 </div>
+
+<style>
+    .tree {
+        position: absolute;
+        top: -2px;
+        bottom: -2px;
+        left: calc(14px + 18px * (var(--level) - var(--depth)));
+        width: 1px;
+        background: var(--tree-spine);
+    }
+    .tree.tick::after {
+        content: "";
+        position: absolute;
+        top: 16px;
+        left: 0;
+        width: 7px;
+        height: 1px;
+        background: var(--tree-tick);
+    }
+    .tree.corner {
+        bottom: auto;
+        width: 8px;
+        height: 17px;
+        border: solid var(--tree-spine);
+        border-width: 0 0 1px 1px;
+        border-bottom-left-radius: 4px;
+        background: none;
+    }
+    .tree.open {
+        top: 26px;
+        left: 14px;
+    }
+    .row-age {
+        flex: none;
+        font: 400 11px var(--mono);
+        font-variant-numeric: tabular-nums;
+        color: var(--text-tertiary);
+    }
+</style>

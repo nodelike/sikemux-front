@@ -1,24 +1,15 @@
 ---
-import AgentIcon from "../../../AgentIcon.astro";
 import AgentName from "../../../AgentName.astro";
-import type { AgentIconId } from "../../../../lib/agents";
 
 interface Props {
     name: string;
-    agent: AgentIconId;
-    to?: string;
-    when?: string;
+    when: string;
 }
 
-const { name, agent, to, when } = Astro.props;
+const { name, when } = Astro.props;
 ---
 
 <div class="from">
-    <p class="by">
-        <span class="mark" style={`color: var(--brand-${agent})`}><AgentIcon agent={agent} size={17} /></span>
-        <b><AgentName name={name} /></b>
-        {to && <span class="to">to <AgentName name={to} /></span>}
-        {when && <span class="when">{when}</span>}
-    </p>
+    <p class="by"><AgentName name={name} /><span class="when">{when}</span></p>
     <p class="letter"><slot /></p>
 </div>
