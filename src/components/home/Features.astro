@@ -34,13 +34,13 @@ import doveNight from "../../assets/art/dove-night.jpg";
 </Scene>
 
 <Bento label="More in every chat">
-    <Cell tag="@ and #" small>
+    <Cell tag="Mentions" small>
         <Mentions slot="board" />
-        <p>Attach a file, or hand over an issue or pull request.</p>
+        <p># hands over an issue, ! a pull request, + a file.</p>
     </Cell>
     <Cell tag="Limits" small>
         <Limits slot="board" />
-        <p>What's left on every account, per window.</p>
+        <p>What every account has used, per window.</p>
     </Cell>
     <Cell tag="Stash" small>
         <Stash slot="board" />
@@ -51,7 +51,7 @@ import doveNight from "../../assets/art/dove-night.jpg";
 <Scene tag="Chief" id="chief" flip stacked={0.36} art={{ day: chiefDay, night: chiefNight, subject: 0.68 }}>
     <Fragment slot="title">Every project<br /><span class="chip">gets a chief.</span></Fragment>
     <p>Tell <AgentName name="Chief" /> what you want. It hands the work to Claude Code, Codex and your other agents, answers what it can, and brings you only the calls that need you.</p>
-    <p>Back after an hour away? It tells you what landed and what was decided for you, and any of it can be overruled.</p>
+    <p>Back after an hour away? It tells you what landed and what was decided for you, and you can overrule any decision.</p>
     <Chief slot="media" />
 </Scene>
 
@@ -70,7 +70,7 @@ import doveNight from "../../assets/art/dove-night.jpg";
     <Cell tag="Browser" id="browser">
         <Sizes slot="board" />
         <Fragment slot="title">Opens your app.<br /><span class="chip">Checks its own work.</span></Fragment>
-        <p>Every agent gets a real browser tab on the engine Safari uses. It opens your app, clicks, types and takes screenshots like a tester would. Take the tab over any time.</p>
+        <p>Every agent gets a real browser tab on the engine Safari uses. It opens your app, clicks, types and takes screenshots like a tester would. Type in the tab yourself and the agent leaves it where it is.</p>
     </Cell>
     <Cell tag="Answers you can see" id="answers">
         <Sketch slot="board" />
@@ -81,7 +81,7 @@ import doveNight from "../../assets/art/dove-night.jpg";
 
 <Scene tag="Review and ship" id="review" wide ground={0.3} art={{ day: jettyDay, night: jettyNight, subject: 0.42 }}>
     <Fragment slot="title">See which agent<br /><span class="chip">wrote each change.</span></Fragment>
-    <p>Every file an agent touched, marked with who wrote it. It runs the tests, writes the commit message, and you commit from the same window.</p>
+    <p>Every file an agent touched, marked with who wrote it. An agent writes the commit message, and you commit from the same window.</p>
     <p>Quit Sikemux, or let it update: terminals and agents keep running.</p>
     <Review slot="media" />
 </Scene>
