@@ -1,8 +1,8 @@
 ---
-import { INSTALL_COMMAND } from "../../lib/release";
+import { BREW_COMMAND, INSTALL_COMMAND } from "../../lib/release";
 
 const installs = [
-    { id: "brew", command: "brew install --cask nodelike/tap/sikemux" },
+    { id: "brew", command: BREW_COMMAND },
     { id: "curl", command: INSTALL_COMMAND },
 ];
 ---

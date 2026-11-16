@@ -1,183 +1,329 @@
 ---
-import Install from "./Install.astro";
-import { APP_STORE_URL, INSTALL_COMMAND, formatSize, type Release } from "../../lib/release";
+import Scene from "./Scene.astro";
+import { ANDROID, APPLE, LINUX } from "../../lib/marks";
+import { APP_STORE_URL, BREW_COMMAND, INSTALL_COMMAND, RELEASES_URL, formatSize, type Release } from "../../lib/release";
+import gateDay from "../../assets/art/gate-day.jpg";
+import gateNight from "../../assets/art/gate-night.jpg";
 
 interface Props {
     release: Release;
 }
 
 const { release } = Astro.props;
+
+const commands = [
+    { note: "Mac, with Homebrew", command: BREW_COMMAND },
+    { note: "Mac or Linux", command: INSTALL_COMMAND },
+    { note: "Any server: core only, x86_64 and arm64", command: `${INSTALL_COMMAND} -s -- --host` },
+];
+const computers = [
+    { name: "macOS", mark: APPLE, needs: "Apple Silicon · macOS 11 or later" },
+    { name: "Linux", mark: LINUX, needs: "x86_64" },
+];
+const phones = [
+    { name: "iPhone", mark: APPLE, needs: "iOS 17 or later", label: "App Store", href: APP_STORE_URL, arrow: "M7 17 17 7M8 7h9v9" },
+    { name: "Android", mark: ANDROID, needs: "In testing", label: "Join the test", href: "/phone", arrow: "M5 12h14M13 6l6 6-6 6" },
+];
 ---
 
-<section class="frame downloads" id="download" aria-labelledby="download-title">
-    <div class="head">
-        <span class="tag">Download</span>
-        <h2 id="download-title">Get <span class="chip">Sikemux.</span></h2>
-        <p>Free and MIT-licensed. No account needed on your own computer.</p>
-        <Install />
-    </div>
-    <div class="table">
-        <h3>On your computer</h3>
+<Scene tag="Download" id="download" ground={0.21} stacked={0.3} art={{ day: gateDay, night: gateNight, subject: 0.36 }}>
+    <Fragment slot="title">Get <span class="chip">Sikemux.</span></Fragment>
+    <p>Free and MIT-licensed. No account needed on your own computer.</p>
+    <p class="fine mono">
+        v<span data-release-version>{release.version}</span> · <a href="/changelog">what’s new</a> · <a href={RELEASES_URL}>every release</a>
+    </p>
+
+    <div class="term" slot="media" data-term>
+        <div class="bar mono">
+            <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
+            Terminal
+        </div>
         <ul>
             {
-                release.builds.map((build) => (
+                commands.map((entry) => (
                     <li>
-                        <b>{build.system}</b>
-                        <span class="mono">
-                            {build.kind}
-                            {build.bytes !== null && (
-                                <>
-                                    {" · "}
-                                    <span data-release-build-size={build.suffix}>{formatSize(build.bytes)}</span>
-                                </>
-                            )}
-                        </span>
-                        <a class="btn small" href={build.url} data-release-build={build.suffix}>
-                            Download
-                        </a>
+                        <span class="note mono"># {entry.note}</span>
+                        <code class="mono">{entry.command}</code>
+                        <button type="button" class="copy mono" data-copy={entry.command} aria-label={`Copy the command for ${entry.note}`}>
+                            Copy
+                        </button>
                     </li>
                 ))
             }
-            <li class="host">
-                <b>Any server</b>
-                <span class="mono">core only · x86_64 and arm64</span>
-                <code>{INSTALL_COMMAND} -s -- --host</code>
-            </li>
         </ul>
-        <h3>On your phone</h3>
-        <ul>
-            <li>
-                <b>iPhone</b>
-                <span class="mono">iOS 17 or later</span>
-                <a class="btn small" href={APP_STORE_URL}>App Store</a>
-            </li>
-            <li>
-                <b>Android</b>
-                <span class="mono">in testing</span>
-                <a class="btn small" href="/phone">Join the test</a>
-            </li>
-        </ul>
+        <p class="idle mono" aria-hidden="true"><span class="caret"></span></p>
     </div>
-</section>
+
+    <ul class="platforms" slot="below">
+        {
+            computers.map((computer) => (
+                <li>
+                    <svg class="mark" viewBox={computer.mark.viewBox} aria-hidden="true">
+                        <path d={computer.mark.path} />
+                    </svg>
+                    <h3>{computer.name}</h3>
+                    <p class="needs mono">{computer.needs}</p>
+                    <div class="gets">
+                        {release.builds
+                            .filter((build) => build.system === computer.name)
+                            .map((build) => (
+                                <a class:list={["btn", { solid: build.system === "macOS" }]} href={build.url} data-release-build={build.suffix}>
+                                    <svg class="glyph" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14" />
+                                    </svg>
+                                    {build.label}
+                                    {build.bytes !== null && (
+                                        <span class="size mono" data-release-build-size={build.suffix}>
+                                            {formatSize(build.bytes)}
+                                        </span>
+                                    )}
+                                </a>
+                            ))}
+                    </div>
+                </li>
+            ))
+        }
+        {
+            phones.map((phone) => (
+                <li>
+                    <svg class="mark" viewBox={phone.mark.viewBox} aria-hidden="true">
+                        <path d={phone.mark.path} />
+                    </svg>
+                    <h3>{phone.name}</h3>
+                    <p class="needs mono">{phone.needs}</p>
+                    <div class="gets">
+                        <a class="btn" href={phone.href}>
+                            {phone.label}
+                            <svg class="glyph end" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d={phone.arrow} />
+                            </svg>
+                        </a>
+                    </div>
+                </li>
+            ))
+        }
+    </ul>
+</Scene>
+
+<script>
+    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-term] [data-copy]")) {
+        button.addEventListener("click", async () => {
+            await navigator.clipboard.writeText(button.dataset.copy!);
+            button.textContent = "Copied";
+            setTimeout(() => (button.textContent = "Copy"), 1400);
+        });
+    }
+</script>
 
 <style>
-    .downloads {
-        display: grid;
-        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
-        border-top: 1px solid var(--rule);
-    }
-    .head {
-        display: grid;
-        gap: 20px;
-        justify-items: start;
-        align-content: start;
-        padding: clamp(40px, 5vw, 64px) 20px;
-    }
-    .head :global(.install) {
-        width: 100%;
-        margin-top: 8px;
-    }
-    h2 {
-        font-size: clamp(36px, 4.4vw, 64px);
-    }
-    .head p {
-        font-size: 16.5px;
-        line-height: 1.55;
+    .fine {
+        font-size: 12px;
         color: var(--ink-2);
-        max-width: 26em;
     }
-    .table {
-        border-left: 1px solid var(--rule);
+    .fine a {
+        text-underline-offset: 3px;
     }
-    h3 {
-        padding: 14px 20px;
-        font: 500 11.5px/1 var(--mono);
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: var(--ink-3);
-        background: var(--paper-2);
-        border-bottom: 1px solid var(--rule);
+    .fine a:hover {
+        color: var(--ink);
     }
-    ul + h3 {
-        border-top: 1px solid var(--rule);
+
+    .term {
+        --dim: #a7a2b6;
+        --hair: #ffffff1f;
+        width: min(100%, 600px);
+        background: var(--night);
+        color: var(--on-night);
+        border: 1px solid var(--cast-edge);
+        box-shadow: 9px 9px 0 var(--cast);
     }
-    ul {
+    .bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 34px;
+        padding: 0 12px;
+        font-size: 12px;
+        color: var(--dim);
+        border-bottom: 1px solid var(--hair);
+    }
+    .lights {
+        display: flex;
+        gap: 6px;
+    }
+    .lights i {
+        width: 9px;
+        height: 9px;
+        border: 1px solid #ffffff47;
+    }
+    .term ul {
         list-style: none;
         margin: 0;
         padding: 0;
     }
-    li {
+    .term li {
         display: grid;
-        grid-template-columns: 110px minmax(0, 1fr) auto;
-        align-items: center;
-        gap: 16px;
-        min-height: 60px;
-        padding: 11px 20px;
+        grid-template: "note note" auto "code copy" auto / minmax(0, 1fr) auto;
+        gap: 8px 12px;
+        padding: 14px 12px 14px 14px;
+        border-bottom: 1px solid var(--hair);
     }
-    li + li {
-        border-top: 1px solid var(--rule);
-    }
-    b {
-        font-size: 16px;
-        font-weight: 500;
-    }
-    li > .mono {
-        font-size: 12.5px;
-        color: var(--ink-2);
-    }
-    .host {
-        grid-template-columns: 110px minmax(0, 1fr);
-        padding-bottom: 16px;
+    .note {
+        grid-area: note;
+        font-size: 12px;
+        line-height: 1.4;
+        color: var(--dim);
     }
     code {
-        grid-column: 1 / -1;
-        font: 400 12.5px/1.4 var(--mono);
-        padding: 11px 14px;
-        background: var(--night);
-        color: var(--on-night);
-        white-space: nowrap;
-        overflow-x: auto;
-        max-width: 100%;
-        scrollbar-width: none;
+        grid-area: code;
+        padding-left: 2ch;
+        text-indent: -2ch;
+        font-size: 13.5px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
     }
-    @media (max-width: 900px) {
-        .downloads {
+    code::before,
+    .idle::before {
+        content: "$ ";
+        color: var(--violet);
+    }
+    .copy {
+        grid-area: copy;
+        align-self: start;
+        margin-top: -3px;
+        padding: 6px 9px;
+        font-size: 12px;
+        line-height: 1;
+        color: var(--dim);
+        background: none;
+        border: 1px solid var(--hair);
+        cursor: pointer;
+    }
+    .copy:hover {
+        color: #fff;
+        border-color: #ffffff66;
+    }
+    .idle {
+        padding: 14px;
+        font-size: 13.5px;
+        line-height: 1.5;
+    }
+    .caret {
+        display: inline-block;
+        width: 7px;
+        height: 1.05em;
+        vertical-align: -0.15em;
+        background: var(--violet);
+        animation: w-blink 1s steps(1) infinite;
+    }
+
+    .platforms {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        border-top: 1px solid var(--rule);
+        background: var(--paper);
+    }
+    .platforms li {
+        display: grid;
+        grid-template-rows: auto auto auto 1fr;
+        gap: 10px;
+        padding: 26px 20px 28px;
+        border-right: 1px solid var(--rule);
+    }
+    .platforms li:last-child {
+        border-right: 0;
+    }
+    .mark {
+        width: 22px;
+        height: 22px;
+        margin-bottom: 8px;
+        fill: var(--ink);
+    }
+    h3 {
+        font-size: clamp(22px, 2vw, 28px);
+        line-height: 1.05;
+    }
+    .needs {
+        font-size: 12.5px;
+        line-height: 1.4;
+        color: var(--ink-2);
+    }
+    .gets {
+        display: grid;
+        gap: 8px;
+        align-content: end;
+        margin-top: 14px;
+    }
+    .gets .btn {
+        height: 44px;
+        padding: 0 14px;
+    }
+    .glyph {
+        flex: none;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .size,
+    .glyph.end {
+        margin-left: auto;
+    }
+    .size {
+        font-size: 12px;
+        opacity: 0.72;
+    }
+
+    @media (max-width: 1100px) {
+        .platforms {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .platforms li:nth-child(2) {
+            border-right: 0;
+        }
+        .platforms li:nth-child(-n + 2) {
+            border-bottom: 1px solid var(--rule);
+        }
+    }
+    @media (max-width: 560px) {
+        .term li {
+            grid-template-areas: "note copy" "code code";
+            align-items: center;
+        }
+        .copy {
+            align-self: center;
+            margin-top: 0;
+        }
+        code,
+        .idle {
+            font-size: 12.5px;
+        }
+        .platforms {
             grid-template-columns: minmax(0, 1fr);
         }
-        .table {
-            border-left: 0;
-            border-top: 1px solid var(--rule);
+        .platforms li {
+            grid-template: auto auto auto / auto minmax(0, 1fr);
+            align-items: center;
+            gap: 8px 12px;
+            padding: 20px 16px 22px;
+            border-right: 0;
+            border-bottom: 1px solid var(--rule);
         }
-    }
-    @media (max-width: 600px) {
-        .head {
-            padding: 32px 16px;
+        .platforms li:last-child {
+            border-bottom: 0;
         }
-        h3 {
-            padding-inline: 16px;
+        .mark {
+            margin-bottom: 0;
         }
-        li {
-            grid-template-columns: minmax(0, 1fr) auto;
-            gap: 4px 12px;
-            padding: 12px 16px;
+        .needs,
+        .gets {
+            grid-column: 1 / -1;
         }
-        li > b {
-            grid-column: 1;
-        }
-        li > .mono {
-            grid-column: 1;
-            grid-row: 2;
-        }
-        li > .btn {
-            grid-row: 1 / span 2;
-            grid-column: 2;
-        }
-        .host {
-            grid-template-columns: minmax(0, 1fr);
-        }
-        li > code {
-            grid-row: 3;
-            margin-top: 6px;
+        .gets {
+            margin-top: 8px;
         }
     }
 </style>

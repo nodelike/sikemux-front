@@ -4,10 +4,11 @@ export const APP_STORE_URL = "https://apps.apple.com/app/sikemux/id6819588876";
 export const X_URL = "https://x.com/sikemux";
 export const RELEASES_URL = `${REPO_URL}/releases/latest`;
 export const INSTALL_COMMAND = "curl -fsSL https://sikemux.com/install | sh";
+export const BREW_COMMAND = "brew install --cask nodelike/tap/sikemux";
 
 export interface Build {
     system: string;
-    kind: string;
+    label: string;
     suffix: string;
     url: string;
     bytes: number | null;
@@ -23,10 +24,9 @@ export interface Release {
 }
 
 const BUILDS = [
-    { system: "macOS", kind: "Apple Silicon · .dmg", suffix: "_aarch64.dmg" },
-    { system: "Linux", kind: "x86_64 · .deb", suffix: "_amd64.deb" },
-    { system: "Linux", kind: "x86_64 · .rpm", suffix: ".x86_64.rpm" },
-    { system: "Linux", kind: "x86_64 · AppImage", suffix: "_amd64.AppImage" },
+    { system: "macOS", label: "Download for Mac", suffix: "_aarch64.dmg" },
+    { system: "Linux", label: ".deb", suffix: "_amd64.deb" },
+    { system: "Linux", label: "AppImage", suffix: "_amd64.AppImage" },
 ];
 
 interface GithubAsset {
