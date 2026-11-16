@@ -4,9 +4,9 @@ import { buddy, type BuddyState } from "../../../lib/buddies";
 import { TEAM } from "../../../lib/showcase-buddies";
 
 const showing: { id: string; state: BuddyState; says: string }[] = [
-    { id: "otter", state: "working", says: "working" },
-    { id: "heron", state: "waiting", says: "waiting on you" },
-    { id: "lynx", state: "done", says: "done" },
+    { id: "otter", state: "working", says: "Working" },
+    { id: "heron", state: "waiting", says: "Needs you" },
+    { id: "lynx", state: "done", says: "Done" },
 ];
 const cast = showing.map((entry) => {
     const agent = TEAM.find((candidate) => candidate.id === entry.id)!;
