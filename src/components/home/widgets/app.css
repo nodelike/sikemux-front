@@ -42,6 +42,9 @@
     --live: #247345;
     --cmd: #a72b72;
     --host: #7054b6;
+    --brand-pi: #7dd3fc;
+    --brand-opencode: #a78bfa;
+    --brand-grok: var(--text-primary);
     --tree-spine: #a690d6;
     --tree-tick: rgba(116, 80, 199, 0.72);
     --git-added: #247345;
@@ -112,6 +115,7 @@
     --live: #78dca1;
     --cmd: #ff6ac1;
     --host: #9d7ceb;
+    --brand-grok: #fcfcfc;
     --tree-spine: #664f99;
     --tree-tick: rgba(162, 119, 255, 0.72);
     --git-added: #81b88b;
