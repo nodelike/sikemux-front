@@ -30,7 +30,7 @@ const last = messages.length - 1;
             messages.map((message, index) => (
                 <>
                     <span class="said-by" data-said={index} hidden={index !== last}>
-                        <AgentName name={message.name} />
+                        <AgentName name={message.name} chip />
                     </span>
                     <span class="said" data-said={index} hidden={index !== last}>
                         {message.text}

@@ -1100,6 +1100,12 @@
 .app .team-line [hidden] {
     display: none;
 }
+@media (max-width: 600px) {
+    .app .team-line .said,
+    .app .team-line .took {
+        display: none;
+    }
+}
 .app .team-open {
     display: grid;
     grid-template-rows: 1fr;

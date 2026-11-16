@@ -42,7 +42,7 @@ const messages = relay.map((line) => ({ ...line, name: rows.find((row) => row.id
 <div class="app team" data-play data-team>
     <div class="split">
         <div class="stage">
-            <Head title="Sign-in test fails in Safari" who="Otter" />
+            <Head title="Sign-in test fails in Safari" who="Otter" crumbs={["Chief"]} />
             <div class="column">
                 <TeamRun messages={messages} />
             </div>
@@ -68,14 +68,6 @@ const messages = relay.map((line) => ({ ...line, name: rows.find((row) => row.id
     const load = () => (drawings ??= fetch("/buddies.json").then((response) => response.json()).then((data) => data.team));
 
     for (const box of document.querySelectorAll<HTMLElement>("[data-team]")) {
-        new IntersectionObserver(
-            ([entry], observer) => {
-                if (!entry.isIntersecting) return;
-                observer.disconnect();
-                load();
-            },
-            { rootMargin: "800px 0px" },
-        ).observe(box);
         const draw = (id: string, pose: Pose) => {
             for (const face of box.querySelectorAll<HTMLElement>(`[data-face="${id}"]`)) {
                 face.innerHTML = pose.markup;
@@ -90,6 +82,9 @@ const messages = relay.map((line) => ({ ...line, name: rows.find((row) => row.id
             face.dataset.face = id;
             idle[id] ??= { motion: "", markup: face.innerHTML };
         }
+        const head = box.querySelector<HTMLElement>(".head-mark .buddy");
+        const chosen = rows.find((row) => "chosen" in row.dataset);
+        if (head && chosen) head.dataset.face = chosen.dataset.row;
         const become = async (id: string, turn: "idle" | "working" | "done") => {
             const row = rows.find((candidate) => candidate.dataset.row === id);
             if (!row) return;
@@ -98,6 +93,21 @@ const messages = relay.map((line) => ({ ...line, name: rows.find((row) => row.id
             row.dataset.state = state;
             draw(id, state === "idle" ? idle[id] : (await load())[id][state]);
         };
+        const settle = async () => {
+            const poses = await load();
+            for (const row of rows) {
+                const state = row.dataset.state as "idle" | "working" | "done";
+                if (state !== "idle") draw(row.dataset.row!, poses[row.dataset.row!][state]);
+            }
+        };
+        new IntersectionObserver(
+            ([entry], observer) => {
+                if (!entry.isIntersecting) return;
+                observer.disconnect();
+                settle();
+            },
+            { rootMargin: "800px 0px" },
+        ).observe(box);
         box.addEventListener("step", (event) => {
             const step = (event as CustomEvent).detail as string;
             if (!step?.startsWith("team:")) return;
@@ -168,7 +178,7 @@ const messages = relay.map((line) => ({ ...line, name: rows.find((row) => row.id
         flex: none;
         rotate: 90deg;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 1220px) {
         .split {
             grid-template-columns: minmax(0, 1fr);
         }
@@ -183,7 +193,14 @@ const messages = relay.map((line) => ({ ...line, name: rows.find((row) => row.id
             display: none;
         }
     }
-    @media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+    @media (max-width: 860px) {
+        .team :global(.pane-head .segmented),
+        .team :global(.pane-head .head-rule),
+        .team :global(.pane-head .icon-btn) {
+            display: none;
+        }
+    }
+    @media (max-width: 1220px) and (prefers-reduced-motion: reduce) {
         .team .column {
             height: auto;
         }

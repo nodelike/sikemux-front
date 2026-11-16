@@ -10,6 +10,6 @@ const { name, when } = Astro.props;
 ---
 
 <div class="from">
-    <p class="by"><AgentName name={name} /><span class="when">{when}</span></p>
+    <p class="by"><AgentName name={name} chip /><span class="when">{when}</span></p>
     <p class="letter"><slot /></p>
 </div>
