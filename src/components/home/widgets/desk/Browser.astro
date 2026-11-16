@@ -1,0 +1,269 @@
+---
+import "../../../../styles/buddies.css";
+import { buddy } from "../../../../lib/buddies";
+import { TEAM } from "../../../../lib/showcase-buddies";
+
+type Held = "fit" | "mobile" | "tablet" | "desktop";
+
+interface Props {
+    title: string;
+    address: string;
+    held?: Held;
+    /** The name of the agent working in the tab: the tab takes its colour and wears its buddy. */
+    worker?: string;
+    class?: string;
+}
+
+const { title, address, held = "fit", worker, class: name } = Astro.props;
+const agent = TEAM.find((candidate) => candidate.name === worker);
+const face = agent && buddy(agent.pack, agent.shape, "working");
+
+const kinds = [
+    { label: "Browser", shown: true, glyph: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>' },
+    { label: "Files", empty: true, glyph: '<path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/>' },
+    { label: "Terminals", empty: true, glyph: '<path d="m7 11 2-2-2-2"/><path d="M11 13h4"/><rect x="3" y="3" width="18" height="18" rx="2"/>' },
+    { label: "Simulators", glyph: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>' },
+];
+const widths: { held: Held; label: string; glyph: string }[] = [
+    { held: "fit", label: "Fit", glyph: '<path d="M15 3h6v6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/><path d="M9 21H3v-6"/>' },
+    { held: "mobile", label: "Phone 390", glyph: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>' },
+    { held: "tablet", label: "Tablet 820", glyph: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M12 18L12.01 18"/>' },
+    { held: "desktop", label: "Desktop 1440", glyph: '<path d="M18 5a2 2 0 0 1 2 2v8.526a2 2 0 0 0 .212.897l1.068 2.127a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45l1.068-2.127A2 2 0 0 0 4 15.526V7a2 2 0 0 1 2-2z"/><path d="M20.054 15.987H3.946"/>' },
+];
+const chevron = '<path d="m9 18 6-6-6-6"/>';
+---
+
+<div class:list={["desk", name]} data-held={held}>
+    <svg class="desk-step" width="126" height="45" viewBox="0 0 126 45" aria-hidden="true">
+        <path d="M0.5 44.5A10 10 0 0 1 10.5 34.5H100.5A15 15 0 0 0 115.5 19.5V10.5A10 10 0 0 1 125.5 0.5"></path>
+    </svg>
+    <div class="desk-kinds" role="group" aria-label="What the desk shows">
+        {
+            kinds.map((kind) => (
+                <span class:list={["desk-btn", { on: kind.shown, off: kind.empty }]} title={kind.label}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" set:html={kind.glyph} />
+                </span>
+            ))
+        }
+    </div>
+    <div class="desk-head">
+        <div class="desk-tabs">
+            <span class:list={["desk-tab", { working: agent }]} style={agent && `--tint: var(--brand-${agent.agent})`}>
+                <i class="desk-site"></i>
+                <span class="desk-title">{title}</span>
+                {face && <span class="buddy" data-motion={face.motion || undefined} set:html={face.markup} />}
+            </span>
+        </div>
+        <span class="desk-new">
+            <span class="desk-btn" title="New browser tab">
+                <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+            </span>
+        </span>
+    </div>
+    <div class="desk-bar">
+        <span class="desk-btn off" title="Back">
+            <svg class="turned" width="11" height="11" viewBox="0 0 24 24" aria-hidden="true" set:html={chevron} />
+        </span>
+        <span class="desk-btn off" title="Forward">
+            <svg width="11" height="11" viewBox="0 0 24 24" aria-hidden="true" set:html={chevron} />
+        </span>
+        <span class="desk-btn" title="Reload">
+            <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+        </span>
+        <span class="desk-address">{address}</span>
+        <span class="desk-btn desk-width">
+            {
+                widths.map((width) => (
+                    <span data-width={width.held} title={`Width: ${width.label}`}>
+                        <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" set:html={width.glyph} />
+                    </span>
+                ))
+            }
+        </span>
+        <span class="desk-btn" title="Snip to chat">
+            <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.034 12.681a.498.498 0 0 1 .647-.647l9 3.5a.5.5 0 0 1-.033.943l-3.444 1.068a1 1 0 0 0-.66.66l-1.067 3.443a.5.5 0 0 1-.943.033z"></path><path d="M5 3a2 2 0 0 0-2 2"></path><path d="M19 3a2 2 0 0 1 2 2"></path><path d="M5 21a2 2 0 0 1-2-2"></path><path d="M9 3h1"></path><path d="M9 21h2"></path><path d="M14 3h1"></path><path d="M3 9v1"></path><path d="M21 9v2"></path><path d="M3 14v1"></path></svg>
+        </span>
+        <span class="desk-btn" title="Open in default browser">
+            <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>
+        </span>
+    </div>
+    <div class="desk-body"><slot /></div>
+</div>
+
+<style>
+    .desk {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--surface);
+        color: var(--text-primary);
+        font: 400 13px/1.45 "Figtree", var(--sans);
+    }
+    .desk::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        clip-path: polygon(125px 0, 100% 0, 100% 100%, 0 100%, 0 44px, 125px 44px);
+        pointer-events: none;
+    }
+    .desk .desk-step {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        fill: none;
+        stroke: var(--border);
+        stroke-width: 1;
+        stroke-linecap: butt;
+        pointer-events: none;
+    }
+    .desk-kinds {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        box-sizing: border-box;
+        width: 110px;
+        height: 29px;
+        padding: 4px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+    }
+    .desk-btn {
+        display: grid;
+        place-items: center;
+        flex: none;
+        width: 26px;
+        height: 26px;
+        border-radius: 5px;
+        color: var(--icon-quiet);
+    }
+    .desk-btn svg {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .desk-btn.on {
+        background: var(--surface-chosen);
+        color: var(--text-primary);
+    }
+    .desk-btn.off {
+        opacity: 0.4;
+    }
+    .desk-kinds .desk-btn {
+        flex: 0 1 24px;
+        width: auto;
+        height: 21px;
+    }
+    .desk-head {
+        display: flex;
+        align-items: center;
+        flex: none;
+        height: 34px;
+        padding: 0 6px 0 114px;
+    }
+    .desk-tabs {
+        display: flex;
+        flex: 0 1 auto;
+        gap: 4px;
+        min-width: 0;
+        padding-left: 6px;
+    }
+    .desk-tab {
+        display: flex;
+        align-items: center;
+        flex: 0 1 auto;
+        gap: 6px;
+        box-sizing: border-box;
+        width: 180px;
+        min-width: 120px;
+        height: 24px;
+        padding: 0 8px;
+        border: 1px solid transparent;
+        border-radius: 5px;
+        background: var(--surface-chosen);
+        font-size: 12px;
+    }
+    .desk-tab.working {
+        border-color: color-mix(in srgb, var(--tint) 70%, transparent);
+    }
+    .desk-tab .buddy {
+        width: 16px;
+        height: 16px;
+    }
+    .desk-site {
+        flex: none;
+        width: 13px;
+        height: 13px;
+        border-radius: 4px;
+        background: var(--text-disabled);
+    }
+    .desk-title {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .desk-new {
+        flex: none;
+        padding-left: 4px;
+    }
+    .desk-new .desk-btn {
+        width: 24px;
+        height: 24px;
+    }
+    .desk-bar {
+        display: flex;
+        align-items: center;
+        flex: none;
+        gap: 2px;
+        box-sizing: border-box;
+        height: 38px;
+        padding: 4px 6px;
+        border-bottom: 1px solid var(--border);
+    }
+    .desk-bar .turned {
+        rotate: 180deg;
+    }
+    .desk-address {
+        flex: 1;
+        box-sizing: border-box;
+        min-width: 0;
+        height: 26px;
+        margin-left: 4px;
+        padding: 0 10px;
+        border: 1px solid transparent;
+        border-radius: 5px;
+        background: color-mix(in srgb, var(--text-primary) 5%, transparent);
+        font-size: 11.375px;
+        line-height: 24px;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .desk-width [data-width] {
+        display: none;
+    }
+    .desk[data-held="fit"] .desk-width [data-width="fit"],
+    .desk[data-held="mobile"] .desk-width [data-width="mobile"],
+    .desk[data-held="tablet"] .desk-width [data-width="tablet"],
+    .desk[data-held="desktop"] .desk-width [data-width="desktop"] {
+        display: grid;
+    }
+    .desk-body {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+    }
+</style>

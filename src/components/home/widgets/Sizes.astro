@@ -1,197 +1,235 @@
 ---
-import Bubble from "./chat/Bubble.astro";
-import Run from "./chat/Run.astro";
-import Prose from "./chat/Prose.astro";
+import Browser from "./desk/Browser.astro";
 import "./app.css";
-
-const widths = [320, 375, 430];
 ---
 
-<div class="app sizes" data-play data-sizes style="--vw: 430px">
-    <div class="pane-head">
-        <svg class="globe" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg>
-        <span class="url">acme-shop <span class="at">/login</span></span>
-        <span class="end">
-            <span class="seg" role="group" aria-label="Page width">
-                {widths.map((width) => <button type="button" data-width={width} aria-pressed={width === 430 ? "true" : "false"}>{width}</button>)}
-            </span>
-        </span>
-    </div>
-    <div class="stage" data-stage>
-        <div class="device">
-        <div class="page">
-            <div class="brand"><i></i>acme</div>
-            <h4>Welcome back</h4>
-            <label>Email<span class="field">maya@northwind.io</span></label>
-            <label>Password<span class="field">••••••••••</span></label>
-            <div class="actions">
-                <span class="signin">Sign in</span>
-                <span class="forgot">Forgot password</span>
+<div class="app sizes" data-play data-sizes>
+    <i data-step="tablet" data-wait="1900" hidden></i>
+    <i data-step="mobile" data-wait="1900" hidden></i>
+    <Browser title="Sign in · Acme" address="http://localhost:5173/login" held="desktop" worker="Wren">
+        <div class="view" data-view>
+            <div class="held">
+                <div class="page">
+                    <div class="top"><span class="brand"><i></i>acme</span><span>Help</span></div>
+                    <div class="card">
+                        <h4>Welcome back</h4>
+                        <label>Email<span class="field">maya@northwind.io</span></label>
+                        <label>Password<span class="field">••••••••••</span></label>
+                        <div class="actions">
+                            <span class="signin">Sign in</span>
+                            <span class="forgot">Forgot password<i class="noted" data-step="mark" data-wait="1300"></i></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        </div>
-        <span class="ruler mono"><span data-width-label>430</span> px</span>
-    </div>
-    <div class="foot">
-        <Bubble when="2:52 PM">Open the login page at 320, 375 and 430 wide and tell me whether anything is cut off.</Bubble>
-        <Run calls={[{ verb: "open", kind: "looked", icon: "globe", target: "localhost:5173/login", took: 1.2 }]} wait={400} />
-        <Prose stream={120}>At 320px the button fits, but the "Forgot password" link wraps under it. Checking 375 and 430 next.</Prose>
-        <Run calls={[{ verb: "open", kind: "looked", icon: "globe", target: "localhost:5173/login", took: 0.9 }]} wait={500} />
-    </div>
+    </Browser>
 </div>
 
 <script>
     for (const box of document.querySelectorAll<HTMLElement>("[data-sizes]")) {
-        const buttons = [...box.querySelectorAll<HTMLButtonElement>("[data-width]")];
-        const label = box.querySelector("[data-width-label]")!;
-        const show = (width: string) => {
-            box.style.setProperty("--vw", `${width}px`);
-            box.dataset.narrow = String(Number(width) < 360);
-            label.textContent = width;
-            for (const button of buttons) button.setAttribute("aria-pressed", String(button.dataset.width === width));
+        const desk = box.querySelector<HTMLElement>(".desk")!;
+        const view = box.querySelector<HTMLElement>("[data-view]")!;
+        const measure = () => {
+            box.style.setProperty("--aw", String(view.clientWidth));
+            box.style.setProperty("--ah", String(view.clientHeight));
         };
-        for (const button of buttons) button.addEventListener("click", () => show(button.dataset.width!));
-        const stage = box.querySelector<HTMLElement>("[data-stage]")!;
-        const fit = () => box.style.setProperty("--fit", String(Math.min(1, (stage.clientWidth - 32) / 430)));
-        new ResizeObserver(fit).observe(stage);
-        fit();
-        const widthOf: Record<string, string> = { "call:1.2": "320", "call:0.9": "375" };
+        new ResizeObserver(measure).observe(view);
+        measure();
         box.addEventListener("step", (event) => {
-            const width = widthOf[(event as CustomEvent).detail];
-            if (width) show(width);
+            const held = (event as CustomEvent).detail;
+            if (held === "tablet" || held === "mobile") desk.dataset.held = held;
         });
     }
 </script>
 
 <style>
-    .sizes .pane-head .end {
-        margin-left: auto;
+    @property --vw {
+        syntax: "<number>";
+        inherits: true;
+        initial-value: 1440;
     }
-    .url {
-        font-weight: 500;
+    @property --vh {
+        syntax: "<number>";
+        inherits: true;
+        initial-value: 900;
     }
-    .seg {
-        display: inline-flex;
-        border: 1px solid var(--line);
-        border-radius: 6px;
+    .sizes {
+        --aw: 352;
+        --ah: 296;
+        padding: 5px;
+    }
+    .view {
+        --vw: 1440;
+        --vh: 900;
+        --fit: min(var(--aw) / var(--vw), var(--ah) / var(--vh), 1);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        height: 296px;
         overflow: hidden;
+        transition:
+            --vw 0.55s cubic-bezier(0.2, 0.7, 0.2, 1),
+            --vh 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
-    .seg button {
-        font: 400 11px var(--mono);
-        color: var(--secondary);
-        background: none;
-        border: 0;
-        padding: 4px 8px;
-        cursor: pointer;
+    .sizes :global(.desk[data-held="tablet"]) .view {
+        --vw: 820;
+        --vh: 1180;
     }
-    .seg button + button {
-        border-left: 1px solid var(--line);
+    .sizes :global(.desk[data-held="mobile"]) .view {
+        --vw: 390;
+        --vh: 844;
     }
-    .seg button[aria-pressed="true"] {
-        background: var(--ink);
-        color: var(--ground);
-    }
-    .stage {
-        position: relative;
-        height: 340px;
-        display: grid;
-        place-items: center;
-        padding: 22px 16px 30px;
-        background: repeating-linear-gradient(135deg, var(--sunken) 0 6px, var(--ground) 6px 12px);
-        border-bottom: 1px solid var(--line);
+    .held {
+        flex: none;
+        width: calc(var(--vw) * var(--fit) * 1px);
+        height: calc(var(--vh) * var(--fit) * 1px);
         overflow: hidden;
-    }
-    .device {
-        width: calc(430px * var(--fit, 1));
-        display: grid;
-        justify-items: center;
     }
     .page {
-        width: var(--vw);
-        flex: none;
-        zoom: var(--fit, 1);
-        transition: width 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
-        background: #fbfaf8;
-        color: #1c1a22;
-        border-radius: 8px;
-        padding: 20px 18px;
+        container-type: inline-size;
         display: grid;
-        gap: 10px;
+        grid-template-rows: auto 1fr;
+        place-items: center;
+        width: calc(var(--vw) * 1px);
+        height: calc(var(--vh) * 1px);
+        scale: var(--fit);
+        transform-origin: 0 0;
+        background: #fff;
+        color: #1c1a22;
         font-family: "Figtree", var(--sans);
-        box-shadow: 0 0 0 1px var(--line), 0 8px 24px -12px #0000003d;
+    }
+    .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-sizing: border-box;
+        width: 100%;
+        height: 92px;
+        padding: 0 48px;
+        background: #1c1a22;
+        color: #fff;
+        font-size: 26px;
     }
     .brand {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 14px;
+        font-size: 34px;
         font-weight: 700;
-        font-size: 13px;
     }
     .brand i {
-        width: 14px;
-        height: 14px;
-        border-radius: 4px;
-        background: #1c1a22;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: #fff;
+    }
+    .card {
+        display: grid;
+        gap: 26px;
+        box-sizing: border-box;
+        width: 640px;
+        padding: 56px 56px 64px;
+        border: 2px solid #dedbe5;
+        border-radius: 32px;
     }
     h4 {
-        margin: 2px 0 2px;
-        font-size: 17px;
+        margin: 0 0 6px;
+        font-size: 64px;
         font-weight: 600;
+        line-height: 1.1;
         letter-spacing: -0.01em;
     }
     label {
         display: grid;
-        gap: 4px;
-        font-size: 11.5px;
+        gap: 10px;
+        font-size: 26px;
         color: #6b6776;
     }
     .field {
-        border: 1px solid #dedbe5;
-        border-radius: 6px;
-        padding: 7px 9px;
-        font-size: 12.5px;
-        color: #1c1a22;
+        padding: 22px 24px;
+        border: 2px solid #dedbe5;
+        border-radius: 16px;
         background: #fff;
+        font-size: 30px;
+        line-height: 1.2;
+        color: #1c1a22;
     }
     .actions {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 8px 14px;
-        margin-top: 4px;
+        gap: 22px 32px;
+        margin-top: 10px;
     }
     .signin {
-        flex: 1 0 190px;
-        text-align: center;
+        flex: 1 0 240px;
+        padding: 24px;
+        border-radius: 16px;
         background: #1c1a22;
         color: #fff;
-        border-radius: 6px;
-        padding: 8px;
-        font-size: 12.5px;
+        font-size: 30px;
         font-weight: 600;
+        line-height: 1.2;
+        text-align: center;
     }
     .forgot {
-        font-size: 12px;
+        position: relative;
+        font-size: 28px;
         color: #5b3fd6;
         text-decoration: underline;
+        white-space: nowrap;
     }
-    [data-narrow="true"] .forgot {
-        outline: 1.5px dashed #e0a050;
-        outline-offset: 3px;
-        border-radius: 2px;
-    }
-    .ruler {
+    .noted {
         position: absolute;
-        bottom: 8px;
-        font-size: 10.5px;
-        color: var(--quiet);
+        inset: -3px;
+        border: 2px solid #ff4f7b;
+        border-radius: 3px;
     }
-    .foot {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        height: 330px;
-        overflow: hidden;
-        padding: 14px 22px 16px;
+    @container (max-width: 600px) {
+        .top {
+            height: 72px;
+            padding: 0 28px;
+            font-size: 20px;
+        }
+        .card {
+            gap: 20px;
+            width: 100%;
+            padding: 0 28px;
+            border: 0;
+            border-radius: 0;
+        }
+        .brand {
+            gap: 10px;
+            font-size: 26px;
+        }
+        .brand i {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+        }
+        h4 {
+            font-size: 46px;
+        }
+        label {
+            gap: 8px;
+            font-size: 20px;
+        }
+        .field {
+            padding: 16px 18px;
+            border-radius: 12px;
+            font-size: 22px;
+        }
+        .actions {
+            gap: 18px 24px;
+        }
+        .signin {
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 22px;
+        }
+        .forgot {
+            font-size: 21px;
+        }
     }
 </style>
