@@ -1,67 +1,181 @@
 ---
 import AgentIcon from "../../AgentIcon.astro";
+import FileIcon from "../../FileIcon.astro";
 import "../widgets/app.css";
 ---
 
-<div class="app part mentions">
-    <p class="line">
-        Fix
-        <span class="ref"
-            ><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="1.5"></circle></svg>#412 Cart totals a cent off</span
-        >
-        in
-        <span class="ref file"
-            ><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path></svg>cart.mjs</span
-        >
-    </p>
-    <div class="bar">
-        <span class="tool plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></span>
-        <span class="tool model"><span style="color: var(--brand-claude)"><AgentIcon agent="claude" size={13} /></span><b>Claude</b></span>
-        <span class="send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"></path></svg></span>
+<div class="app part unframed mentions" data-play>
+    <div class="ment-box">
+        <p class="ment-draft">
+            Fix
+            <span class="ment-chip" data-step data-wait="600">
+                <span class="ment-mark">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="12" r="10"></circle></svg>
+                </span>
+                <span class="ment-key">#412</span>
+                <span class="ment-title">Cart totals a cent off</span>
+            </span>
+            <span data-step data-wait="900">
+                in
+                <span class="ment-chip">
+                    <span class="ment-mark"><FileIcon name="cart.mjs" /></span>
+                    <span class="ment-key">cart.mjs</span>
+                </span>
+            </span>
+        </p>
+        <div class="ment-bar">
+            <span class="ment-attach">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+            </span>
+            <span class="ment-model">
+                <span class="ment-provider"><AgentIcon agent="claude" size={17} /></span>
+                <b>Opus 5.5</b>
+                <span class="ment-effort">
+                    <i>·</i>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg>
+                </span>
+                <svg class="ment-down" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+            </span>
+            <i class="ment-space"></i>
+            <span class="ment-send">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path></svg>
+            </span>
+        </div>
     </div>
 </div>
 
 <style>
     .mentions {
-        width: min(100%, 330px);
-        padding: 8px;
-        background: var(--raised);
-    }
-    .line {
-        margin: 0;
-        padding: 6px 8px 2px;
-        font-size: 14px;
-        line-height: 1.95;
+        width: min(100%, 364px);
         text-align: left;
+        color: var(--text-primary);
     }
-    .ref {
+    .mentions svg {
+        display: block;
+        flex: none;
+    }
+    .ment-box {
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: color-mix(in srgb, var(--surface-composer) 90%, var(--surface));
+        box-shadow: var(--float);
+    }
+    .ment-draft {
+        box-sizing: border-box;
+        min-height: 63.4px;
+        margin: 0;
+        padding: 10px;
+        font: 400 14.5px/1.75 "Figtree", var(--sans);
+    }
+    .ment-chip {
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        padding: 0 7px;
-        border-radius: 7px;
-        background: var(--bubble);
-        box-shadow: 0 0 0 1px var(--line);
-        font-size: 12.5px;
-        line-height: 1.7;
+        box-sizing: border-box;
+        max-width: min(100%, 300px);
+        height: calc(1.75em - 4px);
+        margin: 2px 0;
+        padding: 0 6px 0 4px;
+        border-radius: 5px;
+        background: var(--surface-raised);
+        line-height: 1.3;
         white-space: nowrap;
-        vertical-align: baseline;
+        vertical-align: top;
     }
-    .ref svg {
-        width: 12px;
-        height: 12px;
-        color: var(--added);
+    .ment-mark {
+        display: flex;
+        flex: none;
+        justify-content: center;
+        width: 15px;
+        color: var(--text-tertiary);
     }
-    .file {
-        font-family: var(--mono);
-        font-size: 11.5px;
+    .ment-mark svg {
+        width: 13px;
+        height: 13px;
     }
-    .file svg {
-        color: var(--quiet);
+    .ment-key {
+        flex: none;
     }
-    .bar .send {
-        margin-left: auto;
-        background: var(--ink);
-        color: var(--ground);
+    .ment-title {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--text-secondary);
+    }
+    .ment-bar {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        min-height: 34px;
+        padding: 8px 3px 1px;
+    }
+    .ment-attach {
+        display: grid;
+        place-items: center;
+        width: 31px;
+        height: 26px;
+        border-radius: 5px;
+        color: var(--icon-quiet);
+    }
+    .ment-attach svg {
+        width: 17px;
+        height: 17px;
+    }
+    .ment-model {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 31px;
+        padding: 0 11px;
+        border-radius: 999px;
+        font-size: 11px;
+        white-space: nowrap;
+        color: var(--text-secondary);
+    }
+    .ment-model b {
+        font-weight: 500;
+    }
+    .ment-provider {
+        display: inline-flex;
+        color: var(--brand-claude);
+    }
+    .ment-effort {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-tertiary);
+    }
+    .ment-effort i {
+        font-style: normal;
+    }
+    .ment-effort svg {
+        width: 13px;
+        height: 13px;
+    }
+    .ment-down {
+        width: 10px;
+        height: 10px;
+        rotate: 90deg;
+        color: var(--text-tertiary);
+        opacity: 0.6;
+    }
+    .ment-space {
+        flex: 1;
+    }
+    .ment-send {
+        display: grid;
+        place-items: center;
+        flex: none;
+        width: 30px;
+        height: 30px;
+        margin-left: 3px;
+        border-radius: 5px;
+        background: var(--text-primary);
+        color: var(--surface-sunken);
+    }
+    .ment-send svg {
+        width: 15px;
+        height: 15px;
     }
 </style>
