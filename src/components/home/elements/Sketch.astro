@@ -1,30 +1,136 @@
 ---
+import Browser from "../widgets/desk/Browser.astro";
+import Bubble from "../widgets/chat/Bubble.astro";
 import Drawing from "./Drawing.astro";
 import "../widgets/app.css";
+
+const title = "Order flow";
 ---
 
-<div class="sketch">
-    <div class="app part ask"><p class="bubble">How does an order get from checkout to the warehouse?</p></div>
-    <div class="app part page"><Drawing /></div>
+<div class="sketch" data-play>
+    <div class="app part asked">
+        <Bubble>How does an order get from checkout to the warehouse?</Bubble>
+        <div class="card" data-step data-wait="900">
+            <div class="card-row">
+                <span class="card-thumb" aria-hidden="true">
+                    <span class="card-shot sheet"><Drawing still /></span>
+                </span>
+                <span class="card-words">
+                    <b>{title}</b>
+                    <small>In a tab on the desk</small>
+                </span>
+                <span class="card-open">
+                    <svg width="11" height="11" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M10 4v4"></path><path d="M2 8h20"></path><path d="M6 4v4"></path></svg>
+                    Open
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="app part tabbed" data-step data-wait="800">
+        <Browser title={title} address="~/.config/sikemux/pages/tabs/7c2e9a4f0b1d4e6c8a35f1920bd47e63.html">
+            <div class="sheet"><Drawing /></div>
+        </Browser>
+    </div>
 </div>
 
 <style>
     .sketch {
         display: grid;
-        gap: 18px;
+        gap: 14px;
         width: min(100%, 380px);
     }
-    .ask {
-        justify-self: end;
-        max-width: 86%;
-        background: none;
+    .sketch .asked {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
         border: 0;
+        border-radius: 0;
+        background: none;
         box-shadow: none;
+        overflow: visible;
+        container-type: inline-size;
     }
-    .ask .bubble {
-        box-shadow: 0 16px 26px -20px color-mix(in srgb, var(--violet-ink) 70%, transparent);
+    .card {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--surface-raised);
+        font-family: "Figtree", var(--sans);
     }
-    .page {
-        padding: 24px 10px 20px;
+    .card-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        height: 72px;
+        padding: 0 14px 0 8px;
+    }
+    .card-thumb {
+        position: relative;
+        flex: none;
+        box-sizing: border-box;
+        width: 136px;
+        height: calc(136px / 2.4);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+        background: var(--surface);
+    }
+    .card-shot {
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+        width: 352px;
+        scale: calc(134 / 352);
+        transform-origin: 0 0;
+    }
+    .card-words {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    .card-words b,
+    .card-words small {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .card-words b {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+        color: var(--text-primary);
+    }
+    .card-words small {
+        font-size: 11px;
+        line-height: 1.4;
+        color: var(--text-tertiary);
+    }
+    .card-open {
+        display: flex;
+        align-items: center;
+        flex: none;
+        gap: 8px;
+        box-sizing: border-box;
+        height: 24px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 4.8px;
+        font-size: 11.5px;
+        color: var(--text-secondary);
+        white-space: nowrap;
+    }
+    @container (max-width: 355px) {
+        .card-open {
+            display: none;
+        }
+    }
+    .tabbed {
+        padding: 5px;
+    }
+    .sheet {
+        padding: 28px 12px;
     }
 </style>
