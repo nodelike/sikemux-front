@@ -296,7 +296,13 @@ const beats = Array.from({ length: places.length * AGENTS.length }, (_, turn) =>
             --pin-size: 38px;
         }
         .name {
+            max-width: 5.6em;
             font-size: 10px;
+            text-wrap: balance;
+        }
+        .name small {
+            letter-spacing: 0.02em;
+            white-space: nowrap;
         }
         .agents .name {
             font-size: 9px;
