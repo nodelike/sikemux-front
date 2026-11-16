@@ -1,0 +1,10 @@
+{
+    "version": 1,
+    "tasks": [{ "id": "web", "label": "Site", "command": "pnpm dev --port $PORT --host 127.0.0.1", "port": 4321 }],
+    "preview": { "url": "http://127.0.0.1:{port.web}" },
+    "worktree": {
+        "onCreate": [{ "id": "install", "label": "Install packages", "command": "pnpm install --frozen-lockfile" }]
+    },
+    "heavy": [{ "command": "pnpm build", "final": true }],
+    "check": "pnpm build"
+}
