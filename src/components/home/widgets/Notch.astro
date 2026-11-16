@@ -199,9 +199,9 @@ const twinkles = [
     for (const box of document.querySelectorAll<HTMLElement>("[data-notch]")) {
         const laptop = box.querySelector<HTMLElement>("[data-laptop]")!;
         const scale = () => {
-            const narrow = box.clientWidth < 680;
+            const narrow = getComputedStyle(box).getPropertyValue("--narrow").trim() === "1";
             const room = narrow ? box.clientWidth - 24 : box.clientWidth - 290;
-            laptop.style.setProperty("--s", String(Math.min(narrow ? 1 : 0.58, room / (narrow ? 760 : 1368))));
+            laptop.style.setProperty("--s", String(Math.min(narrow ? 0.8 : 0.58, room / (narrow ? 760 : 1368))));
             box.style.setProperty("--s", laptop.style.getPropertyValue("--s"));
         };
         new ResizeObserver(scale).observe(box);
@@ -322,6 +322,7 @@ const twinkles = [
         min-height: 640px;
         display: grid;
         align-items: end;
+        --narrow: 0;
         --open: linear(0, 0.103, 0.311, 0.526, 0.705, 0.836, 0.922, 0.974, 1.001, 1.012, 1.015, 1.014, 1.01, 1.007, 1.004, 1.002, 1.001, 1, 1, 1, 1);
         --settle: linear(0, 0.078, 0.235, 0.401, 0.549, 0.669, 0.762, 0.831, 0.882, 0.918, 0.944, 0.962, 0.974, 0.982, 0.988, 0.992, 0.995, 0.996, 0.998, 0.998, 1);
     }
@@ -1401,7 +1402,7 @@ const twinkles = [
         border-radius: 3px;
         background: var(--text-primary);
     }
-    @media (max-width: 680px) {
+    @media (max-width: 900px) {
         .laptop-crop {
             position: relative;
             justify-self: center;
@@ -1438,6 +1439,7 @@ const twinkles = [
             display: none;
         }
         .pair {
+            --narrow: 1;
             min-height: 0;
             justify-items: center;
             gap: 28px;
