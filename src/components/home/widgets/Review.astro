@@ -1,293 +1,731 @@
 ---
-import AgentName from "../../AgentName.astro";
 import FileIcon from "../../FileIcon.astro";
+import "../../../styles/buddies.css";
+import { buddy } from "../../../lib/buddies";
+import { faceOf } from "../../../lib/showcase-buddies";
 import "./app.css";
 
-const tests = [
-    "adds up every line",
-    "applies tax after the discount",
-    "never goes below zero",
-    "merges lines for the same variant",
-    "keeps different variants apart",
-    "rounds tax once, on the whole cart",
-    "an order moves from cart to shipped",
-    "a shipped order goes no further",
+type Kind = "added" | "deleted";
+type Row = { number: number; text: string; kind?: Kind; by?: string };
+
+const CHEVRON = `<path d="m9 18 6-6-6-6"/>`;
+const FILE = `<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/>`;
+const FILE_PLUS = `${FILE}<path d="M9 15h6"/><path d="M12 18v-6"/>`;
+const GIT = `<path d="M15 6a9 9 0 0 0-9 9V3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>`;
+const PULL_REQUEST = `<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M6 9L6 21"/>`;
+const COMMIT = `<circle cx="12" cy="12" r="3"/><path d="M3 12L9 12"/><path d="M15 12L21 12"/>`;
+
+const sync = [
+    { label: "Fetch", icon: `<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>` },
+    { label: "Pull", icon: `<path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/>` },
+    { label: "Push", icon: `<path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/>` },
+    { label: "PR", icon: PULL_REQUEST },
 ];
+
+const pages = [FILE, COMMIT, GIT, PULL_REQUEST];
+
+const groups = [
+    {
+        label: "Staged Changes",
+        icon: FILE_PLUS,
+        files: [
+            { name: "cart.mjs", dir: "src", by: "Wren", letter: "M", status: "modified", chosen: true },
+            { name: "cart.test.mjs", dir: "test", by: "Wren", letter: "A", status: "added", chosen: false },
+        ],
+    },
+    {
+        label: "Changes",
+        icon: FILE,
+        files: [{ name: "receipt.mjs", dir: "src", by: "Heron", letter: "U", status: "untracked", chosen: false }],
+    },
+];
+
+const cart: Row[] = [
+    { number: 1, text: `import { sum } from "./math.mjs";` },
+    { number: 2, text: "" },
+    { number: 3, text: "export function cartTotal(prices, taxRate = 0) {" },
+    { number: 4, kind: "deleted", text: "  const tax = (price) => Math.round(price * taxRate);" },
+    { number: 5, kind: "deleted", text: "  return sum(prices) + sum(prices.map(tax));" },
+    { number: 4, kind: "added", by: "Wren", text: "  const subtotal = sum(prices);" },
+    { number: 5, kind: "added", text: "  return subtotal + Math.round(subtotal * taxRate);" },
+    { number: 6, text: "}" },
+];
+
+const tests: Row[] = [
+    { number: 1, kind: "added", by: "Wren", text: `import assert from "node:assert/strict";` },
+    { number: 2, kind: "added", text: `import test from "node:test";` },
+    { number: 3, kind: "added", text: `import { cartTotal } from "../src/cart.mjs";` },
+    { number: 4, kind: "added", text: "" },
+    { number: 5, kind: "added", text: `test("rounds tax once, on the whole cart", () => {` },
+    { number: 6, kind: "added", text: "  const total = cartTotal([105, 105], 0.1);" },
+    { number: 7, kind: "added", text: "  assert.equal(total, 231);" },
+    { number: 8, kind: "added", text: "});" },
+];
+
+const cards = [
+    { dir: "src/", name: "cart.mjs", letter: "M", status: "modified", rows: cart, tucks: false },
+    { dir: "test/", name: "cart.test.mjs", letter: "A", status: "added", rows: tests, tucks: true },
+    { dir: "src/", name: "receipt.mjs", letter: "U", status: "untracked", rows: [] as Row[], tucks: false },
+];
+
+const KEYWORDS = new Set(["import", "from", "export", "function", "const", "return", "=>"]);
+
+function role(token: string, before: string, after: string) {
+    if (token.startsWith(`"`)) return "string";
+    if (KEYWORDS.has(token)) return "keyword";
+    if (/^\d/.test(token)) return "number";
+    if (!/^[A-Za-z_]/.test(token)) return undefined;
+    if (after === "(" || token === "Math") return "function";
+    if (before === "." || after === ":") return "property";
+    return "variable";
+}
+
+function painted(line: string) {
+    let html = "";
+    for (const match of line.matchAll(/"[^"]*"|=>|\d+(?:\.\d+)?|[A-Za-z_]\w*|\s+|./g)) {
+        const token = match[0];
+        const end = match.index + token.length;
+        const tone = role(token, line[match.index - 1] ?? "", line[end] ?? "");
+        const safe = token.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+        html += tone ? `<span class="gp-${tone}">${safe}</span>` : safe;
+    }
+    return html;
+}
+
+function face(name: string) {
+    const worn = faceOf(name)!;
+    return buddy(worn.pack, worn.shape, "idle").markup;
+}
 ---
 
-<div class="app review" data-play data-review>
-    <div class="pane-head">
-        <svg width="15" height="15" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"></circle><circle cx="6" cy="18" r="2.5"></circle><circle cx="18" cy="8" r="2.5"></circle><path d="M6 8.5v7M18 10.5c0 4-6 3-10 6"></path></svg>
-        <span class="title">main</span>
-        <span class="who">storefront</span>
-    </div>
-    <div class="git">
-        <div class="diff">
-            <div class="code">
-                <p class="ln"><i>1</i><span><em>export function</em> <u>cartTotal</u>(lines, &#123; taxRate = 0, discountCents = 0 &#125; = &#123;&#125;) &#123;</span></p>
-                <p class="ln"><i>2</i><span>  <em>const</em> subtotal = lines.<u>reduce</u>((sum, line) =&gt; sum + line.priceCents * line.quantity, 0);</span></p>
-                <p class="ln del" data-step data-wait="500"><i>3</i><span>  <em>const</em> taxed = Math.<u>round</u>((subtotal - discountCents) * (1 + taxRate));</span></p>
-                <p class="ln del" data-step data-wait="150"><i>4</i><span>  <em>return</em> Math.<u>max</u>(taxed, 0);</span></p>
-                <p class="ln add" data-step data-wait="350"><i>3</i><span>  <em>const</em> discounted = Math.<u>max</u>(subtotal - Math.<u>min</u>(discountCents, subtotal), 0);</span></p>
-                <p class="ln add" data-step data-wait="150"><i>4</i><span>  <em>return</em> discounted + Math.<u>round</u>(discounted * taxRate);</span></p>
-                <p class="ln"><i>5</i><span>&#125;</span></p>
+<div class="app review" data-play>
+    <div class="gp">
+        <div class="gp-side">
+            <div class="gp-head">
+                <div class="gp-top">
+                    <span class="gp-branch">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" set:html={GIT} />
+                        <b>main</b>
+                        <svg class="gp-down" viewBox="0 0 24 24" aria-hidden="true" set:html={CHEVRON} />
+                    </span>
+                    <i class="gp-space"></i>
+                    <span class="gp-more">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                    </span>
+                </div>
+                <div class="gp-sync">
+                    {sync.map((action) => (
+                        <span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true" set:html={action.icon} />
+                            {action.label}
+                        </span>
+                    ))}
+                </div>
             </div>
-            <p class="fh">src/cart.mjs <span class="counts" data-step="counted" data-wait="300"><i class="add">+2</i> <i class="del">−2</i></span></p>
-        </div>
-        <div class="files">
-            <p class="label">Changes</p>
-            <ul>
-                <li class="chosen"><FileIcon name="cart.mjs" />cart.mjs <small>src</small><span class="who"><AgentName name="Wren" /></span><span class="m" data-step data-wait="100">M</span></li>
-                <li><FileIcon name="cart.test.mjs" />cart.test.mjs <small>test</small><span class="who"><AgentName name="Wren" /></span><span class="m" data-step data-wait="100">M</span></li>
-            </ul>
-        </div>
-        <div class="term">
-            <p class="prompt">storefront % <span data-step data-wait="500" data-stream="40">node --test</span></p>
-            {tests.map((test) => <p class="ok" data-step data-wait="140">✔ {test}</p>)}
-            <p class="sum" data-step data-wait="250">ℹ tests 8 · pass 8 · fail 0</p>
-        </div>
-        <div class="message">
-            <div class="msg">
-                <p class="subject" data-step data-wait="500" data-stream="70">fix(cart): round tax once, on the whole cart</p>
-                <p class="body" data-step data-wait="100" data-stream="160">A cart of cheap items could come out a cent off the receipt. The discount can no longer push the total below zero.</p>
+            <div class="gp-box">
+                <div class="gp-message">
+                    <span class="gp-placeholder">Message (⌘⏎ to commit)</span>
+                    <p class="gp-draft">fix(cart): round tax once, on the whole cart<br /><br />A cart of cheap items came out a cent off.</p>
+                </div>
+                <div class="gp-actions">
+                    <span class="gp-write">
+                        <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path></svg>
+                        <span class="gp-writer">Claude · haiku</span>
+                        <span class="gp-writing">writing…</span>
+                    </span>
+                    <span class="gp-pick">
+                        <svg class="gp-down" viewBox="0 0 24 24" aria-hidden="true" set:html={CHEVRON} />
+                    </span>
+                    <span class="gp-commit">Commit 2 files</span>
+                </div>
             </div>
-            <p class="by" data-step="ready" data-wait="200"><AgentName name="Wren" /> wrote the message</p>
-            <button type="button" class="commit" data-commit disabled>Commit</button>
+            <div class="gp-filter">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+                <span>Filter files</span>
+            </div>
+            <div class="gp-list">
+                {groups.map((group) => (
+                    <div class="gp-group">
+                        <div class="gp-fold">
+                            <span class="gp-toggle">
+                                <svg class="gp-down" viewBox="0 0 24 24" aria-hidden="true" set:html={CHEVRON} />
+                                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={group.icon} />
+                                <b>{group.label}</b>
+                            </span>
+                            <span class="gp-count">{group.files.length}</span>
+                        </div>
+                        {group.files.map((file) => (
+                            <div class:list={["gp-file", { chosen: file.chosen }]}>
+                                <FileIcon name={file.name} size={14} />
+                                <span class="gp-name">{file.name}<small>{file.dir}</small></span>
+                                <span class="buddy gp-face" data-step data-wait="160" set:html={face(file.by)} />
+                                <span class:list={["gp-status gp-letter", file.status]}>{file.letter}</span>
+                            </div>
+                        ))}
+                    </div>
+                ))}
+            </div>
+            <div class="gp-foot">
+                {pages.map((icon, at) => (
+                    <span class:list={["gp-page", { pressed: at === 0 }]}>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" set:html={icon} />
+                    </span>
+                ))}
+            </div>
         </div>
+        <div class="gp-review">
+            {cards.map((card) => (
+                <div class:list={["gp-card", { shut: card.rows.length === 0, tucks: card.tucks }]}>
+                    <div class="gp-card-head">
+                        <svg class="gp-turn" viewBox="0 0 24 24" aria-hidden="true" set:html={CHEVRON} />
+                        <FileIcon name={card.name} size={14} />
+                        <span class="gp-path"><small>{card.dir}</small>{card.name}</span>
+                        <i class="gp-space"></i>
+                        <span class:list={["gp-status gp-badge", card.status]}>{card.letter}</span>
+                    </div>
+                    {card.rows.length > 0 && (
+                        <div class="gp-rows">
+                            {card.rows.map((row) => (
+                                <div class:list={["gp-row", row.kind]}>
+                                    <span class="gp-gutter">{row.number}</span>
+                                    <span class="gp-code">
+                                        <span class:list={["gp-text", { noted: row.by }]} set:html={painted(row.text)} />
+                                        {row.by && <span class="gp-note" data-step data-wait="220">{row.by}</span>}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {card.rows.length > 0 && <i class="gp-end" />}
+                </div>
+            ))}
+        </div>
+        <i class="gp-beat gp-asked" data-step data-wait="800"></i>
+        <i class="gp-beat gp-written" data-step data-wait="1400"></i>
     </div>
 </div>
-
-<script>
-    for (const box of document.querySelectorAll<HTMLElement>("[data-review]")) {
-        const commit = box.querySelector<HTMLButtonElement>("[data-commit]")!;
-        box.addEventListener("step", (event) => {
-            if ((event as CustomEvent).detail === "ready") commit.disabled = false;
-        });
-        commit.addEventListener("click", () => {
-            commit.textContent = "Committed as 4f1c2a7";
-            commit.disabled = true;
-            box.classList.add("committed");
-        });
-    }
-</script>
 
 <style>
     .review {
         max-width: 1080px;
     }
-    .review .pane-head svg {
-        fill: none;
-        stroke: var(--quiet);
-        stroke-width: 2;
-    }
-    .git {
-        display: grid;
-        grid-template-columns: 300px minmax(0, 1fr);
-        grid-template-areas: "message diff" "files diff" "term term";
-        border-top: 1px solid var(--line);
-    }
-    .message {
-        grid-area: message;
-        display: grid;
+    .gp {
+        --wash: 14%;
+        --code-keyword: #7048bd;
+        --code-string: #087f63;
+        --code-number: #9a5b00;
+        --code-variable: #2d2737;
+        --code-property: #176d99;
+        display: flex;
         gap: 8px;
-        padding: 12px 12px 4px;
-        border-right: 1px solid var(--line);
+        padding: 8px;
+        background: var(--surface-sunken);
+        text-align: left;
+        color: var(--text-primary);
     }
-    .files {
-        grid-area: files;
-        padding: 6px 12px 12px;
-        border-right: 1px solid var(--line);
+    :global(:root[data-theme="dark"]) .gp {
+        --wash: 8%;
+        --code-keyword: #a277ff;
+        --code-string: #61ffca;
+        --code-number: #ffca85;
+        --code-variable: #e7e5ef;
+        --code-property: #82d9ff;
     }
-    .diff {
-        grid-area: diff;
+    .gp svg {
+        display: block;
+        flex: none;
+    }
+    .gp b {
+        font-weight: 500;
+    }
+    .gp-space {
+        flex: 1;
+    }
+    .gp-beat {
+        display: none;
+    }
+    .gp-down,
+    .gp-turn {
+        rotate: 90deg;
+    }
+    .gp-side {
+        flex: none;
         display: flex;
         flex-direction: column;
-        min-width: 0;
-        font: 400 11.5px/1.75 var(--mono);
+        width: 30%;
+        min-width: 320px;
+        max-width: 400px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
     }
-    .term {
-        grid-area: term;
-        display: grid;
-        padding: 10px 14px 12px;
-        border-top: 1px solid var(--line);
-        background: var(--sunken);
-        font: 400 11px/1.65 var(--mono);
+    .gp-head {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 8px;
+        border-bottom: 1px solid var(--border);
     }
-    .msg {
-        min-height: 108px;
-        padding: 9px 10px;
-        border-radius: 8px;
-        border: 1px solid var(--line);
-        background: var(--raised);
-        display: grid;
-        align-content: start;
+    .gp-top {
+        display: flex;
+        align-items: center;
         gap: 4px;
+        padding: 0 8px;
     }
-    .subject {
-        font-weight: 500;
-        font-size: 12.5px;
-    }
-    .body {
-        color: var(--secondary);
-        font-size: 12px;
-        line-height: 1.45;
-    }
-    .by {
+    .gp-branch {
         display: flex;
         align-items: center;
         gap: 6px;
-        font-size: 11.5px;
-        color: var(--quiet);
-    }
-    .commit {
-        height: 28px;
+        height: 26px;
+        padding: 0 6px;
         border-radius: 5px;
+        font-size: 12px;
+    }
+    .gp-branch svg {
+        width: 13px;
+        height: 13px;
+        color: var(--text-tertiary);
+    }
+    .gp-branch .gp-down {
+        width: 9px;
+        height: 9px;
+    }
+    .gp-more {
+        display: grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 5px;
+        color: var(--icon-quiet);
+    }
+    .gp-more svg {
+        width: 13px;
+        height: 13px;
+    }
+    .gp-sync {
+        display: flex;
+        border-top: 1px solid var(--border);
+    }
+    .gp-sync span {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        height: 30px;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+    }
+    .gp-sync span + span {
+        border-left: 1px solid var(--border);
+    }
+    .gp-sync svg {
+        width: 12px;
+        height: 12px;
+        color: var(--text-tertiary);
+    }
+    .gp-box {
+        margin-bottom: 6px;
+        border-bottom: 1px solid var(--border);
+    }
+    .gp-message {
+        position: relative;
+        padding: 9px 10px;
+        font-size: 13px;
+        line-height: 19.5px;
+    }
+    .gp-placeholder {
+        position: absolute;
+        top: 9px;
+        left: 10px;
+        color: var(--text-tertiary);
+    }
+    .gp-draft {
+        min-height: 58.5px;
+        margin: 0;
+        visibility: hidden;
+    }
+    .gp:has(.gp-written.on) .gp-draft {
+        visibility: visible;
+        animation: w-in 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .gp:has(.gp-written.on) .gp-placeholder {
+        visibility: hidden;
+    }
+    .gp-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0 10px 8px;
+        font-size: 12px;
+    }
+    .gp-write {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+        height: 28px;
+        padding: 0 8px;
+        border: 1px solid var(--border);
+        white-space: nowrap;
+        color: var(--text-secondary);
+    }
+    .gp-write svg {
+        width: 11px;
+        height: 11px;
+        color: var(--cmd);
+    }
+    .gp-writer {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .gp-writing,
+    .gp:has(.gp-asked.on):not(:has(.gp-written.on)) .gp-writer {
+        display: none;
+    }
+    .gp:has(.gp-asked.on):not(:has(.gp-written.on)) .gp-writing {
+        display: block;
+    }
+    .gp-pick {
+        flex: none;
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--border);
+        color: var(--text-tertiary);
+    }
+    .gp-pick svg {
+        width: 9px;
+        height: 9px;
+    }
+    .gp-commit {
+        flex: none;
+        display: grid;
+        place-items: center;
+        height: 28px;
+        margin-left: auto;
+        padding: 0 12px;
         border: 1px solid var(--accent);
         background: var(--accent);
-        color: var(--ground);
-        font: 500 12.5px "Figtree", var(--sans);
-        cursor: pointer;
+        font-weight: 500;
+        white-space: nowrap;
+        color: var(--on-accent);
+        opacity: 0.45;
         transition: opacity 0.2s;
     }
-    .commit:disabled {
-        opacity: 0.4;
-        cursor: default;
-    }
-    .committed .commit {
+    .gp:has(.gp-written.on) .gp-commit {
         opacity: 1;
-        background: none;
-        color: var(--added);
-        border-color: var(--added);
     }
-    .label {
-        font-size: 10.5px;
-        font-weight: 500;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--quiet);
+    .gp-filter {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 34px;
         margin-bottom: 4px;
+        padding: 0 12px;
+        border-bottom: 1px solid var(--border);
+        font-size: 12px;
+        color: var(--text-tertiary);
     }
-    .files ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: grid;
-        gap: 2px;
+    .gp-filter svg {
+        width: 12px;
+        height: 12px;
     }
-    .files li {
+    .gp-list {
+        flex: 1;
+        padding: 0 6px 6px;
+    }
+    .gp-group + .gp-group {
+        padding-top: 6px;
+    }
+    .gp-fold {
         display: flex;
         align-items: center;
         gap: 6px;
-        padding: 5px 6px;
+        height: 26px;
+        padding: 0 4px 0 2px;
         border-radius: 5px;
-        font-size: 12px;
-        white-space: nowrap;
     }
-    .files .chosen {
-        background: var(--hover);
-    }
-    .files small {
-        color: var(--quiet);
-    }
-    .files .who {
-        margin-left: auto;
-        color: var(--quiet);
-        font: 400 10.5px var(--mono);
-    }
-    .files .m {
-        color: #e0a050;
-        font: 500 10.5px var(--mono);
-    }
-    .fh {
-        order: -1;
+    .gp-toggle {
+        flex: 1;
         display: flex;
-        gap: 8px;
         align-items: center;
-        min-height: 36px;
-        padding: 0 12px;
-        border-bottom: 1px solid var(--line);
-        font: 400 12.5px "Figtree", var(--sans);
+        gap: 4px;
+        padding: 0 4px;
+        font-size: 12px;
     }
-    .counts {
-        font: 400 11px var(--mono);
+    .gp-toggle svg {
+        width: 13px;
+        height: 13px;
+        color: var(--text-tertiary);
     }
-    .counts i {
-        font-style: normal;
-    }
-    .code {
-        padding: 6px 0 10px;
-        overflow: hidden;
-        -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent);
-        mask-image: linear-gradient(90deg, #000 88%, transparent);
-    }
-    .ln {
+    .gp-count {
         display: grid;
-        grid-template-columns: 34px max-content;
-        white-space: pre;
-        color: var(--ink);
+        place-items: center;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 9px;
+        background: var(--surface-chosen);
+        font-size: 11px;
+        color: var(--text-secondary);
     }
-    .ln i {
-        font-style: normal;
+    .gp-file {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 26px;
+        padding: 0 6px 0 18px;
+        border-radius: 5px;
+        font-size: 13px;
+        color: var(--text-secondary);
+    }
+    .gp-file.chosen {
+        background: var(--surface-chosen);
+        color: var(--text-primary);
+    }
+    .gp-file::before,
+    .gp-file::after {
+        content: "";
+        position: absolute;
+    }
+    .gp-file::before {
+        top: -1px;
+        bottom: -1px;
+        left: 12px;
+        width: 1px;
+        background: var(--tree-spine);
+    }
+    .gp-file::after {
+        top: 12px;
+        left: 13px;
+        width: 4px;
+        height: 1px;
+        background: var(--tree-tick);
+    }
+    .gp-file:last-child::before {
+        bottom: auto;
+        width: 5px;
+        height: 14.5px;
+        border: solid var(--tree-spine);
+        border-width: 0 0 1px 1px;
+        border-bottom-left-radius: 4px;
+        background: none;
+    }
+    .gp-file:last-child::after {
+        content: none;
+    }
+    .gp-fold + .gp-file::before {
+        top: -13px;
+    }
+    .gp-fold + .gp-file:last-child::before {
+        height: 27px;
+    }
+    .gp-name {
+        flex: 1;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .gp-name small {
+        margin-left: 6px;
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+    .gp-face {
+        width: 14px;
+        height: 14px;
+    }
+    .gp-letter {
+        flex: none;
+        width: 14px;
+        text-align: center;
+        font: 600 11px var(--mono);
+    }
+    .gp-badge {
+        padding-right: 1px;
+        font: 700 10px var(--mono);
+    }
+    .gp-status.modified {
+        color: var(--git-modified);
+    }
+    .gp-status.added {
+        color: var(--git-added);
+    }
+    .gp-status.untracked {
+        color: var(--git-untracked);
+    }
+    .gp-foot {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-top: 1px solid var(--border);
+    }
+    .gp-page {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 26px;
+        border-radius: 5px;
+        color: var(--icon-quiet);
+    }
+    .gp-page.pressed {
+        background: var(--surface-chosen);
+        color: var(--text-primary);
+    }
+    .gp-page svg {
+        width: 14px;
+        height: 14px;
+    }
+    .gp-review {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+    }
+    .gp-card-head {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 32px;
+        padding: 0 8px;
+        border: 1px solid var(--border);
+        border-bottom: 0;
+        border-radius: 5px 5px 0 0;
+        background: var(--surface);
+    }
+    .gp-card-head .gp-turn {
+        width: 11px;
+        height: 11px;
+        color: var(--text-tertiary);
+    }
+    .gp-path {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .gp-path small {
+        font-size: inherit;
+        color: var(--text-tertiary);
+    }
+    .gp-rows {
+        padding: 8px 0;
+        border: solid var(--border);
+        border-width: 0 1px;
+        background: var(--surface);
+        font: 400 12px/19px var(--mono);
+    }
+    .gp-row {
+        display: flex;
+        height: 19px;
+        overflow: hidden;
+    }
+    .gp-gutter {
+        flex: none;
+        width: calc(6ch + 3px);
+        padding: 0 1ch 0 2ch;
+        border-right: 2px solid transparent;
+        background: color-mix(in srgb, var(--surface-sunken) 30%, transparent);
+        background-clip: padding-box;
         text-align: right;
-        padding-right: 10px;
-        color: var(--quiet);
+        white-space: nowrap;
+        color: var(--text-tertiary);
     }
-    .ln em {
-        font-style: normal;
-        color: var(--accent);
+    .gp-code {
+        flex: 1;
+        display: flex;
+        min-width: 0;
+        overflow: hidden;
+        padding: 0 1ch;
+        color: var(--text-tertiary);
     }
-    .ln u {
-        text-decoration: none;
-        color: var(--looked);
+    .gp-text {
+        flex: none;
+        white-space: pre;
     }
-    .ln.del {
-        background: color-mix(in oklab, var(--deleted) 12%, transparent);
+    .gp-text.noted {
+        margin-right: 4ch;
     }
-    .ln.add {
-        background: color-mix(in oklab, var(--added) 12%, transparent);
+    .gp-row.added .gp-gutter {
+        color: var(--live);
     }
-    .del i::after {
-        content: " −";
-        color: var(--deleted);
+    .gp-row.deleted .gp-gutter {
+        color: var(--danger);
     }
-    .add i::after {
-        content: " +";
-        color: var(--added);
+    .gp-row.added .gp-code {
+        background: color-mix(in srgb, var(--live) var(--wash), transparent);
     }
-    .counts .add {
-        color: var(--added);
+    .gp-row.deleted .gp-code {
+        background: color-mix(in srgb, var(--danger) var(--wash), transparent);
     }
-    .counts .del {
-        color: var(--deleted);
+    .gp-code :global(.gp-keyword) {
+        color: var(--code-keyword);
     }
-    .prompt {
-        color: var(--secondary);
+    .gp-code :global(.gp-string) {
+        color: var(--code-string);
     }
-    .prompt span {
-        color: var(--ink);
+    .gp-code :global(.gp-number) {
+        color: var(--code-number);
     }
-    .ok {
-        color: var(--added);
+    .gp-code :global(.gp-function) {
+        color: var(--cmd);
     }
-    .sum {
-        color: var(--accent);
-        font-family: var(--mono);
+    .gp-code :global(.gp-variable) {
+        color: var(--code-variable);
     }
-    @media (max-width: 640px) {
-        .git {
-            grid-template-columns: minmax(0, 1fr);
-            grid-template-areas: "diff" "files" "term" "message";
+    .gp-code :global(.gp-property) {
+        color: var(--code-property);
+    }
+    .gp-note {
+        flex: none;
+        font: 400 11px/19px "Figtree", var(--sans);
+        color: var(--text-tertiary);
+    }
+    .gp-end {
+        display: block;
+        height: 1px;
+        border: solid var(--border);
+        border-width: 0 1px 1px;
+        border-radius: 0 0 5px 5px;
+        background: var(--surface);
+    }
+    .gp-card.shut .gp-card-head {
+        border-bottom: 1px solid var(--border);
+        border-radius: 5px;
+    }
+    .gp-card.shut .gp-turn {
+        rotate: none;
+    }
+    @media (max-width: 1100px) {
+        .gp {
+            flex-direction: column;
         }
-        .message,
-        .files {
-            border-right: 0;
+        .gp-side {
+            width: auto;
+            min-width: 0;
+            max-width: none;
         }
-        .files {
-            border-top: 1px solid var(--line);
+        .gp-card.tucks .gp-rows,
+        .gp-card.tucks .gp-end {
+            display: none;
         }
-        .message {
-            border-top: 1px solid var(--line);
-            padding-bottom: 12px;
+        .gp-card.tucks .gp-card-head {
+            border-bottom: 1px solid var(--border);
+            border-radius: 5px;
+        }
+        .gp-card.tucks .gp-turn {
+            rotate: none;
+        }
+    }
+    @media (max-width: 440px) {
+        .gp-note {
+            display: none;
         }
     }
 </style>
