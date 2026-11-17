@@ -20,7 +20,7 @@ export const COMPARISONS: Comparison[] = [
         kind: "agent chat app",
         what: "T3 Code is a free, MIT-licensed app for driving Claude Code, Codex, OpenCode, Cursor, Grok and other agents from one place, on Mac, Windows and Linux, with a phone app that reaches your computer.",
         difference:
-            "Both run the agent CLIs on the plans you already pay for. T3 Code is a chat front end for them, built on Electron. Sikemux is a native app of about 25 MB, drawn on the GPU, that puts each chat in its project with the editor, terminals, Git and a browser tab for each agent.",
+            "Both run the agent CLIs on the plans you already pay for. T3 Code is a chat front end for them, built on Electron. Sikemux is a native app of about 30 MB, drawn on the GPU, that puts each chat in its project with the editor, terminals, Git and a browser tab for each agent.",
         pickThem: ["You need Windows.", "You want Cursor's or Antigravity's agent in the same list.", "You want a large community and nightly releases."],
         pickSikemux: ["You want a small native app that stays quick with many agents open.", LIMITS, "You want the editor, Git and a browser for each agent on the same project."],
     },
@@ -30,7 +30,7 @@ export const COMPARISONS: Comparison[] = [
         kind: "agent development environment",
         what: "Orca, from Stably, is a free, MIT-licensed app for running a fleet of coding agents such as Claude Code and Codex on your own subscriptions, each in its own Git worktree, with a browser, an iOS Simulator and a phone app beside them. It runs on Apple Silicon and Intel Macs, Windows and Linux.",
         difference:
-            "Orca and Sikemux cover much of the same ground: many agents on your own plans, a browser and a Simulator for them, and a phone app. Orca is built around worktrees and a long list of agents, and ships several releases a day. Sikemux is a native app of about 25 MB built around the project and its chats, where a @Chief starts and steers the other agents for you.",
+            "Orca and Sikemux cover much of the same ground: many agents on your own plans, a browser and a Simulator for them, and a phone app. Orca is built around worktrees and a long list of agents, and ships several releases a day. Sikemux is a native app of about 30 MB built around the project and its chats, where a @Chief starts and steers the other agents for you.",
         pickThem: ["You need Windows or an Intel Mac.", "You want an agent Sikemux doesn't run; Orca lists more than 35.", "You want each task in its own worktree by default."],
         pickSikemux: ["You want a small native app that stays quick with many agents open.", LIMITS, "You want your Git host, CI, issues, logs and databases on the same project."],
     },

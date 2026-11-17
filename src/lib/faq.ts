@@ -18,7 +18,7 @@ export const FAQ: FaqEntry[] = [
     },
     {
         question: "Linux, Windows, Intel Macs?",
-        answer: "Apple Silicon Macs on macOS 11 or later, and x86_64 Linux as a .deb or AppImage. Windows and Intel Macs can build it from source, but there's no download for them yet. Join the Discord or watch the GitHub repository to hear when there is.",
+        answer: "Apple Silicon Macs on macOS 11 or later, and Linux on x86_64 and arm64 as a .deb, AppImage or Arch package. The Linux app needs Ubuntu 24.04, Debian 13 or newer; on older systems, install only the core with --host. Windows and Intel Macs can build it from source, but there's no download for them yet. Join the Discord or watch the GitHub repository to hear when there is.",
     },
     {
         question: "Is it free?",

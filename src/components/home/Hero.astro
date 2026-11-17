@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { release } = Astro.props;
-const size = release.dmgBytes === null ? "about 25 MB" : formatSize(release.dmgBytes);
+const size = release.dmgBytes === null ? "about 30 MB" : formatSize(release.dmgBytes);
 const points = [
     { icon: "M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20", title: "Your subscriptions.", body: "Claude Code, Codex and five more, on the subscriptions you already have." },
     { icon: "M13 2 3 14h9l-1 8 10-12h-9z", title: "Native, not Electron.", body: `Drawn on the GPU. The whole app downloads at ${size}.` },

@@ -25,8 +25,10 @@ export interface Release {
 
 const BUILDS = [
     { system: "macOS", label: "Download for Mac", suffix: "_aarch64.dmg" },
-    { system: "Linux", label: ".deb", suffix: "_amd64.deb" },
-    { system: "Linux", label: "AppImage", suffix: "_amd64.AppImage" },
+    { system: "Linux", label: ".deb x86_64", suffix: "_amd64.deb" },
+    { system: "Linux", label: "AppImage x86_64", suffix: "_amd64.AppImage" },
+    { system: "Linux", label: ".deb arm64", suffix: "_arm64.deb" },
+    { system: "Linux", label: "AppImage arm64", suffix: "_arm64.AppImage" },
 ];
 
 interface GithubAsset {
@@ -133,9 +135,9 @@ export async function starCount(): Promise<number | null> {
 }
 
 const FALLBACK: Release = {
-    version: "0.6.0",
+    version: "0.6.1",
     dmgUrl: RELEASES_URL,
-    dmgBytes: 24_872_033,
+    dmgBytes: 31_890_082,
     appImageUrl: RELEASES_URL,
     builds: BUILDS.map((build) => ({ ...build, url: RELEASES_URL, bytes: null })),
     publishedAt: null,
