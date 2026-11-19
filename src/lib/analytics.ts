@@ -1,14 +1,17 @@
 import type { PostHog } from "posthog-js";
 
-const REF_KEY = "sikemux-ref";
+const TAGS_KEY = "sikemux-tags";
+const TAG_NAMES = ["ref", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
 
 let client: Promise<PostHog> | null = null;
 
-function arrivalRef(): string | null {
-    const fromLink = new URLSearchParams(location.search).get("ref");
+// Kept for the tab, so a Download click on a later page still says where the visitor came from.
+function arrivalTags(): Record<string, string> {
+    const params = new URLSearchParams(location.search);
+    const fromLink = Object.fromEntries(TAG_NAMES.flatMap((name) => (params.has(name) ? [[name, params.get(name)!]] : [])));
     try {
-        if (fromLink) sessionStorage.setItem(REF_KEY, fromLink);
-        return fromLink ?? sessionStorage.getItem(REF_KEY);
+        if (Object.keys(fromLink).length) sessionStorage.setItem(TAGS_KEY, JSON.stringify(fromLink));
+        return JSON.parse(sessionStorage.getItem(TAGS_KEY) ?? "{}");
     } catch {
         return fromLink;
     }
@@ -17,7 +20,7 @@ function arrivalRef(): string | null {
 function analytics(): Promise<PostHog> | null {
     if (!import.meta.env.PROD || location.hostname !== "sikemux.com") return null;
     client ??= import("posthog-js").then(({ default: posthog }) => {
-        const ref = arrivalRef();
+        const tags = arrivalTags();
         posthog.init("phc_yGaffnPw38wHvQKgusATcKtYmkyDCbNNGpTo3sK9pQoD", {
             api_host: "/ingest",
             ui_host: "https://eu.posthog.com",
@@ -28,7 +31,7 @@ function analytics(): Promise<PostHog> | null {
             capture_performance: false,
             advanced_disable_flags: true,
             loaded: (loaded) => {
-                if (ref) loaded.register({ ref });
+                loaded.register(tags);
             },
         });
         return posthog;

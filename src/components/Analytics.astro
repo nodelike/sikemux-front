@@ -5,8 +5,8 @@
     else addEventListener("load", startAnalytics, { once: true });
 
     document.addEventListener("click", (event) => {
-        const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[data-release-dmg], a[data-download]") : null;
-        if (link) capture("download_clicked", { url: link.href, platform: link.dataset.platform });
+        const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[data-release-dmg], a[data-download], a[data-release-build]") : null;
+        if (link) capture("download_clicked", { url: link.href, platform: link.dataset.platform, build: link.dataset.releaseBuild });
         if (event.target instanceof Element && event.target.closest("[data-install-copy]")) capture("install_command_copied");
     });
 </script>
