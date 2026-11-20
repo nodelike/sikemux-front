@@ -4,11 +4,14 @@ import Icon, { type IconName } from "../Icon.astro";
 import Flow, { type Wire } from "./Flow.astro";
 import { buddy } from "../../lib/buddies";
 import { faceOf } from "../../lib/showcase-buddies";
+import { copyFor } from "../../i18n";
+
+const t = copyFor(Astro.currentLocale).tools;
 
 const tools: { id: string; icon: IconName; name: string }[] = [
-    { id: "databases", icon: "database", name: "Databases" },
-    { id: "actions", icon: "github", name: "GitHub Actions" },
-    { id: "issues", icon: "jira", name: "Jira and Linear" },
+    { id: "databases", icon: "database", name: t.names.databases },
+    { id: "actions", icon: "github", name: t.names.actions },
+    { id: "issues", icon: "jira", name: t.names.issues },
     { id: "rundeck", icon: "rundeck", name: "Rundeck" },
     { id: "signoz", icon: "signoz", name: "SigNoz" },
     { id: "aws", icon: "aws", name: "AWS" },
@@ -23,9 +26,9 @@ const working = buddy(face.pack, face.shape, "working");
 
 <section class="frame tools" id="tools">
     <div class="copy">
-        <span class="tag">Your tools</span>
-        <h2>CI, issues and production,<br /><span class="chip">without leaving <span class="nowrap">the window.</span></span></h2>
-        <p>Turn on what your team already runs. Anything you find, hand to an agent.</p>
+        <span class="tag">{t.tag}</span>
+        <h2>{t.title.lead}<br /><span class="chip">{t.title.chip}<span class="nowrap">{t.title.nowrap}</span></span></h2>
+        <p>{t.body}</p>
     </div>
     <div class="board">
         <span class="nub" style="left:-5px;top:-5px"></span>
@@ -46,7 +49,7 @@ const working = buddy(face.pack, face.shape, "working");
                 <span class="pin" data-node="agent">
                     <span class="buddy" data-motion={working.motion || undefined} set:html={working.markup} />
                 </span>
-                <span class="words"><b>@Wren</b><small class="mono">takes it from there</small></span>
+                <span class="words"><b>@Wren</b><small class="mono">{t.handoff}</small></span>
             </p>
         </Flow>
     </div>

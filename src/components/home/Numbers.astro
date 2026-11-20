@@ -3,12 +3,14 @@ import { formatSize, type Release } from "../../lib/release";
 import Backdrop from "./Backdrop.astro";
 import featherDay from "../../assets/art/feather-day.jpg";
 import featherNight from "../../assets/art/feather-night.jpg";
+import { copyFor } from "../../i18n";
 
 interface Props {
     release: Release;
 }
 
 const { release } = Astro.props;
+const t = copyFor(Astro.currentLocale).numbers;
 const own = release.dmgBytes ?? 31_900_000;
 const others = [
     { name: "Ghostty", bytes: 34_084_491 },
@@ -27,32 +29,32 @@ const ghostty = others[0].bytes;
     <div class="head">
         <div class="art"><Backdrop art={{ day: featherDay, night: featherNight }} cover="100% 22%" /></div>
         <div class="words">
-            <span class="tag">Size</span>
-            <h2 id="numbers-title">Light as<br /><span class="chip">a feather.</span></h2>
-            <p class="lede">Everything in one window, and still lighter than a terminal.</p>
+            <span class="tag">{t.tag}</span>
+            <h2 id="numbers-title">{t.title.lead}<br /><span class="chip">{t.title.chip}</span></h2>
+            <p class="lede">{t.lede}</p>
         </div>
     </div>
     <div class="cells">
         <div class="cell lit">
             <p class="big" data-release-size>{formatSize(own)}</p>
-            <p>The whole app, Mac or Linux.</p>
+            <p>{t.whole}</p>
         </div>
         <div class="cell">
             <p class="big">{Math.round(largest / own)}×</p>
-            <p>smaller than Cursor.</p>
+            <p>{t.thanCursor}</p>
         </div>
         <div class="cell">
             <p class="big">{Math.round((1 - own / ghostty) * 100)}%</p>
-            <p>smaller than Ghostty.</p>
+            <p>{t.thanGhostty}</p>
         </div>
         <div class="cell">
             <p class="big">$0</p>
-            <p>Free and MIT-licensed.</p>
+            <p>{t.free}</p>
         </div>
     </div>
     <div class="chart">
-        <div class="why"><p>Drawn natively on the GPU. Browser tabs use the WebKit already in macOS instead of shipping a browser of their own.</p>
-<p class="note mono">Apple Silicon installers from each project’s own download link, checked 13 November 2026.</p>
+        <div class="why"><p>{t.why}</p>
+<p class="note mono">{t.note}</p>
         </div>
         <ol>
             {

@@ -125,6 +125,9 @@ a {
 br + .chip {
     left: -0.14em;
 }
+:lang(zh) .chip {
+    word-break: keep-all;
+}
 :where(h1, h2, h3):has(.chip) {
     line-height: 1.12;
     text-wrap: balance;

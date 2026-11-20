@@ -1,5 +1,8 @@
 ---
 import { BREW_COMMAND, INSTALL_COMMAND } from "../../lib/release";
+import { copyFor } from "../../i18n";
+
+const t = copyFor(Astro.currentLocale).install;
 
 const installs = [
     { id: "brew", command: BREW_COMMAND },
@@ -7,10 +10,10 @@ const installs = [
 ];
 ---
 
-<div class="install" data-install>
-    <div class="tabs" role="tablist" aria-label="Install with">
+<div class="install" data-install data-copy-label={t.copy} data-copied-label={t.copied}>
+    <div class="tabs" role="tablist" aria-label={t.tabs}>
         {installs.map((install, index) => <button type="button" role="tab" aria-selected={index === 0 ? "true" : "false"} data-command={install.command}>{install.id}</button>)}
-        <button type="button" class="copy" aria-label="Copy the install command">Copy</button>
+        <button type="button" class="copy" aria-label={t.copyLabel}>{t.copy}</button>
     </div>
     <code class="mono">{installs[0].command}</code>
     <span class="nub" style="right:-5px;bottom:-5px"></span>
@@ -29,8 +32,8 @@ const installs = [
         const copy = box.querySelector<HTMLButtonElement>(".copy")!;
         copy.addEventListener("click", async () => {
             await navigator.clipboard.writeText(code.textContent ?? "");
-            copy.textContent = "Copied";
-            setTimeout(() => (copy.textContent = "Copy"), 1400);
+            copy.textContent = box.dataset.copiedLabel!;
+            setTimeout(() => (copy.textContent = box.dataset.copyLabel!), 1400);
         });
     }
 </script>

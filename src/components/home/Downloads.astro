@@ -4,39 +4,42 @@ import { ANDROID, APPLE, LINUX } from "../../lib/marks";
 import { APP_STORE_URL, BREW_COMMAND, INSTALL_COMMAND, RELEASES_URL, formatSize, type Release } from "../../lib/release";
 import gateDay from "../../assets/art/gate-day.jpg";
 import gateNight from "../../assets/art/gate-night.jpg";
+import { copyFor } from "../../i18n";
 
 interface Props {
     release: Release;
 }
 
 const { release } = Astro.props;
+const copy = copyFor(Astro.currentLocale);
+const t = copy.downloads;
 
 const commands = [
-    { note: "Mac, with Homebrew", command: BREW_COMMAND },
-    { note: "Mac or Linux", command: INSTALL_COMMAND },
-    { note: "Any server: core only, x86_64 and arm64", command: `${INSTALL_COMMAND} -s -- --host` },
+    { note: t.commands.brew, command: BREW_COMMAND },
+    { note: t.commands.curl, command: INSTALL_COMMAND },
+    { note: t.commands.host, command: `${INSTALL_COMMAND} -s -- --host` },
 ];
 const computers = [
-    { name: "macOS", mark: APPLE, needs: "Apple Silicon · macOS 11 or later" },
-    { name: "Linux", mark: LINUX, needs: "x86_64 or arm64 · Ubuntu 24.04, Debian 13 or newer" },
+    { name: "macOS", mark: APPLE, needs: t.needs.macOS },
+    { name: "Linux", mark: LINUX, needs: t.needs.linux },
 ];
 const phones = [
-    { name: "iPhone", mark: APPLE, needs: "iOS 17 or later", label: "App Store", href: APP_STORE_URL, arrow: "M7 17 17 7M8 7h9v9" },
-    { name: "Android", mark: ANDROID, needs: "In testing", label: "Join the test", href: "/phone", arrow: "M5 12h14M13 6l6 6-6 6" },
+    { name: "iPhone", mark: APPLE, needs: t.needs.iPhone, label: t.appStore, href: APP_STORE_URL, arrow: "M7 17 17 7M8 7h9v9" },
+    { name: "Android", mark: ANDROID, needs: t.needs.android, label: t.joinTest, href: "/phone", arrow: "M5 12h14M13 6l6 6-6 6" },
 ];
 ---
 
-<Scene tag="Download" id="download" ground={0.21} stacked={0.3} art={{ day: gateDay, night: gateNight, subject: 0.36 }}>
-    <Fragment slot="title">Get <span class="chip">Sikemux.</span></Fragment>
-    <p>Free and MIT-licensed. No account needed on your own computer.</p>
+<Scene tag={t.tag} id="download" ground={0.21} stacked={0.3} art={{ day: gateDay, night: gateNight, subject: 0.36 }}>
+    <Fragment slot="title">{t.title.lead}<span class="chip">{t.title.chip}</span></Fragment>
+    <p>{t.body}</p>
     <p class="fine mono">
-        v<span data-release-version>{release.version}</span> · <a href="/changelog">what’s new</a> · <a href={RELEASES_URL}>every release</a>
+        v<span data-release-version>{release.version}</span> · <a href="/changelog">{t.whatsNew}</a> · <a href={RELEASES_URL}>{t.everyRelease}</a>
     </p>
 
-    <div class="term" slot="media" data-term>
+    <div class="term" slot="media" data-term data-copy-label={copy.install.copy} data-copied-label={copy.install.copied}>
         <div class="bar mono">
             <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
-            Terminal
+            {t.terminal}
         </div>
         <ul>
             {
@@ -44,8 +47,8 @@ const phones = [
                     <li>
                         <span class="note mono"># {entry.note}</span>
                         <code class="mono">{entry.command}</code>
-                        <button type="button" class="copy mono" data-copy={entry.command} aria-label={`Copy the command for ${entry.note}`}>
-                            Copy
+                        <button type="button" class="copy mono" data-copy={entry.command} aria-label={t.copyFor(entry.note)}>
+                            {copy.install.copy}
                         </button>
                     </li>
                 ))
@@ -71,7 +74,7 @@ const phones = [
                                     <svg class="glyph" viewBox="0 0 24 24" aria-hidden="true">
                                         <path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14" />
                                     </svg>
-                                    {build.label}
+                                    {build.system === "macOS" ? copy.hero.download : build.label}
                                     {build.bytes !== null && (
                                         <span class="size mono" data-release-build-size={build.suffix}>
                                             {formatSize(build.bytes)}
@@ -107,10 +110,11 @@ const phones = [
 
 <script>
     for (const button of document.querySelectorAll<HTMLButtonElement>("[data-term] [data-copy]")) {
+        const { copyLabel, copiedLabel } = button.closest<HTMLElement>("[data-term]")!.dataset;
         button.addEventListener("click", async () => {
             await navigator.clipboard.writeText(button.dataset.copy!);
-            button.textContent = "Copied";
-            setTimeout(() => (button.textContent = "Copy"), 1400);
+            button.textContent = copiedLabel!;
+            setTimeout(() => (button.textContent = copyLabel!), 1400);
         });
     }
 </script>

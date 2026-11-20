@@ -25,72 +25,74 @@ import jettyDay from "../../assets/art/jetty-day.jpg";
 import jettyNight from "../../assets/art/jetty-night.jpg";
 import doveDay from "../../assets/art/dove-day.jpg";
 import doveNight from "../../assets/art/dove-night.jpg";
+import { copyFor } from "../../i18n";
+
+const t = copyFor(Astro.currentLocale).features;
+const { more, cells } = t;
 ---
 
-<Scene tag="Carry on" id="carry-on" art={{ day: handoffDay, night: handoffNight, subject: 0.2 }}>
-    <Fragment slot="title">Out of Claude?<br /><span class="chip">The chat carries on in Codex.</span></Fragment>
-    <p>Start an agent next to your code. It reads the project, edits files and runs commands while you watch. When one plan runs dry, the same chat carries on with another agent.</p>
+<Scene tag={t.carryOn.tag} id="carry-on" art={{ day: handoffDay, night: handoffNight, subject: 0.2 }}>
+    <Fragment slot="title">{t.carryOn.title.lead}<br /><span class="chip">{t.carryOn.title.chip}</span></Fragment>
+    <p>{t.carryOn.body}</p>
     <Chat slot="media" />
 </Scene>
 
-<Bento label="More in every chat">
-    <Cell tag="Mentions" small>
+<Bento label={more.label}>
+    <Cell tag={more.mentions.tag} small>
         <Mentions slot="board" />
-        <p># hands over an issue, ! a pull request, + a file.</p>
+        <p>{more.mentions.body}</p>
     </Cell>
-    <Cell tag="Limits" small>
+    <Cell tag={more.limits.tag} small>
         <Limits slot="board" />
-        <p>What every account has used, per window.</p>
+        <p>{more.limits.body}</p>
     </Cell>
-    <Cell tag="Stash" small>
+    <Cell tag={more.stash.tag} small>
         <Stash slot="board" />
-        <p>Drop in what you saved from your phone.</p>
+        <p>{more.stash.body}</p>
     </Cell>
 </Bento>
 
-<Scene tag="Chief" id="chief" flip stacked={0.36} art={{ day: chiefDay, night: chiefNight, subject: 0.68 }}>
-    <Fragment slot="title">Every project<br /><span class="chip">gets a chief.</span></Fragment>
-    <p>Tell <AgentName name="Chief" /> what you want. It hands the work to Claude Code, Codex and your other agents, answers what it can, and brings you only the calls that need you.</p>
-    <p>Back after an hour away? It tells you what landed and what was decided for you, and you can overrule any decision.</p>
+<Scene tag={t.chief.tag} id="chief" flip stacked={0.36} art={{ day: chiefDay, night: chiefNight, subject: 0.68 }}>
+    <Fragment slot="title">{t.chief.title.lead}<br /><span class="chip">{t.chief.title.chip}</span></Fragment>
+    <p>{t.chief.ask.before}<AgentName name="Chief" />{t.chief.ask.after}</p>
+    <p>{t.chief.back}</p>
     <Chief slot="media" />
 </Scene>
 
-<Scene tag="Teammates" id="teammates" wide ground={0.19} art={{ day: signalsDay, night: signalsNight }}>
-    <Fragment slot="title">Your agents<br /><span class="chip">talk to each other.</span></Fragment>
-    <p>They message each other, hand off work and start helpers beside them, across Claude Code, Codex, Pi, Hermes and Grok. In your chat it folds into one line you can open.</p>
+<Scene tag={t.teammates.tag} id="teammates" wide ground={0.19} art={{ day: signalsDay, night: signalsNight }}>
+    <Fragment slot="title">{t.teammates.title.lead}<br /><span class="chip">{t.teammates.title.chip}</span></Fragment>
+    <p>{t.teammates.body}</p>
     <Team slot="media" />
 </Scene>
 
-<Bento label="Buddies, the browser and drawn answers">
-    <Cell tag="Buddies" id="buddies" ground="violet">
+<Bento label={cells.label}>
+    <Cell tag={cells.buddies.tag} id="buddies" ground="violet">
         <Moods slot="board" />
-        <Fragment slot="title">Spot each one<br /><span class="chip">at a glance.</span></Fragment>
-        <p>Each agent wears a buddy that shows what it’s doing: working, waiting on you or done. Pick a pack and a face for each agent.</p>
+        <Fragment slot="title">{cells.buddies.title.lead}<br /><span class="chip">{cells.buddies.title.chip}</span></Fragment>
+        <p>{cells.buddies.body}</p>
     </Cell>
-    <Cell tag="Browser" id="browser">
+    <Cell tag={cells.browser.tag} id="browser">
         <Sizes slot="board" />
-        <Fragment slot="title">Opens your app.<br /><span class="chip">Checks its own work.</span></Fragment>
-        <p>Every agent gets a real browser tab on the engine Safari uses. It opens your app, clicks, types and takes screenshots like a tester would. Type in the tab yourself and the agent leaves it where it is.</p>
+        <Fragment slot="title">{cells.browser.title.lead}<br /><span class="chip">{cells.browser.title.chip}</span></Fragment>
+        <p>{cells.browser.body}</p>
     </Cell>
-    <Cell tag="Answers you can see" id="answers">
+    <Cell tag={cells.answers.tag} id="answers">
         <Sketch slot="board" />
-        <Fragment slot="title">When words aren’t enough,<br /><span class="chip">it draws.</span></Fragment>
-        <p>Ask how something works. It reads the code and draws the answer in a browser tab of its own. The chat keeps a card that brings the tab back, and any page it builds opens the same way.</p>
+        <Fragment slot="title">{cells.answers.title.lead}<br /><span class="chip">{cells.answers.title.chip}</span></Fragment>
+        <p>{cells.answers.body}</p>
     </Cell>
 </Bento>
 
-<Scene tag="Review and ship" id="review" wide ground={0.3} art={{ day: jettyDay, night: jettyNight, subject: 0.42 }}>
-    <Fragment slot="title">See which agent<br /><span class="chip">wrote each change.</span></Fragment>
-    <p>Every file an agent touched, marked with who wrote it. An agent writes the commit message, and you commit from the same window.</p>
-    <p>Quit Sikemux, or let it update: terminals and agents keep running.</p>
+<Scene tag={t.review.tag} id="review" wide ground={0.3} art={{ day: jettyDay, night: jettyNight, subject: 0.42 }}>
+    <Fragment slot="title">{t.review.title.lead}<br /><span class="chip">{t.review.title.chip}</span></Fragment>
+    {t.review.body.map((paragraph) => <p>{paragraph}</p>)}
     <Review slot="media" />
 </Scene>
 
 <Tools />
 
-<Scene tag="Notch and phone" id="notch" wide ground={0.29} art={{ day: doveDay, night: doveNight, subject: 0.76 }}>
-    <Fragment slot="title">It asks.<br /><span class="chip">You answer from anywhere.</span></Fragment>
-    <p>An island over the MacBook notch shows who's working and asks when an agent needs permission, even with Sikemux behind another app.</p>
-    <p>Away from the desk, the iPhone app asks you instead; Android is in testing.</p>
+<Scene tag={t.notch.tag} id="notch" wide ground={0.29} art={{ day: doveDay, night: doveNight, subject: 0.76 }}>
+    <Fragment slot="title">{t.notch.title.lead}<br /><span class="chip">{t.notch.title.chip}</span></Fragment>
+    {t.notch.body.map((paragraph) => <p>{paragraph}</p>)}
     <Notch slot="media" />
 </Scene>

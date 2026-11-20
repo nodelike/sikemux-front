@@ -6,25 +6,27 @@ import { APPLE } from "../../lib/marks";
 import { REPO_URL, type Release } from "../../lib/release";
 import tableDay from "../../assets/art/table-day.jpg";
 import tableNight from "../../assets/art/table-night.jpg";
+import { copyFor } from "../../i18n";
 
 interface Props {
     release: Release;
 }
 
 const { release } = Astro.props;
+const t = copyFor(Astro.currentLocale).closing;
 ---
 
 <section class="closing">
     <Backdrop art={{ day: tableDay, night: tableNight, subject: 0.72 }} sizes="100vw" />
     <div class="inner">
-        <h2>Bring your agents.<br /><span class="chip">Keep your plans.</span></h2>
-        <p>Sikemux runs the agents you already pay for and gives them the rest of your tools, on a Mac or a Linux box.</p>
+        <h2>{t.title.lead}<br /><span class="chip">{t.title.chip}</span></h2>
+        <p>{t.body}</p>
         <div class="actions">
             <a class="btn solid" href={release.dmgUrl} data-release-dmg>
                 <svg viewBox={APPLE.viewBox} fill="currentColor" aria-hidden="true"><path d={APPLE.path}></path></svg>
-                Download for Mac
+                {t.download}
             </a>
-            <a class="btn ghost" href="#download">All downloads</a>
+            <a class="btn ghost" href="#download">{t.all}</a>
             <a class="btn ghost" href={REPO_URL}><Icon name="github" size={18} />Star</a>
         </div>
         <Install />

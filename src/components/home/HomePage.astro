@@ -1,0 +1,83 @@
+---
+import Home from "../../layouts/Home.astro";
+import Nav from "./Nav.astro";
+import Hero from "./Hero.astro";
+import Hub from "./Hub.astro";
+import Features from "./Features.astro";
+import Beliefs from "./Beliefs.astro";
+import Numbers from "./Numbers.astro";
+import Downloads from "./Downloads.astro";
+import Closing from "./Closing.astro";
+import Faq from "./Faq.astro";
+import { faqStructuredData } from "../../lib/faq";
+import { copyFor } from "../../i18n";
+import Footer from "./Footer.astro";
+import Play from "./Play.astro";
+import LiveRelease from "../LiveRelease.astro";
+import { getImage } from "astro:assets";
+import hero from "../../assets/hero/hero.png";
+import { DISCORD_URL, X_URL, formatSize, latestRelease, REPO_URL } from "../../lib/release";
+
+const release = await latestRelease();
+
+const copy = copyFor(Astro.currentLocale);
+const { description } = copy.home;
+
+const screenshot = await getImage({ src: hero, width: 1560, format: "png" });
+const origin = Astro.site!.href.replace(/\/$/, "");
+
+const structuredData = [
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "Sikemux",
+        url: "https://sikemux.com/",
+    },
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "Sikemux",
+        url: "https://sikemux.com/",
+        logo: "https://sikemux.com/apple-touch-icon.png",
+        sameAs: [REPO_URL, DISCORD_URL, X_URL],
+    },
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "Sikemux",
+        description,
+        url: "https://sikemux.com/",
+        image: "https://sikemux.com/og.png",
+        screenshot: `${origin}${screenshot.src}`,
+        featureList: copy.home.featureList,
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: copy.home.operatingSystem,
+        softwareVersion: release.version,
+        downloadUrl: release.dmgUrl,
+        ...(release.dmgBytes !== null && { fileSize: formatSize(release.dmgBytes) }),
+        license: `${REPO_URL}/blob/main/LICENSE`,
+        isAccessibleForFree: true,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        author: { "@type": "Person", name: "nodelike", url: "https://github.com/nodelike" },
+        sameAs: [REPO_URL],
+    },
+    faqStructuredData(copy.faq.entries),
+];
+---
+
+<Home title={copy.home.title} description={description} structuredData={structuredData} lang={copy.lang}>
+    <Nav release={release} overArt />
+    <main>
+        <Hero release={release} />
+        <Hub />
+        <Features />
+        <Numbers release={release} />
+        <Beliefs />
+        <Downloads release={release} />
+        <Faq />
+    </main>
+    <Closing release={release} />
+    <Footer release={release} />
+    <LiveRelease />
+    <Play />
+</Home>

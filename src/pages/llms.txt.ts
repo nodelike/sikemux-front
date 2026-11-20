@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { AGENTS, agentPath } from "../lib/agents";
 import { COMPARISONS, comparisonPath } from "../lib/comparisons";
-import { FAQ } from "../lib/faq";
+import { en } from "../i18n/en";
 import { INSTALL_COMMAND, REPO_URL } from "../lib/release";
 
 export const GET: APIRoute = ({ site }) => {
@@ -25,7 +25,7 @@ ${COMPARISONS.map((comparison) => `- [Sikemux vs ${comparison.name}](${url(compa
 
 ## Questions
 
-${FAQ.map((entry) => `### ${entry.question}\n\n${entry.answer.replace(/<[^>]+>/g, "")}`).join("\n\n")}
+${en.faq.entries.map((entry) => `### ${entry.question}\n\n${entry.answer.replace(/<[^>]+>/g, "")}`).join("\n\n")}
 
 ## More
 

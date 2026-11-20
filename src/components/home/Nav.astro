@@ -1,5 +1,6 @@
 ---
 import { REPO_URL, type Release } from "../../lib/release";
+import { copyFor } from "../../i18n";
 
 interface Props {
     release: Release;
@@ -7,42 +8,43 @@ interface Props {
 }
 
 const { release, overArt = false } = Astro.props;
+const { root, nav: t } = copyFor(Astro.currentLocale);
 ---
 
 <header class="nav" data-over-art={overArt || undefined}>
     <div class="frame bar">
-        <a class="home" href="/" aria-label="Sikemux home">
+        <a class="home" href={root} aria-label={t.home}>
             <img class="on-light" src="/brand/lockup-black.svg" alt="Sikemux" width="118" height="22" />
             <img class="on-dark" src="/brand/lockup-white.svg" alt="" width="118" height="22" />
         </a>
-        <nav aria-label="Main">
-            <a href="/#carry-on">Features</a>
-            <a href="/agents">Agents</a>
-            <a href="https://docs.sikemux.com">Docs</a>
-            <a href="/vs">Compare</a>
-            <a href="/changelog">Changelog</a>
+        <nav aria-label={t.main}>
+            <a href={`${root}#carry-on`}>{t.features}</a>
+            <a href="/agents">{t.agents}</a>
+            <a href="https://docs.sikemux.com">{t.docs}</a>
+            <a href="/vs">{t.compare}</a>
+            <a href="/changelog">{t.changelog}</a>
         </nav>
         <div class="end">
-            <a class="link" href="/zh" lang="zh-CN">中文</a>
+            <a class="link" href={t.other.href} lang={t.other.lang}>{t.other.label}</a>
             <a class="link" href={REPO_URL}>GitHub</a>
-            <button class="theme" type="button" aria-label="Switch between light and dark">
+            <button class="theme" type="button" aria-label={t.theme}>
                 <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
                 <svg class="moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
             </button>
-            <a class="btn solid small" href={release.dmgUrl} data-release-dmg>Download</a>
-            <button class="menu" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Menu">
+            <a class="btn solid small" href={release.dmgUrl} data-release-dmg>{t.download}</a>
+            <button class="menu" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label={t.menu}>
                 <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
             </button>
         </div>
     </div>
-    <nav class="sheet" id="nav-menu" aria-label="Menu" hidden>
-        <a href="/#carry-on">Features</a>
-        <a href="/agents">Agents</a>
-        <a href="https://docs.sikemux.com">Docs</a>
-        <a href="/vs">Compare</a>
-        <a href="/changelog">Changelog</a>
+    <nav class="sheet" id="nav-menu" aria-label={t.menu} hidden>
+        <a href={`${root}#carry-on`}>{t.features}</a>
+        <a href="/agents">{t.agents}</a>
+        <a href="https://docs.sikemux.com">{t.docs}</a>
+        <a href="/vs">{t.compare}</a>
+        <a href="/changelog">{t.changelog}</a>
         <a href={REPO_URL}>GitHub</a>
-        <a href="/zh" lang="zh-CN">中文</a>
+        <a href={t.other.href} lang={t.other.lang}>{t.other.label}</a>
     </nav>
 </header>
 

@@ -1,20 +1,17 @@
 ---
-const beliefs = [
-    { title: "Your AI, your login.", body: "We don’t sell models. Sikemux runs the plan you already pay for, or free models when you have none." },
-    { title: "Native, or nothing.", body: "Typing and scrolling come first, even with twenty agents streaming." },
-    { title: "Agents are teammates.", body: "They get names, talk to each other and ask you only what’s yours to decide." },
-    { title: "If we don’t use it, it goes.", body: "Every feature here is one we reach for daily. The rest gets cut." },
-];
+import { copyFor } from "../../i18n";
+
+const t = copyFor(Astro.currentLocale).beliefs;
 ---
 
 <section class="frame beliefs" aria-labelledby="beliefs-title">
     <div class="head">
-        <span class="tag">What we hold to</span>
-        <h2 id="beliefs-title">Built by people who use it all day.</h2>
+        <span class="tag">{t.tag}</span>
+        <h2 id="beliefs-title">{t.title}</h2>
     </div>
     <ol>
         {
-            beliefs.map((belief, index) => (
+            t.list.map((belief, index) => (
                 <li>
                     <span class="n mono">{String(index + 1).padStart(2, "0")}</span>
                     <h3>{belief.title}</h3>

@@ -9,18 +9,20 @@ import nightTall from "../../assets/hero/night-tall.jpg";
 import Install from "./Install.astro";
 import Icon from "../Icon.astro";
 import { REPO_URL, formatSize, type Release } from "../../lib/release";
+import { copyFor } from "../../i18n";
 
 interface Props {
     release: Release;
 }
 
 const { release } = Astro.props;
-const size = release.dmgBytes === null ? "about 30 MB" : formatSize(release.dmgBytes);
+const t = copyFor(Astro.currentLocale).hero;
+const size = release.dmgBytes === null ? t.aboutSize : formatSize(release.dmgBytes);
 const points = [
-    { icon: "M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20", title: "Your subscriptions.", body: "Claude Code, Codex and five more, on the subscriptions you already have." },
-    { icon: "M13 2 3 14h9l-1 8 10-12h-9z", title: "Native, not Electron.", body: `Drawn on the GPU. The whole app downloads at ${size}.` },
-    { icon: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z", title: "Agents that talk.", body: "They message each other, hand off work and ask only what's yours to decide." },
-    { icon: "M5 2h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM10 18h4", title: "Answer from anywhere.", body: "The MacBook notch asks for you. Away from the desk, your phone does." },
+    { icon: "M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20", ...t.points.plans },
+    { icon: "M13 2 3 14h9l-1 8 10-12h-9z", title: t.points.native.title, body: t.points.native.body(size) },
+    { icon: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z", ...t.points.talk },
+    { icon: "M5 2h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM10 18h4", ...t.points.anywhere },
 ];
 
 const painting = async (wide: ImageMetadata, tall: ImageMetadata) => ({
@@ -45,22 +47,20 @@ const skies = [
         }
         <div class="stage">
             <div class="copy">
-                <h1><span class="line">A whole team of AI</span> <span class="line">coders, <span class="chip">in one window.</span></span></h1>
-                <p class="lede">
-                    Claude Code, Codex and more, side by side in one native app. See who’s working, who’s stuck and who needs you.
-                </p>
+                <h1><span class="line">{t.title.first}</span> <span class="line">{t.title.second}<span class="chip">{t.title.chip}</span></span></h1>
+                <p class="lede">{t.lede}</p>
                 <div class="row">
                     <Install />
                     <a class="btn solid" href={release.dmgUrl} data-release-dmg>
                         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.1.1 2.3-.6 3.1-1.5z"></path></svg>
-                        Download for Mac
+                        {t.download}
                     </a>
                     <a class="btn ghost" href={REPO_URL}><Icon name="github" size={18} />Star</a>
                 </div>
-                <p class="fine mono"><span>Apple Silicon Mac and Linux</span><span class="sep"> · </span><span><span data-release-size>{size}</span> · free, MIT</span></p>
+                <p class="fine mono"><span>{t.systems}</span><span class="sep"> · </span><span><span data-release-size>{size}</span> · {t.free}</span></p>
             </div>
             <figure class="shot window">
-                <Image src={hero} alt="Sikemux with Claude Code fixing a checkout bug, its browser tab open on the shop's cart page and the project's other agents listed on the right" widths={[828, 1560, 2340, 3120]} sizes="(min-width: 1000px) 50vw, 100vw" format="avif" quality={72} loading="eager" />
+                <Image src={hero} alt={t.shot} widths={[828, 1560, 2340, 3120]} sizes="(min-width: 1000px) 50vw, 100vw" format="avif" quality={72} loading="eager" />
             </figure>
         </div>
     </div>

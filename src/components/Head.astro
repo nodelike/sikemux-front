@@ -6,7 +6,7 @@ export interface Props {
     description: string;
     structuredData?: Record<string, unknown>[];
     noindex?: boolean;
-    lang?: "en" | "zh-CN";
+    lang?: string;
 }
 
 const { title, description, structuredData = [], noindex = false, lang = "en" } = Astro.props;
