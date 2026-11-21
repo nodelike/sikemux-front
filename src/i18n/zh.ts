@@ -6,7 +6,7 @@ export const zh: Copy = {
     home: {
         title: "Sikemux · 一整支 AI 编程团队，尽在一个窗口",
         description:
-            "Claude 额度用完了？对话在 Codex 里接着聊。Sikemux 是免费、MIT 开源的 Mac 与 Linux 原生应用，用你自己的订阅运行 Claude Code、Codex 等编程智能体，并告诉你哪一个在等你。",
+            "Claude 额度用完了？对话在 Codex 里接着聊。Sikemux 是免费、MIT 开源的 Mac、Windows 与 Linux 原生应用，用你自己的订阅运行 Claude Code、Codex 等编程智能体，并告诉你哪一个在等你。",
         featureList: [
             "用你自己的订阅运行 Claude Code、Codex、OpenCode、Hermes、Grok、OMP 和 Pi",
             "每个智能体都有一个真正的浏览器标签页",
@@ -43,7 +43,7 @@ export const zh: Copy = {
         lede: "Claude Code、Codex 等编程智能体，并排跑在同一个原生应用里。谁在干活、谁卡住了、谁在等你，一眼就能看到。",
         download: "下载 Mac 版",
         aboutSize: "约 30 MB",
-        systems: "Apple Silicon Mac、Linux 与 Windows",
+        systems: "Apple Silicon Mac、Windows 与 Linux",
         free: "免费，MIT 开源",
         shot: "Sikemux 窗口：Claude Code 正在修复购物车页面的问题，右侧是它的浏览器标签页和项目里的其他智能体",
         points: {
@@ -60,7 +60,7 @@ export const zh: Copy = {
             "照常安装智能体并登录。Sikemux 会找到它，用你的账号启动它，在这台电脑上，或在你连接的任何主机上。",
             "在应用、刘海或手机上查看和回复。",
         ],
-        places: { app: "Mac 或 Linux 应用", notch: "刘海岛", iphone: "iPhone", android: "Android", hosts: "已连接的主机" },
+        places: { app: "Mac、Windows 或 Linux 应用", notch: "刘海岛", iphone: "iPhone", android: "Android", hosts: "已连接的主机" },
         testing: "测试中",
         core: "Sikemux 核心",
         coreNote: "退出应用后，智能体继续运行",
@@ -134,7 +134,7 @@ export const zh: Copy = {
         tag: "体积",
         title: { lead: "轻得", chip: "像一根羽毛。" },
         lede: "一个窗口装下一切，却比一个终端还轻。",
-        whole: "整个应用，Mac 或 Linux。",
+        whole: "整个应用，Mac、Windows 或 Linux。",
         thanCursor: "比 Cursor 小。",
         thanGhostty: "比 Ghostty 小。",
         free: "免费，MIT 开源。",
@@ -190,7 +190,7 @@ export const zh: Copy = {
             },
             {
                 question: "Linux、Windows、Intel Mac 呢？",
-                answer: "支持 macOS 11 及以上的 Apple Silicon Mac，x64 和 arm64 的 Windows 10 22H2 及以上，以及 x86_64 和 arm64 的 Linux，提供 .deb、AppImage 和 Arch 软件包。Linux 应用需要 Ubuntu 24.04、Debian 13 或更新的系统；更旧的系统可以用 --host 只安装核心。Intel Mac 可以从源码构建，但暂时还没有下载包。加入 Discord 或关注 GitHub 仓库，有了会第一时间知道。",
+                answer: "支持 macOS 11 及以上的 Apple Silicon Mac，x64 和 arm64 的 Windows 10 22H2 及以上，以及 x86_64 和 arm64 的 Linux，从 <a href='https://github.com/nodelike/sikemux/releases/latest'>GitHub Releases</a> 下载 .deb 或 AppImage。Linux 应用需要 Ubuntu 24.04、Debian 13 或更新的系统；更旧的系统可以用 --host 只安装核心。Intel Mac 可以从源码构建，但暂时还没有下载包。加入 Discord 或关注 GitHub 仓库，有了会第一时间知道。",
             },
             {
                 question: "免费吗？",
@@ -206,7 +206,7 @@ export const zh: Copy = {
     },
     closing: {
         title: { lead: "带上你的智能体。", chip: "留着你的订阅。" },
-        body: "Sikemux 运行你已经在付费的智能体，再把你的其他工具交给它们，在 Mac 或 Linux 上都行。",
+        body: "Sikemux 运行你已经在付费的智能体，再把你的其他工具交给它们，在 Mac、Windows 或 Linux 上都行。",
         download: "下载 Mac 版",
         all: "全部下载",
     },

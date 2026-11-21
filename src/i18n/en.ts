@@ -4,7 +4,7 @@ export const en = {
     home: {
         title: "Sikemux · a whole team of AI coders, in one window",
         description:
-            "Out of Claude? The chat carries on in Codex. Sikemux is a free, MIT-licensed native app for Mac and Linux that runs Claude Code, Codex and other coding agents on your own plans and shows which one needs you.",
+            "Out of Claude? The chat carries on in Codex. Sikemux is a free, MIT-licensed native app for Mac, Windows and Linux that runs Claude Code, Codex and other coding agents on your own plans and shows which one needs you.",
         featureList: [
             "Runs Claude Code, Codex, OpenCode, Hermes, Grok, OMP and Pi with your own plan",
             "A real browser tab for each agent",
@@ -41,7 +41,7 @@ export const en = {
         lede: "Claude Code, Codex and more, side by side in one native app. See who’s working, who’s stuck and who needs you.",
         download: "Download for Mac",
         aboutSize: "about 30 MB",
-        systems: "Apple Silicon Mac, Linux and Windows",
+        systems: "Apple Silicon Mac, Windows and Linux",
         free: "free, MIT",
         shot: "Sikemux with Claude Code fixing a checkout bug, its browser tab open on the shop's cart page and the project's other agents listed on the right",
         points: {
@@ -58,7 +58,7 @@ export const en = {
             "Install an agent the usual way and sign in. Sikemux finds it and starts it with your login, on this computer or any host you link.",
             "Watch and answer from the app, the notch or your phone.",
         ],
-        places: { app: "Mac or Linux app", notch: "Notch island", iphone: "iPhone", android: "Android", hosts: "Linked hosts" },
+        places: { app: "Mac, Windows or Linux app", notch: "Notch island", iphone: "iPhone", android: "Android", hosts: "Linked hosts" },
         testing: "in testing",
         core: "Sikemux core",
         coreNote: "keeps agents running after you quit the app",
@@ -132,7 +132,7 @@ export const en = {
         tag: "Size",
         title: { lead: "Light as", chip: "a feather." },
         lede: "Everything in one window, and still lighter than a terminal.",
-        whole: "The whole app, Mac or Linux.",
+        whole: "The whole app, Mac, Windows or Linux.",
         thanCursor: "smaller than Cursor.",
         thanGhostty: "smaller than Ghostty.",
         free: "Free and MIT-licensed.",
@@ -188,7 +188,7 @@ export const en = {
             },
             {
                 question: "Linux, Windows, Intel Macs?",
-                answer: "Apple Silicon Macs on macOS 11 or later, Windows 10 22H2 or later on x64 and arm64, and Linux on x86_64 and arm64 as a .deb, AppImage or Arch package. The Linux app needs Ubuntu 24.04, Debian 13 or newer; on older systems, install only the core with --host. Intel Macs can build it from source, but there's no download for them yet. Join the Discord or watch the GitHub repository to hear when there is.",
+                answer: "Apple Silicon Macs on macOS 11 or later, Windows 10 22H2 or later on x64 and arm64, and Linux on x86_64 and arm64 as a .deb or AppImage from <a href='https://github.com/nodelike/sikemux/releases/latest'>GitHub Releases</a>. The Linux app needs Ubuntu 24.04, Debian 13 or newer; on older systems, install only the core with --host. Intel Macs can build it from source, but there's no download for them yet. Join the Discord or watch the GitHub repository to hear when there is.",
             },
             {
                 question: "Is it free?",
@@ -204,7 +204,7 @@ export const en = {
     },
     closing: {
         title: { lead: "Bring your agents.", chip: "Keep your plans." },
-        body: "Sikemux runs the agents you already pay for and gives them the rest of your tools, on a Mac or a Linux box.",
+        body: "Sikemux runs the agents you already pay for and gives them the rest of your tools, on a Mac, a Windows PC or a Linux box.",
         download: "Download for Mac",
         all: "All downloads",
     },
