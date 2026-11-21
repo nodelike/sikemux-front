@@ -15,7 +15,7 @@ export const en = {
             "Terminals and agents keep running after the app quits",
             "Answer agents from the MacBook notch or the phone app",
         ],
-        operatingSystem: "macOS 11 or later, Linux",
+        operatingSystem: "macOS 11 or later, Linux, Windows 10 or later",
     },
     nav: {
         home: "Sikemux home",
@@ -41,7 +41,7 @@ export const en = {
         lede: "Claude Code, Codex and more, side by side in one native app. See who’s working, who’s stuck and who needs you.",
         download: "Download for Mac",
         aboutSize: "about 30 MB",
-        systems: "Apple Silicon Mac and Linux",
+        systems: "Apple Silicon Mac, Linux and Windows",
         free: "free, MIT",
         shot: "Sikemux with Claude Code fixing a checkout bug, its browser tab open on the shop's cart page and the project's other agents listed on the right",
         points: {
@@ -156,11 +156,12 @@ export const en = {
         whatsNew: "what’s new",
         everyRelease: "every release",
         terminal: "Terminal",
-        commands: { brew: "Mac, with Homebrew", curl: "Mac or Linux", host: "Any server: core only, x86_64 and arm64" },
+        commands: { brew: "Mac, with Homebrew", curl: "Mac or Linux", scoop: "Windows, with Scoop", host: "Any server: core only, x86_64 and arm64" },
         copyFor: (note: string) => `Copy the command for ${note}`,
         needs: {
             macOS: "Apple Silicon · macOS 11 or later",
             linux: "x86_64 or arm64 · Ubuntu 24.04, Debian 13 or newer",
+            windows: "x64 or arm64 · Windows 10 22H2 or later",
             iPhone: "iOS 17 or later",
             android: "In testing",
         },
@@ -187,7 +188,7 @@ export const en = {
             },
             {
                 question: "Linux, Windows, Intel Macs?",
-                answer: "Apple Silicon Macs on macOS 11 or later, and Linux on x86_64 and arm64 as a .deb, AppImage or Arch package. The Linux app needs Ubuntu 24.04, Debian 13 or newer; on older systems, install only the core with --host. Windows and Intel Macs can build it from source, but there's no download for them yet. Join the Discord or watch the GitHub repository to hear when there is.",
+                answer: "Apple Silicon Macs on macOS 11 or later, Windows 10 22H2 or later on x64 and arm64, and Linux on x86_64 and arm64 as a .deb, AppImage or Arch package. The Linux app needs Ubuntu 24.04, Debian 13 or newer; on older systems, install only the core with --host. Intel Macs can build it from source, but there's no download for them yet. Join the Discord or watch the GitHub repository to hear when there is.",
             },
             {
                 question: "Is it free?",

@@ -26,6 +26,7 @@
         for (const link of document.querySelectorAll<HTMLAnchorElement>("a[data-download]")) {
             link.dataset.dmg = release.dmgUrl;
             link.dataset.appimage = release.appImageUrl;
+            link.dataset.exe = release.exeUrl;
         }
         for (const build of release.builds) {
             for (const link of document.querySelectorAll<HTMLAnchorElement>(`a[data-release-build="${build.suffix}"]`)) link.href = build.url;

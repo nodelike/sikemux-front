@@ -5,6 +5,7 @@ export const X_URL = "https://x.com/sikemux";
 export const RELEASES_URL = `${REPO_URL}/releases/latest`;
 export const INSTALL_COMMAND = "curl -fsSL https://sikemux.com/install | sh";
 export const BREW_COMMAND = "brew install --cask nodelike/tap/sikemux";
+export const SCOOP_COMMAND = "scoop bucket add sikemux https://github.com/nodelike/scoop-bucket; scoop install sikemux/sikemux";
 
 export interface Build {
     system: string;
@@ -19,6 +20,7 @@ export interface Release {
     dmgUrl: string;
     dmgBytes: number | null;
     appImageUrl: string;
+    exeUrl: string;
     builds: Build[];
     publishedAt: string | null;
 }
@@ -29,6 +31,8 @@ const BUILDS = [
     { system: "Linux", label: "AppImage x86_64", suffix: "_amd64.AppImage" },
     { system: "Linux", label: ".deb arm64", suffix: "_arm64.deb" },
     { system: "Linux", label: "AppImage arm64", suffix: "_arm64.AppImage" },
+    { system: "Windows", label: ".exe x64", suffix: "_x64-setup.exe" },
+    { system: "Windows", label: ".exe arm64", suffix: "_arm64-setup.exe" },
 ];
 
 interface GithubAsset {
@@ -139,6 +143,7 @@ const FALLBACK: Release = {
     dmgUrl: RELEASES_URL,
     dmgBytes: 31_890_082,
     appImageUrl: RELEASES_URL,
+    exeUrl: RELEASES_URL,
     builds: BUILDS.map((build) => ({ ...build, url: RELEASES_URL, bytes: null })),
     publishedAt: null,
 };
@@ -152,11 +157,13 @@ export function formatSize(bytes: number): string {
 export function toRelease(release: GithubRelease): Release {
     const dmg = release.assets.find((asset) => asset.name.endsWith("_aarch64.dmg"));
     const appImage = release.assets.find((asset) => asset.name.endsWith("_amd64.AppImage"));
+    const exe = release.assets.find((asset) => asset.name.endsWith("_x64-setup.exe"));
     return {
         version: release.tag_name.replace(/^v/, ""),
         dmgUrl: dmg?.browser_download_url ?? RELEASES_URL,
         dmgBytes: dmg?.size ?? null,
         appImageUrl: appImage?.browser_download_url ?? RELEASES_URL,
+        exeUrl: exe?.browser_download_url ?? RELEASES_URL,
         builds: BUILDS.map((build) => {
             const asset = release.assets.find((candidate) => candidate.name.endsWith(build.suffix));
             return { ...build, url: asset?.browser_download_url ?? RELEASES_URL, bytes: asset?.size ?? null };

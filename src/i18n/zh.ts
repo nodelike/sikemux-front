@@ -17,7 +17,7 @@ export const zh: Copy = {
             "退出应用后，终端和智能体继续运行",
             "在 MacBook 刘海或手机应用上回复智能体",
         ],
-        operatingSystem: "macOS 11 及以上，Linux",
+        operatingSystem: "macOS 11 及以上，Linux，Windows 10 及以上",
     },
     nav: {
         home: "Sikemux 首页",
@@ -43,7 +43,7 @@ export const zh: Copy = {
         lede: "Claude Code、Codex 等编程智能体，并排跑在同一个原生应用里。谁在干活、谁卡住了、谁在等你，一眼就能看到。",
         download: "下载 Mac 版",
         aboutSize: "约 30 MB",
-        systems: "Apple Silicon Mac 与 Linux",
+        systems: "Apple Silicon Mac、Linux 与 Windows",
         free: "免费，MIT 开源",
         shot: "Sikemux 窗口：Claude Code 正在修复购物车页面的问题，右侧是它的浏览器标签页和项目里的其他智能体",
         points: {
@@ -158,11 +158,12 @@ export const zh: Copy = {
         whatsNew: "新内容",
         everyRelease: "所有版本",
         terminal: "终端",
-        commands: { brew: "Mac，用 Homebrew", curl: "Mac 或 Linux", host: "任意服务器：仅核心，x86_64 和 arm64" },
+        commands: { brew: "Mac，用 Homebrew", curl: "Mac 或 Linux", scoop: "Windows，用 Scoop", host: "任意服务器：仅核心，x86_64 和 arm64" },
         copyFor: (note: string) => `复制命令：${note}`,
         needs: {
             macOS: "Apple Silicon · macOS 11 及以上",
             linux: "x86_64 或 arm64 · Ubuntu 24.04、Debian 13 或更新",
+            windows: "x64 或 arm64 · Windows 10 22H2 及以上",
             iPhone: "iOS 17 及以上",
             android: "测试中",
         },
@@ -189,7 +190,7 @@ export const zh: Copy = {
             },
             {
                 question: "Linux、Windows、Intel Mac 呢？",
-                answer: "支持 macOS 11 及以上的 Apple Silicon Mac，以及 x86_64 和 arm64 的 Linux，提供 .deb、AppImage 和 Arch 软件包。Linux 应用需要 Ubuntu 24.04、Debian 13 或更新的系统；更旧的系统可以用 --host 只安装核心。Windows 和 Intel Mac 可以从源码构建，但暂时还没有下载包。加入 Discord 或关注 GitHub 仓库，有了会第一时间知道。",
+                answer: "支持 macOS 11 及以上的 Apple Silicon Mac，x64 和 arm64 的 Windows 10 22H2 及以上，以及 x86_64 和 arm64 的 Linux，提供 .deb、AppImage 和 Arch 软件包。Linux 应用需要 Ubuntu 24.04、Debian 13 或更新的系统；更旧的系统可以用 --host 只安装核心。Intel Mac 可以从源码构建，但暂时还没有下载包。加入 Discord 或关注 GitHub 仓库，有了会第一时间知道。",
             },
             {
                 question: "免费吗？",

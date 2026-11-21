@@ -1,7 +1,7 @@
 ---
 import Scene from "./Scene.astro";
-import { ANDROID, APPLE, LINUX } from "../../lib/marks";
-import { APP_STORE_URL, BREW_COMMAND, INSTALL_COMMAND, RELEASES_URL, formatSize, type Release } from "../../lib/release";
+import { ANDROID, APPLE, LINUX, WINDOWS } from "../../lib/marks";
+import { APP_STORE_URL, BREW_COMMAND, INSTALL_COMMAND, RELEASES_URL, SCOOP_COMMAND, formatSize, type Release } from "../../lib/release";
 import gateDay from "../../assets/art/gate-day.jpg";
 import gateNight from "../../assets/art/gate-night.jpg";
 import { copyFor } from "../../i18n";
@@ -17,11 +17,13 @@ const t = copy.downloads;
 const commands = [
     { note: t.commands.brew, command: BREW_COMMAND },
     { note: t.commands.curl, command: INSTALL_COMMAND },
+    { note: t.commands.scoop, command: SCOOP_COMMAND },
     { note: t.commands.host, command: `${INSTALL_COMMAND} -s -- --host` },
 ];
 const computers = [
     { name: "macOS", mark: APPLE, needs: t.needs.macOS },
     { name: "Linux", mark: LINUX, needs: t.needs.linux },
+    { name: "Windows", mark: WINDOWS, needs: t.needs.windows },
 ];
 const phones = [
     { name: "iPhone", mark: APPLE, needs: t.needs.iPhone, label: t.appStore, href: APP_STORE_URL, arrow: "M7 17 17 7M8 7h9v9" },
@@ -225,17 +227,25 @@ const phones = [
         margin: 0;
         padding: 0;
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(6, minmax(0, 1fr));
         border-top: 1px solid var(--rule);
         background: var(--paper);
     }
     .platforms li {
         display: grid;
+        grid-column: span 2;
         grid-template-rows: auto auto auto 1fr;
         gap: 10px;
         padding: 26px 20px 28px;
         border-right: 1px solid var(--rule);
     }
+    .platforms li:nth-child(n + 4) {
+        grid-column: span 3;
+    }
+    .platforms li:nth-child(-n + 3) {
+        border-bottom: 1px solid var(--rule);
+    }
+    .platforms li:nth-child(3),
     .platforms li:last-child {
         border-right: 0;
     }
@@ -281,17 +291,6 @@ const phones = [
         opacity: 0.72;
     }
 
-    @media (max-width: 1100px) {
-        .platforms {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-        .platforms li:nth-child(2) {
-            border-right: 0;
-        }
-        .platforms li:nth-child(-n + 2) {
-            border-bottom: 1px solid var(--rule);
-        }
-    }
     @media (max-width: 560px) {
         .term li {
             grid-template-areas: "note copy" "code code";
@@ -315,6 +314,10 @@ const phones = [
             padding: 20px 16px 22px;
             border-right: 0;
             border-bottom: 1px solid var(--rule);
+        }
+        .platforms li,
+        .platforms li:nth-child(n + 4) {
+            grid-column: 1 / -1;
         }
         .platforms li:last-child {
             border-bottom: 0;

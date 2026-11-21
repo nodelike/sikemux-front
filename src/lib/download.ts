@@ -1,10 +1,10 @@
-import { ANDROID, APPLE, LINUX, type Mark } from "./marks";
+import { ANDROID, APPLE, LINUX, WINDOWS, type Mark } from "./marks";
 import { APP_STORE_URL } from "./release";
 
 type Platform = "mac" | "linux" | "windows" | "iphone" | "android";
 
 interface Offer {
-    mark: Mark | null;
+    mark: Mark;
     label: string;
     href: string;
 }
@@ -31,7 +31,7 @@ function offerFor(platform: Platform, link: HTMLAnchorElement): Offer {
         case "android":
             return { mark: ANDROID, label: "Get the Android app", href: "/phone" };
         case "windows":
-            return { mark: null, label: "Get it for Mac or Linux", href: "/#download" };
+            return { mark: WINDOWS, label: "Download for Windows", href: link.dataset.exe ?? link.href };
     }
 }
 
@@ -45,8 +45,6 @@ export function pointDownloads() {
         if (label) label.textContent = offer.label;
         const icon = link.querySelector("svg");
         if (!icon) continue;
-        icon.toggleAttribute("hidden", offer.mark === null);
-        if (offer.mark === null) continue;
         icon.setAttribute("viewBox", offer.mark.viewBox);
         icon.querySelector("path")?.setAttribute("d", offer.mark.path);
     }
