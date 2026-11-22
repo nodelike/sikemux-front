@@ -95,10 +95,10 @@ const question = "Sign-up: magic links or passwords?";
         flex-direction: column;
         padding-top: 52px;
     }
+    /* The window keeps one height through the play: the open run spills down over the steps that have not shown yet, then folds back into this room. */
     .said {
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
         gap: 14px;
         height: 79px;
         padding: 0 22px;
@@ -126,6 +126,11 @@ const question = "Sign-up: magic links or passwords?";
         width: 88%;
         margin: -22px 0 0 auto;
         transform: translateX(8%);
+    }
+    @media (max-width: 900px) {
+        .side {
+            transform: none;
+        }
     }
     .side > :global(.app) {
         width: 100%;
