@@ -1,0 +1,231 @@
+---
+import Article from "../layouts/Article.astro";
+import Icon from "../components/Icon.astro";
+import { MODS_DOCS, MODS_TOPIC, installLink, listedMods, repoLink } from "../lib/mods";
+
+const mods = await listedMods();
+const description = "Mods for Sikemux that people have shared on GitHub: small web pages that open in a tab beside your agents. Read the code, then install one in a click.";
+---
+
+<Article title="Sikemux mods · panels shared on GitHub" description={description} crumbs={[{ name: "Mods", path: "/mods" }]}>
+    <header>
+        <p class="label">Mods · <span data-mod-count>{mods.length}</span></p>
+        <h1>Panels your agents<br /><span class="chip">built.</span></h1>
+        <p class="lede">
+            A mod is a small web page that opens in a tab beside your chats, showing what Sikemux and your connectors know. These are the ones people have put on GitHub. Read the code, then open it in Sikemux to install.
+        </p>
+    </header>
+
+    <p class="strip">
+        <Icon name="github" size={15} />
+        <span>Made a mod? Add the topic <code>{MODS_TOPIC}</code> to its public GitHub repo, with <code>mod.json</code> and <code>index.html</code> at the top, and it shows here by itself. There is no review queue.</span>
+    </p>
+
+    <section class="list">
+        <ul class="mods" data-mods>
+            {
+                mods.map((mod) => (
+                    <li class="mod">
+                        <a class="name" href={repoLink(mod.repo)}>{mod.name}</a>
+                        <p class="about">{mod.description}</p>
+                        <div class="meta">
+                            <span class="stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2L7 14.2 2 9.3l6.9-1z" /></svg><span data-stars>{mod.stars}</span></span>
+                            <span class="owner">@{mod.owner}</span>
+                            <a class="btn small" href={installLink(mod.repo)}>Open in Sikemux</a>
+                        </div>
+                    </li>
+                ))
+            }
+            <li class="mod next" data-next>
+                {
+                    mods.length === 0 ? (
+                        <>
+                            <p class="name">No mods shared yet.</p>
+                            <p class="about">
+                                Ask an agent in Sikemux to make one, or write <code>mod.json</code> and <code>index.html</code> by hand. Push it to a public GitHub repo with the topic <code>{MODS_TOPIC}</code> and it is the first one here.
+                            </p>
+                        </>
+                    ) : (
+                        <p class="about">Yours next. Ask an agent in Sikemux to make one; it knows how.</p>
+                    )
+                }
+                <div class="meta">
+                    <a class="btn small" href={MODS_DOCS}>How mods work</a>
+                </div>
+            </li>
+        </ul>
+    </section>
+</Article>
+
+<template id="mod-card">
+    <li class="mod">
+        <a class="name"></a>
+        <p class="about"></p>
+        <div class="meta">
+            <span class="stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2L7 14.2 2 9.3l6.9-1z" /></svg><span data-stars></span></span>
+            <span class="owner"></span>
+            <a class="btn small">Open in Sikemux</a>
+        </div>
+    </li>
+</template>
+
+<script>
+    import { MODS_SEARCH, installLink, repoLink, toMods, type Mod } from "../lib/mods";
+
+    const KEY = "sikemux-mods";
+    const FRESH_FOR = 10 * 60 * 1000;
+
+    async function fresh(): Promise<Mod[] | null> {
+        try {
+            const kept = JSON.parse(sessionStorage.getItem(KEY) ?? "null");
+            if (kept && Date.now() - kept.at < FRESH_FOR) return kept.mods;
+        } catch {}
+        try {
+            const response = await fetch(`https://api.github.com${MODS_SEARCH}`, { headers: { Accept: "application/vnd.github+json" } });
+            if (!response.ok) return null;
+            const mods = toMods(await response.json());
+            try {
+                sessionStorage.setItem(KEY, JSON.stringify({ at: Date.now(), mods }));
+            } catch {}
+            return mods;
+        } catch {
+            return null;
+        }
+    }
+
+    const list = document.querySelector<HTMLElement>("[data-mods]");
+    const next = document.querySelector<HTMLElement>("[data-next]");
+    const template = document.querySelector<HTMLTemplateElement>("#mod-card");
+    const shown = list?.querySelectorAll(".mod:not([data-next])").length ?? 0;
+    const mods = list && next && template ? await fresh() : null;
+
+    if (mods && list && next && template && (mods.length > 0 || shown > 0)) {
+        const cards = mods.map((mod) => {
+            const card = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
+            const name = card.querySelector<HTMLAnchorElement>(".name")!;
+            name.textContent = mod.name;
+            name.href = repoLink(mod.repo);
+            card.querySelector(".about")!.textContent = mod.description;
+            card.querySelector("[data-stars]")!.textContent = String(mod.stars);
+            card.querySelector(".owner")!.textContent = `@${mod.owner}`;
+            card.querySelector<HTMLAnchorElement>(".btn")!.href = installLink(mod.repo);
+            return card;
+        });
+        list.replaceChildren(...cards, next);
+        if (mods.length > 0 && shown === 0) {
+            next.querySelector(".name")?.remove();
+            next.querySelector(".about")!.textContent = "Yours next. Ask an agent in Sikemux to make one; it knows how.";
+        }
+        const count = document.querySelector("[data-mod-count]");
+        if (count) count.textContent = String(mods.length);
+    }
+</script>
+
+<style>
+    .strip {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 0;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--rule);
+        font-size: 14px;
+        line-height: 1.55;
+        color: var(--ink-2);
+    }
+    .strip :global(svg) {
+        flex: none;
+        margin-top: 3px;
+        color: var(--ink);
+    }
+    code {
+        font: 400 0.92em/1 var(--mono);
+        color: var(--ink);
+    }
+    :global(.article) > .list {
+        padding: 0;
+    }
+    .mods {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .mod {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 168px;
+        padding: 24px 20px 20px;
+        border-bottom: 1px solid var(--rule);
+    }
+    .mod:nth-child(odd) {
+        border-right: 1px solid var(--rule);
+    }
+    .mod:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        border-right: 0;
+    }
+    .mods > .mod:last-child,
+    .mods > .mod:nth-last-child(2):nth-child(odd) {
+        border-bottom: 0;
+    }
+    .name {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 500;
+        color: var(--ink);
+        text-decoration: none;
+    }
+    a.name:hover {
+        color: var(--violet);
+    }
+    :global(.article) .about {
+        flex: 1;
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--ink-2);
+    }
+    .next .about {
+        color: var(--ink-3);
+    }
+    .meta {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font: 400 13px/1 var(--mono);
+        color: var(--ink-3);
+    }
+    .meta .btn {
+        margin-left: auto;
+    }
+    .next .meta .btn {
+        margin-left: 0;
+    }
+    .stars {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .stars svg {
+        width: 13px;
+        height: 13px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linejoin: round;
+    }
+    @media (max-width: 720px) {
+        .mods {
+            grid-template-columns: minmax(0, 1fr);
+        }
+        .mod:nth-child(odd) {
+            border-right: 0;
+        }
+        .mods > .mod:nth-last-child(2):nth-child(odd) {
+            border-bottom: 1px solid var(--rule);
+        }
+    }
+</style>

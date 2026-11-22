@@ -26,6 +26,7 @@ export const zh: Copy = {
         main: "主导航",
         features: "功能",
         agents: "智能体",
+        mods: "模组",
         docs: "文档",
         compare: "对比",
         changelog: "更新日志",

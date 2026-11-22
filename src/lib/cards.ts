@@ -29,6 +29,7 @@ export const CARDS: Card[] = [
         body: "Claude Code, Codex, OpenCode, Hermes, Grok, OMP and Pi, signed in with your own plan.",
         visual: { kind: "marks", agents: AGENTS.map((agent) => ({ id: agent.icon, color: agent.color })) },
     },
+    { path: "/mods", label: "Mods", title: "Panels your agents", chip: "built.", body: "Mods people have shared on GitHub. Read the code, then install one in a click.", visual: HERO },
     ...AGENTS.map((agent) => ({
         path: agentPath(agent),
         label: "Agents",

@@ -114,7 +114,7 @@ export async function stableChangelog(): Promise<ChangelogEntry[]> {
 const githubAnswers = new Map<string, Promise<unknown>>();
 
 // Each build or dev server asks GitHub once per URL, since anonymous calls are capped at 60 an hour.
-function github<T>(path: string, accept = "application/vnd.github+json"): Promise<T> {
+export function github<T>(path: string, accept = "application/vnd.github+json"): Promise<T> {
     const key = `${accept} ${path}`;
     const known = githubAnswers.get(key);
     if (known) return known as Promise<T>;

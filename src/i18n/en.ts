@@ -24,6 +24,7 @@ export const en = {
         main: "Main",
         features: "Features",
         agents: "Agents",
+        mods: "Mods",
         docs: "Docs",
         compare: "Compare",
         changelog: "Changelog",

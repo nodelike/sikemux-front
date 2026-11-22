@@ -26,6 +26,7 @@ export const ja: Copy = {
         main: "メイン",
         features: "機能",
         agents: "エージェント",
+        mods: "Mod",
         docs: "ドキュメント",
         compare: "比較",
         changelog: "更新履歴",
