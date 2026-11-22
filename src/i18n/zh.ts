@@ -84,7 +84,7 @@ export const zh: Copy = {
             tag: "Chief",
             title: { lead: "每个项目", chip: "都有一位总管。" },
             ask: { before: "把你想要的告诉 ", after: "。它把活分给 Claude Code、Codex 和你的其他智能体，能回答的自己回答，只把需要你拍板的事拿来问你。" },
-            back: "离开一小时回来？它会告诉你哪些已经合入、哪些已替你做了决定，任何决定你都可以推翻。",
+            back: "离开一阵回来？需要你拍板的事项停在它聊天的末尾，它做的每个决定都单独一行、随时可推翻，完成的工作都在 Tasks 里。",
         },
         teammates: {
             tag: "队友",

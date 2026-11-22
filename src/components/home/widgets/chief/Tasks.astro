@@ -1,0 +1,164 @@
+---
+import AgentName from "../../../AgentName.astro";
+
+interface Row {
+    mark: "call" | "commit";
+    title: string;
+    fact: string;
+    holder: string;
+    age: string;
+}
+
+interface Props {
+    forYou: Row[];
+    finished: Row[];
+}
+
+const { forYou, finished } = Astro.props;
+const sections = [
+    { words: "For you", rows: forYou },
+    { words: "Finished", rows: finished },
+];
+const marks = {
+    call: '<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>',
+    commit: '<circle cx="12" cy="12" r="3"/><path d="M3 12h6"/><path d="M15 12h6"/>',
+};
+---
+
+<div class="app tasks" data-step="tasks" data-wait="900">
+    <div class="top">
+        <span class="heading">Tasks</span>
+        <i class="gap"></i>
+        <span class="counts"><b>{forYou.length}</b> for you<b>{finished.length}</b> finished</span>
+    </div>
+    <div class="list">
+        {
+            sections.map(({ words, rows }) => (
+                <div class="section">
+                    <p class="cap">
+                        <span class="caps">{words}</span>
+                        <span class="caps tally">{rows.length}</span>
+                        <i class="hair" />
+                    </p>
+                    {rows.map((row) => (
+                        <p class="item">
+                            <svg viewBox="0 0 24 24" set:html={marks[row.mark]} />
+                            <span class="what">{row.title}</span>
+                            <span class="note">{row.fact}</span>
+                            <AgentName name={row.holder} chip />
+                            <span class="age">{row.age}</span>
+                        </p>
+                    ))}
+                </div>
+            ))
+        }
+    </div>
+</div>
+
+<style>
+    .tasks {
+        display: flex;
+        flex-direction: column;
+    }
+    .top {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        height: 40px;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--line);
+    }
+    .heading {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+    .gap {
+        flex: 1;
+    }
+    .counts {
+        display: flex;
+        gap: 5px;
+        font-size: 11.5px;
+        color: var(--text-tertiary);
+        white-space: nowrap;
+    }
+    .counts b {
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+        color: var(--text-secondary);
+    }
+    .counts b:not(:first-child) {
+        margin-left: 7px;
+    }
+    .list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 16px 14px;
+    }
+    .cap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 22px;
+        padding: 0 6px;
+    }
+    .caps {
+        flex: none;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--text-tertiary);
+    }
+    .tally {
+        font-variant-numeric: tabular-nums;
+        color: var(--text-disabled);
+    }
+    .hair {
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+    }
+    .item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        height: 30px;
+        padding: 0 6px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+    .item > svg {
+        flex: none;
+        width: 12px;
+        height: 12px;
+        color: var(--text-tertiary);
+    }
+    .what {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+    .note {
+        flex: 1 1000 0;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--text-tertiary);
+    }
+    .item :global(.agent-chip) {
+        font-size: 11.5px;
+    }
+    .age {
+        flex: none;
+        min-width: 26px;
+        text-align: right;
+        font-size: 11px;
+        font-variant-numeric: tabular-nums;
+        color: var(--text-tertiary);
+    }
+</style>

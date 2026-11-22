@@ -82,7 +82,7 @@ export const en = {
             tag: "Chief",
             title: { lead: "Every project", chip: "gets a chief." },
             ask: { before: "Tell ", after: " what you want. It hands the work to Claude Code, Codex and your other agents, answers what it can, and brings you only the calls that need you." },
-            back: "Back after an hour away? It tells you what landed and what was decided for you, and you can overrule any decision.",
+            back: "Back after a while? Any call it needs you for waits at the end of its chat, each decision it made sits in a line you can overrule, and finished work is in Tasks.",
         },
         teammates: {
             tag: "Teammates",

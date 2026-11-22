@@ -2,11 +2,12 @@
 import Head from "./chat/Head.astro";
 import Bubble from "./chat/Bubble.astro";
 import Run, { type Call as ToolCall } from "./chat/Run.astro";
+import Prose from "./chat/Prose.astro";
 import TurnLine from "./chat/TurnLine.astro";
 import Composer from "./chat/Composer.astro";
-import Now from "./chief/Now.astro";
-import Away from "./chief/Away.astro";
-import Call from "./chief/Call.astro";
+import Decided from "./chief/Decided.astro";
+import Docked from "./chief/Docked.astro";
+import Tasks from "./chief/Tasks.astro";
 import "./app.css";
 
 const workers = [
@@ -20,38 +21,40 @@ const plan: ToolCall[] = [
     { verb: "read", kind: "looked", icon: "file", target: "onboarding.md", took: 0.4, file: true },
     ...workers.map(({ name, title, model, took }): ToolCall => ({ verb: "start", kind: "ran", icon: "square-plus", target: title, took, starts: { name, title, model } })),
 ];
-const moving = workers.map(({ name }) => ({ name, fact: "working", age: "4m" }));
-const decided = [
-    { decision: "Kept the old copy", after: "@Heron" },
-    { decision: "No tour on first run", after: "@Otter" },
-];
-const landed = [
-    { name: "Otter", title: "Setup checklist", change: "five first steps", dels: 12, adds: 148 },
-    { name: "Wren", title: "Empty states", change: "three screens", dels: 4, adds: 96, tryIt: true },
-];
+const question = "Sign-up: magic links or passwords?";
 ---
 
-<div class="app chief" data-play data-chief>
-    <Head title="@Chief" agent="chief" fact="acme-shop" />
-    <div class="pane">
-        <div class="said">
-            <Bubble>Ship the new onboarding by Friday.</Bubble>
-            <Run calls={plan} wait={400} folds />
+<div class="desk" data-play data-chief>
+    <div class="app chief">
+        <Head title="@Chief" agent="chief" fact="acme-shop" />
+        <div class="pane">
+            <div class="said">
+                <Bubble>Ship the new onboarding by Friday.</Bubble>
+                <Run calls={plan} wait={400} folds />
+            </div>
+            <div class="reply">
+                <Prose wait={500}>Five on it. I'll settle what I can and ask you only what I can't.</Prose>
+            </div>
+            <div class="lines">
+                <div data-step data-wait="1500"><Decided decision="No tour on first run" why="the checklist covers it" /></div>
+                <div data-step data-wait="1300"><Decided decision="Kept the sign-up copy" why="no test asks for new" /></div>
+            </div>
+            <div class="tail">
+                <div data-step data-wait="1300"><Docked asker="Chief" question={question} age="38m" /></div>
+                <TurnLine agent="chief" word="Waiting on" tint="cmd" waitingOn={["Heron", "Badger"]} more={1} said="64 min" wait={300} />
+            </div>
         </div>
-        <Now moving={moving} later={{ you: 0, ready: 2, moving: 3, unsure: 0 }} />
-        <div class="waits first">
-            <TurnLine agent="chief" word="Waiting on" tint="cmd" waitingOn={["Otter", "Heron"]} more={3} said="4 min" wait={300} />
-        </div>
-        <div class="calls" data-step="away" data-wait="3600">
-            <Away gone="1 h" needs={1} decided={decided} landed={landed}>
-                <Call asker="Chief" age="38m" question="Sign-up: magic links or passwords?" options={["Magic links", "Passwords"]} pick="Magic links" />
-            </Away>
-        </div>
-        <div class="waits then">
-            <TurnLine agent="chief" word="Waiting on" tint="cmd" waitingOn={["Heron", "Badger"]} more={1} said="64 min" wait={0} />
-        </div>
+        <Composer model="Opus 5.5" project="acme-shop" placeholder="Tell @Chief what you want, or type / for commands" />
     </div>
-    <Composer model="Opus 5.5" project="acme-shop" placeholder="Tell @Chief what you want, or type / for commands" />
+    <div class="side">
+        <Tasks
+            forYou={[{ mark: "call", title: question, fact: "2 choices", holder: "Chief", age: "38m" }]}
+            finished={[
+                { mark: "commit", title: "Setup checklist", fact: "landed 3f9c2a1 · CI green", holder: "Otter", age: "12m" },
+                { mark: "commit", title: "Empty states", fact: "landed 8b41d0e · CI green", holder: "Wren", age: "6m" },
+            ]}
+        />
+    </div>
 </div>
 
 <script>
@@ -67,27 +70,32 @@ const landed = [
 
 <style>
     /* The app's one-line rows cut their text in a window narrower than --least, so a smaller one is the same picture scaled down. */
-    .chief {
+    .desk {
         --scale: 1.12;
         --least: 484;
         width: max(calc(100% / var(--scale)), calc(var(--least) * 1px));
         zoom: calc(var(--scale) * var(--fit, 1));
     }
+    @media (min-width: 901px) {
+        .desk {
+            width: 100%;
+        }
+    }
     @media (max-width: 600px) {
-        .chief {
+        .desk {
             --scale: 1;
             --least: 400;
         }
     }
+    .desk > .app {
+        width: 100%;
+    }
     .pane {
-        position: relative;
         display: flex;
         flex-direction: column;
         padding-top: 52px;
     }
-    /* The window keeps one height through the play: the away card holds its room until it shows, and the open run rises into that room from a folded run's height. */
     .said {
-        order: 1;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
@@ -95,24 +103,32 @@ const landed = [
         height: 79px;
         padding: 0 22px;
     }
-    .calls {
-        padding: 8px 22px;
+    .reply {
+        padding: 14px 22px 4px;
     }
-    .calls.on {
-        order: 1;
+    .lines {
+        display: flex;
+        flex-direction: column;
+        padding: 4px 10px;
     }
-    .waits {
-        order: 2;
-        padding: 12px 22px 26px;
+    .tail {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 10px 22px 22px;
     }
-    .waits :global(.buttons:empty) {
+    .tail :global(.buttons:empty) {
         display: none;
     }
-    .then,
-    .chief:has(.calls.on) .first {
-        display: none;
+    .side {
+        position: relative;
+        z-index: 1;
+        width: 88%;
+        margin: -22px 0 0 auto;
+        transform: translateX(8%);
     }
-    .chief:has(.calls.on) .then {
-        display: block;
+    .side > :global(.app) {
+        width: 100%;
+        box-shadow: 0 18px 48px rgb(0 0 0 / 0.18);
     }
 </style>

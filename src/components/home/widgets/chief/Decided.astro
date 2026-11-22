@@ -1,0 +1,35 @@
+---
+interface Props {
+    decision: string;
+    why: string;
+}
+
+const { decision, why } = Astro.props;
+---
+
+<p class="notice decided">
+    <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>
+    <span class="title">Decided</span>
+    <b class="what">· “{decision}”</b>
+    <span class="why">· {why}</span>
+    <span class="title">·</span>
+    <b class="title">Overrule</b>
+</p>
+
+<style>
+    .decided svg {
+        width: 12px;
+        height: 12px;
+    }
+    .what {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .why {
+        min-width: 0;
+        flex-shrink: 1000;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>

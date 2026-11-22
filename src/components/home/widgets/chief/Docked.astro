@@ -1,0 +1,56 @@
+---
+import AgentName from "../../../AgentName.astro";
+
+interface Props {
+    asker: string;
+    question: string;
+    age: string;
+}
+
+const { asker, question, age } = Astro.props;
+---
+
+<p class="docked">
+    <svg viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+    <AgentName name={asker} chip />
+    <span class="question">{question}</span>
+    <span class="age">{age}</span>
+</p>
+
+<style>
+    .docked {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        height: 36px;
+        padding: 0 10px 0 8px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface-raised);
+        font-size: 13px;
+        color: var(--text-primary);
+        white-space: nowrap;
+    }
+    svg {
+        flex: none;
+        width: 12px;
+        height: 12px;
+        color: var(--warn);
+    }
+    .docked :global(.agent-chip) {
+        font-size: 12px;
+        background: var(--surface-active);
+    }
+    .question {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .age {
+        flex: none;
+        font-size: 11.5px;
+        font-variant-numeric: tabular-nums;
+        color: var(--text-tertiary);
+    }
+</style>
