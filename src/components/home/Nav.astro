@@ -1,6 +1,6 @@
 ---
 import { REPO_URL, type Release } from "../../lib/release";
-import { copyFor } from "../../i18n";
+import { LANGUAGES, copyFor } from "../../i18n";
 
 interface Props {
     release: Release;
@@ -8,7 +8,8 @@ interface Props {
 }
 
 const { release, overArt = false } = Astro.props;
-const { root, nav: t } = copyFor(Astro.currentLocale);
+const { root, lang, nav: t } = copyFor(Astro.currentLocale);
+const others = LANGUAGES.filter((language) => language.lang !== lang);
 ---
 
 <header class="nav" data-over-art={overArt || undefined}>
@@ -25,7 +26,11 @@ const { root, nav: t } = copyFor(Astro.currentLocale);
             <a href="/changelog">{t.changelog}</a>
         </nav>
         <div class="end">
-            <a class="link" href={t.other.href} lang={t.other.lang}>{t.other.label}</a>
+            <span class="languages" role="group" aria-label={t.languages}>
+                {others.map((language) => (
+                    <a class="link" href={language.root} lang={language.lang} hreflang={language.lang}>{language.langName}</a>
+                ))}
+            </span>
             <a class="link" href={REPO_URL}>GitHub</a>
             <button class="theme" type="button" aria-label={t.theme}>
                 <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
@@ -44,7 +49,9 @@ const { root, nav: t } = copyFor(Astro.currentLocale);
         <a href="/vs">{t.compare}</a>
         <a href="/changelog">{t.changelog}</a>
         <a href={REPO_URL}>GitHub</a>
-        <a href={t.other.href} lang={t.other.lang}>{t.other.label}</a>
+        {others.map((language) => (
+            <a href={language.root} lang={language.lang} hreflang={language.lang}>{language.langName}</a>
+        ))}
     </nav>
 </header>
 
@@ -153,6 +160,10 @@ const { root, nav: t } = copyFor(Astro.currentLocale);
         gap: 18px;
         font-size: 14.5px;
     }
+    .languages {
+        display: flex;
+        gap: 14px;
+    }
     .theme {
         display: grid;
         place-items: center;
@@ -230,6 +241,7 @@ const { root, nav: t } = copyFor(Astro.currentLocale);
     }
     @media (max-width: 860px) {
         .bar > nav,
+        .languages,
         .link {
             display: none;
         }

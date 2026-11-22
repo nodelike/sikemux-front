@@ -3,6 +3,7 @@ import type { Copy } from "./en";
 export const zh: Copy = {
     root: "/zh",
     lang: "zh-CN",
+    langName: "中文",
     home: {
         title: "Sikemux · 一整支 AI 编程团队，尽在一个窗口",
         description:
@@ -17,6 +18,7 @@ export const zh: Copy = {
             "退出应用后，终端和智能体继续运行",
             "在 MacBook 刘海或手机应用上回复智能体",
         ],
+        shareAlt: "Sikemux：一整支 AI 编程团队，尽在一个窗口。Mac 窗口里有一个编程智能体、它的浏览器标签页，旁边是项目里的其他智能体。",
         operatingSystem: "macOS 11 及以上，Linux，Windows 10 及以上",
     },
     nav: {
@@ -30,7 +32,7 @@ export const zh: Copy = {
         theme: "切换浅色与深色",
         download: "下载",
         menu: "菜单",
-        other: { href: "/", lang: "en", label: "English" },
+        languages: "语言",
     },
     install: {
         tabs: "安装方式",
@@ -42,6 +44,7 @@ export const zh: Copy = {
         title: { first: "一整支 AI", second: "编程团队，", chip: "尽在一个窗口。" },
         lede: "Claude Code、Codex 等编程智能体，并排跑在同一个原生应用里。谁在干活、谁卡住了、谁在等你，一眼就能看到。",
         download: "下载 Mac 版",
+        star: "点个 Star",
         aboutSize: "约 30 MB",
         systems: "Apple Silicon Mac、Windows 与 Linux",
         free: "免费，MIT 开源",
@@ -178,7 +181,7 @@ export const zh: Copy = {
         entries: [
             {
                 question: "一句话说，Sikemux 是什么？",
-                answer: "一个 Mac 应用，你和 AI 编程智能体一起做同一个项目：它们写代码、测代码，你来看、审阅、发布，不用在编辑器、终端、Git 和浏览器几个应用之间来回切换。",
+                answer: "一个支持 Mac、Windows 和 Linux 的桌面应用，你和 AI 编程智能体一起做同一个项目：它们写代码、测代码，你来看、审阅、发布，不用在编辑器、终端、Git 和浏览器几个应用之间来回切换。",
             },
             {
                 question: "支持哪些智能体？",
@@ -187,6 +190,10 @@ export const zh: Copy = {
             {
                 question: "Sikemux 会把我的代码发给模型吗？",
                 answer: "不会。Sikemux 自己没有 AI。你的代码只会发给你选的智能体，通过那个智能体自己的账号。有些智能体也可以用你在设置里填的 API 密钥，但你从来不必填。",
+            },
+            {
+                question: "能用国内的编程套餐吗？",
+                answer: "能。在设置的「编程套餐」页填入密钥，智能体就能用上智谱 GLM Coding Plan、Kimi Code、MiniMax M Plan、阿里云百炼、火山方舟等国内编程套餐，按量计费的 DeepSeek、Moonshot 等 API 也可以接入。每家怎么配置、要不要代理，见文档<a href='https://docs.sikemux.com/zh/model-plans'>在 Sikemux 里用国内编程套餐</a>。",
             },
             {
                 question: "Linux、Windows、Intel Mac 呢？",

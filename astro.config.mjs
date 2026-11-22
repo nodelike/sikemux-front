@@ -5,7 +5,7 @@ export default defineConfig({
     trailingSlash: "never",
     build: { format: "file" },
     i18n: {
-        locales: ["en", "zh"],
+        locales: ["en", "zh", "ja"],
         defaultLocale: "en",
         routing: { prefixDefaultLocale: false },
     },

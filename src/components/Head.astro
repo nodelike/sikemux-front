@@ -1,5 +1,7 @@
 ---
 import { CARDS, cardHeadline, cardImagePath } from "../lib/cards";
+import { LANGUAGES } from "../i18n";
+import { en } from "../i18n/en";
 
 export interface Props {
     title: string;
@@ -7,13 +9,14 @@ export interface Props {
     structuredData?: Record<string, unknown>[];
     noindex?: boolean;
     lang?: string;
+    shareAlt?: string;
 }
 
-const { title, description, structuredData = [], noindex = false, lang = "en" } = Astro.props;
+const { title, description, structuredData = [], noindex = false, lang = "en", shareAlt } = Astro.props;
 const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Astro.site);
 const card = CARDS.find((card) => card.path === canonical.pathname);
 const ogUrl = new URL(card ? cardImagePath(card.path) : "/og.png", Astro.site);
-const ogAlt = card ? `${cardHeadline(card)} ${card.body}` : "Sikemux: a whole team of AI coders, in one window. A Mac window with a coding agent, its browser tab and the project's other agents beside it.";
+const ogAlt = card ? `${cardHeadline(card)} ${card.body}` : shareAlt ?? en.home.shareAlt;
 ---
 
 <meta charset="utf-8" />
@@ -40,12 +43,14 @@ const ogAlt = card ? `${cardHeadline(card)} ${card.body}` : "Sikemux: a whole te
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content={ogAlt} />
-<meta property="og:locale" content={lang === "zh-CN" ? "zh_CN" : "en_US"} />
+<meta property="og:locale" content={{ "zh-CN": "zh_CN", ja: "ja_JP" }[lang] ?? "en_US"} />
 {
-    ["/", "/zh"].includes(canonical.pathname) && (
+    LANGUAGES.some((language) => language.root === canonical.pathname) && (
         <>
-            <link rel="alternate" hreflang="en" href={new URL("/", Astro.site)} />
-            <link rel="alternate" hreflang="zh-CN" href={new URL("/zh", Astro.site)} />
+            {LANGUAGES.map((language) => (
+                <link rel="alternate" hreflang={language.lang} href={new URL(language.root, Astro.site)} />
+            ))}
+            <link rel="alternate" hreflang="x-default" href={new URL("/", Astro.site)} />
         </>
     )
 }

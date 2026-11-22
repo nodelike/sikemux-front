@@ -13,7 +13,7 @@ interface Props {
 }
 
 const { release } = Astro.props;
-const t = copyFor(Astro.currentLocale).closing;
+const { closing: t, hero } = copyFor(Astro.currentLocale);
 ---
 
 <section class="closing">
@@ -27,7 +27,7 @@ const t = copyFor(Astro.currentLocale).closing;
                 {t.download}
             </a>
             <a class="btn ghost" href="#download">{t.all}</a>
-            <a class="btn ghost" href={REPO_URL}><Icon name="github" size={18} />Star</a>
+            <a class="btn ghost" href={REPO_URL}><Icon name="github" size={18} />{hero.star}</a>
         </div>
         <Install />
     </div>

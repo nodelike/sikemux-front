@@ -1,6 +1,7 @@
 export const en = {
     root: "/",
     lang: "en",
+    langName: "English",
     home: {
         title: "Sikemux · a whole team of AI coders, in one window",
         description:
@@ -15,6 +16,7 @@ export const en = {
             "Terminals and agents keep running after the app quits",
             "Answer agents from the MacBook notch or the phone app",
         ],
+        shareAlt: "Sikemux: a whole team of AI coders, in one window. A Mac window with a coding agent, its browser tab and the project's other agents beside it.",
         operatingSystem: "macOS 11 or later, Linux, Windows 10 or later",
     },
     nav: {
@@ -28,7 +30,7 @@ export const en = {
         theme: "Switch between light and dark",
         download: "Download",
         menu: "Menu",
-        other: { href: "/zh", lang: "zh-CN", label: "中文" },
+        languages: "Language",
     },
     install: {
         tabs: "Install with",
@@ -40,6 +42,7 @@ export const en = {
         title: { first: "A whole team of AI", second: "coders, ", chip: "in one window." },
         lede: "Claude Code, Codex and more, side by side in one native app. See who’s working, who’s stuck and who needs you.",
         download: "Download for Mac",
+        star: "Star",
         aboutSize: "about 30 MB",
         systems: "Apple Silicon Mac, Windows and Linux",
         free: "free, MIT",
@@ -176,7 +179,7 @@ export const en = {
         entries: [
             {
                 question: "What is Sikemux, in one sentence?",
-                answer: "A Mac app where you work on a project together with AI coding agents: they write and test the code, and you watch, review and ship, without juggling an editor, terminals, Git and a browser in separate apps.",
+                answer: "A desktop app for Mac, Windows and Linux where you work on a project together with AI coding agents: they write and test the code, and you watch, review and ship, without juggling an editor, terminals, Git and a browser in separate apps.",
             },
             {
                 question: "Which agents does it work with?",
