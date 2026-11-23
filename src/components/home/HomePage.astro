@@ -16,7 +16,7 @@ import Play from "./Play.astro";
 import LiveRelease from "../LiveRelease.astro";
 import { getImage } from "astro:assets";
 import hero from "../../assets/hero/hero.png";
-import { DISCORD_URL, X_URL, formatSize, latestRelease, REPO_URL } from "../../lib/release";
+import { APP_STORE_URL, DISCORD_URL, X_URL, formatSize, latestRelease, REPO_URL } from "../../lib/release";
 
 const release = await latestRelease();
 
@@ -25,26 +25,42 @@ const { description } = copy.home;
 
 const screenshot = await getImage({ src: hero, width: 1560, format: "png" });
 const origin = Astro.site!.href.replace(/\/$/, "");
+const orgId = "https://sikemux.com/#organization";
+const appId = "https://sikemux.com/#app";
 
 const structuredData = [
     {
         "@context": "https://schema.org",
         "@type": "WebSite",
+        "@id": "https://sikemux.com/#website",
         name: "Sikemux",
+        alternateName: ["sikemux", "sikemux.com"],
         url: "https://sikemux.com/",
+        inLanguage: copy.lang,
+        publisher: { "@id": orgId },
     },
     {
         "@context": "https://schema.org",
         "@type": "Organization",
+        "@id": orgId,
         name: "Sikemux",
+        alternateName: "sikemux",
         url: "https://sikemux.com/",
-        logo: "https://sikemux.com/apple-touch-icon.png",
-        sameAs: [REPO_URL, DISCORD_URL, X_URL],
+        description,
+        logo: {
+            "@type": "ImageObject",
+            url: "https://sikemux.com/apple-touch-icon.png",
+            width: 180,
+            height: 180,
+        },
+        sameAs: [REPO_URL, X_URL, DISCORD_URL, APP_STORE_URL],
     },
     {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
+        "@id": appId,
         name: "Sikemux",
+        alternateName: "sikemux",
         description,
         url: "https://sikemux.com/",
         image: "https://sikemux.com/og.png",
@@ -54,12 +70,28 @@ const structuredData = [
         operatingSystem: copy.home.operatingSystem,
         softwareVersion: release.version,
         downloadUrl: release.dmgUrl,
+        installUrl: `${REPO_URL}/releases/latest`,
+        releaseNotes: "https://sikemux.com/changelog",
+        softwareHelp: "https://docs.sikemux.com/",
         ...(release.dmgBytes !== null && { fileSize: formatSize(release.dmgBytes) }),
         license: `${REPO_URL}/blob/main/LICENSE`,
         isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         author: { "@type": "Person", name: "nodelike", url: "https://github.com/nodelike" },
-        sameAs: [REPO_URL],
+        publisher: { "@id": orgId },
+        sameAs: [REPO_URL, APP_STORE_URL, X_URL, DISCORD_URL],
+    },
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "@id": "https://sikemux.com/#source",
+        name: "Sikemux",
+        description,
+        codeRepository: REPO_URL,
+        programmingLanguage: "Rust",
+        license: `${REPO_URL}/blob/main/LICENSE`,
+        targetProduct: { "@id": appId },
+        author: { "@id": orgId },
     },
     faqStructuredData(copy.faq.entries),
 ];

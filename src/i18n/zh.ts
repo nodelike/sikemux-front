@@ -7,7 +7,7 @@ export const zh: Copy = {
     home: {
         title: "Sikemux · 一整支 AI 编程团队，尽在一个窗口",
         description:
-            "Claude 额度用完了？对话在 Codex 里接着聊。Sikemux 是免费、MIT 开源的 Mac、Windows 与 Linux 原生应用，用你自己的订阅运行 Claude Code、Codex 等编程智能体，并告诉你哪一个在等你。",
+            "一整支 AI 编程团队，尽在一个窗口。Sikemux 是免费、MIT 开源的 Mac、Windows 与 Linux 原生应用，用你自己的订阅运行 Claude Code、Codex 等编程智能体。",
         featureList: [
             "用你自己的订阅运行 Claude Code、Codex、OpenCode、Hermes、Grok、OMP 和 Pi",
             "每个智能体都有一个真正的浏览器标签页",

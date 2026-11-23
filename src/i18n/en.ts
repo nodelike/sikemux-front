@@ -5,7 +5,7 @@ export const en = {
     home: {
         title: "Sikemux · a whole team of AI coders, in one window",
         description:
-            "Out of Claude? The chat carries on in Codex. Sikemux is a free, MIT-licensed native app for Mac, Windows and Linux that runs Claude Code, Codex and other coding agents on your own plans and shows which one needs you.",
+            "A whole team of AI coders, in one window. Sikemux runs Claude Code, Codex and more on your own plans in a free, MIT native app for Mac, Windows and Linux.",
         featureList: [
             "Runs Claude Code, Codex, OpenCode, Hermes, Grok, OMP and Pi with your own plan",
             "A real browser tab for each agent",

@@ -7,7 +7,7 @@ export const ja: Copy = {
     home: {
         title: "Sikemux · AI コーダーのチームを、ひとつのウィンドウに",
         description:
-            "Claude の上限に達しても、チャットは Codex で続きます。Sikemux は Mac、Windows、Linux 向けの無料・MIT ライセンスのネイティブアプリ。Claude Code や Codex などのコーディングエージェントを手持ちのプランで動かし、どれがあなたを待っているかを知らせます。",
+            "AI コーダーのチームを、ひとつのウィンドウに。Sikemux は Mac、Windows、Linux 向けの無料・MIT ライセンスのネイティブアプリ。Claude Code や Codex を手持ちのプランで動かせます。",
         featureList: [
             "Claude Code、Codex、OpenCode、Hermes、Grok、OMP、Pi を手持ちのプランで実行",
             "エージェントごとに本物のブラウザタブ",
