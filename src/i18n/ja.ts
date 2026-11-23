@@ -18,7 +18,7 @@ export const ja: Copy = {
             "アプリを終了してもターミナルとエージェントは動き続ける",
             "MacBook のノッチやスマホアプリからエージェントに返事",
         ],
-        shareAlt: "Sikemux：AI コーダーのチームを、ひとつのウィンドウに。コーディングエージェントとそのブラウザタブ、横にプロジェクトのほかのエージェントが並ぶ Mac のウィンドウ。",
+        shareAlt: "Sikemux：AI コーダーのチームを、ひとつのウィンドウに。Claude、Codex、Antigravity が並んで動くエージェント一覧と昼の風景画。",
         operatingSystem: "macOS 11 以降、Linux、Windows 10 以降",
     },
     nav: {

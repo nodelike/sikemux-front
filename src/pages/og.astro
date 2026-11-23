@@ -1,8 +1,8 @@
 ---
 import { Image } from "astro:assets";
 import "../styles/home.css";
-import hero from "../assets/hero/hero.png";
-import night from "../assets/hero/night.jpg";
+import day from "../assets/hero/day.jpg";
+import rail from "../assets/hero/rail.png";
 ---
 
 <!doctype html>
@@ -14,14 +14,13 @@ import night from "../assets/hero/night.jpg";
     </head>
     <body>
         <main class="card">
-            <Image class="art" src={night} alt="" width={1792} format="jpg" quality={90} loading="eager" />
-            <figure class="window">
-                <Image src={hero} alt="" width={1400} format="png" loading="eager" />
-            </figure>
+            <Image class="art" src={day} alt="" width={1792} format="jpg" quality={90} loading="eager" />
+            <div class="wash"></div>
+            <Image class="shot" src={rail} alt="" width={610} format="png" loading="eager" />
             <div class="copy">
-                <img class="lockup" src="/brand/lockup-white.svg" alt="Sikemux" />
-                <h1>A whole team of AI<br />coders, <span class="chip">in one window.</span></h1>
-                <p class="fine mono">Free · MIT · Mac, Windows and Linux · sikemux.com</p>
+                <img class="lockup" src="/brand/lockup-black.svg" alt="Sikemux" />
+                <h1>A whole team of AI coders, in one window.</h1>
+                <p class="fine mono">Free · Mac, Windows, Linux</p>
             </div>
         </main>
     </body>
@@ -33,7 +32,7 @@ import night from "../assets/hero/night.jpg";
         width: 100vw;
         height: 100vh;
         overflow: hidden;
-        background: #0f0d15;
+        background: #f4f3f7;
     }
 
     .card {
@@ -41,7 +40,7 @@ import night from "../assets/hero/night.jpg";
         width: 100vw;
         height: 100vh;
         overflow: hidden;
-        color: #f1eff7;
+        color: #121017;
     }
 
     .art {
@@ -50,55 +49,53 @@ import night from "../assets/hero/night.jpg";
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: 50% 60%;
+        object-position: 50% 50%;
     }
 
-    .window {
+    .wash {
         position: absolute;
-        top: 6%;
-        right: 4.5%;
-        width: 46%;
-        margin: 0;
-        box-shadow: 12px 12px 0 var(--violet);
+        inset: 0;
+        background: radial-gradient(70% 80% at 82% 30%, rgba(250, 248, 255, 0.72), rgba(250, 248, 255, 0) 70%);
     }
 
-    .window img {
+    .shot {
+        position: absolute;
         display: block;
-        width: 100%;
-        height: auto;
+        left: 5.333vw;
+        top: 8.889vh;
+        height: 82.222vh;
+        width: auto;
+        border-radius: 14px;
+        box-shadow:
+            0 0 0 1px rgba(18, 16, 23, 0.55),
+            0 24px 60px -18px rgba(40, 22, 90, 0.55);
     }
 
     .copy {
         position: absolute;
-        left: 5%;
-        bottom: 7%;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
+        left: 50vw;
+        top: 9.84vh;
+        width: 45vw;
     }
 
     .lockup {
         height: 30px;
         width: auto;
+        display: block;
+        margin-bottom: 34px;
     }
 
     h1 {
-        font-size: 60px;
-        line-height: 1.04;
-        letter-spacing: -0.05em;
-        text-shadow: 0 0 24px rgba(15, 13, 21, 0.6);
-    }
-
-    .chip {
-        --band: var(--violet);
-        color: #0f0d15;
-        white-space: nowrap;
-        text-shadow: none;
+        font-size: 76px;
+        font-weight: 600;
+        line-height: 0.98;
+        letter-spacing: -0.045em;
     }
 
     .fine {
-        font-size: 17px;
-        color: #c9c4d8;
+        margin-top: 26px;
+        font-size: 19px;
+        letter-spacing: -0.01em;
+        color: #3b3449;
     }
 </style>

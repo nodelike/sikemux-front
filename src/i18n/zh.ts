@@ -18,7 +18,7 @@ export const zh: Copy = {
             "退出应用后，终端和智能体继续运行",
             "在 MacBook 刘海或手机应用上回复智能体",
         ],
-        shareAlt: "Sikemux：一整支 AI 编程团队，尽在一个窗口。Mac 窗口里有一个编程智能体、它的浏览器标签页，旁边是项目里的其他智能体。",
+        shareAlt: "Sikemux：一整支 AI 编程团队，尽在一个窗口。应用的智能体侧栏展示 Claude、Codex 和 Antigravity 并行协作，背景为日光画作。",
         operatingSystem: "macOS 11 及以上，Linux，Windows 10 及以上",
     },
     nav: {

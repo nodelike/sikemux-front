@@ -16,7 +16,7 @@ export const en = {
             "Terminals and agents keep running after the app quits",
             "Answer agents from the MacBook notch or the phone app",
         ],
-        shareAlt: "Sikemux: a whole team of AI coders, in one window. A Mac window with a coding agent, its browser tab and the project's other agents beside it.",
+        shareAlt: "Sikemux: a whole team of AI coders, in one window. The app's agent rail showing Claude, Codex and Antigravity working side by side over a daylight painting.",
         operatingSystem: "macOS 11 or later, Linux, Windows 10 or later",
     },
     nav: {
