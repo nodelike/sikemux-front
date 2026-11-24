@@ -5,9 +5,9 @@ export const zh: Copy = {
     lang: "zh-CN",
     langName: "中文",
     home: {
-        title: "Sikemux · 一整支 AI 编程团队，尽在一个窗口",
+        title: "Sikemux · 你自己的软件工厂",
         description:
-            "一整支 AI 编程团队，尽在一个窗口。Sikemux 是免费、MIT 开源的 Mac、Windows 与 Linux 原生应用，用你自己的订阅运行 Claude Code、Codex 等编程智能体。",
+            "你自己的软件工厂。智能体开发并交付，你来拍板。Sikemux 是免费、MIT 开源的 Mac、Windows 与 Linux 原生应用，用你自己的订阅运行 Claude Code、Codex 等编程智能体。",
         featureList: [
             "用你自己的订阅运行 Claude Code、Codex、OpenCode、Hermes、Grok、OMP 和 Pi",
             "每个智能体都有一个真正的浏览器标签页",
@@ -18,7 +18,7 @@ export const zh: Copy = {
             "退出应用后，终端和智能体继续运行",
             "在 MacBook 刘海或手机应用上回复智能体",
         ],
-        shareAlt: "Sikemux：一整支 AI 编程团队，尽在一个窗口。应用的智能体侧栏展示 Claude、Codex 和 Antigravity 并行协作，背景为日光画作。",
+        shareAlt: "Sikemux：你自己的软件工厂。智能体开发并交付，你来拍板。应用的智能体侧栏展示 Claude、Codex 和 Antigravity 并行协作，背景为日光画作。",
         operatingSystem: "macOS 11 及以上，Linux，Windows 10 及以上",
     },
     nav: {
@@ -42,8 +42,9 @@ export const zh: Copy = {
         copyLabel: "复制安装命令",
     },
     hero: {
-        title: { first: "一整支 AI", second: "编程团队，", chip: "尽在一个窗口。" },
-        lede: "Claude Code、Codex 等编程智能体，并排跑在同一个原生应用里。谁在干活、谁卡住了、谁在等你，一眼就能看到。",
+        title: { first: "你自己的", chip: "软件工厂。" },
+        tag: "开源智能体基础设施 · MIT",
+        lede: "智能体开发并交付，你来拍板。项目 Chief 把活派给你各台主机上的编程智能体，你在手机上也能跟进；规则共用，审阅和发布都有把关。",
         download: "下载 Mac 版",
         star: "点个 Star",
         aboutSize: "约 30 MB",
@@ -182,7 +183,7 @@ export const zh: Copy = {
         entries: [
             {
                 question: "一句话说，Sikemux 是什么？",
-                answer: "一个支持 Mac、Windows 和 Linux 的桌面应用，你和 AI 编程智能体一起做同一个项目：它们写代码、测代码，你来看、审阅、发布，不用在编辑器、终端、Git 和浏览器几个应用之间来回切换。",
+                answer: "一个免费开源的桌面应用，就是你自己的软件工厂：编程智能体跑在你的机器上，用你的订阅开发、测试、交付，由你来拍板。",
             },
             {
                 question: "支持哪些智能体？",
@@ -219,7 +220,7 @@ export const zh: Copy = {
         all: "全部下载",
     },
     footer: {
-        tagline: "一整支 AI 编程团队，尽在一个窗口。",
+        tagline: "你自己的软件工厂。",
         product: "产品",
         help: "帮助",
         company: "公司",

@@ -3,9 +3,9 @@ export const en = {
     lang: "en",
     langName: "English",
     home: {
-        title: "Sikemux · a whole team of AI coders, in one window",
+        title: "Sikemux · own your software factory",
         description:
-            "A whole team of AI coders, in one window. Sikemux runs Claude Code, Codex and more on your own plans in a free, MIT native app for Mac, Windows and Linux.",
+            "Own your software factory. Agents build and ship. You make the calls. A free, MIT native app that runs Claude Code and Codex on Mac, Windows and Linux.",
         featureList: [
             "Runs Claude Code, Codex, OpenCode, Hermes, Grok, OMP and Pi with your own plan",
             "A real browser tab for each agent",
@@ -16,7 +16,7 @@ export const en = {
             "Terminals and agents keep running after the app quits",
             "Answer agents from the MacBook notch or the phone app",
         ],
-        shareAlt: "Sikemux: a whole team of AI coders, in one window. The app's agent rail showing Claude, Codex and Antigravity working side by side over a daylight painting.",
+        shareAlt: "Sikemux: own your software factory. Agents build and ship, you make the calls. The app's agent rail showing Claude, Codex and Antigravity working side by side over a daylight painting.",
         operatingSystem: "macOS 11 or later, Linux, Windows 10 or later",
     },
     nav: {
@@ -40,8 +40,9 @@ export const en = {
         copyLabel: "Copy the install command",
     },
     hero: {
-        title: { first: "A whole team of AI", second: "coders, ", chip: "in one window." },
-        lede: "Claude Code, Codex and more, side by side in one native app. See who’s working, who’s stuck and who needs you.",
+        title: { first: "Own your", chip: "software factory." },
+        tag: "Open-source agentic infrastructure · MIT",
+        lede: "Agents build and ship. You make the calls. A chief staffs coding agents across your hosts and phone, with shared rules, review and release gates.",
         download: "Download for Mac",
         star: "Star",
         aboutSize: "about 30 MB",
@@ -180,7 +181,7 @@ export const en = {
         entries: [
             {
                 question: "What is Sikemux, in one sentence?",
-                answer: "A desktop app for Mac, Windows and Linux where you work on a project together with AI coding agents: they write and test the code, and you watch, review and ship, without juggling an editor, terminals, Git and a browser in separate apps.",
+                answer: "A free, open-source desktop app that is your own software factory: coding agents build, test and ship your project on your machines and your plans, and you make the calls.",
             },
             {
                 question: "Which agents does it work with?",
@@ -213,7 +214,7 @@ export const en = {
         all: "All downloads",
     },
     footer: {
-        tagline: "A whole team of AI coders, in one window.",
+        tagline: "Own your software factory.",
         product: "Product",
         help: "Help",
         company: "Company",

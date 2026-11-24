@@ -128,6 +128,10 @@ br + .chip {
 :lang(zh) .chip {
     word-break: keep-all;
 }
+:lang(zh) .chip,
+:lang(ja) .chip {
+    background-position-y: 0.09em;
+}
 :where(h1, h2, h3):has(.chip) {
     line-height: 1.12;
     text-wrap: balance;

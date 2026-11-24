@@ -15,7 +15,7 @@ interface Props {
 const { agent } = Astro.props;
 const others = AGENTS.filter((other) => other !== agent);
 const where = agent.chat ? "in a chat beside your code" : "in a terminal beside your code";
-const description = `Run ${agent.name} ${where} in Sikemux, a free agentic IDE for Mac, Windows and Linux, with its own browser tab, Git review and your CI, issues and logs.`;
+const description = `Run ${agent.name} ${where} in Sikemux, the software factory you own on Mac, Windows and Linux, with its own browser tab, Git review and your CI, issues and logs.`;
 ---
 
 <Article

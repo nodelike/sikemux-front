@@ -51,7 +51,7 @@ export const CARDS: Card[] = [
         label: "Compared",
         title: "Sikemux vs",
         chip: comparison.name,
-        body: `How a free agentic IDE for Claude Code and Codex compares with ${comparison.name}, the ${comparison.kind}.`,
+        body: `How Sikemux, the software factory you own, compares with ${comparison.name}, the ${comparison.kind}.`,
         visual: comparison.bytes === undefined ? HERO : ({ kind: "sizes", apps: [{ name: comparison.name, bytes: comparison.bytes }] } satisfies CardVisual),
     })),
     { path: "/brand", label: "Brand", title: "Sikemux", chip: "brand.", body: "The wordmark, the mark, the icon and the colours, to download.", visual: { kind: "brand" } },

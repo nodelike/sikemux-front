@@ -5,9 +5,9 @@ export const ja: Copy = {
     lang: "ja",
     langName: "日本語",
     home: {
-        title: "Sikemux · AI コーダーのチームを、ひとつのウィンドウに",
+        title: "Sikemux · 自前のソフトウェア工場",
         description:
-            "AI コーダーのチームを、ひとつのウィンドウに。Sikemux は Mac、Windows、Linux 向けの無料・MIT ライセンスのネイティブアプリ。Claude Code や Codex を手持ちのプランで動かせます。",
+            "自前のソフトウェア工場。作って届けるのはエージェント、決めるのはあなた。Sikemux は Mac、Windows、Linux で Claude Code や Codex を手持ちのプランのまま動かせる、無料・MIT ライセンスのネイティブアプリです。",
         featureList: [
             "Claude Code、Codex、OpenCode、Hermes、Grok、OMP、Pi を手持ちのプランで実行",
             "エージェントごとに本物のブラウザタブ",
@@ -18,7 +18,7 @@ export const ja: Copy = {
             "アプリを終了してもターミナルとエージェントは動き続ける",
             "MacBook のノッチやスマホアプリからエージェントに返事",
         ],
-        shareAlt: "Sikemux：AI コーダーのチームを、ひとつのウィンドウに。Claude、Codex、Antigravity が並んで動くエージェント一覧と昼の風景画。",
+        shareAlt: "Sikemux：自前のソフトウェア工場。作って届けるのはエージェント、決めるのはあなた。Claude、Codex、Antigravity が並んで動くエージェント一覧と昼の風景画。",
         operatingSystem: "macOS 11 以降、Linux、Windows 10 以降",
     },
     nav: {
@@ -42,8 +42,9 @@ export const ja: Copy = {
         copyLabel: "インストールコマンドをコピー",
     },
     hero: {
-        title: { first: "AI コーダーのチームを、", second: "", chip: "ひとつのウィンドウに。" },
-        lede: "Claude Code、Codex などが、ひとつのネイティブアプリに並んで動きます。誰が作業中で、誰が詰まっていて、誰があなたを待っているのかがひと目でわかります。",
+        title: { first: "自前の", chip: "ソフトウェア工場。" },
+        tag: "オープンソースのエージェント基盤 · MIT",
+        lede: "作って届けるのはエージェント、決めるのはあなた。チーフが各ホストのエージェントに仕事を振り、スマホからも追えます。共通ルール、レビュー、リリース前の確認つき。",
         download: "Mac 版をダウンロード",
         star: "Star する",
         aboutSize: "約 30 MB",
@@ -59,7 +60,7 @@ export const ja: Copy = {
     },
     hub: {
         tag: "しくみ",
-        title: { lead: "自前の AI は持ちません。", chip: "あなたの AI を動かします。" },
+        title: { lead: "独自の AI は持ちません。", chip: "あなたの AI を動かします。" },
         body: [
             "エージェントはいつもどおりインストールしてサインインするだけ。Sikemux がそれを見つけ、あなたのログインで起動します。このパソコンでも、つないだどのホストでも。",
             "様子を見るのも返事をするのも、アプリ、ノッチ、スマホから。",
@@ -182,7 +183,7 @@ export const ja: Copy = {
         entries: [
             {
                 question: "Sikemux をひとことで言うと？",
-                answer: "AI コーディングエージェントと一緒にひとつのプロジェクトを進める、Mac、Windows、Linux 向けのデスクトップアプリです。エージェントがコードを書いてテストし、あなたは見て、レビューして、リリースする。エディタ、ターミナル、Git、ブラウザを別々のアプリで行き来する必要はありません。",
+                answer: "自前のソフトウェア工場になる、無料・オープンソースのデスクトップアプリです。手元のマシンとプランでコーディングエージェントが開発、テスト、リリースまで進め、決めるのはあなたです。",
             },
             {
                 question: "どのエージェントで使えますか？",
@@ -215,7 +216,7 @@ export const ja: Copy = {
         all: "すべてのダウンロード",
     },
     footer: {
-        tagline: "AI コーダーのチームを、ひとつのウィンドウに。",
+        tagline: "自前のソフトウェア工場。",
         product: "製品",
         help: "ヘルプ",
         company: "会社",

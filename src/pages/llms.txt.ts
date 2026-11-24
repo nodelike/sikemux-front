@@ -8,7 +8,7 @@ export const GET: APIRoute = ({ site }) => {
     const url = (path: string) => new URL(path, site).href;
     const body = `# Sikemux
 
-> A whole team of AI coders, in one window. Sikemux is a free, MIT-licensed native app for Mac, Windows and Linux. It runs the coding agents you already use (Claude Code, Codex, OpenCode, Hermes, Grok, OMP and Pi), signed in with your own plan, in one window with a code editor, terminals, Git review, a real browser tab for each agent, an iOS Simulator, and your GitHub, GitLab, Bitbucket, Jira, database, AWS, Rundeck, SigNoz and Bruno views. Sikemux has no AI of its own and never sends code anywhere except to the agent you choose.
+> Own your software factory. Agents build and ship. You make the calls. Sikemux is open-source agentic infrastructure: a free, MIT-licensed native app for Mac, Windows and Linux. It runs the coding agents you already use (Claude Code, Codex, OpenCode, Hermes, Grok, OMP and Pi), signed in with your own plan, in one window with a code editor, terminals, Git review, a real browser tab for each agent, an iOS Simulator, and your GitHub, GitLab, Bitbucket, Jira, database, AWS, Rundeck, SigNoz and Bruno views. Sikemux has no AI of its own and never sends code anywhere except to the agent you choose.
 
 - Download: ${url("/")} (macOS 11 or later on Apple Silicon, about 30 MB; Windows 10 22H2 or later on x64 and arm64, also through Scoop; Linux on x86_64 and arm64 as a .deb or AppImage from GitHub Releases, on Ubuntu 24.04, Debian 13 or newer)
 - Install from a terminal: \`${INSTALL_COMMAND}\`
