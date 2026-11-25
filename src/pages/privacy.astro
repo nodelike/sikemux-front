@@ -106,18 +106,19 @@ import Legal from "../layouts/Legal.astro";
     <h2>Usage statistics and crash reports</h2>
     <p>
         <strong>PostHog, EU (desktop only):</strong> official releases of the desktop app and headless host send one
-        anonymous message a day while you use them, plus each first-run step once (setup started, an agent ready, first
-        message, second day). Each message holds a random install ID, a one-way hash of your Sikemux account if signed
-        in, app version, update channel, OS, OS version, Linux distro and CPU type. Daily totals hold the day before's
-        counts: tokens and cost by agent and model, turns, chat and terminal sessions, commits, model calls, compactions,
-        wait counts and how often each feature was used. None of this holds your files, prompts, commands, project names
-        or code. From 0.6.4, nothing is sent until first-run setup finishes (or a headless host signs in). Before 0.6.4,
-        reporting started at launch and could send earlier local daily totals.
+        message a day while you use them, plus each first-run step once (setup started, an agent ready, first message,
+        second day). Each message holds a random install ID, a hash of your Sikemux account if signed in, app version,
+        update channel, OS, OS version, Linux distro and CPU type. The hash does not name you, but we can match it to
+        your account. Daily totals hold the day before's counts: tokens and cost by agent and model, turns, chat and
+        terminal sessions, commits, model calls, compactions, wait counts and how often each feature was used. None of
+        this holds your files, prompts, commands, project names or code. From 0.6.4, nothing is sent until first-run
+        setup finishes (or a headless host signs in). Before 0.6.4, reporting started at launch and could send earlier
+        local daily totals.
     </p>
     <p>
         <strong>Sentry, EU (desktop):</strong> official desktop releases send panics, native crashes, app, core and notch
         sessions, and 10% of startup timing traces. Recent warning and error log lines go along with file paths and your
-        home folder stripped, plus the same one-way account hash. From 0.6.4, Sentry follows the same rule as PostHog:
+        home folder stripped, plus the same account hash. From 0.6.4, Sentry follows the same rule as PostHog:
         nothing is sent until first-run setup finishes, unless sharing is off. Before 0.6.4, Sentry started at launch.
     </p>
     <p>
@@ -129,10 +130,11 @@ import Legal from "../layouts/Legal.astro";
     </p>
     <p>
         <strong>Phones and app.sikemux.com:</strong> official phone builds send crashes, errors and sessions to Sentry
-        EU (Android also sends 5% of startup and performance traces), with app version, device and OS details and the
-        one-way account hash. Neither phone app sends PostHog usage statistics. The web app at app.sikemux.com sends
-        errors and 5% of page-load traces to Sentry EU, with URL queries and fragments stripped and the one-way account
-        hash when signed in. Both phone apps and the web app can send before you have opened their Account screen to see
+        EU (iPhone also sends a report when the app hangs for 2 seconds or more, and Android 5% of startup and
+        performance traces), with app version, device and OS details and the same account hash, which we can match to
+        your account. Neither phone app sends PostHog usage statistics. The web app at app.sikemux.com sends
+        errors and 5% of page-load traces to Sentry EU, with URL queries and fragments stripped and the same account hash
+        when signed in. Both phone apps and the web app can send before you have opened their Account screen to see
         the switch. Turn off <strong>Share crash reports</strong> in the phone's <strong>Account</strong> sheet (on
         Android from 0.2.2; earlier Android builds had no switch) or on the <strong>Account</strong> page at
         app.sikemux.com. The web app's switch is stored in that browser and follows only its own switch; turning sharing
