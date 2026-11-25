@@ -15,7 +15,7 @@ export interface Props {
 const { title, description, structuredData = [], noindex = false, lang = "en", shareAlt } = Astro.props;
 const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Astro.site);
 const card = CARDS.find((card) => card.path === canonical.pathname);
-const ogUrl = new URL(card ? cardImagePath(card.path) : "/og.png?v=3", Astro.site);
+const ogUrl = new URL(card ? cardImagePath(card.path) : "/og.jpg", Astro.site);
 const ogAlt = card ? `${cardHeadline(card)} ${card.body}` : shareAlt ?? en.home.shareAlt;
 ---
 
@@ -40,6 +40,7 @@ const ogAlt = card ? `${cardHeadline(card)} ${card.body}` : shareAlt ?? en.home.
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
 <meta property="og:image" content={ogUrl} />
+<meta property="og:image:type" content="image/jpeg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content={ogAlt} />
