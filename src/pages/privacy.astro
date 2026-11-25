@@ -5,7 +5,7 @@ import Legal from "../layouts/Legal.astro";
 <Legal
     title="Privacy policy"
     description="What Sikemux collects, why, who handles it, and how to have it deleted."
-    updated="16 November 2026">
+    updated="25 November 2026">
     <p>
         Sikemux is made by nodelike. This page covers the Sikemux app for your computer, the Sikemux phone app, your
         Sikemux account at <a href="https://app.sikemux.com">app.sikemux.com</a>, and this website. Questions go to <a href="mailto:contact@nodelike.com">contact@nodelike.com</a>.
@@ -37,17 +37,19 @@ import Legal from "../layouts/Legal.astro";
     <table>
         <thead><tr><th>When</th><th>Where</th><th>What it sends</th></tr></thead>
         <tbody>
-            <tr><td>Once a day, unless you turn it off</td><td>PostHog, EU</td><td>The usage statistics below</td></tr>
-            <tr><td>When the app crashes, unless you turn it off</td><td>Sentry, EU</td><td>Where in its code it crashed and what it had just logged</td></tr>
+            <tr><td>Daily totals and first-run steps, after first-run setup (at launch before 0.6.4), unless sharing is off</td><td>PostHog, EU</td><td>Anonymous daily totals and first-run steps, described below</td></tr>
+            <tr><td>Crashes, sessions and some startup traces, after first-run setup (at launch before 0.6.4), unless sharing is off</td><td>Sentry, EU</td><td>Code addresses, image names and builds, recent warning and error logs (paths stripped), device and OS. Before 0.6.4, native crashes sent minidumps.</td></tr>
             <tr><td>Checking for and downloading updates</td><td>GitHub</td><td>Only the request</td></tr>
             <tr><td>Showing release notes</td><td>GitHub</td><td>Only the request, for the credited people's pictures</td></tr>
-            <tr><td>Checking for new versions of your agents</td><td>npm</td><td>The name of each agent's package</td></tr>
-            <tr><td>Listing the models agents can use</td><td>models.dev</td><td>Only the request</td></tr>
-            <tr><td>Showing when Claude's usage limit resets</td><td>Anthropic, with your Claude sign-in</td><td>The same request Claude Code's own screen makes</td></tr>
-            <tr><td>Opening a file in a new language</td><td>jsDelivr or unpkg</td><td>The language's name</td></tr>
+            <tr><td>Checking for newer agent CLIs</td><td>npm</td><td>Package names of installed agent CLIs (all known CLIs before 0.6.4)</td></tr>
+            <tr><td>Refreshing model prices, context sizes and capabilities</td><td>models.dev</td><td>Only the request, at most once a day when the bundled copy is stale</td></tr>
+            <tr><td>Opening Models settings or a chat's model picker</td><td>localhost:11434 and localhost:1234</td><td>GET /v1/models to check for Ollama or LM Studio on your computer; nothing leaves it</td></tr>
+            <tr><td>Reading agent plan limits, after first-run setup (at launch before 0.6.4)</td><td>Anthropic, OpenAI, xAI, Google and OpenCode</td><td>Each CLI's own sign-in, sent only to its vendor's usage endpoint</td></tr>
+            <tr><td>Checking GitHub sign-in, after first-run setup (at launch before 0.6.4)</td><td>api.github.com (or your GitHub Enterprise host)</td><td>Your gh CLI or GH_TOKEN sign-in, unless you signed in to the GitHub connector separately or signed out</td></tr>
             <tr><td>Starting dictation for the first time</td><td>Hugging Face</td><td>Only the request</td></tr>
-            <tr><td>An agent adds a GIF to its reply</td><td>KLIPY</td><td>The agent's search words, never yours</td></tr>
-            <tr><td>Installing the Android emulator for an agent</td><td>Google</td><td>Only the request</td></tr>
+            <tr><td>An agent adds a GIF to its reply</td><td>KLIPY</td><td>The agent's search words (never yours) and a one-way hash of your install</td></tr>
+            <tr><td>Installing the Android emulator, when you press Set up (on opening the device menu before 0.6.4)</td><td>dl.google.com</td><td>Only the request</td></tr>
+            <tr><td>Checking network relays and feature flags (/v1/network)</td><td>api.sikemux.com</td><td>Only the request; while signed in from 0.6.4 (also while signed out before 0.6.4)</td></tr>
             <tr><td>While you are signed in to a Sikemux account</td><td>api.sikemux.com and Clerk</td><td>Your account and device list, as described below</td></tr>
             <tr><td>While remote access is on</td><td>relay.sikemux.com</td><td>Encrypted traffic between your devices, which it cannot read</td></tr>
             <tr><td>When you or an agent use a service you connected, such as GitHub or Jira</td><td>That service</td><td>What you or the agent asked of it</td></tr>
@@ -101,36 +103,77 @@ import Legal from "../layouts/Legal.astro";
         running and to investigate abuse, and they are deleted automatically as newer logs replace them.
     </p>
 
-    <h2>Usage statistics</h2>
+    <h2>Usage statistics and crash reports</h2>
     <p>
-        Official releases of the Sikemux app for your computer send one message a day while you use them. It holds a
-        random ID made for your install, a one-way hash of your Sikemux account if you are signed in, the app version, its
-        update channel, and your operating system, its version and your processor type. It also holds the day before's
-        totals: tokens and their cost by agent and model, turns, chat and terminal sessions, commits, and how often each
-        feature was used. A new install also sends once when it reaches each step of first use: setup started, an agent
-        ready, the first message, and a second day. When the app crashes, it sends where in its code that happened and
-        what it had just logged, with no file paths. None of these hold your files, prompts, commands, project names or
-        code. We use them to count how many people use Sikemux and to find what breaks. PostHog and Sentry, which receive
-        them, see the IP address they come from, as any server does. All of it is on unless you turn it off with Share
-        anonymous usage, under Privacy in Settings, About. Builds you make yourself never send any of it.
+        <strong>PostHog, EU (desktop only):</strong> official releases of the desktop app and headless host send one
+        anonymous message a day while you use them, plus each first-run step once (setup started, an agent ready, first
+        message, second day). Each message holds a random install ID, a one-way hash of your Sikemux account if signed
+        in, app version, update channel, OS, OS version, Linux distro and CPU type. Daily totals hold the day before's
+        counts: tokens and cost by agent and model, turns, chat and terminal sessions, commits, model calls, compactions,
+        wait counts and how often each feature was used. None of this holds your files, prompts, commands, project names
+        or code. From 0.6.4, nothing is sent until first-run setup finishes (or a headless host signs in). Before 0.6.4,
+        reporting started at launch and could send earlier local daily totals.
     </p>
     <p>
-        This website counts page views and clicks on the Download button without cookies and without identifying you.
+        <strong>Sentry, EU (desktop):</strong> official desktop releases send panics, native crashes, app, core and notch
+        sessions, and 10% of startup timing traces. Recent warning and error log lines go along with file paths and your
+        home folder stripped, plus the same one-way account hash. From 0.6.4, Sentry follows the same rule as PostHog:
+        nothing is sent until first-run setup finishes, unless sharing is off. Before 0.6.4, Sentry started at launch.
+    </p>
+    <p>
+        <strong>Native crash reports:</strong> from 0.6.4 on desktop and the Mac notch, and 0.2.2 on iPhone, native
+        crashes send only the crash reason, the crashed thread's code addresses, image file names and build IDs, and
+        device and OS details. No memory and no CPU registers leave the machine. Desktop releases before 0.6.4 sent
+        minidumps, and notch and iPhone releases before 0.6.4 and 0.2.2 did not strip registers or disable memory
+        introspection. Android still sends CPU registers in native crash reports.
+    </p>
+    <p>
+        <strong>Phones and app.sikemux.com:</strong> official phone builds send crashes, errors and sessions to Sentry
+        EU (Android also sends 5% of startup and performance traces), with app version, device and OS details and the
+        one-way account hash. Neither phone app sends PostHog usage statistics. The web app at app.sikemux.com sends
+        errors and 5% of page-load traces to Sentry EU, with URL queries and fragments stripped and the one-way account
+        hash when signed in. Both phone apps and the web app can send before you have opened their Account screen to see
+        the switch. Turn off <strong>Share crash reports</strong> in the phone's <strong>Account</strong> sheet (on
+        Android from 0.2.2; earlier Android builds had no switch) or on the <strong>Account</strong> page at
+        app.sikemux.com. The web app's switch is stored in that browser and follows only its own switch; turning sharing
+        off on desktop or phone does not turn it off on the web.
+    </p>
+    <p>
+        <strong>Turning it off on desktop:</strong> new installs from 0.6.4 show the sharing switch during first-run
+        setup, or a notice with <strong>Turn off sharing</strong> when setup finishes automatically. If you set up
+        Sikemux earlier, you never saw that setup switch; change it any time in <strong>Settings &rarr; About &rarr;
+        Privacy</strong>. From 0.6.4, turning it off stops PostHog and Sentry at once, and days spent off are skipped so
+        turning it back on never sends them later. Before 0.6.4, Sentry kept sending for the rest of that run until
+        restart. Setting <code>DO_NOT_TRACK</code> (or <code>CI</code>) in the environment turns off all desktop PostHog
+        and Sentry reporting: from 0.6.4, any value except empty, <code>0</code>, <code>false</code>, <code>no</code> or
+        <code>off</code> (case-insensitive) counts as on; before 0.6.4, only empty, <code>0</code> and <code>false</code>
+        were treated as off.
+    </p>
+    <p>
+        PostHog and Sentry see the sender's IP address in transit, as any server does; Sikemux tells Sentry not to store
+        or geolocate IP addresses. Builds you make yourself never send any of this.
+    </p>
+    <p>
+        This website counts page views and clicks on the Download button with PostHog EU, without cookies and without
+        identifying you.
     </p>
 
     <h2>What the apps download</h2>
     <p>
-        The app checks GitHub for updates and downloads them from there, along with the profile pictures of the
-        people credited in its release notes. When you open a file in a language it has not shown before, it downloads that language's
-        highlighting rules from jsDelivr or unpkg. If you use dictation, it downloads the speech
-        model from Hugging Face once, and then turns speech into text on your computer. Those sites see your IP address
-        when they serve the download, as any website does.
+        The desktop app checks GitHub for updates and downloads them from there, along with the profile pictures of the
+        people credited in its release notes. It refreshes model prices, context sizes and capabilities from models.dev
+        at most once a day when the bundled copy is stale. If you use dictation, it downloads the speech model from
+        Hugging Face once, and then turns speech into text on your computer. If you press <strong>Set up</strong> to
+        install the Android emulator, it downloads Google's emulator and system image from dl.google.com (before 0.6.4,
+        it also checked dl.google.com when the device menu opened). Those sites see your IP address when they serve the
+        download, as any website does.
     </p>
     <p>
-        Each time it opens, the phone app asks our server at updates.sikemux.com whether a newer version of its own code
-        is available, and downloads it from there. Every update is signed, and the phone checks the signature before
-        using it. With each check the app sends its platform, an ID for the app build it is, and its update channel, so
-        the server can pick the right update. Our server logs these requests like any other, as described above.
+        Each time it opens, the Android phone app asks our server at updates.sikemux.com whether a newer version of its
+        own code is available, and downloads it from there. Every update is signed, and the phone checks the signature
+        before using it. With each check the app sends its platform, an ID for the app build it is, and its update
+        channel, so the server can pick the right update. Our server logs these requests like any other, as described
+        above.
     </p>
 
     <h2>Coding agents</h2>
@@ -162,7 +205,7 @@ import Legal from "../layouts/Legal.astro";
             with n0's lookup service, so your devices can find them.
         </li>
         <li><strong>PostHog</strong>, in the EU, counts the usage statistics and website visits described above.</li>
-        <li><strong>Sentry</strong>, in the EU, receives the crash reports described above.</li>
+        <li><strong>Sentry</strong>, in the EU, receives the crash reports, sessions and traces described above.</li>
         <li><strong>Vercel</strong> hosts this website, and <strong>GitHub</strong> hosts the downloads.</li>
         <li>
             <strong>Paddle</strong> takes the payment for a paid plan as the merchant of record. You give it your email
