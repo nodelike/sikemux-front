@@ -15,7 +15,10 @@ const { nav, footer: t } = copyFor(Astro.currentLocale);
         <div class="brand">
             <img class="on-light" src="/brand/lockup-black.svg" alt="Sikemux" />
             <img class="on-dark" src="/brand/lockup-white.svg" alt="" />
-            <p>{t.tagline}</p>
+            <div class="brand-copy">
+                <p>{t.tagline}</p>
+                <p class="product-of">{t.productOf}</p>
+            </div>
         </div>
         <nav aria-label={t.product}>
             <h3>{t.product}</h3>
@@ -42,7 +45,7 @@ const { nav, footer: t } = copyFor(Astro.currentLocale);
     </div>
     <div class="frame bar mono">
         <p>v<span data-release-version>{release.version}</span> · {t.free}</p>
-        <p>© nodelike</p>
+        <p>© Nodelike</p>
     </div>
 </footer>
 
@@ -70,9 +73,18 @@ const { nav, footer: t } = copyFor(Astro.currentLocale);
         width: min(100%, 250px);
         height: auto;
     }
+    .brand-copy {
+        display: grid;
+        gap: 6px;
+    }
     .brand p {
         color: var(--ink-2);
         max-width: 18em;
+    }
+    .brand .product-of {
+        font-size: 13px;
+        color: var(--ink-3);
+        max-width: none;
     }
     .on-dark,
     :global(:root[data-theme="dark"]) .brand .on-light {
@@ -106,8 +118,9 @@ const { nav, footer: t } = copyFor(Astro.currentLocale);
     }
     .bar {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
-        gap: 16px;
+        gap: 8px 16px;
         padding: 14px 20px;
         border-top: 1px solid var(--rule);
         font-size: 12px;
@@ -126,6 +139,9 @@ const { nav, footer: t } = copyFor(Astro.currentLocale);
         }
         .cols > * {
             padding: 28px 16px;
+        }
+        .bar {
+            padding: 14px 16px;
         }
     }
 </style>

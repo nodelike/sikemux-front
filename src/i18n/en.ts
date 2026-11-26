@@ -215,6 +215,7 @@ export const en = {
     },
     footer: {
         tagline: "Own your software factory.",
+        productOf: "Sikemux is a product of Nodelike",
         product: "Product",
         help: "Help",
         company: "Company",

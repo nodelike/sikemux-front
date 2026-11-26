@@ -221,6 +221,7 @@ export const zh: Copy = {
     },
     footer: {
         tagline: "你自己的软件工厂。",
+        productOf: "Sikemux 是 Nodelike 的产品",
         product: "产品",
         help: "帮助",
         company: "公司",

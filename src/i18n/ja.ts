@@ -217,6 +217,7 @@ export const ja: Copy = {
     },
     footer: {
         tagline: "自前のソフトウェア工場。",
+        productOf: "Sikemux は Nodelike の製品です",
         product: "製品",
         help: "ヘルプ",
         company: "会社",
